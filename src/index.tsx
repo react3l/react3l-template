@@ -1,14 +1,29 @@
-import React from 'react';
+import React from 'reactn';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import 'styles/index.scss';
+import * as serviceWorker from 'service-worker';
+import {BrowserRouter} from 'react-router-dom';
+import {GlobalState, initialGlobalState} from 'config/global-state';
+import {translationService} from 'react3l/services';
+import vi from 'i18n/vi.json';
+import nameof from 'ts-nameof.macro';
+
+const App = React.lazy(async () => {
+  await React.setGlobal<GlobalState>(initialGlobalState);
+
+  await translationService.initTranslation();
+  await translationService.changeLanguage(nameof(vi), vi);
+
+  return import('views/App/App');
+});
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <BrowserRouter>
+    <React.Suspense fallback={null}>
+      <App/>
+    </React.Suspense>
+  </BrowserRouter>,
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

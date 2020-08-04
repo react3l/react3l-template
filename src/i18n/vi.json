@@ -1,0 +1,10 @@
+{
+  "general.table.actions": "Tác vụ",
+  "general.actions.view": "Xem",
+  "general.actions.edit": "Sửa",
+  "general.actions.delete": "Xoá",
+  "province.id": "ID",
+  "province.code": "Mã",
+  "province.name": "Tên",
+  "province.englishName": "Tên tiếng Anh"
+}

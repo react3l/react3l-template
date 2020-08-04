@@ -2,27 +2,46 @@
   "name": "react3l-template",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "typescript": "~3.7.2"
-  },
   "scripts": {
+    "prestart": "run-s merge",
     "start": "react-scripts start",
+    "prebuild": "run-s merge",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start-storybook": "start-storybook -p 6006",
+    "extract": "i18next-extractor -i src/ -o src/i18n/ -p src/i18n/ extract",
+    "merge": "i18next-extractor -i src/ -o src/i18n/ -p src/i18n/ merge"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "parserOptions": {
+      "ecmaFeatures": {
+        "modules": true
+      },
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "ignorePatterns": [
+      "src/**/*.test.{ts,tsx}"
+    ],
+    "rules": {
+      "semi": [
+        "error",
+        "always"
+      ],
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "no-debugger": "error",
+      "no-console": "error"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "eslint --fix src/**/*.{ts,tsx}"
+    }
   },
   "browserslist": {
     "production": [
@@ -35,5 +54,48 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {},
+  "devDependencies": {
+    "@storybook/cli": "^5.3.19",
+    "@storybook/preset-create-react-app": "^3.1.4",
+    "@storybook/react": "^5.3.19",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-config": "^5.0.1",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/ts-nameof": "^4.2.1",
+    "eslint-plugin-react-hooks": "1.7.0",
+    "husky": "^4.2.5",
+    "i18next-extractor": "^0.4.0",
+    "node-sass": "^4.14.1",
+    "npm-run-all": "^4.1.5",
+    "react3l-cli": "^0.4.0",
+    "ts-nameof.macro": "^4.2.2",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "antd": "^4.5.2",
+    "axios": "^0.19.2",
+    "bootstrap": "^4.5.0",
+    "i18next": "^19.6.3",
+    "moment": "^2.27.0",
+    "path": "^0.12.7",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-i18next": "^11.7.0",
+    "react-router-config": "^5.1.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react3l": "^4.0.0-test-rc33",
+    "react3l-advanced-filters": "^4.0.1",
+    "reactn": "^2.2.7",
+    "rxjs": "^6.6.2"
   }
 }
