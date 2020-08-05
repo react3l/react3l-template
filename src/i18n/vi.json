@@ -1,8 +1,11 @@
 {
+  "district.id": "ID",
+  "district.name": "Tên",
   "general.table.actions": "Tác vụ",
   "general.actions.view": "Xem",
   "general.actions.edit": "Sửa",
   "general.actions.delete": "Xoá",
+  "general.actions.create": "Tạo mới",
   "province.id": "ID",
   "province.code": "Mã",
   "province.name": "Tên",

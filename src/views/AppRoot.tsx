@@ -1,5 +1,5 @@
 import React from 'react';
-import 'views/AppRoot.scssscss';
+import 'views/AppRoot.scss';
 import App from 'views/App/App';
 
 function AppRoot() {

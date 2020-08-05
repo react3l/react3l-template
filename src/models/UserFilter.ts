@@ -9,4 +9,12 @@ export class UserFilter extends ModelFilter {
   public email?: StringFilter = new StringFilter();
 
   public birthday?: DateFilter = new DateFilter();
+
+  public firstName?: StringFilter = new StringFilter();
+
+  public lastName?: StringFilter = new StringFilter();
+
+  public provinceId?: IdFilter = new IdFilter();
+
+  public districtId?: IdFilter = new IdFilter();
 }

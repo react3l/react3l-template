@@ -1,9 +1,9 @@
-import {Model, RegisteredModel} from 'react3l/core';
 import {AdministrativeType} from 'models/AdministrativeType';
 import {District} from 'models/District';
+import {Model, RegisteredModel} from 'react3l/core';
 
 @RegisteredModel()
-export class Province extends Model {
+export class Commune extends Model {
   public id?: number;
 
   public name?: string;
@@ -16,5 +16,7 @@ export class Province extends Model {
 
   public administrativeTypeId?: number;
 
-  public districts?: District[];
+  public districtId?: number;
+
+  public district?: District;
 }
