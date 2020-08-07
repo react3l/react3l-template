@@ -1,7 +1,7 @@
 import React, {RefObject} from 'react';
 import './Select.scss';
 import classNames from 'classnames';
-import { commonService } from 'services/common-service';
+import { commonWebService } from 'services/common-web-service';
 import { Model, ModelFilter } from 'react3l/core';
 import Spin from 'antd/lib/spin';
 import {debounce} from 'react3l/helpers';
@@ -10,6 +10,7 @@ import { Observable, ErrorObserver } from 'rxjs';
 import nameof from 'ts-nameof.macro';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 import { Empty } from 'antd';
+import { commonService } from 'react3l/services/common-service';
 
 export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> {
   model?: Model;
@@ -137,7 +138,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     event.stopPropagation();
   }, [setModel]);
 
-  commonService.useClickOutside(wrapperRef, handleCloseSelect);
+  commonWebService.useClickOutside(wrapperRef, handleCloseSelect);
   return (
     <div className="selectWrapper" ref={wrapperRef}>
       { !isExpand ?

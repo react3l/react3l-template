@@ -2,7 +2,7 @@ import { RefObject } from "react";
 import React from "react";
 import { Subscription } from "rxjs";
 
-export const commonService = {
+export const commonWebService = {
     useClickOutside(ref: RefObject<HTMLDivElement>, callback: () => void) {
         const handleClickOutside = React.useCallback(
             (event) => {
@@ -24,22 +24,5 @@ export const commonService = {
             },
             [callback, handleClickOutside, ref],
         );
-    },
-
-    useSubscription() {
-        const[subscription] = React.useState<Subscription>(new Subscription());
-
-        React.useEffect(
-            () => {
-              return function cleanUp() {
-                subscription.unsubscribe();
-              };
-            },
-            [subscription],
-          );
-
-        return [
-            subscription,
-        ];
     },
 };
