@@ -1,7 +1,10 @@
 import React from 'react';
 import {RouteConfig} from 'react-router-config';
-import {PROVINCE_ROUTE_PREFIX} from 'config/route-consts';
 import path from 'path';
+import nameof from 'ts-nameof.macro';
+import {GeneralActions} from 'config/general-actions';
+
+import {PROVINCE_ROUTE_PREFIX} from 'config/route-consts';
 import ProvinceMasterView from 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView';
 import ProvinceDetailView from 'views/App/ProvinceView/ProvinceDetailView/ProvinceDetailView';
 
@@ -18,7 +21,7 @@ export const routes: RouteConfig[] = [
         exact: true,
       },
       {
-        path: path.join(PROVINCE_ROUTE_PREFIX, 'create'),
+        path: path.join(PROVINCE_ROUTE_PREFIX, nameof(GeneralActions.create)),
         component: ProvinceDetailView,
       },
       {

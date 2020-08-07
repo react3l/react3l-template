@@ -8,6 +8,10 @@ export class Province extends Model {
 
   public name?: string;
 
+  public code?: string;
+
+  public englishName?: string;
+
   public administrativeType?: AdministrativeType;
 
   public administrativeTypeId?: number;

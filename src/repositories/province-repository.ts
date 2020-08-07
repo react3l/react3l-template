@@ -41,9 +41,7 @@ export class ProvinceRepository extends Repository {
   }
 
   public get = (id: number): Observable<Province> => {
-    return this.httpObservable.post<Province>('/get', {
-      id,
-    })
+    return this.httpObservable.get<Province>(`/${id}`)
       .pipe(
         map((response: AxiosResponse<Province>) => response.data),
       );

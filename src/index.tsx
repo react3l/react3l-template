@@ -1,13 +1,13 @@
 import React from 'reactn';
 import ReactDOM from 'react-dom';
-import 'styles/index.scss';
-import * as serviceWorker from 'service-worker';
 import {BrowserRouter} from 'react-router-dom';
 import {GlobalState, initialGlobalState} from 'config/global-state';
 import {translationService} from 'react3l/services';
-import vi from 'i18n/vi.json';
+import * as serviceWorker from 'service-worker';
 import nameof from 'ts-nameof.macro';
 import addReactNDevTools from 'reactn-devtools';
+import vi from 'i18n/vi.json';
+import 'styles';
 
 if (process.env.NODE_ENV==='development') {
   addReactNDevTools();

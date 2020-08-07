@@ -2,5 +2,6 @@
   "general.table.actions": "",
   "general.actions.view": "",
   "general.actions.edit": "",
-  "general.actions.delete": ""
+  "general.actions.delete": "",
+  "general.actions.create": ""
 }

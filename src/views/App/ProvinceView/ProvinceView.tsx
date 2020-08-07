@@ -1,14 +1,15 @@
+import {renderRouteChildren} from 'helpers/react-router';
 import React from 'react';
-import 'views/App/ProvinceView/ProvinceView.scss';
 import {Switch} from 'react-router';
-import {renderRoutes, RouteConfigComponentProps} from 'react-router-config';
+import {RouteConfigComponentProps} from 'react-router-config';
+import 'views/App/ProvinceView/ProvinceView.scss';
 
 function ProvinceView(props: Partial<RouteConfigComponentProps>) {
   const {route} = props;
 
   return (
     <Switch>
-      {route?.routes instanceof Array && renderRoutes(route.routes)}
+      {renderRouteChildren(route)}
     </Switch>
   );
 }

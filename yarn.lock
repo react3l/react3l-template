@@ -14136,10 +14136,28 @@ react3l-cli@^0.4.0:
     react "^16.11.0"
     react-dom "^16.10.2"
 
-react3l@^4.0.0-test-rc14, react3l@^4.0.0-test-rc33:
+react3l@^4.0.0-test-rc14:
   version "4.0.0-test-rc33"
   resolved "https://registry.yarnpkg.com/react3l/-/react3l-4.0.0-test-rc33.tgz#f7e8ca787af37ccc12fb40b090fdd1698a58b385"
   integrity sha512-QcvHi1p4rJef0c00BfIvLO2teEhXzhg5iSu5SI3Js/b5hbduj+abN2IBph8PKXvQmzevbMQ0hRpceNzE27nYaA==
+  dependencies:
+    axios "^0.19.2"
+    axios-observable "^1.1.3"
+    i18next "^19.5.0"
+    lodash "^4.17.15"
+    moment "^2.26.0"
+    path "^0.12.7"
+    react "^16.13.1"
+    react-i18next "^11.7.0"
+    reactn "^2.2.7"
+    redux "^4.0.5"
+    reflect-metadata "^0.1.13"
+    rxjs "^6.5.5"
+
+react3l@^4.0.0-test-rc36:
+  version "4.0.0-test-rc36"
+  resolved "https://registry.yarnpkg.com/react3l/-/react3l-4.0.0-test-rc36.tgz#db71f069b8d8623be26d888bdfb2425c878b5e5f"
+  integrity sha512-/PZjrv81WAL+gBIVO5vRTrZwUhZR1+p4p4imPiVlShcwtsOgviUdRb6VngAtW8GPyWPgzyvVFnOqj0gAdn9J9Q==
   dependencies:
     axios "^0.19.2"
     axios-observable "^1.1.3"

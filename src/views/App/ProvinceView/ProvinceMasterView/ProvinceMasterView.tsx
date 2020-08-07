@@ -1,14 +1,18 @@
-import React from 'react';
-import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
+import Button from 'antd/lib/button';
+import Card from 'antd/lib/card';
 import Table, {ColumnProps} from 'antd/lib/table';
-import {tableService} from 'services/table-service';
+import Typography from 'antd/lib/typography';
 import {Province} from 'models/Province';
 import {ProvinceFilter} from 'models/ProvinceFilter';
-import {provinceRepository} from 'repositories/province-repository';
-import nameof from 'ts-nameof.macro';
+import React from 'react';
 import {useTranslation} from 'react-i18next';
-import Button from 'antd/lib/button';
 import {Link} from 'react-router-dom';
+import {provinceRepository} from 'repositories/province-repository';
+import {tableService} from 'services/table-service';
+import nameof from 'ts-nameof.macro';
+import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
+
+const {Text} = Typography;
 
 function ProvinceMasterView() {
   const [translate] = useTranslation();
@@ -101,29 +105,35 @@ function ProvinceMasterView() {
   );
 
   return (
-    <Table
-      tableLayout="fixed"
-      bordered={true}
-      rowKey={nameof(provinceList[0].id)}
-      columns={columns}
-      dataSource={provinceList}
-      loading={provinceLoading}
-      pagination={pagination}
-      onChange={handleChange}
-      rowSelection={rowSelection}
-      title={() => (
-        <div className="d-flex justify-content-start">
-          <Link to="/province/create">
-            <Button type="primary" className="mr-2">
-              {translate('general.actions.create')}
+    <Card title={(
+      <Text>
+        {translate('province.master.title')}
+      </Text>
+    )}>
+      <Table
+        tableLayout="fixed"
+        bordered={true}
+        rowKey={nameof(provinceList[0].id)}
+        columns={columns}
+        dataSource={provinceList}
+        loading={provinceLoading}
+        pagination={pagination}
+        onChange={handleChange}
+        rowSelection={rowSelection}
+        title={() => (
+          <div className="d-flex justify-content-start">
+            <Link to="/province/create">
+              <Button type="primary" className="mr-2">
+                {translate('general.actions.create')}
+              </Button>
+            </Link>
+            <Button type="primary" onClick={handleBatchDelete}>
+              {translate('general.actions.delete')}
             </Button>
-          </Link>
-          <Button type="primary" onClick={handleBatchDelete}>
-            {translate('general.actions.delete')}
-          </Button>
-        </div>
-      )}
-    />
+          </div>
+        )}
+      />
+    </Card>
   );
 }
 
