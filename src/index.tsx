@@ -7,6 +7,11 @@ import {GlobalState, initialGlobalState} from 'config/global-state';
 import {translationService} from 'react3l/services';
 import vi from 'i18n/vi.json';
 import nameof from 'ts-nameof.macro';
+import addReactNDevTools from 'reactn-devtools';
+
+if (process.env.NODE_ENV==='development') {
+  addReactNDevTools();
+}
 
 const App = React.lazy(async () => {
   await React.setGlobal<GlobalState>(initialGlobalState);

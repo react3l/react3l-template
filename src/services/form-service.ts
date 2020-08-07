@@ -58,7 +58,6 @@ export const formService = {
     React.useEffect(
       () => {
         const subscription: Subscription = new Subscription();
-
         if (typeof id === 'number') {
           subscription.add(
             getDetail(id)

@@ -10,12 +10,12 @@ import ProvinceDistrictContentTable
 
 function ProvinceDetailView() {
   const {id} = useParams();
-
+  
   const [
     province,
     handleChangeSimpleField,
     handleChangeObjectField,
-  ] = formService.useDetailForm<Province>(Province, id, provinceRepository.get);
+  ] = formService.useDetailForm<Province>(Province, parseInt(id), provinceRepository.get);
 
   const handleChangeCode = formService.useChangeHandler<Province>(handleChangeSimpleField, 'code');
 
