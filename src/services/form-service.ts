@@ -8,8 +8,6 @@ export const FORM_DETAIL_CHANGE_SIMPLE_FIELD_ACTION: string = 'FORM_DETAIL_CHANG
 
 export const FORM_DETAIL_CHANGE_OBJECT_FIELD_ACTION: string = 'FORM_DETAIL_CHANGE_OBJECT_FIELD_ACTION';
 
-export const FORM_DETAIL_CHANGE_CONTENT_ELEMENT_ACTION: string = 'FORM_DETAIL_CHANGE_CONTENT_ELEMENT_ACTION';
-
 export interface FormDetailAction<T extends Model> {
   type: string;
 
@@ -59,7 +57,7 @@ export const formService = {
       () => {
         const subscription: Subscription = new Subscription();
 
-        if (typeof id === 'number') {
+        if (id) {
           subscription.add(
             getDetail(id)
               .subscribe((model: T) => {

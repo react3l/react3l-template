@@ -1,10 +1,15 @@
 {
+  "district.id": "",
+  "district.name": "",
   "general.table.actions": "",
   "general.actions.view": "",
   "general.actions.edit": "",
   "general.actions.delete": "",
+  "general.actions.create": "",
+  "menu.province": "",
   "province.id": "",
   "province.code": "",
   "province.name": "",
-  "province.englishName": ""
+  "province.englishName": "",
+  "province.master.title": ""
 }

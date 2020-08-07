@@ -1,10 +1,15 @@
 {
+  "district.id": "ID",
+  "district.name": "Tên",
   "general.table.actions": "Tác vụ",
   "general.actions.view": "Xem",
   "general.actions.edit": "Sửa",
   "general.actions.delete": "Xoá",
+  "general.actions.create": "Tạo mới",
+  "menu.province": "Tỉnh / Thành phố",
   "province.id": "ID",
   "province.code": "Mã",
   "province.name": "Tên",
-  "province.englishName": "Tên tiếng Anh"
+  "province.englishName": "Tên tiếng Anh",
+  "province.master.title": "Danh sách tỉnh / thành phố"
 }

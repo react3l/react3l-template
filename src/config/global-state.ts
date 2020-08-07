@@ -1,7 +1,28 @@
+import {User} from 'models/User';
+import vi from 'i18n/vi.json';
+import nameof from 'ts-nameof.macro';
+
 export interface GlobalState {
+  /**
+   * App language
+   */
   language: string;
+
+  /**
+   * User access token
+   */
+  accessToken?: string;
+
+  /**
+   * Current user profile
+   */
+  user?: User;
 }
 
 export const initialGlobalState: GlobalState = {
-  language: 'vi',
+  language: nameof(vi),
+
+  accessToken: null,
+
+  user: null,
 };

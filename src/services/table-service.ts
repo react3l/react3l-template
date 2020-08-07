@@ -1,18 +1,11 @@
+import {PaginationProps} from 'antd/lib/pagination';
+import {Key, RowSelectionType, SorterResult, SortOrder, TablePaginationConfig, TableRowSelection} from 'antd/lib/table/interface';
 import React from 'react';
+import {DEFAULT_TAKE} from 'react3l/config';
 import {Model, ModelFilter, OrderType} from 'react3l/core';
+import {kebabCase} from 'react3l/helpers';
 import {forkJoin, Observable, Subscription} from 'rxjs';
 import {finalize} from 'rxjs/operators';
-import {PaginationProps} from 'antd/lib/pagination';
-import {
-  Key,
-  RowSelectionType,
-  SorterResult,
-  SortOrder,
-  TablePaginationConfig,
-  TableRowSelection,
-} from 'antd/lib/table/interface';
-import {DEFAULT_TAKE} from 'react3l/config';
-import {kebabCase} from 'react3l/helpers';
 
 export const tableService = {
   useMasterTable<T extends Model, TFilter extends ModelFilter>(
@@ -29,6 +22,7 @@ export const tableService = {
       filters: Record<string, Key[] | null>,
       sorter: SorterResult<T>,
     ) => void,
+    () => void,
   ] {
     const [list, setList] = React.useState<T[]>([]);
 
@@ -88,7 +82,7 @@ export const tableService = {
           });
           return;
         }
-        if (sorter.field !== filter.orderBy) {
+        if (sorter.field !== filter.orderBy || sorter.order !== this.getAntOrderType(filter, sorter.field)) {
           setFilter({
             ...filter,
             orderBy: sorter.field,
@@ -100,12 +94,20 @@ export const tableService = {
       [filter, pagination],
     );
 
+    const handleResetFilter = React.useCallback(
+      () => {
+        setFilter(new FilterClass());
+      },
+      [FilterClass],
+    );
+
     return [
       list,
       filter,
       loading,
       pagination,
       handleChange,
+      handleResetFilter,
     ];
   },
 
