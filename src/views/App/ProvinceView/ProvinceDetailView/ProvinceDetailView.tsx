@@ -1,15 +1,21 @@
-import React from 'react';
-import 'views/App/ProvinceView/ProvinceDetailView/ProvinceDetailView.scss';
 import Card from 'antd/lib/card';
-import {useParams} from 'react-router';
-import {formService} from 'services/form-service';
+import {AdministrativeType} from 'models/AdministrativeType';
 import {Province} from 'models/Province';
+import React from 'react';
+import {useTranslation} from 'react-i18next';
+import {useParams} from 'react-router';
+import {administrativeTypeRepository} from 'repositories/administrative-type-repository';
 import {provinceRepository} from 'repositories/province-repository';
+import {enumService} from 'services/enum-service';
+import {formService} from 'services/form-service';
+import 'views/App/ProvinceView/ProvinceDetailView/ProvinceDetailView.scss';
 import ProvinceDistrictContentTable
   from 'views/App/ProvinceView/ProvinceDetailView/ProvinceDistrictContentTable/ProvinceDistrictContentTable';
 
 function ProvinceDetailView() {
   const {id} = useParams();
+
+  const [translate] = useTranslation();
 
   const [
     province,
@@ -17,42 +23,51 @@ function ProvinceDetailView() {
     handleChangeObjectField,
   ] = formService.useDetailForm<Province>(Province, id, provinceRepository.get);
 
+  const [administrativeTypeList] = enumService.useEnumList<AdministrativeType>(administrativeTypeRepository.list);
+
   const handleChangeCode = formService.useChangeHandler<Province>(handleChangeSimpleField, 'code');
 
   const handleChangeName = formService.useChangeHandler<Province>(handleChangeSimpleField, 'name');
 
+  const handleChangeEnglishName = formService.useChangeHandler<Province>(handleChangeSimpleField, 'englishName');
+
   const handleChangeAdministrativeType = formService.useChangeHandler<Province>(handleChangeObjectField, 'administrativeType');
-
-  const handleChangeCodeByNativeInput = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      handleChangeCode(event.target.value);
-    },
-    [handleChangeCode],
-  );
-
-  const handleChangeNameByNativeInput = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      handleChangeName(event.target.value);
-    },
-    [handleChangeName],
-  );
 
   return (
     <Card>
       <input
         type="text"
+        className="form-control"
         defaultValue={province.code}
-        onChange={handleChangeCodeByNativeInput}
+        placeholder={translate('province.code')}
+        onChange={handleChangeCode}
       />
       <input
         type="text"
+        className="form-control"
         defaultValue={province.name}
-        onChange={handleChangeNameByNativeInput}
+        placeholder={translate('province.name')}
+        onChange={handleChangeName}
+      />
+      <input
+        type="text"
+        className="form-control"
+        defaultValue={province.englishName}
+        placeholder={translate('province.englishName')}
+        onChange={handleChangeEnglishName}
       />
       <select
+        className="form-control"
         value={province.administrativeTypeId}
+        placeholder={translate('province.administrativeType')}
         onChange={handleChangeAdministrativeType}
-      />
+      >
+        {administrativeTypeList.map((administrativeType) => (
+          <option key={administrativeType.id} value={administrativeType.id}>
+            {administrativeType.name}
+          </option>
+        ))}
+      </select>
       <ProvinceDistrictContentTable
         onChangeSimpleField={handleChangeSimpleField}
         parentModel={province}
@@ -63,3 +78,4 @@ function ProvinceDetailView() {
 }
 
 export default ProvinceDetailView;
+

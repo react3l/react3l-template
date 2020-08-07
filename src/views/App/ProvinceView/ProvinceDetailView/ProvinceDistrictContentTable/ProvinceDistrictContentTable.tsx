@@ -36,6 +36,7 @@ function ProvinceDistrictContentTable(props: ProvinceDistrictContentTableProps<P
           return (
             <input
               type="text"
+              className="form-control"
               value={id}
               onChange={handleChangeDistrictField(index, 'id')}
             />
@@ -50,6 +51,7 @@ function ProvinceDistrictContentTable(props: ProvinceDistrictContentTableProps<P
           return (
             <input
               type="text"
+              className="form-control"
               value={name}
               onChange={handleChangeDistrictField(index, 'name')}
             />
