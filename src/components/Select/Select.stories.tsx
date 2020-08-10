@@ -41,5 +41,5 @@ function Default() {
                  getList={demoSearchFunc}/>;
 }
 
-storiesOf('Button', module)
+storiesOf('Select', module)
   .add(nameof(Default), Default);
