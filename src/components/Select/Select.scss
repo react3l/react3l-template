@@ -14,12 +14,12 @@
     border: 1px solid #F2F2F2;
     border-radius: 15px;
 }
-.select--box {
+.select__box {
     position: relative;
     padding: 2px 5px;
     width: 100%;
 }
-.select--input {
+.select__input {
     width: 100%;
     height: 40px;
     padding: 1rem .75rem;
@@ -32,10 +32,10 @@
     border-radius: 15px;
     outline: none;
 }
-.select--input__expanded {
+.select__input--expanded {
     background-color: #F2F2F5 !important;
 }
-.select--icon {
+.select__icon {
     position: absolute;
     right: 7%;
     top: 37.8%;
@@ -45,14 +45,14 @@
         opacity: 0.7;
     }
 }
-.select--list {
+.select__list {
     padding: 0px 5px;
     width: 264px;
     overflow-y: auto;
     max-height: 300px;
     margin: 10px 0px;
 }
-.select--loading {
+.select__loading {
     width: 100%;
     min-height: 100px;
     display: flex;
@@ -60,10 +60,10 @@
     justify-content: center;
     align-items: center;
 }
-.select--group {
+.select__group {
     margin-top: 5px;
 }
-.select--item {
+.select__item {
     position: relative;
     display: block;
     background-color: #fff;
@@ -76,7 +76,7 @@
         border-radius: 15px;
         opacity: 0.7;
     }
-    &.select--item__selected {
+    &.select__item--selected {
         background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
         color: #fff !important;
         border-radius: 15px;

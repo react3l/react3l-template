@@ -143,34 +143,34 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     <div className="selectWrapper" ref={wrapperRef}>
       { !isExpand ?
         <div className="select">
-          <div className="select--box" onClick={handleToggle}>
+          <div className="select__box" onClick={handleToggle}>
             <input type="text"
               value={render(internalModel)}
-              className="select--input"
+              className="select__input"
               placeholder={placeHolder} 
               readOnly/>
             { internalModel != null ? 
-              <i className="select--icon tio-clear" onClick={handleClearItem}></i> :
-              <i className="select--icon tio-chevron_down"></i>
+              <i className="select__icon tio-clear" onClick={handleClearItem}></i> :
+              <i className="select__icon tio-chevron_down"></i>
             }
           </div>
         </div> :
         <div className="select select--expand">
-          <div className="select--box">
+          <div className="select__box">
             <input type="text"
               ref={inputRef}
               value={viewInputModel}
               onChange={handleInputChange}
-              className="select--input select--input__expanded"
+              className="select__input select__input--expanded"
               placeholder={(internalModel != null) ? render(internalModel) : placeHolder} 
               disabled={disabled}/>
-            {viewInputModel && <i className="select--icon tio-clear" onClick={handleClearInput}></i>}
+            {viewInputModel && <i className="select__icon tio-clear" onClick={handleClearInput}></i>}
           </div>
           { !loading ? 
-            <div className="select--list">
+            <div className="select__list">
               { list.length > 0 ? 
               list.map((item, index) => 
-              <div className={classNames('select--item', {'select--item__selected': item.id === internalModel?.id})}
+              <div className={classNames('select__item', {'select__item--selected': item.id === internalModel?.id})}
                   key={index} 
                   onClick={handleClickItem(item)}>
                   {render(item)}
@@ -178,7 +178,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
              <Empty imageStyle={{height: 60}}/>
               }
             </div> : 
-            <div className="select--loading">
+            <div className="select__loading">
                   <Spin tip="Loading..."></Spin>
             </div>
           }
