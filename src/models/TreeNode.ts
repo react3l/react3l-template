@@ -1,8 +1,9 @@
 import { Model } from "react3l/core";
+import { DataNode } from "antd/lib/tree";
 
-export class TreeNode<T extends Model> {
+export class TreeNode<T extends Model> implements DataNode {
     public title: string;
-    public key: string | number;
+    public key: number;
     public item: Model;
     public children: TreeNode<T>[];
 

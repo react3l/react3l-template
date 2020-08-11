@@ -12,8 +12,11 @@ const demoObservable = new Observable<Model[]>((observer) => {
       {id: 1, name: 'Ban hành chính', code: 'FAD', parentId: null},
       {id: 2, name: 'Ban công nghệ thông tin', code: 'FIM', parentId: 1}, 
       {id: 3, name:'Ban nhân sự', code: 'FHR',  parentId: null},
-      {id: 4, name: 'Ban tài chính', code: 'FAF', parentId: 3}]);
-    }, 1000);
+      {id: 4, name: 'Ban truyền thông', code: 'FCC', parentId: 2},
+      {id: 5, name: 'Ban công nghệ', code: 'FTI', parentId: 4},
+      {id: 6, name: 'Ban giám đốc', code: 'BOD', parentId: 3},
+      {id: 7, name: 'Ban quản trị', code: 'BOM', parentId: 4}]);
+    }, 2000);
 });
 
 const flatArray: TreeNode<Model>[] = [
@@ -31,10 +34,12 @@ const demoSearchFunc = (TModelFilter: ModelFilter) => {
 };
 
 function Default() {
-    // const demoSearchFunc = React.useCallback(() => {
-    //     return demoObservable;
-    // }, []);
-    return <Tree getTreeData={demoSearchFunc}/>;
+    return <Tree getTreeData={demoSearchFunc}
+                height={300}
+                selectable={false}
+                checkable={true}
+                virtual
+                titleRender={(treeNode: TreeNode<Model>) => (treeNode.item?.name + ' - ' +treeNode.item?.code)}/>;
 }
   
 storiesOf('Tree', module)

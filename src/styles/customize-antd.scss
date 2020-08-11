@@ -1,0 +1,18 @@
+.ant-tree-checkbox-checked .ant-tree-checkbox-inner {
+    background: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    background: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    border-color: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    border-color: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+}
+.ant-tree .ant-tree-switcher-leaf-line {
+    &:before {
+        border-left: 1px dashed #E0E0E0 !important;
+    }
+    &:after {
+        border-left: 1px dashed #E0E0E0 !important;
+    }
+}
+.ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner:after {
+    background: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    background: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+}

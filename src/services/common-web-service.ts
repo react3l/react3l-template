@@ -27,9 +27,10 @@ export const commonWebService = {
         );
     },
 
-    buildTree<T extends Model>(listItem: T[], parent?: TreeNode<T>, tree?: TreeNode<T>[]): TreeNode<T>[] {
+    buildTree<T extends Model>(listItem: T[], parent?: TreeNode<T>, keyNodes?: number[], tree?: TreeNode<T>[]): [TreeNode<T>[], number[]] {
         tree = typeof tree !== 'undefined' ? tree : [];
         parent = typeof parent !== 'undefined' ? parent : new TreeNode();
+        keyNodes = typeof keyNodes !== 'undefined' ? keyNodes : [];
             
         var children = listItem.filter((child) => { return child.parentId === parent.key; })
                             .map((currentItem) => new TreeNode(currentItem));
@@ -39,13 +40,14 @@ export const commonWebService = {
                tree = children;   
             } else {
                parent.children = children;
+               keyNodes.push(parent.key);
             }
             children.forEach((child) => {
-                this.buildTree(listItem, child);
+                this.buildTree(listItem, child, keyNodes);
             });           
         }
         
-        return tree;
+        return [tree, keyNodes];
     },
 
 };
