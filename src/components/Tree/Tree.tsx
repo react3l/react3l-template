@@ -122,6 +122,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
               internalTreeData.length > 0 ? 
               <TreeAntd
                 {...props}
+                virtual
                 autoExpandParent={autoExpandParent}
                 expandedKeys={internalExpandedKeys}
                 checkedKeys={internalCheckedKeys}

@@ -4,6 +4,9 @@ import './TreeSelect.scss';
 function TreeSelect() {
   return (
     <>
+      <div className="tree-select__container">
+        
+      </div>
     </>
   );
 }

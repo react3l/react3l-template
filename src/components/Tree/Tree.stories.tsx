@@ -39,7 +39,7 @@ function Default() {
                 selectable={false}
                 checkable={true}
                 virtual
-                titleRender={(treeNode: TreeNode<Model>) => (treeNode.item?.name + ' - ' +treeNode.item?.code)}/>;
+                titleRender={(treeNode: TreeNode<Model>) => (treeNode.item?.name + ' - ' + treeNode.item?.code)}/>;
 }
   
 storiesOf('Tree', module)

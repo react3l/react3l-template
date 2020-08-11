@@ -1,7 +1,7 @@
 import React from 'react';
 import {storiesOf} from '@storybook/react';
 import nameof from 'ts-nameof.macro';
-import { TreeSelect } from 'antd';
+import TreeSelect from './TreeSelect';
 
 function Default() {
     return <TreeSelect/>;
