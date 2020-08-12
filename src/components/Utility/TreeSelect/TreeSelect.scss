@@ -1,0 +1,16 @@
+/* Style for TreeSelect.tsx */
+.tree-select__container {
+    width: 100%;
+    min-width: 220px;
+    position: relative;
+
+    .tree-select__input {
+        width: 100%;
+    }
+
+    .tree-select__list {
+        width: 100%;
+        margin-top: 5px;
+        position: absolute;
+    }
+}

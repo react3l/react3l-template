@@ -1,10 +1,9 @@
 import React from 'react';
 import {storiesOf} from '@storybook/react';
 import nameof from 'ts-nameof.macro';
-
-import Select from 'components/Select/Select';
 import { Model, ModelFilter } from 'react3l/core';
 import { Observable } from 'rxjs';
+import Select from './Select';
 
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {

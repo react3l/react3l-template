@@ -4,7 +4,10 @@ import nameof from 'ts-nameof.macro';
 import TreeSelect from './TreeSelect';
 
 function Default() {
-    return <TreeSelect/>;
+
+    return <div style={{margin: '10px', width: '300px'}}>
+                <TreeSelect /> 
+           </div>;
 }
   
 storiesOf('TreeSelect', module)

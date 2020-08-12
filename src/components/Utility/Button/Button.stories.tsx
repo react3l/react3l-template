@@ -2,7 +2,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import nameof from 'ts-nameof.macro';
 
-import Button from 'components/Button/Button';
+import Button from 'components/Utility/Button/Button';
 
 function Default() {
   return <Button type="default"/>;
