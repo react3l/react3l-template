@@ -31,7 +31,7 @@ function InputTag(props: InputTagProps<Model>) {
     if (typeof onSearch === 'function') {
       onSearch(event.target.value);
     }
-  }, [setSearchTerm, onSearch]);
+  }, [onSearch]);
 
   const handleClearItem = React.useCallback(
     (item) => (event: React.MouseEvent<HTMLElement, MouseEvent>) => 
@@ -64,6 +64,7 @@ function InputTag(props: InputTagProps<Model>) {
     </>
   );
 }
+
 function defaultRenderObject<T extends Model>(t: T) {
   return t?.name;
 }

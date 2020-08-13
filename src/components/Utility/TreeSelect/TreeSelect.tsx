@@ -10,8 +10,10 @@ import { Observable } from 'rxjs';
 import nameof from 'ts-nameof.macro';
 import { commonWebService } from 'services/common-web-service';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
+import InputSelect from '../InputSelect/InputSelect';
 
 export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilter> {
+  listItem?: Model[];
   searchProperty?: string;
   searchType?: string;
   checkable?: boolean;
@@ -20,6 +22,7 @@ export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilt
   placeHolder?: string;
   render?: (T: T) => string;
   getTreeData?: (TModelFilter?: TModelFilter) => Observable<T[]>;
+  onChange?: (T: Model[], TT: boolean) => void;
   filterClass?: new () => TModelFilter;
 }
 export interface filterAction<T extends Model> {
@@ -37,29 +40,41 @@ function filterReducer(state: ModelFilter, action: filterAction<Model>): ModelFi
 
 function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   const {
-    checkable = false,
-    selectable = true,
+    listItem,
+    searchProperty,
+    searchType,
+    checkable,
+    selectable,
     filterClass: FilterClass,
     placeHolder,
     render,
     getTreeData,
+    onChange,
   } = props;
-
+ 
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
-  const [listItem, setListItem] = React.useState<Model[]>();
+  const listIds = React.useMemo(() => {
+    return listItem.map((currentItem) => currentItem.id);
+  }, [listItem]);
 
   const wrapperRef: RefObject<HTMLDivElement> = React.useRef<HTMLDivElement>(null);
 
   const [filter, dispatch] = React.useReducer<Reducer<ModelFilter, filterAction<Model>>>(filterReducer, new FilterClass());
 
   const handleClearItem = React.useCallback((item: Model) => {
-      const newListItem = listItem.filter((currentItem) => currentItem.id !== item.id);
-      setListItem(newListItem);
-  },[listItem]);
+      if (checkable) {
+        const newListItem = listItem.filter((currentItem) => currentItem.id !== item.id);
+        onChange(newListItem, checkable);
+      } else {
+        onChange([], checkable);
+      }
+  },[listItem, onChange, checkable]);
   
   const handleSearchItem = React.useCallback(debounce((searchTerm: string) => {
-    dispatch({type: 'UPDATE', });
+    const cloneFilter = {...filter};
+    cloneFilter[searchProperty][searchType] = searchTerm;
+    dispatch({type: 'UPDATE', data: cloneFilter});
     }, DEBOUNCE_TIME_300), 
   []);
 
@@ -71,8 +86,16 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   );
 
   const handleExpand = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!expanded) {
+      dispatch({type: 'UPDATE', data: new FilterClass()});
+    }
     setExpanded(true);
-  }, []);
+  }, [FilterClass, expanded]);
+
+  const handleOnchange = React.useCallback((selectedNodes: Model[]) => {
+    onChange([...selectedNodes], checkable);
+    if (!checkable) setExpanded(false);
+  },[onChange, checkable]);
 
   commonWebService.useClickOutside(wrapperRef, handleCloseList);
 
@@ -86,18 +109,21 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
               placeHolder={placeHolder}
               onSearch={handleSearchItem}
               onClear={handleClearItem}/> :
-            <div className="tree-select__input-container">
-              <input type="text"
-                placeholder={placeHolder} 
-                className="component__input"/>
-            </div>
+            <InputSelect model={listItem[0]}
+              render={render}
+              placeHolder={placeHolder}
+              expanded={expanded}
+              onSearch={handleSearchItem}
+              onClear={handleClearItem}/>
             }
         </div>
         { expanded && 
           <div className="tree-select__list">
             <Tree getTreeData={getTreeData}
+                  checkedKeys={listIds}
                   modelFilter={filter}
                   height={300}
+                  onChange={handleOnchange}
                   selectable={selectable}
                   checkable={checkable}
                   titleRender={render}
@@ -113,6 +139,9 @@ TreeSelect.defaultProps = {
   placeHolder: `Select ${nameof(TreeSelect)}...`,
   searchProperty: nameof(Model.prototype.name),
   searchType: nameof(StringFilter.prototype.startWith),
+  filterClass: ModelFilter,
+  checkable: false,
+  selectable: true,
 };
 
 export default TreeSelect;

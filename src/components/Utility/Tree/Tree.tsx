@@ -21,6 +21,7 @@ export interface TreeProps <T extends Model, TModelFilter extends ModelFilter> {
   expandedKeys?: number[];
   checkedKeys?: number[];
   selectedKeys?: number[];
+  checkable?: boolean;
   getTreeData?: (TModelFilter?: TModelFilter) => Observable<T[]>;
   onChange?: (treeNode: TreeNode<T>[]) => void;
 }
@@ -31,6 +32,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
     expandedKeys,
     checkedKeys,
     selectedKeys,
+    checkable,
     getTreeData,
     onChange,
   } = props;
@@ -49,15 +51,30 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
 
   const[subscription] = commonService.useSubscription();
 
-  const searchTreeNode = React.useCallback((key: number, treeData: TreeNode<Model>[]) => {
-    for(let i = 0; i < treeData.length; i++) {
-      if (treeData[i].key === key) 
-        return treeData[i];
-      if (treeData[i].children) {
-        return searchTreeNode(key, treeData[i].children);
-      } else break;
+  const searchTreeNode = React.useCallback((element: TreeNode<Model>, key: number) => {
+    if (element.key === key){
+      return element;
+    } else if (element.children != null){
+          var i;
+          var result = null;
+          for( i=0; result == null && i < element.children.length; i++ ){
+              result = searchTreeNode(element.children[i], key);
+          }
+          return result;
     }
+    return null;
   }, []);
+
+  const searchTree = React.useCallback((treeNodes: TreeNode<Model>[], listKeys: number[]) => {
+    const nodes = [];
+    treeNodes.forEach((currentTree) => {
+      listKeys.forEach((currentKey) => {
+        const node = searchTreeNode(currentTree, currentKey);
+        if (node) nodes.push(node);
+      });
+    });
+    return nodes;
+  }, [searchTreeNode]);
   
   const handleExpandKey = React.useCallback((expandedKeys: number[]) => {
     setInternalExpandedKeys(expandedKeys);
@@ -67,12 +84,11 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
   const handleCheck: AntdTreeProps['onCheck'] = React.useCallback((checkedKeys: number[]) => {
     setInternalCheckedKeys(checkedKeys);
     if (typeof onChange === 'function') {
-      const checkedNodes = checkedKeys.map((current) => {
-        return searchTreeNode(current, internalTreeData);
-      });
-      onChange([...checkedNodes]);
+      const checkedNodes = searchTree(internalTreeData, checkedKeys);
+      const checkedItems = checkedNodes.map((currentNode) => currentNode.item);
+      onChange([...checkedItems]);
     }
-  }, [searchTreeNode, internalTreeData, onChange]);
+  }, [internalTreeData, onChange, searchTree]);
 
   const handleSelect: AntdTreeProps['onSelect'] = React.useCallback((selectedKeys: number[], info: {
     event: "select";
@@ -83,12 +99,17 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
 }) => {
     setInternalSelectedKeys(selectedKeys);
     if (typeof onChange === 'function') {
-      const selectedNodes = selectedKeys.map((current) => {
-        return searchTreeNode(current, internalTreeData);
-      });
-      onChange([...selectedNodes]);
+      const checkedNodes = searchTree(internalTreeData, selectedKeys);
+      const checkedItems = checkedNodes.map((currentNode) => currentNode.item);
+      onChange([...checkedItems]);
     }
-  }, [onChange, internalTreeData, searchTreeNode]);
+  }, [internalTreeData, onChange, searchTree]);
+
+  React.useEffect(() => {
+    if (checkable && checkedKeys) {
+      setInternalCheckedKeys(checkedKeys);
+    }
+  }, [checkable, checkedKeys]);
 
   React.useEffect(() => {
     if (typeof getTreeData === 'function') {
@@ -96,9 +117,9 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
       setLoading(true);
       getTreeData(modelFilter).subscribe((res: Model[]) => {
         if (res) {
-          const [treeData, expandedKeys] = commonWebService.buildTree(res);
+          const [treeData, internalExpandedKeys] = commonWebService.buildTree(res);
           setInternalTreeData(treeData);
-          setInternalExpandedKeys(expandedKeys);
+          setInternalExpandedKeys(internalExpandedKeys);
         } else setInternalTreeData([]);
         setLoading(false); 
       }, (err: ErrorObserver<Error>) => {
