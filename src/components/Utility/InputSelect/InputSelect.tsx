@@ -4,6 +4,7 @@ import { Model } from 'react3l/core/model';
 
 export interface InputSelectProps <T extends Model> {
   model?: T;
+  disabled?: boolean;
   expanded?: boolean;
   placeHolder?: string;
   render?: (t: T) => string;
@@ -14,6 +15,7 @@ export interface InputSelectProps <T extends Model> {
 function InputSelect(props: InputSelectProps<Model>) {
   const {
     model,
+    disabled,
     expanded,
     placeHolder,
     render,
@@ -45,10 +47,11 @@ function InputSelect(props: InputSelectProps<Model>) {
     event.stopPropagation();
   }, [onClear]);
 
-  const handleShowList = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    inputRef.current.focus();
-    event.stopPropagation();
-  },[]);
+  React.useEffect(() => {
+    if (expanded) {
+      inputRef.current.focus();
+    }
+  }, [expanded]);
 
   return (
     <>
@@ -68,10 +71,11 @@ function InputSelect(props: InputSelectProps<Model>) {
               value={render(model)}
               onChange={handleForResolve}
               placeholder={placeHolder} 
-              className="component__input"/>
+              className="component__input"
+              disabled={disabled}/>
               { model ? 
                 <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
-                <i className="input-select__icon tio-chevron_down" onClick={handleShowList}></i>
+                <i className="input-select__icon tio-chevron_down"></i>
               }
           </>
         }
@@ -81,12 +85,13 @@ function InputSelect(props: InputSelectProps<Model>) {
 }
 
 function defaultRenderObject<T extends Model>(t: T) {
-  return t?.name;
+  return t?.name || '';
 }
 
 InputSelect.defaultProps = {
   render: defaultRenderObject,
   expanded: false,
+  disabled: false,
 };
 
 export default InputSelect;

@@ -11,6 +11,7 @@ import nameof from 'ts-nameof.macro';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 import { Empty } from 'antd';
 import { commonService } from 'react3l/services/common-service';
+import InputSelect from '../InputSelect/InputSelect';
 
 export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> {
   model?: Model;
@@ -43,7 +44,6 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     searchProperty,
     searchType,
     placeHolder,
-    disabled,
     getList,
     setModel,
     render,
@@ -53,8 +53,6 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     return model || null;
   }, [model]);
 
-  const [viewInputModel, setViewInputModel] = React.useState('');
-
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const [list, setList] = React.useState<Model[]>([]);
@@ -62,9 +60,6 @@ function Select(props: SelectProps<Model, ModelFilter>) {
   const [isExpand, setExpand] = React.useState<boolean>(false);
 
   const wrapperRef: RefObject<HTMLDivElement> = React.useRef<HTMLDivElement>(null);
-
-  const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>(null);
-
 
   const[subscription] = commonService.useSubscription();  
 
@@ -95,7 +90,6 @@ function Select(props: SelectProps<Model, ModelFilter>) {
   
   const handleCloseSelect = React.useCallback(
     () => {
-      setViewInputModel('');
       setExpand(false);
     },
     [],
@@ -122,50 +116,23 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     });
   }, DEBOUNCE_TIME_300), []);
   
-  const handleInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setViewInputModel(event.target.value);
-    handleSearchChange(event.target.value);
-  }, [handleSearchChange]);
-
-  const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    setViewInputModel('');
-    inputRef.current.focus();
-    event.stopPropagation();
-  }, []);
-
-  const handleClearItem = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleClearItem = React.useCallback(() => {
     setModel(null);
-    event.stopPropagation();
   }, [setModel]);
 
   commonWebService.useClickOutside(wrapperRef, handleCloseSelect);
-  return (
-    <div className="selectWrapper" ref={wrapperRef}>
-      { !isExpand ?
-        <div className="select">
-          <div className="select__box" onClick={handleToggle}>
-            <input type="text"
-              value={render(internalModel)}
-              className="select__input"
-              placeholder={placeHolder} 
-              readOnly/>
-            { internalModel != null ? 
-              <i className="select__icon tio-clear" onClick={handleClearItem}></i> :
-              <i className="select__icon tio-chevron_down"></i>
-            }
-          </div>
-        </div> :
-        <div className="select select--expand">
-          <div className="select__box">
-            <input type="text"
-              ref={inputRef}
-              value={viewInputModel}
-              onChange={handleInputChange}
-              className="select__input select__input--expanded"
-              placeholder={(internalModel != null) ? render(internalModel) : placeHolder} 
-              disabled={disabled}/>
-            {viewInputModel && <i className="select__icon tio-clear" onClick={handleClearInput}></i>}
-          </div>
+  return <>
+    <div className="select__container" ref={wrapperRef}>
+      <div className="select__input" onClick={handleToggle}>
+        <InputSelect model={internalModel}
+          render={render}
+          placeHolder={placeHolder}
+          expanded={isExpand}
+          onSearch={handleSearchChange}
+          onClear={handleClearItem}/>
+      </div>
+      { isExpand &&
+        <div className="select__list-container">
           { !loading ? 
             <div className="select__list">
               { list.length > 0 ? 
@@ -173,7 +140,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
               <div className={classNames('select__item', {'select__item--selected': item.id === internalModel?.id})}
                   key={index} 
                   onClick={handleClickItem(item)}>
-                  {render(item)}
+                  <span className="select__text">{render(item)}</span>
               </div>) : 
              <Empty imageStyle={{height: 60}}/>
               }
@@ -185,7 +152,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
         </div>
       }
     </div>
-  );
+  </>;
 }
 
 Select.defaultProps = {

@@ -31,13 +31,15 @@ function Default() {
       return '';
     }
   }, []);
-  return <Select placeHolder={'Select Organization'} 
+  return <div style={{margin: '10px', width: '250px'}}>
+      <Select placeHolder={'Select Organization'} 
                  model={selectModel}
                  modelFilter={selectModelFilter}
                  searchProperty={nameof(selectModel.name)}
                  render={handleRenderModel}
                  setModel={handleSetModel}
-                 getList={demoSearchFunc}/>;
+                 getList={demoSearchFunc}/>
+    </div>;
 }
 
 storiesOf('Select', module)

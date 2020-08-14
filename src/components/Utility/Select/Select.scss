@@ -1,84 +1,57 @@
+@import '../../../styles/mixins';
 /* Style for Select.tsx */
-.selectWrapper {
-    width: 264px;
-    display: block;
+.select__container {
+    width: 100%;
+    min-width: 220px;
     position: relative;
-}
-.select {
-    width: 100%;
-}
-.select--expand {
-    min-height: 150px;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 4px 4px rgba(216, 216, 216, 0.1);
-    border: 1px solid #F2F2F2;
-    border-radius: 15px;
-}
-.select__box {
-    position: relative;
-    padding: 2px 5px;
-    width: 100%;
-}
-.select__input {
-    width: 100%;
-    height: 40px;
-    padding: 1rem .75rem;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-clip: padding-box;
-    border: 1px solid #F2F2F2;
-    border-radius: 15px;
-    outline: none;
-}
-.select__input--expanded {
-    background-color: #F2F2F5 !important;
-}
-.select__icon {
-    position: absolute;
-    right: 7%;
-    top: 37.8%;
-    bottom: 33.33%;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.7;
+
+    .select__input {
+        width: 100%;
     }
-}
-.select__list {
-    padding: 0px 5px;
-    width: 264px;
-    overflow-y: auto;
-    max-height: 300px;
-    margin: 10px 0px;
-}
-.select__loading {
-    width: 100%;
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.select__group {
-    margin-top: 5px;
-}
-.select__item {
-    position: relative;
-    display: block;
-    background-color: #fff;
-    padding: 5px 10px;
-    font-size: 13px;
-    margin-top: 3px;
-    &:hover {
-        background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
-        color: #fff !important;
-        border-radius: 15px;
-        opacity: 0.7;
-    }
-    &.select__item--selected {
-        background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
-        color: #fff !important;
-        border-radius: 15px;
+
+    .select__list-container {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        background: #FFFFFF;
+        box-shadow: 0px 7px 64px rgba(0, 0, 0, 0.07);
+        border-radius: 7px;
+        margin-top: 5px;
+        position: absolute;
+        z-index: 999;
+        .select__list {
+            padding: 0px 5px;
+            width: 100%;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        .select__loading {
+            width: 100%;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .select__item {
+            position: relative;
+            display: block;
+            background-color: #fff;
+            padding: 5px 10px;
+            font-size: 13px;
+            margin-top: 3px;
+            &:hover {
+                @include background-active-color;
+                .select__text {
+                    @include gradient-text;
+                }
+            }
+            &.select__item--selected {
+                @include background-active-color;
+                .select__text {
+                    @include gradient-text;
+                }
+            }
+        }
     }
 }

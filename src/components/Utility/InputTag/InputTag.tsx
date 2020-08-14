@@ -5,6 +5,7 @@ import { Model } from 'react3l/core/model';
 export interface InputTagProps <T extends Model> {
   listItem?: T[];
   placeHolder?: string;
+  disabled?: boolean;
   render?: (t: T) => string;
   onClear?: (T: T) => void;
   onSearch?: (T: string) => void;
@@ -13,6 +14,7 @@ function InputTag(props: InputTagProps<Model>) {
   const { 
     listItem,
     placeHolder,
+    disabled,
     render,
     onClear,
     onSearch,
@@ -58,6 +60,7 @@ function InputTag(props: InputTagProps<Model>) {
               value={searchTerm}
               placeholder={placeHolder} 
               ref={inputRef}
+              disabled={disabled}
               onChange={handleChangeInput} />
         </div>
       </div>

@@ -20,6 +20,7 @@ export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilt
   checkable?: boolean;
   selectable?: boolean;
   checkStrictly?: boolean;
+  disabled?: boolean;
   modelFilter?: TModelFilter;
   placeHolder?: string;
   render?: (T: T) => string;
@@ -49,6 +50,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
     searchType,
     checkable,
     selectable,
+    disabled,
     filterClass: FilterClass,
     placeHolder,
     render,
@@ -73,7 +75,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
         const newListItem = listItem.filter((currentItem) => currentItem.id !== item.id);
         onChange(newListItem, checkable);
       } else {
-        onChange([], checkable);
+        onChange([null], checkable);
       }
   },[listItem, onChange, checkable]);
   
@@ -113,12 +115,14 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
             <InputTag listItem={listItem}
               render={render}
               placeHolder={placeHolder}
+              disabled={disabled}
               onSearch={handleSearchItem}
               onClear={handleClearItem}/> :
             <InputSelect model={item}
               render={render}
               placeHolder={placeHolder}
               expanded={expanded}
+              disabled={disabled}
               onSearch={handleSearchItem}
               onClear={handleClearItem}/>
             }
@@ -148,6 +152,7 @@ TreeSelect.defaultProps = {
   searchType: nameof(StringFilter.prototype.startWith),
   filterClass: ModelFilter,
   checkable: false,
+  disabled: false,
   selectable: true,
 };
 
