@@ -1,8 +1,6 @@
 .ant-tree-checkbox-checked .ant-tree-checkbox-inner {
-    background: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    background: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    border-color: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    border-color: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    @include background-color;
+    @include border-color;
 }
 .ant-tree .ant-tree-switcher-leaf-line {
     &:before {
@@ -13,6 +11,13 @@
     }
 }
 .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner:after {
-    background: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    background: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    @include background-color;
+}
+
+.ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    @include background-active-color;
+}
+
+.ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .ant-tree-title {
+    @include gradient-text;
 }

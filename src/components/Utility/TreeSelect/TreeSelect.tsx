@@ -14,10 +14,12 @@ import InputSelect from '../InputSelect/InputSelect';
 
 export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilter> {
   listItem?: Model[];
+  item?: Model;
   searchProperty?: string;
   searchType?: string;
   checkable?: boolean;
   selectable?: boolean;
+  checkStrictly?: boolean;
   modelFilter?: TModelFilter;
   placeHolder?: string;
   render?: (T: T) => string;
@@ -41,6 +43,8 @@ function filterReducer(state: ModelFilter, action: filterAction<Model>): ModelFi
 function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   const {
     listItem,
+    item,
+    checkStrictly,
     searchProperty,
     searchType,
     checkable,
@@ -55,8 +59,10 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
   const listIds = React.useMemo(() => {
-    return listItem.map((currentItem) => currentItem.id);
-  }, [listItem]);
+    if (item) return [item.id];
+    if (listItem) return listItem.map((currentItem) => currentItem.id);
+    return [];
+  }, [listItem, item]);
 
   const wrapperRef: RefObject<HTMLDivElement> = React.useRef<HTMLDivElement>(null);
 
@@ -109,7 +115,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
               placeHolder={placeHolder}
               onSearch={handleSearchItem}
               onClear={handleClearItem}/> :
-            <InputSelect model={listItem[0]}
+            <InputSelect model={item}
               render={render}
               placeHolder={placeHolder}
               expanded={expanded}
@@ -122,6 +128,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
             <Tree getTreeData={getTreeData}
                   checkedKeys={listIds}
                   modelFilter={filter}
+                  checkStrictly={checkStrictly}
                   height={300}
                   onChange={handleOnchange}
                   selectable={selectable}

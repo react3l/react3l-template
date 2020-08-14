@@ -32,6 +32,8 @@ function InputSelect(props: InputSelectProps<Model>) {
     }
   }, [onSearch]);
 
+  const handleForResolve = React.useCallback(() => null, []);
+
   const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setInternalModel('');
     inputRef.current.focus();
@@ -43,6 +45,11 @@ function InputSelect(props: InputSelectProps<Model>) {
     event.stopPropagation();
   }, [onClear]);
 
+  const handleShowList = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    inputRef.current.focus();
+    event.stopPropagation();
+  },[]);
+
   return (
     <>
       <div className="input-select__container">
@@ -51,18 +58,20 @@ function InputSelect(props: InputSelectProps<Model>) {
             <input type="text"
               value={internalModel}
               onChange={handleChange}
-              placeholder={placeHolder}
+              placeholder={model ? render(model) : placeHolder}
               ref={inputRef} 
               className="component__input"/>
               {internalModel && <i className="input-select__icon tio-clear" onClick={handleClearInput}></i>}
           </> :
           <>
             <input type="text"
-              placeholder={model ? render(model) : placeHolder} 
-              className="component__input" readOnly/>
+              value={render(model)}
+              onChange={handleForResolve}
+              placeholder={placeHolder} 
+              className="component__input"/>
               { model ? 
                 <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
-                <i className="input-select__icon tio-chevron_down"></i>
+                <i className="input-select__icon tio-chevron_down" onClick={handleShowList}></i>
               }
           </>
         }

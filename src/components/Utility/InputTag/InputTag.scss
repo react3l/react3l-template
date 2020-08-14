@@ -1,4 +1,6 @@
 /* Style for InputTag.tsx */
+@import "../../../styles/mixins";
+
 .input-tag__wrapper {
     width: 100%;
     min-width: 220px;
@@ -28,19 +30,10 @@
             background: #E5E7FA;
             border-radius: 7px;
             .input-tag__text {
-                background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
+                @include gradient-text;
             }
             .input-tag__icon {
-                background:-moz-linear-gradient(180deg, #013FFB 0%, #A295F2 100%); 
-                background: -webkit-linear-gradient(180deg, #013FFB 0%, #A295F2 100%); 
-                background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
-                -webkit-background-clip: text;
-                -moz-background-clip: text;
-                background-clip: text;
-               -webkit-text-fill-color:transparent;
+                @include gradient-text;
                 margin-left: 5px;
                 cursor: pointer;
             }

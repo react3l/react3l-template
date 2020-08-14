@@ -6,6 +6,8 @@ import { Model, ModelFilter } from 'react3l/core';
 import { Observable } from 'rxjs';
 import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
+import { Radio } from 'antd';
+import { RadioChangeEvent } from 'antd/lib/radio';
 
 export class DistrictFilter extends ModelFilter {
     public id: IdFilter = new IdFilter();
@@ -35,6 +37,10 @@ const demoList = [{id: 1, name: 'Ban hành chính', code: 'FAD', parentId: null}
 {id: 6, name: 'Ban giám đốc', code: 'BOD', parentId: 3},
 {id: 7, name: 'Ban quản trị', code: 'BOM', parentId: 4}];
 
+const demoItem = {
+    id: 1, name: 'Ban hành chính', code: 'FAD', parentId: null,
+};
+
 const demoObservable = new Observable<Model[]>((observer) => {
     setTimeout(() => {
       observer.next(demoList);
@@ -47,20 +53,36 @@ const demoSearchFunc = (TModelFilter: ModelFilter) => {
 
 function Default() {
     const [listItem, dispatch] = React.useReducer(reducerFunc, demoList);
+    const [item, setItem] = React.useState<Model>(demoItem);
+    const [isMultiple, setMultiple] = React.useState(false);
+    const handleChangeRadio = React.useCallback((event: RadioChangeEvent) => {
+        if (event.target.value) setItem(undefined);
+        else dispatch({type: 'UPDATE_MODEL', data: undefined});
+        setMultiple(event.target.value);
+    }, []);
     const handleChangeItem = React.useCallback((items: Model[], isMultiple) => {
         if (isMultiple) {
             dispatch({type: 'UPDATE_MODEL', data: items});
         } else {
-            dispatch({type: 'UPDATE_MODEL', data: items});
+            setItem(items[0]);
         }
     }, []);
     return <div style={{margin: '10px', width: '300px'}}>
-                <TreeSelect checkable={false} 
-                    selectable={true}
+                <TreeSelect checkable={isMultiple}
+                    placeHolder={'Select Organization'} 
+                    selectable={!isMultiple}
                     filterClass={DistrictFilter}
                     onChange={handleChangeItem}
+                    checkStrictly={true}
+                    item={item}
                     listItem={listItem}
-                    getTreeData={demoSearchFunc}/> 
+                    getTreeData={demoSearchFunc}/>
+                <div style={{margin: '10px', width: '300px'}}>
+                    <Radio.Group onChange={handleChangeRadio} value={isMultiple}>
+                        <Radio value={false}>Single</Radio>
+                        <Radio value={true}>Multiple</Radio>
+                    </Radio.Group>
+                </div>
            </div>;
 }
   

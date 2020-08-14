@@ -20,7 +20,6 @@ export interface TreeProps <T extends Model, TModelFilter extends ModelFilter> {
   modelFilter?: TModelFilter;
   expandedKeys?: number[];
   checkedKeys?: number[];
-  selectedKeys?: number[];
   checkable?: boolean;
   getTreeData?: (TModelFilter?: TModelFilter) => Observable<T[]>;
   onChange?: (treeNode: TreeNode<T>[]) => void;
@@ -31,7 +30,6 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
     modelFilter,
     expandedKeys,
     checkedKeys,
-    selectedKeys,
     checkable,
     getTreeData,
     onChange,
@@ -45,7 +43,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
 
   const [internalCheckedKeys, setInternalCheckedKeys] = React.useState<number[]>(checkedKeys);
 
-  const [internalSelectedKeys, setInternalSelectedKeys] = React.useState<number[]>(selectedKeys);
+  const [internalSelectedKeys, setInternalSelectedKeys] = React.useState<number[]>(checkedKeys);
 
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -67,6 +65,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
 
   const searchTree = React.useCallback((treeNodes: TreeNode<Model>[], listKeys: number[]) => {
     const nodes = [];
+
     treeNodes.forEach((currentTree) => {
       listKeys.forEach((currentKey) => {
         const node = searchTreeNode(currentTree, currentKey);
@@ -81,10 +80,13 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
     setAutoExpandParent(false);
   }, []);
 
-  const handleCheck: AntdTreeProps['onCheck'] = React.useCallback((checkedKeys: number[]) => {
-    setInternalCheckedKeys(checkedKeys);
+  const handleCheck: AntdTreeProps['onCheck'] = React.useCallback((checkedKeys: {
+    checked: number[];
+    halfChecked: number[];
+  }) => {
+    setInternalCheckedKeys(checkedKeys.checked);
     if (typeof onChange === 'function') {
-      const checkedNodes = searchTree(internalTreeData, checkedKeys);
+      const checkedNodes = searchTree(internalTreeData, checkedKeys.checked);
       const checkedItems = checkedNodes.map((currentNode) => currentNode.item);
       onChange([...checkedItems]);
     }
@@ -106,8 +108,10 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
   }, [internalTreeData, onChange, searchTree]);
 
   React.useEffect(() => {
-    if (checkable && checkedKeys) {
+    if (checkable) {
       setInternalCheckedKeys(checkedKeys);
+    } else {
+      setInternalSelectedKeys(checkedKeys);
     }
   }, [checkable, checkedKeys]);
 
