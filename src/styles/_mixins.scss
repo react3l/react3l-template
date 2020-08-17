@@ -4,8 +4,9 @@
 }
 
 @mixin border-color {
-    border-color: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    border-color: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    border-image-source: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    border-image-source: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+    border-image-slice: 1;
 }
 
 @mixin background-active-color {

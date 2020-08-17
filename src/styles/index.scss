@@ -38,4 +38,76 @@ body {
         border-radius: 7px;
         outline: none;
     }
+    .material__input {
+        width: 100%;
+
+        label {
+            position: relative;
+            display: block;
+            width: 100%;
+            min-height: $input-height + $input-top;
+        }
+
+        .placeholder {
+            position: absolute;
+            display: block;
+            top: $input-top;
+            z-index: 2;
+            font-size: $placeholder-font-size;
+            transition: all $placeholder-transition;
+            width: 100%;
+            cursor: text;
+        }
+
+        input, textarea {
+            position: absolute;
+            background-color: #F2F2F2;
+            top: $input-top;
+            z-index: 1;
+            width: 100%;
+            font-size: $input-font-size;
+            border: 0;
+            border-bottom: 1px solid $input-border-color;
+            transition: border-color $placeholder-transition;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+  
+        textarea {
+            min-height: $input-height;
+            padding: $placeholder-padding 0;
+        }
+        
+        input {
+            height: $input-height;
+            &:hover {
+                border-bottom: 2px solid;
+                @include border-color;
+            } 
+        }
+
+        i {
+            position: absolute;
+            top: 40%;
+            right: 0%;
+            font-size: 20px;
+            z-index: 2;
+        }
+
+        input:focus,
+        textarea:focus {
+            & + .placeholder {
+            top: 0;
+            cursor: inherit;
+            font-size: $placeholder-font-size-small;
+            @include gradient-text
+            }
+            & ~ i {
+                @include gradient-text
+            }
+            border-bottom: 2px solid;
+            @include border-color;
+        }
+    }
 }
