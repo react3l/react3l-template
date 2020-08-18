@@ -6,26 +6,32 @@ import classNames from 'classnames';
 export const DECIMAL: string = 'DECIMAL';
 export const LONG: string = 'LONG';
 
-interface InputNumber<T extends Model> {
+export interface InputNumberProps<T extends Model> {
   value?: number;
+  allowPositive?: boolean;
   isMaterial?: boolean;
+  isError?: boolean;
   numberType?: string;
   isReverseSymb?: boolean;
   decimalDigit?: number;
   placeHolder?: string;
+  disabled?: boolean;
   className?: string;
   onChange?: (T: number) => void;
 }
 
-function InputNumber(props: InputNumber<Model>) {
+function InputNumber(props: InputNumberProps<Model>) {
   const {
     value,
+    allowPositive,
     isMaterial,
+    isError,
     numberType,
     decimalDigit,
     isReverseSymb,
     placeHolder,
     className,
+    disabled,
     onChange,
   } = props;
 
@@ -52,31 +58,63 @@ function InputNumber(props: InputNumber<Model>) {
     if (isReverseSymb) {
       switch (numberType) {
         case DECIMAL:
-          inputValue = inputValue.replace(/[^0-9,]/g, "");
+          if (allowPositive) {
+            inputValue = inputValue.replace(/[^0-9,-]/g, '')
+              .replace(',', 'x') 
+              .replace(/,/g, '')
+              .replace('x', ',')
+              .replace(/(?!^)-/g, '');
+          } else {
+            inputValue = inputValue.replace(/[^0-9,]/g, '')
+              .replace(',', 'x')
+              .replace(/,/g, '')
+              .replace('x', ',');
+          }
           return (inputValue).replace(newRegEx, 
             (m, s1, s2) => {
               return s2 || (s1 + '.');
             },
           );
         default:
-          inputValue = inputValue.replace(/[^0-9]/g, "");
-          return inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          if (allowPositive) {
+            inputValue = inputValue.replace(/[^0-9-]/g, '')
+              .replace(/(?!^)-/g, '');
+          } else {
+            inputValue = inputValue.replace(/[^0-9]/g, '');
+          }
+          return inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       }
     } else {
       switch (numberType) {
         case DECIMAL:
-          inputValue = inputValue.replace(/[^0-9.]/g, "");
+          if (allowPositive) {
+            inputValue = inputValue.replace(/[^0-9.-]/g, '')
+              .replace('.', 'x') 
+              .replace(/\./g, '')
+              .replace('x', '.')
+              .replace(/(?!^)-/g, '');
+          } else {
+            inputValue = inputValue.replace(/[^0-9.]/g, '')
+              .replace('.', 'x')
+              .replace(/\./g, '')
+              .replace('x', '.');
+          }
           return (inputValue).replace(newRegEx, 
             (m, s1, s2) => {
               return s2 || (s1 + ',');
             },
           );
         default:
-          inputValue = inputValue.replace(/[^0-9]/g, "");
-          return inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          if (allowPositive) {
+            inputValue = inputValue.replace(/[^0-9-]/g, '')
+              .replace(/(?!^)-/g, '');
+          } else {
+            inputValue = inputValue.replace(/[^0-9]/g, '');
+          }
+          return inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
     }
-  }, [isReverseSymb, numberType, buildRegex]);
+  }, [isReverseSymb, numberType, buildRegex, allowPositive]);
 
   const parseNumber = React.useCallback((value: string): [number, boolean] => {
     var isOutOfRange, number, stringValue;
@@ -131,11 +169,12 @@ function InputNumber(props: InputNumber<Model>) {
       <div className="input-number__container">
         { isMaterial ? 
           <div className="material__input">
-            <label>
+            <label className={classNames({'material--error': isError})}>
               <input type="text"
                 value={internalValue}
                 onChange={handleChange}
-                ref={inputRef} />
+                ref={inputRef} 
+                disabled={disabled} required/>
               <span className="placeholder">{placeHolder ? placeHolder : 'Enter number...'}</span>
               { internalValue ? 
                 <i className="tio-clear" onClick={handleClearInput}></i> :
@@ -148,23 +187,25 @@ function InputNumber(props: InputNumber<Model>) {
               value={internalValue}
               onChange={handleChange}
               placeholder={placeHolder}
-              ref={inputRef} 
+              ref={inputRef}
+              disabled={disabled} 
               className="component__input"/>
             {internalValue && <i className="input-number__icon tio-clear" onClick={handleClearInput}></i>}
           </>
         }
-
       </div>
     </>
   );
 }
 
 InputNumber.defaultProps = {
+  allowPositive: false,
   isReverseSymb: false,
   numberType: LONG,
   decimalDigit: 4,
-  isMaterial: true,
-  className: 'tio-dollar_outlined',
+  isMaterial: false,
+  className: '',
+  disabled: false,
 };
 
 export default InputNumber;

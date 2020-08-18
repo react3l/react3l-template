@@ -1,9 +1,10 @@
-/* Style for InputSelect.tsx */
-.input-select__container {
+/* Style for InputText.tsx */
+.input-text__container {
     width: 100%;
     min-width: 220px;
     position: relative;
-    .input-select__icon {
+    background-color: #F2F2F2;
+    .input-text__icon {
         position: absolute;
         right: 5%;
         top: 38%;

@@ -15,6 +15,8 @@ function Default() {
 
     const [isMaterial, setIsMaterial] = React.useState(false);
 
+    const [isPositive, setIsPositive] = React.useState(false);
+
     const handleChangeType = React.useCallback((event: RadioChangeEvent) => {
         setNumberType(event.target.value);
         setValue(undefined);
@@ -30,12 +32,19 @@ function Default() {
         setValue(undefined);
     }, []);
 
+    const handleChangePositive = React.useCallback((event: RadioChangeEvent) => {
+        setIsPositive(event.target.value);
+        setValue(undefined);
+    }, []);
+
     return <div style={{width: '250px', margin: '10px', backgroundColor: '#F2F2F2'}}>
         <InputNumber placeHolder={'Enter number...'}
-            isMaterial={isMaterial}
-            value={value} 
+            className={'tio-dollar_outlined'}
+            value={value}
+            isMaterial={isMaterial} 
             numberType={numberType} 
-            isReverseSymb={isReverse}/>
+            isReverseSymb={isReverse}
+            allowPositive={isPositive}/>
         <div style={{margin: '10px', width: '300px'}}>
                     <Radio.Group onChange={handleChangeType} value={numberType}>
                         <Radio value={DECIMAL}>Decimal</Radio>
@@ -46,6 +55,12 @@ function Default() {
                     <Radio.Group onChange={handleChangeSeperation} value={isReverse}>
                         <Radio value={true}>Reverse Seperation</Radio>
                         <Radio value={false}>Normal</Radio>
+                    </Radio.Group>
+        </div>
+        <div style={{margin: '10px', width: '300px'}}>
+                    <Radio.Group onChange={handleChangePositive} value={isPositive}>
+                        <Radio value={true}>Allow Positive</Radio>
+                        <Radio value={false}>Not Allow Positive</Radio>
                     </Radio.Group>
         </div>
         <div style={{margin: '10px', width: '300px'}}>

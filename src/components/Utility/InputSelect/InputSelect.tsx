@@ -6,6 +6,7 @@ export interface InputSelectProps <T extends Model> {
   model?: T;
   disabled?: boolean;
   expanded?: boolean;
+  isMaterial?: boolean;
   placeHolder?: string;
   render?: (t: T) => string;
   onClear?: (T: T) => void;
@@ -17,6 +18,7 @@ function InputSelect(props: InputSelectProps<Model>) {
     model,
     disabled,
     expanded,
+    isMaterial,
     placeHolder,
     render,
     onClear,
@@ -49,6 +51,7 @@ function InputSelect(props: InputSelectProps<Model>) {
 
   React.useEffect(() => {
     if (expanded) {
+      setInternalModel('');
       inputRef.current.focus();
     }
   }, [expanded]);
@@ -58,25 +61,64 @@ function InputSelect(props: InputSelectProps<Model>) {
       <div className="input-select__container">
         { expanded ? 
           <>
-            <input type="text"
-              value={internalModel}
-              onChange={handleChange}
-              placeholder={model ? render(model) : placeHolder}
-              ref={inputRef} 
-              className="component__input"/>
-              {internalModel && <i className="input-select__icon tio-clear" onClick={handleClearInput}></i>}
+            { !isMaterial ? 
+              <>
+                <input type="text"
+                  value={internalModel}
+                  onChange={handleChange}
+                  placeholder={model ? render(model) : placeHolder}
+                  ref={inputRef} 
+                className="component__input"/>
+                {internalModel && <i className="input-select__icon tio-clear" onClick={handleClearInput}></i>}
+              </> :
+              <>
+                <div className="material__input">
+                  <label>
+                    <input type="text"
+                      value={internalModel}
+                      onChange={handleChange}
+                      ref={inputRef} required
+                      disabled={disabled}/>
+                    <span className="placeholder">{model ? render(model) : placeHolder}</span>
+                    { internalModel ? 
+                      <i className="tio-clear" onClick={handleClearInput}></i> :
+                      <i className="tio-chevron_down"></i>
+                    }  
+                  </label>
+                </div>
+              </>
+            }
           </> :
           <>
-            <input type="text"
-              value={render(model)}
-              onChange={handleForResolve}
-              placeholder={placeHolder} 
-              className="component__input"
-              disabled={disabled}/>
-              { model ? 
-                <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
-                <i className="input-select__icon tio-chevron_down"></i>
-              }
+            { !isMaterial ? 
+              <>
+                <input type="text"
+                  value={render(model)}
+                  onChange={handleForResolve}
+                  placeholder={placeHolder} 
+                  className="component__input"
+                  disabled={disabled}/>
+                { model ? 
+                  <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
+                  <i className="input-select__icon tio-chevron_down"></i>
+                }
+              </> :
+              <>
+                <div className="material__input">
+                  <label>
+                    <input type="text"
+                      value={render(model)}
+                      onChange={handleForResolve}
+                      disabled={disabled} required/>
+                    <span className="placeholder">{placeHolder}</span>
+                    { model ? 
+                      <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
+                      <i className="input-select__icon tio-chevron_down"></i>
+                    }  
+                  </label>
+                </div>
+              </>
+            }
           </>
         }
       </div>
@@ -90,6 +132,7 @@ function defaultRenderObject<T extends Model>(t: T) {
 
 InputSelect.defaultProps = {
   render: defaultRenderObject,
+  isMaterial: false,
   expanded: false,
   disabled: false,
 };

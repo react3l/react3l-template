@@ -1,12 +1,13 @@
-/* Style for InputSelect.tsx */
-.input-select__container {
+/* Style for TextArea.tsx */
+.text-area__container {
     width: 100%;
     min-width: 220px;
     position: relative;
-    .input-select__icon {
+    background-color: #F2F2F2;
+    .text-area__icon {
         position: absolute;
-        right: 5%;
-        top: 38%;
+        right: 2%;
+        top: 5%;
         cursor: pointer;
         &:hover {
             opacity: 0.7;
