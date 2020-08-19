@@ -8,6 +8,7 @@ export const LONG: string = 'LONG';
 
 export interface InputNumberProps<T extends Model> {
   value?: number;
+  title?: string;
   allowPositive?: boolean;
   isMaterial?: boolean;
   isError?: boolean;
@@ -23,6 +24,7 @@ export interface InputNumberProps<T extends Model> {
 function InputNumber(props: InputNumberProps<Model>) {
   const {
     value,
+    title,
     allowPositive,
     isMaterial,
     isError,
@@ -167,32 +169,23 @@ function InputNumber(props: InputNumberProps<Model>) {
   return (
     <>
       <div className="input-number__container">
-        { isMaterial ? 
-          <div className="material__input">
-            <label className={classNames({'material--error': isError})}>
-              <input type="text"
-                value={internalValue}
-                onChange={handleChange}
-                ref={inputRef} 
-                disabled={disabled} required/>
-              <span className="placeholder">{placeHolder ? placeHolder : 'Enter number...'}</span>
-              { internalValue ? 
-                <i className="tio-clear" onClick={handleClearInput}></i> :
-                <i className={classNames(className)}></i>
-              }  
-            </label>
-          </div> :
-          <>
-            <input type="text"
-              value={internalValue}
-              onChange={handleChange}
-              placeholder={placeHolder}
-              ref={inputRef}
-              disabled={disabled} 
-              className="component__input"/>
-            {internalValue && <i className="input-number__icon tio-clear" onClick={handleClearInput}></i>}
-          </>
+        { title && 
+          <div className="input-number__title">{title}</div>
         }
+        <div className="input-number__wrapper">
+          <input type="text"
+            value={internalValue}
+            onChange={handleChange}
+            placeholder={placeHolder}
+            ref={inputRef}
+            disabled={disabled} 
+            className={classNames('component__input', {'component__input--material': isMaterial})}/>
+          { internalValue ? 
+            <i className="input-number__icon tio-clear" onClick={handleClearInput}></i> :
+            className && 
+            <i className={classNames('input-number__icon', className)}></i>
+          }
+        </div>
       </div>
     </>
   );
@@ -204,7 +197,6 @@ InputNumber.defaultProps = {
   numberType: LONG,
   decimalDigit: 4,
   isMaterial: false,
-  className: '',
   disabled: false,
 };
 

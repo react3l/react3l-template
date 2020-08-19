@@ -6,6 +6,7 @@ import classNames from 'classnames';
 interface InputText<T extends Model> {
   value?: string;                                                                      
   isMaterial?: boolean;
+  title?: string;
   isError?: boolean;
   disabled?: boolean;
   placeHolder?: string;
@@ -17,6 +18,7 @@ function InputText(props: InputText<Model>) {
   const {
     value,
     isMaterial,
+    title,
     isError,
     disabled,
     placeHolder,
@@ -54,32 +56,23 @@ function InputText(props: InputText<Model>) {
   return (
     <>
       <div className="input-text__container">
-        { isMaterial ? 
-          <div className="material__input">
-            <label className={classNames({'material--error': isError})}>
-              <input type="text"
-                value={internalValue}
-                onChange={handleChange}
-                ref={inputRef} required
-                disabled={disabled}/>
-              <span className="placeholder">{placeHolder ? placeHolder : 'Enter number...'}</span>
-              { internalValue ? 
-                <i className="tio-clear" onClick={handleClearInput}></i> :
-                <i className={classNames(className)}></i>
-              }  
-            </label>
-          </div> :
-          <>
-            <input type="text"
-              value={internalValue}
-              onChange={handleChange}
-              placeholder={placeHolder}
-              ref={inputRef}
-              disabled={disabled} 
-              className="component__input"/>
-            {internalValue && <i className="input-text__icon tio-clear" onClick={handleClearInput}></i>}
-          </>
+        { title && 
+          <div className="input-text__title">{title}</div>
         }
+        <div className="input-text__wrapper">
+          <input type="text"
+            value={internalValue}
+            onChange={handleChange}
+            placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
+            ref={inputRef}
+            disabled={disabled} 
+            className={classNames('component__input', {'component__input--material': isMaterial})}/>
+          { internalValue ? 
+            <i className="input-text__icon tio-clear" onClick={handleClearInput}></i> :
+            className && 
+            <i className={classNames('input-text__icon', className)}></i>
+          }
+        </div>
       </div>
     </>
   );

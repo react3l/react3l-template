@@ -4,7 +4,8 @@ import { Model } from 'react3l/core/model';
 import classNames from 'classnames';
 
 interface TextAreaProps<T extends Model> {
-  value?: string;                                                                      
+  value?: string;
+  title?: string;                                                                      
   isMaterial?: boolean;
   isError?: boolean;
   disabled?: boolean;
@@ -16,6 +17,7 @@ interface TextAreaProps<T extends Model> {
 function TextArea(props: TextAreaProps<Model>) {
   const {
     value,
+    title,
     isMaterial,
     isError,
     disabled,
@@ -54,30 +56,24 @@ function TextArea(props: TextAreaProps<Model>) {
   return (
     <>
       <div className="text-area__container">
-        { isMaterial ? 
-          <div className="material__input">
-            <label className={classNames({'material--error': isError})}>
-              <textarea
-                value={internalValue}
-                onChange={handleChange}
-                ref={inputRef}
-                disabled={disabled}
-                required></textarea>
-              <span className="placeholder">{placeHolder ? placeHolder : 'Insert text...'}</span>
-              { internalValue && <i className="tio-clear" onClick={handleClearInput}></i>}  
-            </label>
-          </div> :
-          <>
-            <textarea
-              value={internalValue}
-              onChange={handleChange}
-              placeholder={placeHolder}
-              ref={inputRef}
-              disabled={disabled} 
-              className="component__text-area"></textarea>
-            {internalValue && <i className="text-area__icon tio-clear" onClick={handleClearInput}></i>}
-          </>
+        { title && 
+          <div className="text-area__title">{title}</div>
         }
+        <div className="text-area_wrapper">
+          <textarea
+            value={internalValue}
+            onChange={handleChange}
+            placeholder={placeHolder}
+            ref={inputRef}
+            disabled={disabled}
+            className={classNames('component__text-area', {'component__text-area--material': isMaterial})}>
+          </textarea>
+          { internalValue ? 
+            <i className="text-area__icon tio-clear" onClick={handleClearInput}></i> :
+            className && 
+            <i className={classNames('text-area__icon', className)}></i>
+          }
+          </div>
       </div>
     </>
   );

@@ -15,6 +15,7 @@ import InputSelect from '../InputSelect/InputSelect';
 export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilter> {
   listItem?: Model[];
   item?: Model;
+  isMaterial?: boolean;
   searchProperty?: string;
   searchType?: string;
   checkable?: boolean;
@@ -45,6 +46,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   const {
     listItem,
     item,
+    isMaterial,
     checkStrictly,
     searchProperty,
     searchType,
@@ -113,6 +115,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
         <div className="tree-select__input" onClick={handleExpand}>
           { checkable ? 
             <InputTag listItem={listItem}
+              isMaterial={isMaterial}
               render={render}
               placeHolder={placeHolder}
               disabled={disabled}
@@ -120,6 +123,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
               onClear={handleClearItem}/> :
             <InputSelect model={item}
               render={render}
+              isMaterial={isMaterial}
               placeHolder={placeHolder}
               expanded={expanded}
               disabled={disabled}
@@ -151,6 +155,7 @@ TreeSelect.defaultProps = {
   searchProperty: nameof(Model.prototype.name),
   searchType: nameof(StringFilter.prototype.startWith),
   filterClass: ModelFilter,
+  isMaterial: false,
   checkable: false,
   disabled: false,
   selectable: true,

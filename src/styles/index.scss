@@ -26,16 +26,34 @@ body {
 
     .component__text-area {
         width: 100%;
+        height: 40px;
         min-height: 40px;
         padding: 0.5rem;
         font-size: 13px;
         font-weight: 400;
         background: #FFFFFF;
-        border: 1px solid #F2F2F2;
+        border: 0;
         border-radius: 7px;
         box-sizing: border-box;
         box-shadow: 0px 7px 64px rgba(0, 0, 0, 0.07);
         outline: none;
+
+        &.component__text-area--material {
+            padding-left: 0rem !important;
+            padding-right: 1.25rem !important;
+            border-radius: 0 !important;
+            border-bottom: 2px solid $input-border-color;
+            background: none !important;
+            box-shadow: none !important;
+
+            &:hover, &:focus {
+                border-bottom: 2px solid !important;
+                @include border-color;
+                & ~ i {
+                    @include gradient-text;
+                }
+            }
+        }
     }
 
     .component__input {
@@ -47,103 +65,27 @@ body {
         line-height: 1.5;
         color: #495057;
         background-clip: padding-box;
-        border: 1px solid #ECEBED;
+        border: 0;
         box-sizing: border-box;
         box-shadow: 0px 7px 64px rgba(0, 0, 0, 0.07);
         border-radius: 7px;
         outline: none;
-    }
 
-    .material__input {
-        width: 100%;
+        &.component__input--material {
+            padding: 1rem 1.25rem 1rem 0rem !important;
+            border-radius: 0 !important;
+            border-bottom: 2px solid $input-border-color;
+            background: none !important;
+            box-shadow: none !important;
 
-        label {
-            position: relative;
-            display: block;
-            width: 100%;
-            min-height: $input-height + $input-top;
-
-            &:hover {
-                input, textarea {
-                    border-bottom: 2px solid;
-                    @include border-color;
-                }
-
-                i {
-                    @include gradient-text;
-                }
-            }
-
-            .placeholder {
-                position: absolute;
-                display: block;
-                top: 20px;
-                z-index: 2;
-                font-size: $placeholder-font-size;
-                transition: all $placeholder-transition;
-                width: 100%;
-                cursor: text;
-            }
-    
-            input, textarea {
-                position: absolute;
-                padding-right: 1.25rem;
-                background-color: #F2F2F2;
-                top: $input-top;
-                z-index: 1;
-                width: 100%;
-                font-size: $input-font-size;
-                border: 0;
-                border-bottom: 1px solid $input-border-color;
-                transition: border-color $placeholder-transition;
-                outline: none;
-                padding: 0;
-                margin: 0;
-            }
-      
-            textarea {
-                min-height: $input-height;
-                padding: $placeholder-padding 0;
-            }
-            
-            input {
-                height: $input-height;
-            }
-    
-            i {
-                position: absolute;
-                top: 42%;
-                right: 0%;
-                font-size: 20px;
-                z-index: 2;
-            }
-    
-            input:focus,
-            input:valid,
-            textarea:valid,
-            textarea:focus {
-                & + .placeholder {
-                top: 0;
-                cursor: inherit;
-                font-size: $placeholder-font-size-small;
-                @include gradient-text;
-                }
+            &:hover, &:focus {
+                border-bottom: 2px solid !important;
+                @include border-color;
                 & ~ i {
                     @include gradient-text;
                 }
-                border-bottom: 2px solid;
-                @include border-color;
-            }
-
-            &.material--error {
-                input {
-                    border-color: $error-color !important;
-                }
-                i {
-                    color: $error-color !important;
-                }
             }
         }
-    }
-    
+
+    }    
 }

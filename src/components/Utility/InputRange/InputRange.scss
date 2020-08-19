@@ -1,14 +1,23 @@
+@import "../../../styles/mixins";
 /* Style for InputRange.tsx */
 .input-range__container {
     width: 100%;
-    display: flex;
-    .input-range__input-number {
-        width: 40%;
+    .input-range__title {
+        @include input-title;
     }
-    .input-range__icon {
-        padding: 0px 5px;
+    .input-range__wrapper {
+        width: 100%;
         display: flex;
-        align-items: center;
-        align-content: center;
+
+        .input-range__input-number {
+            width: 40%;
+        }
+
+        .input-range__icon {
+            padding: 0px 5px;
+            display: flex;
+            align-items: center;
+            align-content: center;
+        }
     }
 }
