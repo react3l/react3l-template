@@ -1,32 +1,60 @@
-import classNames from 'classnames';
-import React from 'react';
-import {useTranslation} from 'react-i18next';
-import {RouteConfig} from 'react-router-config';
+import Menu from 'antd/lib/menu';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteConfig } from 'react-router-config';
+import { RouteComponentProps } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import './AsideMenu.scss';
+import AsideContent from '../AsideContent/AsideContent';
+const { SubMenu } = Menu;
 
-export interface AsideMenuProps {
-  menu: RouteConfig[];
+export interface IDefaultSidebarProps extends RouteComponentProps {
+  item: RouteConfig;
 }
 
-function AsideMenu(props: AsideMenuProps) {
+function AsideMenu(props: IDefaultSidebarProps) {
+  const { staticContext, item, ...rest } = props;
   const [translate] = useTranslation();
 
-  const {menu} = props;
+  if (props.item.children) {
+    return (
+      <>
+        {/* {item.isShow && ( */}
+        <SubMenu
+          key={props.item.key ? props.item.key : uuidv4()}
+          title={
+            <div className="ml-3">
+              {props.item.children && props.item.children.length > 0 && (
+                <>
+                  {props.item.icon && <i className={props.item.icon} />}
+                  <span className="ml-2">{translate(props.item.name)}</span>
+                </>
+              )}
+              {!props.item.children && !props.item.notTitle && (
+                <AsideContent item={props.item} />
+              )}
+            </div>
+          }
+          {...rest}
+        >
+          {props.item.children.map((subItem: RouteConfig) => (
+            <AsideMenu
+              {...props}
+              key={subItem.path as string}
+              item={subItem}
+            />
+          ))}
+        </SubMenu>
+        {/* )} */}
+      </>
+    );
+  }
 
-  return (
-    <ul className={classNames('aside-menu')}>
-      {menu.map((item: RouteConfig) => (
-        <React.Fragment key={item.path as string}>
-          <li className={classNames('aside-menu-item', 'aside-menu-item-title')}>
-            {translate(item.name)}
-          </li>
-          {item?.routes instanceof Array && (
-            <AsideMenu menu={item.routes}/>
-          )}
-        </React.Fragment>
-      ))}
-    </ul>
-  );
+  if (props.item.notTitle) {
+    return <div className="menu-title">{translate(props.item.name)}</div>;
+  }
+
+  return <AsideContent item={props.item} {...props} />;
 }
 
 export default AsideMenu;

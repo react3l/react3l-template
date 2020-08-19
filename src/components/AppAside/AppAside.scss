@@ -1,7 +1,65 @@
-/* Style for AppAside.tsx */
+@import "../../styles/mixins";
 
-.app-aside {
-  > div {
-    width: 240px;
+$red: red;
+
+.aside {
+  .aside__header {
+    position: fixed;
+    .aside__navbar-brand {
+      height: 68px;
+      width: 280px;
+      background: white;
+      padding-left: 23px;
+      padding-top: 21px;
+      .aside__name {
+        @include gradient-text();
+        font-weight: 600;
+        font-size: 22px;
+        line-height: 27px;
+      }
+    }
   }
+}
+
+.aside__default-sidebar {
+  .ant-menu-item {
+    a {
+      display: flex;
+      align-items: center;
+      // margin: 0px 6px;
+      padding-left: 1rem;
+      width: 100%;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      .material-icons {
+        height: 14px;
+        font-size: 14px;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.slide-in {
+  transform: translateX(0);
+  margin-left: 0;
+  // transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+}
+
+.slide-out {
+  transform: translateX(-205px);
+  margin-left: -205px;
+  // transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+}
+
+.content-in {
+  transform: translateX(0);
+  margin-left: 205px !important;
+}
+.content-out {
+  transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  // margin-left: 205px !important;
 }

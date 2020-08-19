@@ -1,37 +1,49 @@
 /* Style for AppHeader.tsx */
 @import "../../styles/mixins";
 
-.app-header {
-  height: 62px;
-  background: #ffffff;
-  box-shadow: 0px 0px 8px rgba(218, 219, 216, 0.5);
-  border-radius: 7px;
-  margin: 30px 36px 36px 36px;
-  .btn {
-    height: 32px !important;
-    margin-top: 15px;
-    width: 36px;
-  }
-  .app-header__language {
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 17px;
-    @include gradient-text();
-  }
-  .app-header__notifications {
-    font-size: 18px;
-    color: #4f4f4f;
-    margin-left: 42px;
-  }
-  .app-header__user {
-    margin-left: 30px;
-    .app-header__display-name {
-      color: #2c2c2c;
-      margin-top: -7px;
+.header__navbar-default {
+  padding: 1.3rem 2.2rem 2.2rem;
+  .app-header {
+    position: fixed;
+    top: 0;
+    width: calc(100% - 340px);
+    height: 62px;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px rgba(218, 219, 216, 0.5);
+    border-radius: 7px;
+    // margin: 30px 36px 36px 36px;
+    .btn {
+      height: 32px !important;
+      margin-top: 15px;
+      width: 36px;
     }
-    .app-header__username {
-      font-size: 11px;
-      color: #2c2c2c;
+    .app-header__language {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 17px;
+      @include gradient-text();
+    }
+    .app-header__notifications {
+      font-size: 18px;
+      color: #4f4f4f;
+      margin-left: 42px;
+    }
+    .app-header__user {
+      margin-left: 30px;
+      .app-header__display-name {
+        color: #2c2c2c;
+        margin-top: -7px;
+      }
+      .app-header__username {
+        font-size: 11px;
+        color: #2c2c2c;
+      }
+    }
+    .app-header__avatar {
+      .app-header__avatar-img {
+        width: 34px;
+        height: 34px;
+      }
     }
   }
 }

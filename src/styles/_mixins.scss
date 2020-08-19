@@ -1,24 +1,55 @@
 @mixin background-color {
-    background: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    background: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+  background: -webkit-linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
 }
 
 @mixin border-color {
-    border-color: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    border-color: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+  border-color: -webkit-linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  border-color: linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
 }
 
 @mixin background-active-color {
-    background: -webkit-linear-gradient(0deg, rgba(94, 129, 244, 0.1), rgba(94, 129, 244, 0.1)), #FFFFFF !important;
-    background: linear-gradient(0deg, rgba(94, 129, 244, 0.1), rgba(94, 129, 244, 0.1)), #FFFFFF !important;
+  background: -webkit-linear-gradient(
+      0deg,
+      rgba(94, 129, 244, 0.1),
+      rgba(94, 129, 244, 0.1)
+    ),
+    #ffffff !important;
+  background: linear-gradient(
+      0deg,
+      rgba(94, 129, 244, 0.1),
+      rgba(94, 129, 244, 0.1)
+    ),
+    #ffffff !important;
 }
 
 @mixin gradient-text {
-    background:-moz-linear-gradient(180deg, #013FFB 0%, #A295F2 100%); 
-    background: -webkit-linear-gradient(180deg, #013FFB 0%, #A295F2 100%); 
-    background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-   -webkit-text-fill-color:transparent;
+  background: -moz-linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
+  background: -webkit-linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
+  background: linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin background-hover-color {
+  background: -webkit-linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
 }

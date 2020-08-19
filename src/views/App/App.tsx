@@ -9,7 +9,7 @@ import 'views/App/App.scss';
 function App() {
   return (
     <div className="app d-flex">
-      <AppAside menu={menu} />
+      <AppAside routes={menu} />
       <section className="flex-item">
         <AppHeader />
         <main className="body">

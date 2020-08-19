@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, withRouter } from 'react-router';
-import { renderRoutes, RouteConfig, RouteConfigComponentProps } from 'react-router-config';
+import { renderRoutes, RouteConfigComponentProps } from 'react-router-config';
 import './AppMain.scss';
 function AppMain(props: RouteConfigComponentProps) {
   const { route } = props;
