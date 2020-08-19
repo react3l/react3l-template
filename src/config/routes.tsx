@@ -4,15 +4,17 @@ import path from 'path';
 import nameof from 'ts-nameof.macro';
 import { GeneralActions } from 'config/general-actions';
 
-import { PROVINCE_ROUTE_PREFIX, INDIRECT_SALES_ORDER_ROUTE_PREFIX } from 'config/route-consts';
+import { INDIRECT_SALES_ORDER_ROUTE_PREFIX, PROVINCE_ROOT_ROUTE, PROVINCE_DETAIL_ROUTE, PROVINCE_ROUTE } from 'config/route-consts';
 import ProvinceMasterView from 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView';
 import ProvinceDetailView from 'views/App/ProvinceView/ProvinceDetailView/ProvinceDetailView';
 import AppMain from 'components/AppMain/AppMain';
 import IndirectSalesOrderView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderView';
 import IndirectSalesOrderMasterView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderMasterView/IndirectSalesOrderMasterView';
 import IndirectSalesOrderDetailView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderDetailView/IndirectSalesOrderDetailView';
+import WithAuth from 'views/WithAuth';
+import ProvinceView from 'views/App/ProvinceView/ProvinceView';
 
-const ProvinceView = React.lazy(() => import('views/App/ProvinceView/ProvinceView'));
+// const ProvinceView = React.lazy(() => import('views/App/ProvinceView/ProvinceView'));
 
 export const routes: RouteConfig[] = [
   {
@@ -21,25 +23,19 @@ export const routes: RouteConfig[] = [
     component: AppMain,
     routes: [
       {
-        path: PROVINCE_ROUTE_PREFIX,
+        path: PROVINCE_ROOT_ROUTE,
         component: ProvinceView,
-        routes: [
+        children: [
           {
-            path: path.join(PROVINCE_ROUTE_PREFIX),
+            path: path.join(PROVINCE_DETAIL_ROUTE, ':id'),
+            component: WithAuth(ProvinceDetailView, `${PROVINCE_DETAIL_ROUTE}/*`),
+          },
+          {
+            path: path.join(PROVINCE_ROUTE),
             component: ProvinceMasterView,
-            exact: true,
-          },
-          {
-            path: path.join(PROVINCE_ROUTE_PREFIX, nameof(GeneralActions.create)),
-            component: ProvinceDetailView,
-          },
-          {
-            path: path.join(PROVINCE_ROUTE_PREFIX, ':id'),
-            component: ProvinceDetailView,
           },
         ],
       },
-
       {
         path: INDIRECT_SALES_ORDER_ROUTE_PREFIX,
         component: IndirectSalesOrderView,

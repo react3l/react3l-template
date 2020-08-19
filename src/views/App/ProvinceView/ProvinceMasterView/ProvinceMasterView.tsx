@@ -1,18 +1,18 @@
 import Button from 'antd/lib/button';
 import Card from 'antd/lib/card';
-import Table, {ColumnProps} from 'antd/lib/table';
+import Table, { ColumnProps } from 'antd/lib/table';
 import Typography from 'antd/lib/typography';
-import {Province} from 'models/Province';
-import {ProvinceFilter} from 'models/ProvinceFilter';
+import { Province } from 'models/Province';
+import { ProvinceFilter } from 'models/ProvinceFilter';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
-import {Link} from 'react-router-dom';
-import {provinceRepository} from 'repositories/province-repository';
-import {tableService} from 'services/table-service';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { provinceRepository } from 'repositories/province-repository';
+import { tableService } from 'services/table-service';
 import nameof from 'ts-nameof.macro';
 import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
 
-const {Text} = Typography;
+const { Text } = Typography;
 
 function ProvinceMasterView() {
   const [translate] = useTranslation();
@@ -110,7 +110,7 @@ function ProvinceMasterView() {
         {translate('province.master.title')}
       </Text>
     )}>
-      <Table
+      {/* <Table
         tableLayout="fixed"
         bordered={true}
         rowKey={nameof(provinceList[0].id)}
@@ -132,7 +132,7 @@ function ProvinceMasterView() {
             </Button>
           </div>
         )}
-      />
+      /> */}
     </Card>
   );
 }

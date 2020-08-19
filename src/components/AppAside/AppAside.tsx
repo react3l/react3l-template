@@ -28,7 +28,10 @@ function AppAside(props: IDefaultSidebarProps) {
   useEffect(() => {
     const keys = getOpenKeys(routes, pathname);
     setOpenKeys(keys);
+    console.log('keys: ', keys);
     setSelectedKeys([convertPathName(pathname)]);
+    console.log('selectedkeys: ', [convertPathName(pathname)]);
+
   }, [pathname, routes]);
 
   const handleChange = useCallback(
@@ -42,8 +45,8 @@ function AppAside(props: IDefaultSidebarProps) {
     setSelectedKeys([...selectedKeys])
   }, [setSelectedKeys])
 
-  console.log('routes: ', routes)
 
+  console.log('routes: ', routes)
   return (
     <div className="aside">
       <div className={classNames('aside__header pb-4', className)}>

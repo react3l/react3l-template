@@ -1,7 +1,5 @@
-import {
-  PROVINCE_ROUTE_PREFIX,
-  INDIRECT_SALES_ORDER_ROUTE_PREFIX,
-} from "config/route-consts";
+import { PROVINCE_ROUTE, PROVINCE_ROOT_ROUTE } from "./route-consts";
+import { INDIRECT_SALES_ORDER_ROUTE_PREFIX } from "config/route-consts";
 import { RouteConfig } from "react-router-config";
 import { translate } from "react3l/helpers";
 
@@ -14,14 +12,14 @@ export const menu: RouteConfig[] = [
   {
     notTitle: false,
     name: translate("menu.province"),
-    path: "/province/master",
-    key: "province-title",
+    path: PROVINCE_ROOT_ROUTE,
+    key: PROVINCE_ROOT_ROUTE,
     icon: "tio tio-node_multiple",
     children: [
       {
         name: translate("menu.province"),
-        path: PROVINCE_ROUTE_PREFIX,
-        key: PROVINCE_ROUTE_PREFIX,
+        path: PROVINCE_ROUTE,
+        key: PROVINCE_ROUTE,
         icon: "tio tio-swap_vs",
       },
       {

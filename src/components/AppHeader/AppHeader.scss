@@ -2,20 +2,20 @@
 @import "../../styles/mixins";
 
 .header__navbar-default {
-  padding: 1.3rem 2.2rem 2.2rem;
+  // padding: 1.3rem 2.2rem 2.2rem;
   .app-header {
     position: fixed;
-    top: 0;
-    width: calc(100% - 340px);
+    top: 30px;
+    width: calc(100% - 350px);
     height: 62px;
     background: #ffffff;
     box-shadow: 0px 0px 8px rgba(218, 219, 216, 0.5);
     border-radius: 7px;
-    // margin: 30px 36px 36px 36px;
+    margin-left: 34px;
     .btn {
       height: 32px !important;
       margin-top: 15px;
-      width: 36px;
+      width: 34px;
     }
     .app-header__language {
       font-weight: bold;
@@ -46,4 +46,28 @@
       }
     }
   }
+}
+.header__list {
+  position: absolute;
+  background: #ffffff;
+  box-shadow: 0px 6px 20px rgba(153, 155, 168, 0.1);
+  border-radius: 10px;
+  width: 285px;
+  height: 434px;
+  z-index: 2000;
+}
+.header__overlay {
+  // display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 150px;
+  right: 0;
+  bottom: 0;
+  background-color: #b5b5b5;
+  z-index: 1999;
+  cursor: pointer;
+}
+.header__display-block {
+  display: block;
 }
