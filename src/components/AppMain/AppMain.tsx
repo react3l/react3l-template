@@ -1,17 +1,17 @@
-import React from 'react';
-import { Switch, withRouter } from 'react-router';
+import React, { useEffect } from 'react';
+import { Switch } from 'react-router';
 import { renderRoutes, RouteConfigComponentProps } from 'react-router-config';
 import './AppMain.scss';
 function AppMain(props: RouteConfigComponentProps) {
   const { route } = props;
 
   return (
-    <main>
+    <div className="app-content">
       <Switch>
         {route?.routes instanceof Array && renderRoutes(route.routes)}
       </Switch>
-    </main>
+    </div>
   );
 }
 
-export default withRouter(AppMain);
+export default AppMain;

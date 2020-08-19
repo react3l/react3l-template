@@ -8,7 +8,6 @@ import ProvinceMasterView from './ProvinceMasterView/ProvinceMasterView';
 
 function ProvinceView(props: RouteConfigComponentProps) {
   const { route } = props;
-
   return (
     <Switch>
       {route && renderRoutes(route.children)}

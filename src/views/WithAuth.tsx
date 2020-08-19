@@ -3,7 +3,7 @@ import Spin from 'antd/lib/spin';
 import { useTranslation } from 'react-i18next';
 import { MenuRouteContext } from './AppContext';
 import _ from 'lodash';
-import './App.scss';
+
 export interface WithAuthProps {
   children?: any;
   path?: string;

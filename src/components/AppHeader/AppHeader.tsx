@@ -2,6 +2,7 @@ import React from "react";
 import "./AppHeader.scss";
 import Avatar, { ConfigProvider } from "react-avatar";
 import classNames from 'classnames';
+import Modal from "antd/lib/modal/Modal";
 function AppHeader() {
   const [display, setDisplay] = React.useState<boolean>(false);
 
@@ -81,7 +82,7 @@ function AppHeader() {
           </div>
         </header>
       </div>
-      {display && (
+      {/* {display && (
         <div
           className={classNames(
             "header__overlay",
@@ -102,7 +103,27 @@ function AppHeader() {
               ))}
           </div>
         </div>
-      )}
+      )} */}
+
+      <Modal
+        title="Basic Modal"
+        visible={display}
+        className="modal-default-list"
+        maskClosable={true}
+      // onOk={].handleOk}
+      // onCancel={this.handleCancel}
+      >
+        {menus &&
+          menus.length > 0 &&
+          menus.map((menu, index) => (
+            <div className="header__menu d-flex" key={index}>
+              <div className="header__menu-icon">
+                <i className={menu?.icon} />
+              </div>
+              <div className="header__menu-title">{menu?.title}</div>
+            </div>
+          ))}
+      </Modal>
     </>
   );
 }

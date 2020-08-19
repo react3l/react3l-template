@@ -105,12 +105,9 @@ function ProvinceMasterView() {
   );
 
   return (
-    <Card title={(
-      <Text>
-        {translate('province.master.title')}
-      </Text>
-    )}>
-      {/* <Table
+    <Card >
+      hehehe
+      <Table
         tableLayout="fixed"
         bordered={true}
         rowKey={nameof(provinceList[0].id)}
@@ -122,7 +119,7 @@ function ProvinceMasterView() {
         rowSelection={rowSelection}
         title={() => (
           <div className="d-flex justify-content-start">
-            <Link to="/province/create">
+            <Link to="/province/province-detail">
               <Button type="primary" className="mr-2">
                 {translate('general.actions.create')}
               </Button>
@@ -132,7 +129,7 @@ function ProvinceMasterView() {
             </Button>
           </div>
         )}
-      /> */}
+      />
     </Card>
   );
 }

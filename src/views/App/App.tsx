@@ -1,10 +1,12 @@
 import AppAside from 'components/AppAside/AppAside';
 import AppFooter from 'components/AppFooter/AppFooter';
 import AppHeader from 'components/AppHeader/AppHeader';
-import AppMain from 'components/AppMain/AppMain';
 import { menu } from 'config/menu';
+import { routes } from 'config/routes';
 import React from 'react';
-import 'views/App/App.scss';
+import { Switch, withRouter } from 'react-router';
+import { renderRoutes } from 'react-router-config';
+import './App.scss'
 
 function App() {
   return (
@@ -13,12 +15,13 @@ function App() {
       <section className="flex-item">
         <AppHeader />
         <main className="body">
-          <AppMain />
+          <Switch>{renderRoutes(routes)}</Switch>
         </main>
       </section>
+      <section className="header__overlay"></section>
       <AppFooter />
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);

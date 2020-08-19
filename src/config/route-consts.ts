@@ -1,7 +1,5 @@
 import { join } from "path";
 
-export const PROVINCE_ROUTE_PREFIX: string = "/province";
-
 /* product routes */
 
 export const PROVINCE_ROOT_ROUTE: string = "/province";

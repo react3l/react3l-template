@@ -13,13 +13,14 @@ import IndirectSalesOrderMasterView from 'views/App/IndirectSalesOrderView/Indir
 import IndirectSalesOrderDetailView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderDetailView/IndirectSalesOrderDetailView';
 import WithAuth from 'views/WithAuth';
 import ProvinceView from 'views/App/ProvinceView/ProvinceView';
+import { render } from '@testing-library/react';
 
 // const ProvinceView = React.lazy(() => import('views/App/ProvinceView/ProvinceView'));
 
 export const routes: RouteConfig[] = [
   {
     key: 'main',
-    path: '',
+    path: '/',
     component: AppMain,
     routes: [
       {
@@ -28,7 +29,7 @@ export const routes: RouteConfig[] = [
         children: [
           {
             path: path.join(PROVINCE_DETAIL_ROUTE, ':id'),
-            component: WithAuth(ProvinceDetailView, `${PROVINCE_DETAIL_ROUTE}/*`),
+            component: ProvinceDetailView,
           },
           {
             path: path.join(PROVINCE_ROUTE),
