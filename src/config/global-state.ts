@@ -1,6 +1,6 @@
-import {User} from 'models/User';
-import vi from 'i18n/vi.json';
-import nameof from 'ts-nameof.macro';
+import { User } from "models/User";
+import vi from "i18n/vi.json";
+import nameof from "ts-nameof.macro";
 
 export interface GlobalState {
   /**
@@ -17,6 +17,11 @@ export interface GlobalState {
    * Current user profile
    */
   user?: User;
+  /**
+   * Display quick menu
+   */
+
+  display?: boolean;
 }
 
 export const initialGlobalState: GlobalState = {

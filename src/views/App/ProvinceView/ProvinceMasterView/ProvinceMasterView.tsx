@@ -1,7 +1,6 @@
 import Button from 'antd/lib/button';
 import Card from 'antd/lib/card';
 import Table, { ColumnProps } from 'antd/lib/table';
-import Typography from 'antd/lib/typography';
 import { Province } from 'models/Province';
 import { ProvinceFilter } from 'models/ProvinceFilter';
 import React from 'react';
@@ -11,8 +10,8 @@ import { provinceRepository } from 'repositories/province-repository';
 import { tableService } from 'services/table-service';
 import nameof from 'ts-nameof.macro';
 import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
+import { Row, Col } from 'antd';
 
-const { Text } = Typography;
 
 function ProvinceMasterView() {
   const [translate] = useTranslation();
@@ -105,32 +104,58 @@ function ProvinceMasterView() {
   );
 
   return (
-    <Card >
-      hehehe
-      <Table
-        tableLayout="fixed"
-        bordered={true}
-        rowKey={nameof(provinceList[0].id)}
-        columns={columns}
-        dataSource={provinceList}
-        loading={provinceLoading}
-        pagination={pagination}
-        onChange={handleChange}
-        rowSelection={rowSelection}
-        title={() => (
-          <div className="d-flex justify-content-start">
-            <Link to="/province/province-detail">
-              <Button type="primary" className="mr-2">
-                {translate('general.actions.create')}
-              </Button>
-            </Link>
-            <Button type="primary" onClick={handleBatchDelete}>
-              {translate('general.actions.delete')}
-            </Button>
+    <>
+      <div className="page page__master">
+        <div className="page__header d-flex align-items-center justify-content-between">
+          <div className="page__title">
+            {translate('province.master.title')}
           </div>
-        )}
-      />
-    </Card>
+          <div className="page__actions d-flex align-items-center">
+            <button
+              className="btn btn-sm component__btn-primary ml-3"
+            >
+              {translate('general.actions.create')}
+            </button>
+          </div>
+        </div>
+        <div className="page__search">
+          <Card title={translate('general.search.title')}>
+            <Row>
+              <Col lg={6}>
+
+              </Col>
+              <Col lg={6}></Col>
+            </Row>
+          </Card>
+        </div>
+      </div>
+      <Card >
+        <Table
+          tableLayout="fixed"
+          bordered={true}
+          rowKey={nameof(provinceList[0].id)}
+          columns={columns}
+          dataSource={provinceList}
+          loading={provinceLoading}
+          pagination={pagination}
+          onChange={handleChange}
+          rowSelection={rowSelection}
+          title={() => (
+            <div className="d-flex justify-content-start">
+              <Link to="/province/province-detail">
+                <Button type="primary" className="mr-2">
+                  {translate('general.actions.create')}
+                </Button>
+              </Link>
+              <Button type="primary" onClick={handleBatchDelete}>
+                {translate('general.actions.delete')}
+              </Button>
+            </div>
+          )}
+        />
+      </Card>
+    </>
+
   );
 }
 

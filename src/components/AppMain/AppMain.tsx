@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch } from 'react-router';
 import { renderRoutes, RouteConfigComponentProps } from 'react-router-config';
 import './AppMain.scss';

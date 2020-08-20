@@ -1,4 +1,3 @@
-import React from 'react';
 import { RouteConfig } from 'react-router-config';
 import path from 'path';
 import nameof from 'ts-nameof.macro';
@@ -11,9 +10,7 @@ import AppMain from 'components/AppMain/AppMain';
 import IndirectSalesOrderView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderView';
 import IndirectSalesOrderMasterView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderMasterView/IndirectSalesOrderMasterView';
 import IndirectSalesOrderDetailView from 'views/App/IndirectSalesOrderView/IndirectSalesOrderDetailView/IndirectSalesOrderDetailView';
-import WithAuth from 'views/WithAuth';
 import ProvinceView from 'views/App/ProvinceView/ProvinceView';
-import { render } from '@testing-library/react';
 
 // const ProvinceView = React.lazy(() => import('views/App/ProvinceView/ProvinceView'));
 

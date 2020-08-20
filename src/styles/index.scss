@@ -47,8 +47,25 @@ body {
     border-radius: 7px;
     text-align: center;
     height: 38px;
+    font-weight: 600;
     &:hover {
       color: $white;
+    }
+  }
+  /* Page*/
+  /* Master*/
+  .page {
+    &.page__master,
+    &.page__detail {
+      .page__header {
+        margin-bottom: 30px;
+        .page__title {
+          @include gradient-text();
+          font-weight: bold;
+          font-size: 30px;
+          line-height: 27px;
+        }
+      }
     }
   }
 }

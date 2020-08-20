@@ -166,30 +166,6 @@
   margin-top: 68px;
 }
 
-.ant-layout-sider::-webkit-scrollbar {
-  width: 5px;
-  background-color: #ffffff;
-  border-radius: 10px;
-}
-
-.ant-layout-sider::-webkit-scrollbar-thumb {
-  width: 5px;
-  background-color: #c1c1c1;
-  border-radius: 10px;
-  transition: all linear 5s;
-  display: none;
-}
-
-.ant-layout-sider::-webkit-scrollbar-track {
-  width: 5px;
-  background-color: #ffffff;
-  border-radius: 10px;
-}
-
-.ant-layout-sider:hover::-webkit-scrollbar-thumb {
-  display: block;
-}
-
 .ant-layout-sider {
   transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
 }

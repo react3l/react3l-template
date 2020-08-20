@@ -1,18 +1,19 @@
 import React from "react";
 import "./AppHeader.scss";
 import Avatar, { ConfigProvider } from "react-avatar";
-import classNames from 'classnames';
-import Modal from "antd/lib/modal/Modal";
+import { GlobalState } from "config/global-state";
+import { setGlobal, useGlobal } from 'reactn';
 function AppHeader() {
   const [display, setDisplay] = React.useState<boolean>(false);
+  const [displayHeader] = useGlobal<GlobalState>('display');
 
-  const handleClick = React.useCallback(() => {
+  const handleClick = React.useCallback((event) => {
+    setGlobal<GlobalState>({ display: true });
+    console.log('có vào đây ko nhể 1');
     setDisplay(true);
   }, []);
 
-  const handleOffOverlay = React.useCallback(() => {
-    setDisplay(false);
-  }, []);
+
 
   const menus = [
     {
@@ -47,84 +48,55 @@ function AppHeader() {
     },
   ];
 
+
   return (
-    <>
-      <div className="header__navbar-default">
-        <header className="app-header">
-          <button
-            className="btn btn-sm component__btn-primary ml-3"
-            onClick={handleClick}
-          >
-            <i className="tio-add d-flex justify-content-center" />
-          </button>
-          <div className="float-right mt-3">
-            <div className="d-flex align-items-center">
-              <div className="app-header__language">Tiếng Việt</div>
-              <div className="app-header__notifications">
-                <i className="tio-notifications_outlined" />
-              </div>
-              <div className="app-header__user">
-                <div className="app-header__display-name">Vu Dang</div>
-                <div className="app-header__username">Administrator</div>
-              </div>
-              <div className="app-header__avatar ml-3 mr-3">
-                {/* <img className="mr-1 app-header__avatar-img" src="public/assets/img/avatar.jpg" alt="" /> */}
-                <ConfigProvider colors={["red", "green", "blue"]}>
-                  <Avatar
-                    maxInitials={1}
-                    round={true}
-                    size="34"
-                    name="Dang Tuan Vu"
-                  />
-                </ConfigProvider>
-              </div>
-            </div>
-          </div>
-        </header>
-      </div>
-      {/* {display && (
-        <div
-          className={classNames(
-            "header__overlay",
-            { "header__display-block": display },
-          )}
-          onClick={handleOffOverlay}
+    <div className="header__navbar-default">
+      <header className="app-header">
+        <button
+          className="btn btn-sm component__btn-primary ml-3"
+          onClick={handleClick}
         >
-          <div className=" header__list">
-            {menus &&
-              menus.length > 0 &&
-              menus.map((menu, index) => (
-                <div className="header__menu d-flex" key={index}>
-                  <div className="header__menu-icon">
-                    <i className={menu?.icon} />
-                  </div>
-                  <div className="header__menu-title">{menu?.title}</div>
-                </div>
-              ))}
+          <i className="tio-add d-flex justify-content-center" />
+        </button>
+        <div className="float-right mt-3">
+          <div className="d-flex align-items-center">
+            <div className="app-header__language">Tiếng Việt</div>
+            <div className="app-header__notifications">
+              <i className="tio-notifications_outlined" />
+            </div>
+            <div className="app-header__user">
+              <div className="app-header__display-name">Vu Dang</div>
+              <div className="app-header__username">Administrator</div>
+            </div>
+            <div className="app-header__avatar ml-3 mr-3">
+              {/* <img className="mr-1 app-header__avatar-img" src="public/assets/img/avatar.jpg" alt="" /> */}
+              <ConfigProvider colors={["red", "green", "blue"]}>
+                <Avatar
+                  maxInitials={1}
+                  round={true}
+                  size="34"
+                  name="Dang Tuan Vu"
+                />
+              </ConfigProvider>
+            </div>
           </div>
         </div>
-      )} */}
-
-      <Modal
-        title="Basic Modal"
-        visible={display}
-        className="modal-default-list"
-        maskClosable={true}
-      // onOk={].handleOk}
-      // onCancel={this.handleCancel}
-      >
-        {menus &&
-          menus.length > 0 &&
-          menus.map((menu, index) => (
-            <div className="header__menu d-flex" key={index}>
-              <div className="header__menu-icon">
-                <i className={menu?.icon} />
+      </header>
+      {(display === true && displayHeader === true) && (
+        <div className=" header__list">
+          {menus &&
+            menus.length > 0 &&
+            menus.map((menu, index) => (
+              <div className="header__menu d-flex align-items-center" key={index}>
+                <div className="header__menu-icon">
+                  <i className={menu?.icon} />
+                </div>
+                <div className="header__menu-title">{menu?.title}</div>
               </div>
-              <div className="header__menu-title">{menu?.title}</div>
-            </div>
-          ))}
-      </Modal>
-    </>
+            ))}
+        </div>
+      )}
+    </div>
   );
 }
 
