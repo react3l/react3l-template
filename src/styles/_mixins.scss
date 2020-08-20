@@ -8,16 +8,17 @@
 }
 
 @mixin border-color {
-  border-color: -webkit-linear-gradient(
+  border-image-source: -webkit-linear-gradient(
     224.53deg,
     #013ffb 0%,
     #a295f2 99.2%
   ) !important;
-  border-color: linear-gradient(
+  border-image-source: linear-gradient(
     224.53deg,
     #013ffb 0%,
     #a295f2 99.2%
   ) !important;
+  border-image-slice: 1;
 }
 
 @mixin background-active-color {
@@ -52,4 +53,19 @@
     #a295f2 99.2%
   ) !important;
   background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
+}
+
+@mixin input-title {
+  width: 100%;
+  font-size: 13px;
+  line-height: 150%;
+  color: #8181a5;
+  margin-bottom: 2px;
+}
+
+@mixin input-icon {
+  position: absolute;
+  right: 2%;
+  top: 35%;
+  cursor: pointer;
 }

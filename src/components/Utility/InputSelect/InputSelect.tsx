@@ -1,12 +1,16 @@
 import React, { RefObject } from 'react';
 import './InputSelect.scss';
 import { Model } from 'react3l/core/model';
+import classNames from 'classnames';
 
 export interface InputSelectProps <T extends Model> {
   model?: T;
+  title?: string;
   disabled?: boolean;
   expanded?: boolean;
+  isMaterial?: boolean;
   placeHolder?: string;
+  className?: string;
   render?: (t: T) => string;
   onClear?: (T: T) => void;
   onSearch?: (T: string) => void;
@@ -15,9 +19,12 @@ export interface InputSelectProps <T extends Model> {
 function InputSelect(props: InputSelectProps<Model>) {
   const {
     model,
+    title,
     disabled,
     expanded,
+    isMaterial,
     placeHolder,
+    className,
     render,
     onClear,
     onSearch,
@@ -49,6 +56,7 @@ function InputSelect(props: InputSelectProps<Model>) {
 
   React.useEffect(() => {
     if (expanded) {
+      setInternalModel('');
       inputRef.current.focus();
     }
   }, [expanded]);
@@ -56,29 +64,32 @@ function InputSelect(props: InputSelectProps<Model>) {
   return (
     <>
       <div className="input-select__container">
+        { title && 
+          <div className="input-select__title">{title}</div>
+        }
         { expanded ? 
-          <>
+          <div className="input-select__wrapper">
             <input type="text"
               value={internalModel}
               onChange={handleChange}
               placeholder={model ? render(model) : placeHolder}
               ref={inputRef} 
-              className="component__input"/>
-              {internalModel && <i className="input-select__icon tio-clear" onClick={handleClearInput}></i>}
-          </> :
-          <>
+              className={classNames('component__input', {'component__input--material': isMaterial})}/>
+            {internalModel && <i className="input-select__icon tio-clear" onClick={handleClearInput}></i>}
+          </div> :
+          <div className="input-select__wrapper">
             <input type="text"
               value={render(model)}
               onChange={handleForResolve}
               placeholder={placeHolder} 
-              className="component__input"
+              className={classNames('component__input', {'component__input--material': isMaterial})}
               disabled={disabled}/>
-              { model ? 
-                <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
-                <i className="input-select__icon tio-chevron_down"></i>
-              }
-          </>
-        }
+            { model ? 
+              <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
+              <i className="input-select__icon tio-chevron_down"></i>
+            }
+          </div>
+          }
       </div>
     </>
   );
@@ -90,6 +101,7 @@ function defaultRenderObject<T extends Model>(t: T) {
 
 InputSelect.defaultProps = {
   render: defaultRenderObject,
+  isMaterial: false,
   expanded: false,
   disabled: false,
 };

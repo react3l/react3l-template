@@ -26,6 +26,8 @@ export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> 
 
   disabled?: boolean;
 
+  isMaterial?: boolean;
+
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
   setModel?: (T: T ) => void;
@@ -44,6 +46,8 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     searchProperty,
     searchType,
     placeHolder,
+    disabled,
+    isMaterial,
     getList,
     setModel,
     render,
@@ -126,8 +130,10 @@ function Select(props: SelectProps<Model, ModelFilter>) {
       <div className="select__input" onClick={handleToggle}>
         <InputSelect model={internalModel}
           render={render}
+          isMaterial={isMaterial}
           placeHolder={placeHolder}
           expanded={isExpand}
+          disabled={disabled}
           onSearch={handleSearchChange}
           onClear={handleClearItem}/>
       </div>
@@ -159,7 +165,8 @@ Select.defaultProps = {
   searchProperty: nameof(Model.prototype.name),
   searchType: nameof(StringFilter.prototype.startWith),
   render: defaultRenderObject,
-
+  isMaterial: false,
+  disabled: false,
 };
 
 export default Select;

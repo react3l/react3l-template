@@ -1,11 +1,13 @@
 import React, { RefObject } from 'react';
 import './InputTag.scss';
 import { Model } from 'react3l/core/model';
+import classNames from 'classnames';
 
 export interface InputTagProps <T extends Model> {
   listItem?: T[];
   placeHolder?: string;
   disabled?: boolean;
+  isMaterial?: boolean;
   render?: (t: T) => string;
   onClear?: (T: T) => void;
   onSearch?: (T: string) => void;
@@ -15,6 +17,7 @@ function InputTag(props: InputTagProps<Model>) {
     listItem,
     placeHolder,
     disabled,
+    isMaterial,
     render,
     onClear,
     onSearch,
@@ -48,7 +51,8 @@ function InputTag(props: InputTagProps<Model>) {
   return (
     <>
       <div className="input-tag__wrapper">
-        <div className="input-tag__container" onClick={() => inputRef.current.focus()}>
+        <div className={classNames('input-tag__container', {'input-tag__container--material': isMaterial})} 
+          onClick={() => inputRef.current.focus()}>
             { internalListItem &&
               internalListItem.map((item, index) => 
                 <span className="input-tag__label" key={index} onClick={(e) => e.stopPropagation()}>
@@ -74,6 +78,7 @@ function defaultRenderObject<T extends Model>(t: T) {
 
 InputTag.defaultProps = {
   render: defaultRenderObject,
+  isMaterial: false,
 };
 
 export default InputTag;
