@@ -7,13 +7,21 @@ function AppHeader() {
   const [display, setDisplay] = React.useState<boolean>(false);
   const [displayHeader] = useGlobal<GlobalState>('display');
 
-  const handleClick = React.useCallback((event) => {
+  const [toggleMenu, setToggleMenu] = React.useState<boolean>(false);
+
+  const handleClick = React.useCallback(() => {
     setGlobal<GlobalState>({ display: true });
-    console.log('có vào đây ko nhể 1');
     setDisplay(true);
-  }, []);
+  }, [setDisplay]);
 
-
+  const handleToggleMenu = React.useCallback(() => {
+    const toggle = !toggleMenu;
+    setToggleMenu(toggle);
+    setGlobal<GlobalState>({ toggle });
+  }, [
+    setToggleMenu,
+    toggleMenu
+  ])
 
   const menus = [
     {
@@ -48,27 +56,29 @@ function AppHeader() {
     },
   ];
 
-
   return (
     <div className="header__navbar-default">
-      <header className="app-header">
-        <button
-          className="btn btn-sm component__btn-primary ml-3"
-          onClick={handleClick}
-        >
-          <i className="tio-add d-flex justify-content-center" />
-        </button>
-        <div className="float-right mt-3">
+      <header className="app-header d-flex justify-content-between">
+        <div className="app-header__toggle" onClick={handleToggleMenu}>
+          <i className="tio-menu_hamburger" />
+        </div>
+        <div className="float-right ">
           <div className="d-flex align-items-center">
-            <div className="app-header__language">Tiếng Việt</div>
-            <div className="app-header__notifications">
+            <button
+              className="btn btn-sm component__btn-primary mr-3"
+              onClick={handleClick}
+            >
+              <i className="tio-add d-flex justify-content-center" />
+            </button>
+            <div className="app-header__language mt-3">Tiếng Việt</div>
+            <div className="app-header__notifications mt-3">
               <i className="tio-notifications_outlined" />
             </div>
-            <div className="app-header__user">
+            <div className="app-header__user mt-3">
               <div className="app-header__display-name">Vu Dang</div>
               <div className="app-header__username">Administrator</div>
             </div>
-            <div className="app-header__avatar ml-3 mr-3">
+            <div className="app-header__avatar mt-3 ml-3 mr-3">
               {/* <img className="mr-1 app-header__avatar-img" src="public/assets/img/avatar.jpg" alt="" /> */}
               <ConfigProvider colors={["red", "green", "blue"]}>
                 <Avatar

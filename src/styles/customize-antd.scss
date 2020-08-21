@@ -159,6 +159,7 @@
   height: calc(100% - (68px));
   overflow-y: scroll;
   overflow-x: hidden;
+  position: fixed !important;
   transition: transform 400ms ease-in;
   display: block;
   max-width: 280px !important;

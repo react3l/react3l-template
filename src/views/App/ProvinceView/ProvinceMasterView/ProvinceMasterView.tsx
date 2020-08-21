@@ -11,6 +11,7 @@ import { tableService } from 'services/table-service';
 import nameof from 'ts-nameof.macro';
 import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
 import { Row, Col } from 'antd';
+import InputSearch from 'components/Utility/InputSearch/InputSearch';
 
 
 function ProvinceMasterView() {
@@ -121,14 +122,64 @@ function ProvinceMasterView() {
         <div className="page__search">
           <Card title={translate('general.search.title')}>
             <Row>
-              <Col lg={6}>
-
+              <Col lg={12}>
+                <InputSearch />
               </Col>
-              <Col lg={6}></Col>
+              <Col lg={12}></Col>
             </Row>
           </Card>
         </div>
       </div>
+      <Card >
+        <Table
+          tableLayout="fixed"
+          bordered={true}
+          rowKey={nameof(provinceList[0].id)}
+          columns={columns}
+          dataSource={provinceList}
+          loading={provinceLoading}
+          pagination={pagination}
+          onChange={handleChange}
+          rowSelection={rowSelection}
+          title={() => (
+            <div className="d-flex justify-content-start">
+              <Link to="/province/province-detail">
+                <Button type="primary" className="mr-2">
+                  {translate('general.actions.create')}
+                </Button>
+              </Link>
+              <Button type="primary" onClick={handleBatchDelete}>
+                {translate('general.actions.delete')}
+              </Button>
+            </div>
+          )}
+        />
+      </Card>
+      <Card >
+        <Table
+          tableLayout="fixed"
+          bordered={true}
+          rowKey={nameof(provinceList[0].id)}
+          columns={columns}
+          dataSource={provinceList}
+          loading={provinceLoading}
+          pagination={pagination}
+          onChange={handleChange}
+          rowSelection={rowSelection}
+          title={() => (
+            <div className="d-flex justify-content-start">
+              <Link to="/province/province-detail">
+                <Button type="primary" className="mr-2">
+                  {translate('general.actions.create')}
+                </Button>
+              </Link>
+              <Button type="primary" onClick={handleBatchDelete}>
+                {translate('general.actions.delete')}
+              </Button>
+            </div>
+          )}
+        />
+      </Card>
       <Card >
         <Table
           tableLayout="fixed"

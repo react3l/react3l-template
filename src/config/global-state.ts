@@ -22,6 +22,12 @@ export interface GlobalState {
    */
 
   display?: boolean;
+
+  /**
+   * Toggle menu
+   */
+
+  toggle?: boolean;
 }
 
 export const initialGlobalState: GlobalState = {

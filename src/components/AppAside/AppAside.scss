@@ -3,6 +3,7 @@
 $red: red;
 
 .aside {
+  position: fixed;
   .aside__header {
     position: fixed;
     .aside__navbar-brand {
@@ -19,25 +20,24 @@ $red: red;
       }
     }
   }
-}
+  .aside__default-sidebar {
+    .ant-menu-item {
+      a {
+        display: flex;
+        align-items: center;
+        // margin: 0px 6px;
+        padding-left: 1rem;
+        width: 100%;
 
-.aside__default-sidebar {
-  .ant-menu-item {
-    a {
-      display: flex;
-      align-items: center;
-      // margin: 0px 6px;
-      padding-left: 1rem;
-      width: 100%;
+        &:hover {
+          text-decoration: none;
+        }
 
-      &:hover {
-        text-decoration: none;
-      }
-
-      .material-icons {
-        height: 14px;
-        font-size: 14px;
-        margin-right: 10px;
+        .material-icons {
+          height: 14px;
+          font-size: 14px;
+          margin-right: 10px;
+        }
       }
     }
   }
@@ -46,20 +46,24 @@ $red: red;
 .slide-in {
   transform: translateX(0);
   margin-left: 0;
-  // transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
 }
 
 .slide-out {
-  transform: translateX(-205px);
-  margin-left: -205px;
-  // transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  transform: translateX(-285px);
+  margin-left: -285px;
+  transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
 }
 
 .content-in {
-  transform: translateX(0);
-  margin-left: 205px !important;
+  // transform: translateX(0);
+  margin-left: 257px !important;
+  transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
 }
 .content-out {
   transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
-  // margin-left: 205px !important;
+  margin-left: 78px !important;
+  .app-header {
+    width: calc(100% - 120px) !important;
+  }
 }

@@ -1,0 +1,33 @@
+@import "../../../styles/mixins";
+/* Style for Inputsearch.tsx */
+.input-search__container {
+  width: 100%;
+  min-width: 220px;
+  background-color: #fafafc;
+  .input-search__title {
+    @include input-title;
+  }
+  .input-search__wrapper {
+    widows: 100%;
+    position: relative;
+    .input-search_icon-search {
+      position: absolute;
+      z-index: 2;
+      font-size: 20px;
+      margin-top: 3px;
+      margin-left: 18px;
+      i {
+        @include gradient-text();
+      }
+    }
+    .input-search__icon {
+      @include input-icon;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    .component__input {
+      padding: 1rem 1.75rem 1rem 3rem;
+    }
+  }
+}

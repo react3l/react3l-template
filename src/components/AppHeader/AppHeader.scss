@@ -6,13 +6,21 @@
   .app-header {
     position: fixed;
     top: 30px;
-    width: calc(100% - 346px);
+    width: calc(100% - 340px);
     height: 62px;
     background: #ffffff;
     box-shadow: 0px 0px 8px rgba(218, 219, 216, 0.5);
     border-radius: 7px;
     margin-left: 34px;
     z-index: 2;
+    .app-header__toggle {
+      cursor: pointer;
+      i {
+        @include gradient-text();
+      }
+      font-size: 20px;
+      margin: 13px 20px 20px 20px;
+    }
     .btn {
       height: 32px !important;
       margin-top: 15px;
@@ -57,7 +65,8 @@
     height: 434px;
     z-index: 2000;
     top: 80px;
-    margin-left: 47px;
+    right: 335px;
+
     .header__menu {
       margin: 19px 26px 35px;
       cursor: pointer;

@@ -10,20 +10,22 @@ import './App.scss'
 import { useGlobal, setGlobal } from 'reactn';
 import { GlobalState } from 'config/global-state';
 import classNames from 'classnames';
+import AppAsideCollapse from 'components/AppAsideCollapse/AppAsideCollapse';
 
 function App() {
 
   const [display] = useGlobal<GlobalState>('display');
-  console.log('display', display)
+  const [toggleMenu] = useGlobal<GlobalState>('toggle');
   const handleOffOverlay = React.useCallback(() => {
-    console.log('display: ', display)
     setGlobal<GlobalState>({ display: false });
-    console.log('có vào đây ko nhể 2')
   }, [display]);
 
   return (
     <div className="app d-flex">
-      <AppAside routes={menu} />
+
+      <AppAsideCollapse className={toggleMenu ? 'slide-in' : 'slide-out'} routes={menu} />
+      <AppAside className={!toggleMenu ? 'slide-in' : 'slide-out'} routes={menu} />
+
       <div
         className={classNames(
           { "header__overlay header__display-block": display },
@@ -32,7 +34,7 @@ function App() {
       >
 
       </div>
-      <section className="flex-item">
+      <section className={classNames("flex - item", (!toggleMenu ? 'main content-in' : 'main content-out'))}>
         <AppHeader />
         <main className="body">
           <Switch>{renderRoutes(routes)}</Switch>

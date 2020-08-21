@@ -98,6 +98,7 @@ body {
     text-align: center;
     height: 38px;
     font-weight: 600;
+    padding: 0 16px;
     &:hover {
       color: $white;
     }
@@ -114,6 +115,12 @@ body {
           font-weight: bold;
           font-size: 30px;
           line-height: 27px;
+        }
+      }
+      .page__search {
+        margin-bottom: 20px;
+        .ant-card-head {
+          border-bottom: none;
         }
       }
     }
