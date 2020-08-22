@@ -1,0 +1,57 @@
+@import '../../../../styles/mixins';
+/* Style for advance-id-filter.tsx */
+.advance-id-filter__container {
+    width: 100%;
+    min-width: 220px;
+    position: relative;
+
+    .advance-id-filter__input {
+        width: 100%;
+    }
+
+    .advance-id-filter__list-container {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        background: #FFFFFF;
+        box-shadow: 0px 7px 64px rgba(0, 0, 0, 0.07);
+        border-radius: 7px;
+        margin-top: 5px;
+        position: absolute;
+        z-index: 999;
+        .advance-id-filter__list {
+            padding: 0px 5px;
+            width: 100%;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        .advance-id-filter__loading {
+            width: 100%;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .advance-id-filter__item {
+            position: relative;
+            display: block;
+            background-color: #fff;
+            padding: 5px 10px;
+            font-size: 13px;
+            margin-top: 3px;
+            &:hover {
+                @include background-active-color;
+                .advance-id-filter__text {
+                    @include gradient-text;
+                }
+            }
+            &.advance-id-filter__item--advance-id-filtered {
+                @include background-active-color;
+                .advance-id-filter__text {
+                    @include gradient-text;
+                }
+            }
+        }
+    }
+}

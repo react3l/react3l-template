@@ -1,9 +1,9 @@
 import React, { RefObject } from 'react';
-import './InputText.scss';
+import './AdvanceStringFilter.scss';
 import { Model } from 'react3l/core/model';
 import classNames from 'classnames';
 
-interface InputText<T extends Model> {
+interface AdvanceStringFilter<T extends Model> {
   value?: string;                                                                      
   isMaterial?: boolean;
   title?: string;
@@ -14,15 +14,12 @@ interface InputText<T extends Model> {
   onChange?: (T: string) => void;
 }
 
-function InputText(props: InputText<Model>) {
+function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
   const {
     value,
-    isMaterial,
     title,
-    isError,
     disabled,
     placeHolder,
-    className,
     onChange,
   } = props;
 
@@ -47,7 +44,9 @@ function InputText(props: InputText<Model>) {
 
   React.useEffect(() => {
     if (value) {
-      setInternalValue(value);
+      if (value !== internalValue) {
+        setInternalValue(value);
+      }
     } else {
       setInternalValue('');
     }
@@ -55,33 +54,27 @@ function InputText(props: InputText<Model>) {
 
   return (
     <>
-      <div className="input-text__container">
+      <div className="advance-string-filter__container">
         { title && 
-          <div className="input-text__title">{title}</div>
+          <div className="advance-string-filter__title">{title}</div>
         }
-        <div className="input-text__wrapper">
+        <div className="advance-string-filter__wrapper">
           <input type="text"
             value={internalValue}
             onChange={handleChange}
             placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
             ref={inputRef}
             disabled={disabled} 
-            className={classNames('component__input', {'component__input--material': isMaterial})}/>
-          { internalValue ? 
-            <i className="input-text__icon tio-clear" onClick={handleClearInput}></i> :
-            className && 
-            <i className={classNames('input-text__icon', className)}></i>
-          }
+            className={classNames('component__input')}/>
+          { internalValue && <i className="advance-string-filter__icon tio-clear" onClick={handleClearInput}></i>}
         </div>
       </div>
     </>
   );
 }
 
-InputText.defaultProps = {
-  isMaterial: false,
+AdvanceStringFilter.defaultProps = {
   disabled: false,
-  className: '',
 };
 
-export default InputText;
+export default AdvanceStringFilter;

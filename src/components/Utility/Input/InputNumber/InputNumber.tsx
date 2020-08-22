@@ -159,12 +159,17 @@ function InputNumber(props: InputNumberProps<Model>) {
 
   React.useEffect(() => {
     if (value) {
-      const stringValue = formatString('' + value);
-      setInternalValue(stringValue);
+      var stringValue = '' + value;
+      if (isReverseSymb) {
+        stringValue = stringValue.replace(/\./g, ',');
+      }
+      if (stringValue !== internalValue) {
+        setInternalValue(formatString(stringValue));
+      }
     } else {
       setInternalValue('');
     }
-  }, [value, formatString]);
+  }, [value, formatString, isReverseSymb]);
 
   return (
     <>

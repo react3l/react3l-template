@@ -1,14 +1,17 @@
-import React from 'react';
-import {storiesOf} from '@storybook/react';
-import nameof from 'ts-nameof.macro';
+import React, { Reducer } from 'react';
 import InputNumber, { DECIMAL, LONG } from './InputNumber';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
+import { ModelFilter } from 'react3l/core/model-filter';
+import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
+import { AdvanceFilterAction, advanceFilterReducer, advanceFilterService } from 'services/advance-filter-service';
+import { Filter } from 'react3l-advanced-filters/Filter';
 
+class DemoFilter extends ModelFilter {
+    number: NumberFilter = new NumberFilter();
+}
 
-function Default() {
-    const [value, setValue] = React.useState(null);
-
+export function InputNumberStories() {
     const [numberType, setNumberType] = React.useState<string>(LONG);
 
     const [isReverse, setIsReverse] = React.useState(false);
@@ -23,6 +26,10 @@ function Default() {
 
     const [iconName, setIconName] = React.useState('');
 
+    const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, Filter>>>(advanceFilterReducer, new DemoFilter());
+
+    const [value, setValue] = advanceFilterService.useNumberFilter<DemoFilter, NumberFilter>(filter, dispatch, 'number', 'equal');
+
     const handleChangeTitle = React.useCallback((event: RadioChangeEvent) => {
         setIsTitle(event.target.value);
         if (event.target.value) {
@@ -33,12 +40,12 @@ function Default() {
     const handleChangeType = React.useCallback((event: RadioChangeEvent) => {
         setNumberType(event.target.value);
         setValue(undefined);
-    }, []);
+    }, [setValue]);
 
     const handleChangeSeperation = React.useCallback((event: RadioChangeEvent) => {
         setIsReverse(event.target.value);
         setValue(undefined);
-    }, []);
+    }, [setValue]);
 
     const handleChangeStyle = React.useCallback((event: RadioChangeEvent) => {
         setIsMaterial(event.target.value);
@@ -46,18 +53,23 @@ function Default() {
         if (event.target.value) {
             setIconName('tio-dollar');
         } else setIconName('');
-    }, []);
+    }, [setValue]);
 
     const handleChangePositive = React.useCallback((event: RadioChangeEvent) => {
         setIsPositive(event.target.value);
         setValue(undefined);
-    }, []);
+    }, [setValue]);
+
+    React.useEffect(() => {
+        
+    }, [filter]);
 
     return <div style={{width: '250px', margin: '10px', backgroundColor: '#F2F2F2'}}>
         <InputNumber placeHolder={'Enter number...'}
             title={title}
             className={iconName}
             value={value}
+            onChange={setValue}
             isMaterial={isMaterial} 
             numberType={numberType} 
             isReverseSymb={isReverse}
@@ -94,6 +106,3 @@ function Default() {
         </div>
     </div>;
 }
-  
-storiesOf('InputNumber', module)
-    .add(nameof(Default), Default);

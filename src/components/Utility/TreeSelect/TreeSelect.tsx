@@ -3,14 +3,15 @@ import './TreeSelect.scss';
 import { Model } from 'react3l/core/model';
 import { ModelFilter } from 'react3l/core/model-filter';
 import Tree from '../Tree/Tree';
-import InputTag from '../InputTag/InputTag';
 import { debounce } from 'react3l/helpers';
 import { DEBOUNCE_TIME_300 } from 'react3l/config';
 import { Observable } from 'rxjs';
 import nameof from 'ts-nameof.macro';
 import { commonWebService } from 'services/common-web-service';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
-import InputSelect from '../InputSelect/InputSelect';
+import InputTag from '../Input/InputTag/InputTag';
+import InputSelect from '../Input/InputSelect/InputSelect';
+
 
 export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilter> {
   listItem?: Model[];

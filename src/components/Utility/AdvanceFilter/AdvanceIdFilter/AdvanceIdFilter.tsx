@@ -1,5 +1,5 @@
 import React, {RefObject} from 'react';
-import './Select.scss';
+import './AdvanceIdFilter.scss';
 import classNames from 'classnames';
 import { commonWebService } from 'services/common-web-service';
 import { Model, ModelFilter } from 'react3l/core';
@@ -11,10 +11,9 @@ import nameof from 'ts-nameof.macro';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 import { Empty } from 'antd';
 import { commonService } from 'react3l/services/common-service';
-import InputSelect from '../Input/InputSelect/InputSelect';
+import InputSelect from './../../Input/InputSelect/InputSelect';
 
-
-export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> {
+export interface AdvanceIdFilterProps<T extends Model, TModelFilter extends ModelFilter> {
   model?: Model;
 
   modelFilter?: TModelFilter;
@@ -27,8 +26,6 @@ export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> 
 
   disabled?: boolean;
 
-  isMaterial?: boolean;
-
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
   setModel?: (T: T ) => void;
@@ -40,7 +37,7 @@ function defaultRenderObject<T extends Model>(t: T) {
   return t?.name;
 }
 
-function Select(props: SelectProps<Model, ModelFilter>) {
+function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
   const {
     model,
     modelFilter,
@@ -48,7 +45,6 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     searchType,
     placeHolder,
     disabled,
-    isMaterial,
     getList,
     setModel,
     render,
@@ -93,7 +89,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     }, [handleLoadList],
   );
   
-  const handleCloseSelect = React.useCallback(
+  const handleCloseAdvanceIdFilter = React.useCallback(
     () => {
       setExpand(false);
     },
@@ -103,9 +99,9 @@ function Select(props: SelectProps<Model, ModelFilter>) {
   const handleClickItem = React.useCallback(
     (item: Model) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       setModel(item);
-      handleCloseSelect();
+      handleCloseAdvanceIdFilter();
     }, 
-  [handleCloseSelect, setModel]);
+  [handleCloseAdvanceIdFilter, setModel]);
 
   const handleSearchChange = React.useCallback(debounce((searchTerm: string) => {
     const cloneModelFilter = {...modelFilter};
@@ -125,13 +121,12 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     setModel(null);
   }, [setModel]);
 
-  commonWebService.useClickOutside(wrapperRef, handleCloseSelect);
+  commonWebService.useClickOutside(wrapperRef, handleCloseAdvanceIdFilter);
   return <>
-    <div className="select__container" ref={wrapperRef}>
-      <div className="select__input" onClick={handleToggle}>
+    <div className="advance-id-filter__container" ref={wrapperRef}>
+      <div className="advance-id-filter__input" onClick={handleToggle}>
         <InputSelect model={internalModel}
           render={render}
-          isMaterial={isMaterial}
           placeHolder={placeHolder}
           expanded={isExpand}
           disabled={disabled}
@@ -139,20 +134,20 @@ function Select(props: SelectProps<Model, ModelFilter>) {
           onClear={handleClearItem}/>
       </div>
       { isExpand &&
-        <div className="select__list-container">
+        <div className="advance-id-filter__list-container">
           { !loading ? 
-            <div className="select__list">
+            <div className="advance-id-filter__list">
               { list.length > 0 ? 
               list.map((item, index) => 
-              <div className={classNames('select__item', {'select__item--selected': item.id === internalModel?.id})}
+              <div className={classNames('advance-id-filter__item', {'advance-id-filter__item--advance-id-filtered': item.id === internalModel?.id})}
                   key={index} 
                   onClick={handleClickItem(item)}>
-                  <span className="select__text">{render(item)}</span>
+                  <span className="advance-id-filter__text">{render(item)}</span>
               </div>) : 
              <Empty imageStyle={{height: 60}}/>
               }
             </div> : 
-            <div className="select__loading">
+            <div className="advance-id-filter__loading">
                   <Spin tip="Loading..."></Spin>
             </div>
           }
@@ -162,7 +157,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
   </>;
 }
 
-Select.defaultProps = {
+AdvanceIdFilter.defaultProps = {
   searchProperty: nameof(Model.prototype.name),
   searchType: nameof(StringFilter.prototype.startWith),
   render: defaultRenderObject,
@@ -170,5 +165,5 @@ Select.defaultProps = {
   disabled: false,
 };
 
-export default Select;
+export default AdvanceIdFilter;
 

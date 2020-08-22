@@ -1,10 +1,16 @@
-import React from 'react';
-import {storiesOf} from '@storybook/react';
-import nameof from 'ts-nameof.macro';
+import React, { Reducer } from 'react';
 import InputText from './InputText';
 import Radio, { RadioChangeEvent } from 'antd/lib/radio';
+import { advanceFilterService, advanceFilterReducer, AdvanceFilterAction } from 'services/advance-filter-service';
+import { ModelFilter } from 'react3l/core';
+import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 
-function Default() {
+export class DemoFilter extends ModelFilter {
+    name: StringFilter = new StringFilter();
+    code: StringFilter = new StringFilter();
+} 
+
+export function InputTextStories() {
     const [isMaterial, setIsMaterial] = React.useState(false);
 
     const [isTitle, setIsTitle] = React.useState(false);
@@ -12,6 +18,10 @@ function Default() {
     const [iconName, setIconName] = React.useState('');
 
     const [title, setTitle] = React.useState('');
+
+    const [modelFilter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, StringFilter>>>(advanceFilterReducer, new DemoFilter());
+
+    const [value, setValue] = advanceFilterService.useStringFilter<DemoFilter, StringFilter>(modelFilter, dispatch, 'name', 'startWith');
     
     const handleChangeStyle = React.useCallback((event: RadioChangeEvent) => {
         setIsMaterial(event.target.value);
@@ -26,9 +36,15 @@ function Default() {
             setTitle('Input text');
         } else setTitle('');
     }, []);
+    
+    React.useEffect(() => {
+        
+    }, [modelFilter]);
 
     return <div style={{width: '250px', margin: '10px', backgroundColor: '#F2F2F2'}}>
         <InputText isMaterial={isMaterial}
+            value={value}
+            onChange={setValue}
             title={title}
             placeHolder={'Enter text...'}
             className={iconName}/>
@@ -47,6 +63,3 @@ function Default() {
         </div>
     </div>;
 }
-  
-storiesOf('InputText', module)
-    .add(nameof(Default), Default);

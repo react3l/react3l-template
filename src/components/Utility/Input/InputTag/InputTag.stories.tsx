@@ -1,6 +1,4 @@
 import React from 'react';
-import {storiesOf} from '@storybook/react';
-import nameof from 'ts-nameof.macro';
 import InputTag from './InputTag';
 import { Model } from 'react3l/core';
 import { debounce } from 'react3l/helpers';
@@ -14,7 +12,7 @@ const demoItemList = [
     {id: 4, name: 'Tag 3', code: '4'},
     {id: 5, name: 'Tag 3', code: '5'},
 ];
-function Default() {
+export function InputTagStories() {
     const [listItem, setListItem] = React.useState<Model[]>(demoItemList);
 
     const [isMaterial, setIsMaterial] = React.useState(false);
@@ -52,6 +50,3 @@ function Default() {
                 </div>
             </div>);
 }
-
-storiesOf('InputTag', module)
-    .add(nameof(Default), Default);

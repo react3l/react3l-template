@@ -1,6 +1,8 @@
 import React from 'react';
-import { ModelFilter } from 'react3l/core';
+import { ModelFilter, Model } from 'react3l/core';
 import { Filter } from 'react3l-advanced-filters/Filter';
+import { debounce } from 'react3l/helpers';
+import { DEBOUNCE_TIME_300 } from 'react3l/config';
 
 export enum ActionFilterEnum {
     ChangeAllField,
@@ -47,28 +49,82 @@ export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
 }
 
 export const advanceFilterService = {
-    useFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
+    useStringFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
         modelFilter: T1Filter,
         dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
         fieldName: keyof T1Filter,
         fieldType: keyof T2Filter,
     ):[
         string,
-        (stringTerm: string) => void
+        (value: string) => void
     ] {
         const value = modelFilter[fieldName][fieldType];
-        const handleChangeStringFilter = React.useCallback((stringTerm: string) => {
+        const handleChangeFilter = React.useCallback(debounce((value: string) => {
             dispatch({
                 type: ActionFilterEnum.ChangeOneField,
                 fieldName: fieldName,
                 fieldType: fieldType,
-                fieldValue: stringTerm,
+                fieldValue: value,
             });
-        }, [dispatch, fieldName, fieldType]);
+        }, DEBOUNCE_TIME_300), [dispatch, fieldName, fieldType]);
 
         return [
             value, 
-            handleChangeStringFilter,
+            handleChangeFilter,
+        ];
+    },
+
+    useNumberFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
+        modelFilter: T1Filter,
+        dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+        fieldName: keyof T1Filter,
+        fieldType: keyof T2Filter,
+    ):[
+        number,
+        (value: number) => void
+    ] {
+        const value = modelFilter[fieldName][fieldType];
+        const handleChangeFilter = React.useCallback(debounce((value: number) => {
+            dispatch({
+                type: ActionFilterEnum.ChangeOneField,
+                fieldName: fieldName,
+                fieldType: fieldType,
+                fieldValue: value,
+            });
+        }, DEBOUNCE_TIME_300), [dispatch, fieldName, fieldType]);
+        
+        return [
+            value, 
+            handleChangeFilter,
+        ];
+    },
+
+    useIdFilter <T1Filter extends ModelFilter, T2Filter extends  Filter, T3 extends Model> (
+        modelFilter: T1Filter,
+        dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+        fieldName: keyof T1Filter,
+        fieldType: keyof T2Filter,
+        model?: T3,
+    ): [
+        number,
+        T3,
+        (item: T3) => void,
+    ] {
+        const [item, setItem] = React.useState<T3>(model || null);
+        const handleIdFilter = React.useCallback((item: T3) => {
+            const idValue = item?.id;
+            dispatch({
+                type: ActionFilterEnum.ChangeOneField,
+                fieldName: fieldName,
+                fieldType: fieldType,
+                fieldValue: idValue || null,
+            });
+            setItem(item);
+        }, [dispatch, fieldName, fieldType]);
+        return [
+            item?.id, 
+            item, 
+            handleIdFilter,
         ];
     },
 };

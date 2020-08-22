@@ -1,12 +1,10 @@
 import React from 'react';
-import {storiesOf} from '@storybook/react';
-import nameof from 'ts-nameof.macro';
 import InputSelect from './InputSelect';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 
 
-function Default() {
+export function InputSelectStories() {
     const [expanded, setExpanded] = React.useState<boolean>(false);
 
     const [isTitle, setIsTitle] = React.useState(false);
@@ -57,6 +55,3 @@ function Default() {
         </div>  
     </>;
 }
-
-storiesOf('InputSelect', module)
-    .add(nameof(Default), Default);
