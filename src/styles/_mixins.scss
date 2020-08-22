@@ -1,6 +1,10 @@
-@mixin name($fallback, $property, $gradient1, $gradient2) {
-    $property: $fallback;
-    $property: linear-gradient(224.53deg, $gradient1 0%, $gradient2 99.2%) !important;
+@mixin variable($property, $gradient1, $gradient2) {
+    #{$property}: linear-gradient(224.53deg, var(--$property) 0%, var(--$property) 99.2%);
+    #{$property}: -webkit-linear-gradient(224.53deg, var(--$gradient1) 0%, var(--$gradient2) 99.2%);
+}
+
+@mixin background {
+    @include variable(background, gradient-primary, gradient-secondary)
 }
 
 @mixin background-color {
