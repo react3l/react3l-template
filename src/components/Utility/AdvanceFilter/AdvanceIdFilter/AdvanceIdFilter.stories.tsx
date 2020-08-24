@@ -34,7 +34,7 @@ export function AdvanceIdFilterStories() {
 
   const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, IdFilter>>>(advanceFilterReducer, new DemoFilter());
 
-  const [id, item, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter, Model>(filter, dispatch, 'id', 'equal');
+  const [item, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter, Model>(dispatch, 'id', 'equal');
 
   const handleSetModel = React.useCallback((item: Model) => {
     setAdvanceIdFilterModel(item);
