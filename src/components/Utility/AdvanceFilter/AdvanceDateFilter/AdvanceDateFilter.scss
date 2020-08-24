@@ -1,0 +1,51 @@
+/* Style for AdvanceDateFilter.tsx */
+@import '../../../../styles/mixins';
+@import '../../../../styles/variables';
+/* Style for DatePicker.tsx */
+.advance-filter-date__container {
+    width: 100%;
+    position: relative;
+
+    .advance-filter-date__icon-wrapper {
+        position: absolute;
+        display: flex;
+        height: 1.5rem;
+        width: 1.5rem;
+        top: 0.5rem;
+        right: 1rem;
+        background-color: #ffffff;
+        justify-content: center;
+        align-items: center;
+
+        .advance-filter-date__icon-clear {
+            font-size: 18px;
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+
+    .advance-filter-date__icon {
+        height: 1.5rem;
+        width: 1.5rem;
+        border-radius: 50%;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        @include background-color;
+        i {
+            font-size: 12px;
+        }
+    }
+
+    .ant-picker {
+        height: 40px;
+        padding: 1rem;
+        font-size: 13px;
+        border: 0;
+        border-radius: 7px;
+        box-shadow: none !important;
+    }
+}

@@ -1,0 +1,23 @@
+@import "../../../../styles/mixins";
+/* Style for InputRange.tsx */
+.advance-number-range-filter__container {
+    width: 100%;
+    .advance-number-range-filter__title {
+        @include input-title;
+    }
+    .advance-number-range-filter__wrapper {
+        width: 100%;
+        display: flex;
+
+        .advance-number-range-filter__input-number {
+            width: 40%;
+        }
+
+        .advance-number-range-filter__icon {
+            padding: 0px 5px;
+            display: flex;
+            align-items: center;
+            align-content: center;
+        }
+    }
+}

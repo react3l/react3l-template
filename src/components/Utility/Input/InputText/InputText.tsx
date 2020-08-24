@@ -1,12 +1,12 @@
 import React, { RefObject } from 'react';
-import './TextArea.scss';
+import './InputText.scss';
 import { Model } from 'react3l/core/model';
 import classNames from 'classnames';
 
-interface TextAreaProps<T extends Model> {
-  value?: string;
-  title?: string;                                                                      
+interface InputText<T extends Model> {
+  value?: string;                                                                      
   isMaterial?: boolean;
+  title?: string;
   isError?: boolean;
   disabled?: boolean;
   placeHolder?: string;
@@ -14,11 +14,11 @@ interface TextAreaProps<T extends Model> {
   onChange?: (T: string) => void;
 }
 
-function TextArea(props: TextAreaProps<Model>) {
+function InputText(props: InputText<Model>) {
   const {
     value,
-    title,
     isMaterial,
+    title,
     isError,
     disabled,
     placeHolder,
@@ -28,9 +28,9 @@ function TextArea(props: TextAreaProps<Model>) {
 
   const [internalValue, setInternalValue] = React.useState<string>('');
 
-  const inputRef: RefObject<HTMLTextAreaElement> = React.useRef<HTMLTextAreaElement>(null);
+  const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>(null);
 
-  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setInternalValue(event.target.value);
     if (typeof onChange === 'function') {
       onChange(event.target.value);
@@ -57,34 +57,33 @@ function TextArea(props: TextAreaProps<Model>) {
 
   return (
     <>
-      <div className="text-area__container">
+      <div className="input-text__container">
         { title && 
-          <div className="text-area__title">{title}</div>
+          <div className="input-text__title">{title}</div>
         }
-        <div className="text-area_wrapper">
-          <textarea
+        <div className="input-text__wrapper">
+          <input type="text"
             value={internalValue}
             onChange={handleChange}
-            placeholder={placeHolder}
+            placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
             ref={inputRef}
-            disabled={disabled}
-            className={classNames('component__text-area', {'component__text-area--material': isMaterial})}>
-          </textarea>
+            disabled={disabled} 
+            className={classNames('component__input', {'component__input--material': isMaterial})}/>
           { internalValue ? 
-            <i className="text-area__icon tio-clear" onClick={handleClearInput}></i> :
+            <i className="input-text__icon tio-clear" onClick={handleClearInput}></i> :
             className && 
-            <i className={classNames('text-area__icon', className)}></i>
+            <i className={classNames('input-text__icon', className)}></i>
           }
-          </div>
+        </div>
       </div>
     </>
   );
 }
 
-TextArea.defaultProps = {
+InputText.defaultProps = {
   isMaterial: false,
   disabled: false,
   className: '',
 };
 
-export default TextArea;
+export default InputText;

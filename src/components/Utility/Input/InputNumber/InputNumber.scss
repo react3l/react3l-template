@@ -1,0 +1,20 @@
+@import "../../../../styles/mixins";
+/* Style for InputNumber.tsx */
+.input-number__container {
+    width: 100%;
+    min-width: 100px;
+    background-color: #F2F2F2;
+    .input-number__title {
+        @include input-title;
+    }
+    .input-number__wrapper {
+        width: 100%;
+        position: relative;
+        .input-number__icon {
+            @include input-icon;
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+}

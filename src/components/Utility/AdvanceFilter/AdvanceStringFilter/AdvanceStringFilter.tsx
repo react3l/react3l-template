@@ -1,12 +1,12 @@
 import React, { RefObject } from 'react';
-import './TextArea.scss';
+import './AdvanceStringFilter.scss';
 import { Model } from 'react3l/core/model';
 import classNames from 'classnames';
 
-interface TextAreaProps<T extends Model> {
-  value?: string;
-  title?: string;                                                                      
+interface AdvanceStringFilter<T extends Model> {
+  value?: string;                                                                      
   isMaterial?: boolean;
+  title?: string;
   isError?: boolean;
   disabled?: boolean;
   placeHolder?: string;
@@ -14,23 +14,20 @@ interface TextAreaProps<T extends Model> {
   onChange?: (T: string) => void;
 }
 
-function TextArea(props: TextAreaProps<Model>) {
+function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
   const {
     value,
     title,
-    isMaterial,
-    isError,
     disabled,
     placeHolder,
-    className,
     onChange,
   } = props;
 
   const [internalValue, setInternalValue] = React.useState<string>('');
 
-  const inputRef: RefObject<HTMLTextAreaElement> = React.useRef<HTMLTextAreaElement>(null);
+  const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>(null);
 
-  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setInternalValue(event.target.value);
     if (typeof onChange === 'function') {
       onChange(event.target.value);
@@ -57,34 +54,27 @@ function TextArea(props: TextAreaProps<Model>) {
 
   return (
     <>
-      <div className="text-area__container">
+      <div className="advance-string-filter__container">
         { title && 
-          <div className="text-area__title">{title}</div>
+          <div className="advance-string-filter__title">{title}</div>
         }
-        <div className="text-area_wrapper">
-          <textarea
+        <div className="advance-string-filter__wrapper">
+          <input type="text"
             value={internalValue}
             onChange={handleChange}
-            placeholder={placeHolder}
+            placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
             ref={inputRef}
-            disabled={disabled}
-            className={classNames('component__text-area', {'component__text-area--material': isMaterial})}>
-          </textarea>
-          { internalValue ? 
-            <i className="text-area__icon tio-clear" onClick={handleClearInput}></i> :
-            className && 
-            <i className={classNames('text-area__icon', className)}></i>
-          }
-          </div>
+            disabled={disabled} 
+            className={classNames('component__input')}/>
+          { internalValue && <i className="advance-string-filter__icon tio-clear" onClick={handleClearInput}></i>}
+        </div>
       </div>
     </>
   );
 }
 
-TextArea.defaultProps = {
-  isMaterial: false,
+AdvanceStringFilter.defaultProps = {
   disabled: false,
-  className: '',
 };
 
-export default TextArea;
+export default AdvanceStringFilter;
