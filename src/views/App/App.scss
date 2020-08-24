@@ -1,6 +1,6 @@
 .app {
-  width: 100vw;
-  height: 100vh;
+  // width: 100vw;
+  // height: 100vh;
   display: flex;
   background-color: #f9f9f9 !important;
 
@@ -76,7 +76,7 @@
     margin-left: 257px !important;
     transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
     .app-content {
-      margin: 115px 39px 34px 51px;
+      margin: 115px 33px 34px 51px;
     }
   }
   .content-out {
@@ -85,6 +85,9 @@
     .app-header {
       width: calc(100% - 147px) !important;
       margin-left: 34px !important;
+    }
+    .app-content {
+      margin: 115px 35px 34px 34px !important;
     }
   }
 }
