@@ -1,16 +1,16 @@
 import React from 'react';
-import './InputRange.scss';
-import InputNumber, { InputNumberProps } from '../InputNumber/InputNumber';
+import './AdvanceNumberRangeFilter.scss';
 import { Model } from 'react3l/core';
+import InputNumber, { InputNumberProps } from 'components/Utility/Input/InputNumber/InputNumber';
 
-export interface InputRange <T extends Model> extends InputNumberProps<Model> {
-  valueRange: [number, number];
+export interface AdvanceNumberRangeFilter <T extends Model> extends InputNumberProps<Model> {
+  valueRange?: [number, number];
   title?: string;
   placeHolderRange?: [string, string];
-  onChangeRange: (T: [number, number]) => void;
+  onChangeRange?: (T: [number, number]) => void;
 }
 
-function InputRange(props: InputRange<Model>) {
+function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model>) {
   const {
     valueRange,
     title,
@@ -28,7 +28,7 @@ function InputRange(props: InputRange<Model>) {
     if (validateRange(number, valueRange[1])) {
       onChangeRange([number, valueRange[1]]);
     } else {
-      const changeValue = valueRange[0] === null ? 0 : null;
+      const changeValue = valueRange[0] === null ? undefined : null;
       onChangeRange([changeValue, valueRange[1]]);
     }
   }, [onChangeRange, valueRange, validateRange]);
@@ -37,7 +37,7 @@ function InputRange(props: InputRange<Model>) {
     if (validateRange(valueRange[0], number)) {
       onChangeRange([valueRange[0], number]);
     } else {
-      const changeValue = valueRange[1] === null ? 0 : null;
+      const changeValue = valueRange[1] === null ? undefined : null;
       onChangeRange([valueRange[0], changeValue]);
     }
   }, [onChangeRange, valueRange, validateRange]);
@@ -70,4 +70,4 @@ function InputRange(props: InputRange<Model>) {
   );
 }
 
-export default InputRange;
+export default AdvanceNumberRangeFilter;

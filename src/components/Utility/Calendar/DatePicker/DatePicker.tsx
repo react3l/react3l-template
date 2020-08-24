@@ -16,7 +16,7 @@ function SuffixDateIcon () {
 interface DatePickerProps<T extends Model> {
   value?: Moment;
   isMaterial?: boolean;
-  dateFormat?: string;
+  dateFormat?: string[];
   onChange?: (value: Moment | null, dateString?: string) => void;
 }
 
@@ -54,7 +54,7 @@ function DatePicker(props: DatePickerProps<Model> & AntdDatePickerProps) {
 }
 DatePicker.defaultProps = {
   isMaterial: false,
-  dateFormat: 'DD/MM/YYYY',
+  dateFormat: ['DD/MM/YYYY', 'YYYY/MM/DD'],
 };
 
 export default DatePicker;
