@@ -43,7 +43,6 @@ function AppAside(props: IDefaultSidebarProps) {
   }, [setSelectedKeys])
 
 
-  console.log('routes: ', routes)
   return (
     <div className="aside">
       <div className={classNames('aside__header pb-4', className)}>

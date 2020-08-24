@@ -26,6 +26,7 @@
 
   .flex-item {
     flex-grow: 1;
+    overflow: scroll;
   }
 
   > .body {
@@ -42,5 +43,48 @@
   }
 
   footer {
+  }
+
+  .slide-in {
+    transform: translateX(0);
+    margin-left: 0;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  .slide-out {
+    transform: translateX(-285px);
+    margin-left: -285px;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  //aside
+
+  .app_slide-in {
+    transform: translateX(0);
+    margin-left: none;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  .app_slide-out {
+    transform: translateX(-285px);
+    margin-left: -285px;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  .content-in {
+    // transform: translateX(0);
+    margin-left: 257px !important;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+    .app-content {
+      margin: 115px 39px 34px 51px;
+    }
+  }
+  .content-out {
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+    margin-left: 78px !important;
+    .app-header {
+      width: calc(100% - 147px) !important;
+      margin-left: 34px !important;
+    }
   }
 }

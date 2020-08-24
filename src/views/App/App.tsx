@@ -18,13 +18,13 @@ function App() {
   const [toggleMenu] = useGlobal<GlobalState>('toggle');
   const handleOffOverlay = React.useCallback(() => {
     setGlobal<GlobalState>({ display: false });
-  }, [display]);
+  }, []);
 
   return (
     <div className="app d-flex">
 
       <AppAsideCollapse className={toggleMenu ? 'slide-in' : 'slide-out'} routes={menu} />
-      <AppAside className={!toggleMenu ? 'slide-in' : 'slide-out'} routes={menu} />
+      <AppAside className={!toggleMenu ? 'app_slide-in' : 'app_slide-out'} routes={menu} />
 
       <div
         className={classNames(
