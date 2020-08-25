@@ -73,7 +73,7 @@
 
   .content-in {
     // transform: translateX(0);
-    margin-left: 257px !important;
+    margin-left: 184px !important;
     transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
     .app-content {
       margin: 115px 33px 34px 51px;
@@ -81,9 +81,9 @@
   }
   .content-out {
     transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
-    margin-left: 78px !important;
+    margin-left: 0 !important;
     .app-header {
-      width: calc(100% - 147px) !important;
+      width: calc(100% - 144px) !important;
       margin-left: 34px !important;
     }
     .app-content {

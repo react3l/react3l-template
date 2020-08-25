@@ -12,6 +12,8 @@ import nameof from 'ts-nameof.macro';
 import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
 import { Row, Col } from 'antd';
 import InputSearch from 'components/Utility/InputSearch/InputSearch';
+import AdvanceIdFilter from 'components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter';
+import AdvanceDateRangeFilter from 'components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter';
 
 
 function ProvinceMasterView() {
@@ -37,6 +39,9 @@ function ProvinceMasterView() {
   const [
     handleBatchDelete,
   ] = tableService.useBatchDelete(selectedRowKeys, provinceRepository.batchDelete);
+
+
+  const [toggle, setToggle] = React.useState<boolean>(false);
 
   const columns: ColumnProps<Province>[] = React.useMemo(
     () => [
@@ -104,6 +109,11 @@ function ProvinceMasterView() {
     [provinceFilter, provinceList, translate],
   );
 
+  const handleToggleSearch = React.useCallback(() => {
+    const toggleTmp = !toggle;
+    setToggle(toggleTmp);
+  }, [toggle, setToggle]);
+
   return (
     <>
       <div className="page page__master">
@@ -121,12 +131,95 @@ function ProvinceMasterView() {
         </div>
         <div className="page__search">
           <Card title={translate('general.search.title')}>
-            <Row>
+            <Row className="d-flex align-items-center">
               <Col lg={12}>
-                <InputSearch />
+                <div className="pr-4"><InputSearch /></div>
               </Col>
-              <Col lg={12}></Col>
+              <Col lg={12}>
+                <div className="d-flex">
+                  <div className="pr-4 mt__1">
+                    <label className="label">Phòng ban</label>
+                    <AdvanceIdFilter placeHolder={'Tất cả'} />
+                  </div>
+                  <div className="pr-4 mt__1">
+                    <label className="label">Trạng thái</label>
+                    <AdvanceIdFilter placeHolder={'Tất cả'} />
+                  </div>
+                  <div>
+                    <button className="btn btn-sm component__btn-toggle mr-4" onClick={handleToggleSearch}>
+                      <div className="tio-down_ui" />
+                      <div className="tio-down_ui" />
+                    </button>
+
+                  </div>
+                  <button className="btn btn-sm component__btn-outline-primary">
+                    <span className="border-outline">
+                      {/* {translate('general.actions.reset')} */}
+                      <div className="text-outline">
+                        Bỏ lọc
+                      </div>
+                    </span>
+
+                  </button>
+                  <button className="btn btn-sm component__btn-primary pr-4">
+                    {/* {translate('general.actions.search')} */}
+                        Tìm kiếm
+                  </button>
+                </div>
+              </Col>
             </Row>
+            {
+              toggle && (
+                <>
+                  <Row className="mt-4">
+                    <Col lg={4} className="pr-4">
+                      <label className="label">Người đề nghị</label>
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <label className="label">Bên nhận</label>
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <label className="label">Chi hộ</label>
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <label className="label">Loại ngân sách</label>
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <label className="label">Thời hạn thanh toán</label>
+                      <AdvanceDateRangeFilter value={[null, null]} />
+                    </Col>
+                    <Col lg={4}>
+                      <label className="label">Kỳ ngân sách</label>
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                  </Row>
+                  <Row className="mt-4">
+                    <Col lg={4} className="pr-4">
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4} className="pr-4">
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                    <Col lg={4}>
+                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    </Col>
+                  </Row>
+                </>
+              )
+            }
           </Card>
         </div>
       </div>

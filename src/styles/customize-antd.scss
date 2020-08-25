@@ -157,7 +157,7 @@
 .ant-layout-sider {
   background-color: #fff;
   height: calc(100% - (68px));
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   position: fixed !important;
   transition: transform 400ms ease-in;

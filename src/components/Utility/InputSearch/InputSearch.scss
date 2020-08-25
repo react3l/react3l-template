@@ -3,7 +3,7 @@
 .input-search__container {
   width: 100%;
   min-width: 220px;
-  background-color: #fafafc;
+
   .input-search__title {
     @include input-title;
   }
@@ -28,6 +28,7 @@
     }
     .component__input {
       padding: 1rem 1.75rem 1rem 3rem;
+      background-color: #f1f1f6;
     }
   }
 }
