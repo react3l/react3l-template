@@ -3,6 +3,7 @@ import DatePicker from './DatePicker';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { Moment } from 'moment';
+import InputNumber from 'components/Utility/Input/InputNumber/InputNumber';
 
 export function DatePickerStories() {
     const [isMaterial, setIsMaterial] = React.useState(false);
@@ -21,7 +22,6 @@ export function DatePickerStories() {
       <DatePicker isMaterial={isMaterial}
         onChange={handleChange}
         value={value}/>
-
       <div style={{margin: '10px', width: '300px'}}>
         <Radio.Group onChange={handleChangeStyle} value={isMaterial}>
             <Radio value={true}>Material Style</Radio>
