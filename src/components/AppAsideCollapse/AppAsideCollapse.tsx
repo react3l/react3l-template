@@ -36,10 +36,10 @@ function AppAsideCollapse(props: ISidebarProps) {
           routes && routes?.length > 0 && routes.map((route: RouteConfig, index: number) => {
             const active = activeLink(selectedKeys, route?.path);
             return (
-              <>
+              <div key={index}>
                 {
                   (route.notTitle === false || !route.notTitle) && (
-                    <div className="dropdown dropright" key={index}>
+                    <div className="dropdown dropright" >
                       <li className={classNames('aside-collapse__icon', (active ? 'aside-collapse__icon-active' : ''))}>
                         <NavLink to={`${route?.path}`} activeClassName="aside-collapse__icon-active">
                           <i className={route.icon} />
@@ -59,7 +59,7 @@ function AppAsideCollapse(props: ISidebarProps) {
                     </div>
                   )
                 }
-              </>
+              </div>
             )
           })
         }

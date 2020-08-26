@@ -39,8 +39,8 @@ function AppAside(props: IDefaultSidebarProps) {
   );
 
   const handleSelect = useCallback(({ selectedKeys }) => {
-    setSelectedKeys([...selectedKeys])
-  }, [setSelectedKeys])
+    setSelectedKeys([...selectedKeys]);
+  }, [setSelectedKeys]);
 
 
   return (
@@ -109,11 +109,15 @@ function getOpenKeys(items: RouteConfig[], pathName) {
 /* convert pathName which retrieved from url to master url of its module, to activating menu master item */
 function convertPathName(pathName: string) {
   pathName = buildPath(pathName.trim().split('/'));
-  if (pathName.match(/(-?detail)$/)) {
-    return pathName.replace('detail', 'master');
+  if (pathName.includes(`detail`)) {
+    const tmp = pathName.split('detail');
+    const path = tmp[0] + 'master';
+    return path;
   }
-  if (pathName.match(/(-?preview)$/)) {
-    return pathName.replace('preview', 'master');
+  if (pathName.includes(`preview`)) {
+    const tmp = pathName.split('preview');
+    const path = tmp[0] + 'master';
+    return path;
   }
   return pathName;
 }
