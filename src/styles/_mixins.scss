@@ -83,27 +83,7 @@
 @mixin input-icon {
   position: absolute;
   right: 4%;
-  top: 35%;
+  top: 25%;
+  font-size: 1.2rem;
   cursor: pointer;
-}
-
-@mixin border-radius-color {
-  // border: 2px solid;
-  // border-radius: 1em;
-  // border-image-source: -webkit-linear-gradient(
-  //   224.53deg,
-  //   #013ffb 0%,
-  //   #a295f2 99.2%
-  // ) !important;
-  // border-image-source: linear-gradient(
-  //   224.53deg,
-  //   #013ffb 0%,
-  //   #a295f2 99.2%
-  // ) !important;
-  border: double 4px transparent;
-  border-radius: 10px;
-  background-image: linear-gradient(white, white),
-    radial-gradient(circle at top left, #f00, #3020ff);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
 }

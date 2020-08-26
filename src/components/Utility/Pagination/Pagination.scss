@@ -1,0 +1,76 @@
+@import './../../../styles/mixins';
+/* Style for Pagination.tsx */
+.pagination__container {
+    width: 100%;
+    display: flex;
+
+    .pagination__paging {
+        .ant-pagination-next, .ant-pagination-prev {
+            padding: 5px;
+        }
+
+        .ant-pagination-item {
+            border: 0;
+            color: #1C1D21;
+            font-size: 14px;
+            line-height: 32px;
+            background-color: #FAFAFC;
+            &:hover, &:focus {
+                color: #FFFFFF;
+                border-radius: 7px;
+                @include background-color;
+                a {
+                    color: #FFFFFF;
+                }
+            }
+        }
+
+        .ant-pagination-item-active {
+            color: #FFFFFF;
+            border-radius: 7px;
+            @include background-color;
+        }
+
+        .pagination__previous-icon, .pagination__next-icon {
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.04);
+            border-radius: 7px;
+            font-size: 14px;
+            height: 1.25rem;
+            width: 1.25rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            i {
+                @include gradient-text;
+            } 
+        }
+
+        .ant-pagination-item-ellipsis {
+            @include gradient-text;
+        }
+
+    }
+
+    .pagination__page-size {
+        margin-left: 5px;
+        
+        .pagination__size-options {
+            display: flex;
+            background: #FAFAFC;
+            border-radius: 7px;
+            height: 100%;
+            padding: 3px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+
+           .size-options__icon {
+            margin-left: 2px;
+            font-size: 1.5rem;
+            color: #000000;
+           }
+        }
+    }
+}
