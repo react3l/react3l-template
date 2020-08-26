@@ -1,4 +1,8 @@
-import { PROVINCE_ROUTE, PROVINCE_ROOT_ROUTE } from "./route-consts";
+import {
+  PROVINCE_ROUTE,
+  PROVINCE_ROOT_ROUTE,
+  PAYMENT_REQUEST_ROUTE,
+} from "./route-consts";
 import { INDIRECT_SALES_ORDER_ROUTE_PREFIX } from "config/route-consts";
 import { RouteConfig } from "react-router-config";
 import { translate } from "react3l/helpers";
@@ -8,6 +12,12 @@ export const menu: RouteConfig[] = [
     notTitle: true,
     name: translate("menu.provinceTitle"),
     path: "/title-route",
+  },
+  {
+    name: translate("menu.paymentRequest"),
+    path: PAYMENT_REQUEST_ROUTE,
+    key: PAYMENT_REQUEST_ROUTE,
+    icon: "tio tio-swap_vs",
   },
   {
     notTitle: false,

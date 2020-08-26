@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { provinceRepository } from 'repositories/province-repository';
 import { tableService } from 'services/table-service';
 import nameof from 'ts-nameof.macro';
-import 'views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView.scss';
+import './PaymentRequestMasterView.scss';
 import { Row, Col, Tooltip } from 'antd';
 import InputSearch from 'components/Utility/InputSearch/InputSearch';
 import AdvanceIdFilter from 'components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter';
@@ -33,13 +33,7 @@ function ProvinceMasterView() {
 
   const [
     rowSelection,
-    selectedRowKeys,
   ] = tableService.useRowSelection<Province>();
-
-  const [
-    handleBatchDelete,
-  ] = tableService.useBatchDelete(selectedRowKeys, provinceRepository.batchDelete);
-
 
   const [toggle, setToggle] = React.useState<boolean>(false);
 
@@ -234,7 +228,7 @@ function ProvinceMasterView() {
                   <div className="table-title ml-2">
                     {translate('province.table.title')}
                   </div>
-                  <Button type="primary" onClick={handleBatchDelete}>
+                  <Button type="primary">
                     {translate('general.actions.delete')}
                   </Button>
                 </div>

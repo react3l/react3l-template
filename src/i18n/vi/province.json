@@ -1,7 +1,8 @@
 {
-  "province.id": "ID",
+  "province.master.title": "Danh sách tỉnh / thành phố",
   "province.code": "Mã",
   "province.name": "Tên",
   "province.englishName": "Tên tiếng Anh",
-  "province.master.title": "Danh sách tỉnh / thành phố"
+  "province.administrativeType": "",
+  "province.id": "ID"
 }

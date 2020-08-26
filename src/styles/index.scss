@@ -139,6 +139,12 @@ body {
       }
     }
   }
+  .component_btn-view {
+  }
+  .component_btn-edit {
+  }
+  .component_btn-delete {
+  }
   /* Page*/
   /* Master*/
   .page {
@@ -157,6 +163,45 @@ body {
         margin-bottom: 20px;
         .ant-card-head {
           border-bottom: none;
+        }
+      }
+    }
+    .page__master-table {
+      .table-title {
+        color: #4f4f4f;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 27px;
+      }
+      .ant-table-tbody
+        > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) {
+        background: #ffffff;
+        box-shadow: 0px 3px 8px rgba(126, 114, 242, 0.3);
+        border-radius: 15px;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+      .ant-card-body {
+        padding: 0 !important;
+        .ant-table-wrapper {
+          .ant-table {
+            .ant-table-title {
+              border: none;
+            }
+            border-radius: 7px;
+            .ant-table-thead {
+              tr {
+                th {
+                  border: none !important;
+                }
+              }
+            }
+          }
+        }
+        tr {
+          td {
+            border-bottom: none;
+          }
         }
       }
     }
