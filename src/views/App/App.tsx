@@ -6,7 +6,7 @@ import { routes } from 'config/routes';
 import React from 'react';
 import { Switch, withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
-import './App.scss'
+import './App.scss';
 import { useGlobal, setGlobal } from 'reactn';
 import { GlobalState } from 'config/global-state';
 import classNames from 'classnames';
@@ -34,7 +34,7 @@ function App() {
       >
 
       </div>
-      <section className={classNames("flex - item", (!toggleMenu ? 'main content-in' : 'main content-out'))}>
+      <section className={classNames("flex-item", (!toggleMenu ? 'main content-in' : 'main content-out'))}>
         <AppHeader />
         <main className="body">
           <Switch>{renderRoutes(routes)}</Switch>
