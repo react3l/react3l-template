@@ -49,6 +49,16 @@ export function InputTextStories() {
             placeHolder={'Enter text...'}
             className={iconName}/>
 
+        <div style={{marginTop: '10px', width: '100%'}}>
+            <InputText isMaterial={isMaterial}
+                value={value}
+                onChange={setValue}
+                title={title}
+                placeHolder={'Enter text...'}
+                className={iconName}
+                error={'Field required'}/>
+        </div>
+
         <div style={{margin: '10px', width: '300px'}}>
                     <Radio.Group onChange={handleChangeStyle} value={isMaterial}>
                         <Radio value={true}>Material Style</Radio>

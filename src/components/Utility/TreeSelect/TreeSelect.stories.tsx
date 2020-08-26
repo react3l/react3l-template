@@ -44,7 +44,7 @@ const demoItem = {
 const demoObservable = new Observable<Model[]>((observer) => {
     setTimeout(() => {
       observer.next(demoList);
-    }, 2000);
+    }, 500);
 });
 
 const demoSearchFunc = (TModelFilter: ModelFilter) => {
@@ -83,7 +83,7 @@ function Default() {
                     isMaterial={isMaterial}
                     placeHolder={'Select Organization'} 
                     selectable={!isMultiple}
-                    filterClass={DistrictFilter}
+                    classFilter={DistrictFilter}
                     onChange={handleChangeItem}
                     checkStrictly={true}
                     item={item}

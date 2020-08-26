@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 interface AdvanceStringFilter<T extends Model> {
   value?: string;                                                                      
-  isMaterial?: boolean;
   title?: string;
   isError?: boolean;
   disabled?: boolean;
@@ -44,9 +43,7 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
 
   React.useEffect(() => {
     if (value) {
-      if (value !== internalValue) {
-        setInternalValue(value);
-      }
+      setInternalValue(value);
     } else {
       setInternalValue('');
     }
@@ -65,7 +62,7 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
             placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
             ref={inputRef}
             disabled={disabled} 
-            className={classNames('component__input')}/>
+            className={classNames('component__input', 'component__input--bordered')}/>
           { internalValue && <i className="advance-string-filter__icon tio-clear" onClick={handleClearInput}></i>}
         </div>
       </div>

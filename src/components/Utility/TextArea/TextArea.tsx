@@ -7,7 +7,7 @@ interface TextAreaProps<T extends Model> {
   value?: string;
   title?: string;                                                                      
   isMaterial?: boolean;
-  isError?: boolean;
+  error?: string;
   disabled?: boolean;
   placeHolder?: string;
   className?: string;
@@ -19,7 +19,7 @@ function TextArea(props: TextAreaProps<Model>) {
     value,
     title,
     isMaterial,
-    isError,
+    error,
     disabled,
     placeHolder,
     className,
@@ -29,6 +29,10 @@ function TextArea(props: TextAreaProps<Model>) {
   const [internalValue, setInternalValue] = React.useState<string>('');
 
   const inputRef: RefObject<HTMLTextAreaElement> = React.useRef<HTMLTextAreaElement>(null);
+
+  const isError = React.useMemo(() => {
+    return error ? true : false;
+  }, [error]);
 
   const handleChange = React.useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInternalValue(event.target.value);
@@ -47,9 +51,7 @@ function TextArea(props: TextAreaProps<Model>) {
 
   React.useEffect(() => {
     if (value) {
-      if (value !== internalValue) {
-        setInternalValue(value);
-      }
+      setInternalValue(value);
     } else {
       setInternalValue('');
     }
@@ -59,7 +61,7 @@ function TextArea(props: TextAreaProps<Model>) {
     <>
       <div className="text-area__container">
         { title && 
-          <div className="text-area__title">{title}</div>
+          <div className={classNames('text-area__title', {'error-text': isError})}>{title}</div>
         }
         <div className="text-area_wrapper">
           <textarea
@@ -68,14 +70,16 @@ function TextArea(props: TextAreaProps<Model>) {
             placeholder={placeHolder}
             ref={inputRef}
             disabled={disabled}
-            className={classNames('component__text-area', {'component__text-area--material': isMaterial})}>
+            className={classNames('component__text-area', 
+            {'component__text-area--material': isMaterial, 'component__text-area--bordered': !isMaterial, 'error-border': isError})}>
           </textarea>
           { internalValue ? 
             <i className="text-area__icon tio-clear" onClick={handleClearInput}></i> :
             className && 
-            <i className={classNames('text-area__icon', className)}></i>
+            <i className={classNames('text-area__icon', className, {'error-text': isError})}></i>
           }
           </div>
+          {isError && <span className="error-text error-message">{error}</span>}
       </div>
     </>
   );

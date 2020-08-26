@@ -3,10 +3,11 @@
 .input-text__container {
     width: 100%;
     min-width: 220px;
-    background-color: #F2F2F2;
+    
     .input-text__title {
         @include input-title;
     }
+
     .input-text__wrapper {
         widows: 100%;
         position: relative;

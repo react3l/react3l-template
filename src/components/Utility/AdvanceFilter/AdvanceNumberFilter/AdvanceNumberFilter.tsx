@@ -160,9 +160,7 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
       if (isReverseSymb) {
         stringValue = stringValue.replace(/\./g, ',');
       }
-      if (stringValue !== internalValue) {
-        setInternalValue(formatString(stringValue));
-      }
+      setInternalValue(formatString(stringValue));
     } else {
       setInternalValue('');
     }
@@ -181,7 +179,7 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
             placeholder={placeHolder}
             ref={inputRef}
             disabled={disabled} 
-            className={classNames('component__input')}/>
+            className={classNames('component__input', 'component__input--bordered')}/>
           { internalValue && <i className="advance-number-filter__icon tio-clear" onClick={handleClearInput}></i>}
         </div>
       </div>

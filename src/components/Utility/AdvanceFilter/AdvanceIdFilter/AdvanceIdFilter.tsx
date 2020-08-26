@@ -6,7 +6,7 @@ import { Model, ModelFilter } from 'react3l/core';
 import Spin from 'antd/lib/spin';
 import {debounce} from 'react3l/helpers';
 import { DEBOUNCE_TIME_300 } from 'react3l/config';
-import { Observable, ErrorObserver } from 'rxjs';
+import { Observable, ErrorObserver, Subscription } from 'rxjs';
 import nameof from 'ts-nameof.macro';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 import { Empty } from 'antd';
@@ -14,7 +14,7 @@ import { commonService } from 'react3l/services/common-service';
 import InputSelect from './../../Input/InputSelect/InputSelect';
 
 export interface AdvanceIdFilterProps<T extends Model, TModelFilter extends ModelFilter> {
-  model?: Model;
+  value?: number;
 
   modelFilter?: TModelFilter;
 
@@ -28,9 +28,11 @@ export interface AdvanceIdFilterProps<T extends Model, TModelFilter extends Mode
 
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
-  setModel?: (T: T ) => void;
+  setId?: (T: number) => void;
 
   render?: (t: T) => string;
+
+  classFilter: new () => TModelFilter;
 }
 
 function defaultRenderObject<T extends Model>(t: T) {
@@ -39,20 +41,24 @@ function defaultRenderObject<T extends Model>(t: T) {
 
 function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
   const {
-    model,
     modelFilter,
+    value,
     searchProperty,
     searchType,
     placeHolder,
     disabled,
     getList,
-    setModel,
+    setId,
     render,
+    classFilter: ClassFilter,
   } = props;
 
-  const internalModel = React.useMemo((): Model => {
-    return model || null;
-  }, [model]);
+  const internalModelFilter = React.useMemo(() => {
+    const filter = modelFilter ? {...modelFilter} : new ClassFilter();
+    return filter;
+  }, [modelFilter, ClassFilter]);
+
+  const [internalModel, setInternalModel] = React.useState<Model>();
 
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -69,7 +75,7 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
       try {
         setLoading(true);
         subscription.add(getList);
-        getList(modelFilter).subscribe((res: Model[]) => {
+        getList(internalModelFilter).subscribe((res: Model[]) => {
           setList(res);
           setLoading(false);
         }, (err: ErrorObserver<Error>) => {
@@ -79,7 +85,7 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
       } catch (error) {
       }
     },
-    [getList, modelFilter, subscription],
+    [getList, internalModelFilter, subscription],
   );
 
   const handleToggle = React.useCallback (
@@ -98,13 +104,14 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
 
   const handleClickItem = React.useCallback(
     (item: Model) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      setModel(item);
+      setInternalModel(item);
+      setId(item.id);
       handleCloseAdvanceIdFilter();
     }, 
-  [handleCloseAdvanceIdFilter, setModel]);
+  [handleCloseAdvanceIdFilter, setInternalModel, setId]);
 
   const handleSearchChange = React.useCallback(debounce((searchTerm: string) => {
-    const cloneModelFilter = {...modelFilter};
+    const cloneModelFilter = {...internalModelFilter};
     cloneModelFilter[searchProperty][searchType] = searchTerm;
     setLoading(true);
     subscription.add(getList);
@@ -118,10 +125,33 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
   }, DEBOUNCE_TIME_300), []);
   
   const handleClearItem = React.useCallback(() => {
-    setModel(null);
-  }, [setModel]);
+    setId(null);
+  }, [setId]);
+
+  React.useEffect(() => {
+    const subscription = new Subscription();
+    if (value) {
+      const filterValue = new ClassFilter();
+      filterValue['id']['equal'] = value;
+      subscription.add(getList);
+      getList(filterValue).subscribe((res: Model[]) => {
+        if (res) {
+          res = res.filter((current) => current.id === value);
+          setInternalModel(res[0]);
+        }
+      });
+    } else {
+      setInternalModel(null);
+    }
+
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
+
+  }, [value, getList, ClassFilter]);
 
   commonWebService.useClickOutside(wrapperRef, handleCloseAdvanceIdFilter);
+
   return <>
     <div className="advance-id-filter__container" ref={wrapperRef}>
       <div className="advance-id-filter__input" onClick={handleToggle}>

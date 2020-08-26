@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModelFilter, Model } from 'react3l/core';
+import { ModelFilter } from 'react3l/core';
 import { Filter } from 'react3l-advanced-filters/Filter';
 import { debounce } from 'react3l/helpers';
 import { DEBOUNCE_TIME_300 } from 'react3l/config';
@@ -131,28 +131,26 @@ export const advanceFilterService = {
         ];
     },
 
-    useIdFilter <T1Filter extends ModelFilter, T2Filter extends  Filter, T3 extends Model> (
+    useIdFilter <T1Filter extends ModelFilter, T2Filter extends  Filter> (
+        modelFilter: T1Filter,
         dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
         fieldName: keyof T1Filter,
         fieldType: keyof T2Filter,
-        model?: T3,
     ): [
-        T3,
-        (item: T3) => void,
+        number,
+        (id: number) => void,
     ] {
-        const [item, setItem] = React.useState<T3>(model || null);
-        const handleIdFilter = React.useCallback((item: T3) => {
-            const idValue = item?.id;
+        const idValue = modelFilter[fieldName][fieldType];
+        const handleIdFilter = React.useCallback((id: number) => {
             dispatch({
                 type: ActionFilterEnum.ChangeOneField,
                 fieldName: fieldName,
                 fieldType: fieldType,
-                fieldValue: idValue || null,
+                fieldValue: id || null,
             });
-            setItem(item);
         }, [dispatch, fieldName, fieldType]);
         return [
-            item, 
+            idValue, 
             handleIdFilter,
         ];
     },

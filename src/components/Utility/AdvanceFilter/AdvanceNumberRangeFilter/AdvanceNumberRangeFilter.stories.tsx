@@ -1,17 +1,15 @@
-import React, { Reducer } from 'react';
-import AdvanceNumberRangeFilter from './AdvanceNumberRangeFilter';
 import Radio, { RadioChangeEvent } from 'antd/lib/radio';
-import { advanceFilterReducer, AdvanceFilterAction, advanceFilterService } from 'services/advance-filter-service';
-import { ModelFilter } from 'react3l/core';
+import React, { Reducer } from 'react';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
+import { ModelFilter } from 'react3l/core';
+import { AdvanceFilterAction, advanceFilterReducer, advanceFilterService } from 'services/advance-filter-service';
+import AdvanceNumberRangeFilter from './AdvanceNumberRangeFilter';
 
 class DemoFilter extends ModelFilter {
     number: NumberFilter = new NumberFilter();
 }
 
 export function AdvanceNumberRangeFilterStories() {
-    const [value, setValue] = React.useState<[number, number]>([null , null]);
-
     const [isTitle, setIsTitle] = React.useState(false);
 
     const [title, setTitle] = React.useState('');
@@ -21,10 +19,6 @@ export function AdvanceNumberRangeFilterStories() {
         if (event.target.value) {
             setTitle('Input text');
         } else setTitle('');
-    }, []);
-
-    const handleChange = React.useCallback((value: [number, number]) => {
-        setValue(value);
     }, []);
 
     const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, NumberFilter>>>(advanceFilterReducer, new DemoFilter());

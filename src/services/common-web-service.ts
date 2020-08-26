@@ -2,6 +2,8 @@ import { RefObject } from "react";
 import React from "react";
 import { Model } from "react3l/core";
 import { TreeNode } from "models/TreeNode";
+import { Moment } from "moment";
+import moment from "moment";
 
 export const commonWebService = {
     useClickOutside(ref: RefObject<HTMLDivElement>, callback: () => void) {
@@ -48,5 +50,9 @@ export const commonWebService = {
         }
         
         return [tree, keyNodes];
+    },
+
+    toMomentDate(date: string, dateFormat: string = 'DD/MM/YYYY'): Moment {
+        return moment(date, dateFormat);
     },
 };

@@ -74,6 +74,18 @@ export function InputNumberStories() {
             numberType={numberType} 
             isReverseSymb={isReverse}
             allowPositive={isPositive}/>
+        <div style={{marginTop: '10px', width: '250px'}}>
+            <InputNumber placeHolder={'Enter number...'}
+                title={title}
+                className={iconName}
+                value={value}
+                onChange={setValue}
+                isMaterial={isMaterial} 
+                numberType={numberType} 
+                isReverseSymb={isReverse}
+                allowPositive={isPositive}
+                error={'Field required!'}/>
+            </div>
         <div style={{margin: '10px', width: '300px'}}>
                     <Radio.Group onChange={handleChangeType} value={numberType}>
                         <Radio value={DECIMAL}>Decimal</Radio>

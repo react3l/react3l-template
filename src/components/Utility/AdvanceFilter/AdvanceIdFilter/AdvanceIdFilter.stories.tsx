@@ -21,7 +21,10 @@ export class DemoFilter extends ModelFilter {
   id: IdFilter = new IdFilter();
   name: StringFilter = new StringFilter();
   code: StringFilter = new StringFilter();
-} 
+}
+
+const filterValue = new DemoFilter();
+filterValue.id.equal = 1;
 
 const demoSearchFunc = (TModelFilter: ModelFilter) => {
   return demoObservable;
@@ -32,11 +35,11 @@ export function AdvanceIdFilterStories() {
 
   const [AdvanceIdFilterModelFilter] = React.useState<ModelFilter>(new ModelFilter());
 
-  const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, IdFilter>>>(advanceFilterReducer, new DemoFilter());
+  const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, IdFilter>>>(advanceFilterReducer, filterValue);
 
-  const [item, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter, Model>(dispatch, 'id', 'equal');
+  const [id, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter>(filter, dispatch, 'id', 'equal');
 
-  const handleSetModel = React.useCallback((item: Model) => {
+  const handleSetModel = React.useCallback((item: Model) => { 
     setAdvanceIdFilterModel(item);
   }, []);
 
@@ -52,12 +55,13 @@ export function AdvanceIdFilterStories() {
   }, [filter]);
   
   return <div style={{margin: '10px', width: '250px'}}>
-      <AdvanceIdFilter placeHolder={'AdvanceIdFilter Organization'} 
-                 model={item}
-                 modelFilter={AdvanceIdFilterModelFilter}
-                 searchProperty={nameof(AdvanceIdFilterModel.name)}
-                 render={handleRenderModel}
-                 setModel={setValue}
-                 getList={demoSearchFunc}/>
+      <AdvanceIdFilter placeHolder={'AdvanceIdFilter Organization'}
+                value={id}
+                classFilter={DemoFilter} 
+                modelFilter={AdvanceIdFilterModelFilter}
+                searchProperty={nameof(AdvanceIdFilterModel.name)}
+                render={handleRenderModel}
+                setId={setValue}
+                getList={demoSearchFunc}/>
     </div>;
 }

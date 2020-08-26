@@ -1,14 +1,13 @@
-import React, { Reducer } from 'react';
-import {storiesOf} from '@storybook/react';
-import nameof from 'ts-nameof.macro';
-import { Model, ModelFilter } from 'react3l/core';
-import { Observable } from 'rxjs';
-import Select from './Select';
+import { storiesOf } from '@storybook/react';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
-import { advanceFilterService, advanceFilterReducer, AdvanceFilterAction } from 'services/advance-filter-service';
+import React from 'react';
 import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
+import { Model, ModelFilter } from 'react3l/core';
+import { Observable } from 'rxjs';
+import nameof from 'ts-nameof.macro';
+import Select from './Select';
 
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {
@@ -37,10 +36,6 @@ function Default() {
 
   const [isMaterial, setIsMaterial] = React.useState(false);
 
-  const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, IdFilter>>>(advanceFilterReducer, new DemoFilter());
-
-  const [item, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter, Model>(dispatch, 'id', 'equal');
-
   const handleChangeStyle = React.useCallback((event: RadioChangeEvent) => {
       setIsMaterial(event.target.value);
   }, []);
@@ -57,18 +52,17 @@ function Default() {
     }
   }, []);
 
-  React.useEffect(() => {
-  }, [filter]);
   
   return <div style={{margin: '10px', width: '250px'}}>
       <Select placeHolder={'Select Organization'} 
-                 model={item}
+                 model={selectModel}
                  isMaterial={isMaterial}
                  modelFilter={selectModelFilter}
                  searchProperty={nameof(selectModel.name)}
                  render={handleRenderModel}
-                 setModel={setValue}
-                 getList={demoSearchFunc}/>
+                 setModel={handleSetModel}
+                 getList={demoSearchFunc}
+                 classFilter={DemoFilter}/>
 
       <div style={{margin: '10px', width: '300px'}}>
         <Radio.Group onChange={handleChangeStyle} value={isMaterial}>

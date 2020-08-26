@@ -4,6 +4,7 @@ import { DatePicker } from 'antd';
 import { DatePickerProps } from 'antd/lib/date-picker';
 import { Model } from 'react3l/core';
 import { Moment } from 'moment';
+import { commonWebService } from 'services/common-web-service';
 
 function SuffixDateIcon () {
   return <span className="advance-filter-date__icon">
@@ -26,6 +27,10 @@ function AdvanceFilterDate(props: AdvanceFilterDateProps<Model> & DatePickerProp
 
   const dateRef = React.useRef<any>();
 
+  const internalValue = React.useMemo(() => {
+    return typeof value === 'string' ? commonWebService.toMomentDate(value) : value;
+  }, [value]);
+
   const handleClearDate = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
     onChange(null);
@@ -34,6 +39,7 @@ function AdvanceFilterDate(props: AdvanceFilterDateProps<Model> & DatePickerProp
   return (
     <div className="advance-filter-date__container">
       <DatePicker {...props}
+        value={internalValue}
         style={{width: '100%'}}
         ref={dateRef}
         allowClear={false}

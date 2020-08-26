@@ -1,6 +1,4 @@
 import React, { Reducer } from 'react';
-import {storiesOf} from '@storybook/react';
-import nameof from 'ts-nameof.macro';
 import AdvanceNumberFilter, { DECIMAL, LONG } from './AdvanceNumberFilter';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';

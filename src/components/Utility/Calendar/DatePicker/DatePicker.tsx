@@ -6,6 +6,7 @@ import { Moment } from 'moment';
 
 import classNames from 'classnames';
 import { DatePickerProps as AntdDatePickerProps } from 'antd/lib/date-picker';
+import { commonWebService } from 'services/common-web-service';
 
 function SuffixDateIcon () {
   return <span className="date-picker__icon">
@@ -30,6 +31,10 @@ function DatePicker(props: DatePickerProps<Model> & AntdDatePickerProps) {
 
   const dateRef = React.useRef<any>();
 
+  const internalValue = React.useMemo(() => {
+    return typeof value === 'string' ? commonWebService.toMomentDate(value) : value;
+  }, [value]);
+
   const handleClearDate = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
     onChange(null);
@@ -38,6 +43,7 @@ function DatePicker(props: DatePickerProps<Model> & AntdDatePickerProps) {
   return (
     <div className="date-picker__container">
       <DatePickerAntd {...props}
+        value={internalValue}
         style={{width: '100%'}}
         ref={dateRef}
         allowClear={false}

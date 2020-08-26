@@ -14,6 +14,7 @@ import InputSelect from '../Input/InputSelect/InputSelect';
 
 
 export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilter> {
+  title?: string;
   listItem?: Model[];
   item?: Model;
   isMaterial?: boolean;
@@ -25,10 +26,11 @@ export interface TreeSelectProps<T extends Model, TModelFilter extends ModelFilt
   disabled?: boolean;
   modelFilter?: TModelFilter;
   placeHolder?: string;
+  error?: string;
   render?: (T: T) => string;
   getTreeData?: (TModelFilter?: TModelFilter) => Observable<T[]>;
   onChange?: (T: Model[], TT: boolean) => void;
-  filterClass?: new () => TModelFilter;
+  classFilter?: new () => TModelFilter;
 }
 export interface filterAction<T extends Model> {
   type: string;
@@ -45,6 +47,7 @@ function filterReducer(state: ModelFilter, action: filterAction<Model>): ModelFi
 
 function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   const {
+    title,
     listItem,
     item,
     isMaterial,
@@ -54,8 +57,10 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
     checkable,
     selectable,
     disabled,
-    filterClass: FilterClass,
+    classFilter: ClassFilter,
+    modelFilter,
     placeHolder,
+    error,
     render,
     getTreeData,
     onChange,
@@ -71,7 +76,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
 
   const wrapperRef: RefObject<HTMLDivElement> = React.useRef<HTMLDivElement>(null);
 
-  const [filter, dispatch] = React.useReducer<Reducer<ModelFilter, filterAction<Model>>>(filterReducer, new FilterClass());
+  const [filter, dispatch] = React.useReducer<Reducer<ModelFilter, filterAction<Model>>>(filterReducer, new ClassFilter());
 
   const handleClearItem = React.useCallback((item: Model) => {
       if (checkable) {
@@ -83,7 +88,7 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   },[listItem, onChange, checkable]);
   
   const handleSearchItem = React.useCallback(debounce((searchTerm: string) => {
-    const cloneFilter = {...filter};
+    const cloneFilter = modelFilter ? {...modelFilter} : {...filter};
     cloneFilter[searchProperty][searchType] = searchTerm;
     dispatch({type: 'UPDATE', data: cloneFilter});
     }, DEBOUNCE_TIME_300), 
@@ -98,10 +103,11 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
 
   const handleExpand = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!expanded) {
-      dispatch({type: 'UPDATE', data: new FilterClass()});
+      const filterData = modelFilter ? {...modelFilter} : new ClassFilter();
+      dispatch({type: 'UPDATE', data: filterData});
     }
     setExpanded(true);
-  }, [FilterClass, expanded]);
+  }, [ClassFilter, expanded, modelFilter]);
 
   const handleOnchange = React.useCallback((selectedNodes: Model[]) => {
     onChange([...selectedNodes], checkable);
@@ -116,14 +122,18 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
         <div className="tree-select__input" onClick={handleExpand}>
           { checkable ? 
             <InputTag listItem={listItem}
+              title={title}
               isMaterial={isMaterial}
               render={render}
+              error={error}
               placeHolder={placeHolder}
               disabled={disabled}
               onSearch={handleSearchItem}
               onClear={handleClearItem}/> :
             <InputSelect model={item}
+              title={title}
               render={render}
+              error={error}
               isMaterial={isMaterial}
               placeHolder={placeHolder}
               expanded={expanded}
@@ -155,7 +165,7 @@ TreeSelect.defaultProps = {
   placeHolder: `Select ${nameof(TreeSelect)}...`,
   searchProperty: nameof(Model.prototype.name),
   searchType: nameof(StringFilter.prototype.startWith),
-  filterClass: ModelFilter,
+  classFilter: ModelFilter,
   isMaterial: false,
   checkable: false,
   disabled: false,

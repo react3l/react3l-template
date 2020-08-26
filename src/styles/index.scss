@@ -25,12 +25,8 @@
 // common style:
 body {
   background: #f2f2f2;
-  .btn {
-    outline: none;
-    &:focus {
-      box-shadow: none;
-    }
-  }
+  font-size: 14px;
+
   .component__text-area {
     width: 100%;
     height: 40px;
@@ -44,6 +40,10 @@ body {
     box-sizing: border-box;
     box-shadow: 0px 7px 64px rgba(0, 0, 0, 0.07);
     outline: none;
+
+    &.component__text-area--bordered {
+      border: 1px solid #f2f2f2;
+    }
 
     &.component__text-area--material {
       padding-left: 0rem !important;
@@ -78,6 +78,10 @@ body {
     box-shadow: 0px 7px 64px rgba(0, 0, 0, 0.07);
     border-radius: 7px;
     outline: none;
+
+    &.component__input--bordered {
+      border: 1px solid #f2f2f2;
+    }
 
     &.component__input--material {
       padding: 1rem 1.25rem 1rem 0rem !important;
@@ -369,5 +373,16 @@ body {
         rgba(255, 128, 139, 0.1)
       ),
       #ffffff;
+  }
+  .error-message {
+    font-size: 0.8rem;
+  }
+
+  .error-border {
+    border-color: $error-color !important;
+  }
+
+  .error-text {
+    color: $error-color !important;
   }
 }
