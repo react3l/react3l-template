@@ -27,6 +27,13 @@ function Default() {
             title={title}
             placeHolder={'Enter text...'}/>
 
+        <div style={{marginTop: '10px', width: '250px'}}>
+            <TextArea isMaterial={isMaterial}
+                error={'Field required!'}
+                title={title}
+                placeHolder={'Enter text...'}/>
+        </div>
+
         <div style={{margin: '10px', width: '300px'}}>
                     <Radio.Group onChange={handleChangeStyle} value={isMaterial}>
                         <Radio value={true}>Material Style</Radio>

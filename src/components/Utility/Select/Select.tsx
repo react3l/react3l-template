@@ -29,11 +29,15 @@ export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> 
 
   isMaterial?: boolean;
 
+  error?: string;
+
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
   setModel?: (T: T ) => void;
 
   render?: (t: T) => string;
+
+  classFilter: new () => TModelFilter;
 }
 
 function defaultRenderObject<T extends Model>(t: T) {
@@ -49,9 +53,11 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     placeHolder,
     disabled,
     isMaterial,
+    error,
     getList,
     setModel,
     render,
+    classFilter: ClassFilter,
   } = props;
 
   const internalModel = React.useMemo((): Model => {
@@ -73,7 +79,8 @@ function Select(props: SelectProps<Model, ModelFilter>) {
       try {
         setLoading(true);
         subscription.add(getList);
-        getList(modelFilter).subscribe((res: Model[]) => {
+        const filter = modelFilter ? modelFilter : new ClassFilter();
+        getList(filter).subscribe((res: Model[]) => {
           setList(res);
           setLoading(false);
         }, (err: ErrorObserver<Error>) => {
@@ -83,7 +90,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
       } catch (error) {
       }
     },
-    [getList, modelFilter, subscription],
+    [getList, modelFilter, ClassFilter, subscription],
   );
 
   const handleToggle = React.useCallback (
@@ -108,7 +115,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
   [handleCloseSelect, setModel]);
 
   const handleSearchChange = React.useCallback(debounce((searchTerm: string) => {
-    const cloneModelFilter = {...modelFilter};
+    const cloneModelFilter = modelFilter ? {...modelFilter} : new ClassFilter();
     cloneModelFilter[searchProperty][searchType] = searchTerm;
     setLoading(true);
     subscription.add(getList);
@@ -135,6 +142,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
           placeHolder={placeHolder}
           expanded={isExpand}
           disabled={disabled}
+          error={error}
           onSearch={handleSearchChange}
           onClear={handleClearItem}/>
       </div>

@@ -35,6 +35,13 @@ export function InputSelectStories() {
                         isMaterial={isMaterial}
                         placeHolder={'Select tree node...'}/>
         </div>
+        <div style={{margin: '10px', width: '250px'}}>
+                    <InputSelect expanded={expanded}
+                        error={'Field required'}
+                        title={title}
+                        isMaterial={isMaterial}
+                        placeHolder={'Select tree node...'}/>
+        </div>
         <div style={{margin: '10px', width: '300px'}}>
                         <Radio.Group onChange={handleChangeStyle} value={isMaterial}>
                             <Radio value={true}>Material Style</Radio>

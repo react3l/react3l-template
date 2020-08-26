@@ -19,16 +19,6 @@ const demoObservable = new Observable<Model[]>((observer) => {
     }, 2000);
 });
 
-const flatArray: TreeNode<Model>[] = [
-    {title: 'Test', key: 0, item: {}, children: [
-        {title: 'TestChild', key: 3, item: {}, children: []},
-        {title: 'TestChild1', key: 4, item: {}, children: []},
-        {title: 'TestChild2', key: 5, item: {}, children: []},
-    ]},
-    {title: 'Test1', key: 1, item: {}, children: []},
-    {title: 'Test2', key: 2, item: {}, children: []},
-];
-
 const demoSearchFunc = (TModelFilter: ModelFilter) => {
     return demoObservable;
 };

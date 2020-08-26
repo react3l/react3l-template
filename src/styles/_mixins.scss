@@ -1,10 +1,14 @@
-@mixin variable($property, $gradient1, $gradient2) {
+@mixin variable-gradient($property, $gradient1, $gradient2) {
     #{$property}: linear-gradient(224.53deg, var(--$property) 0%, var(--$property) 99.2%);
     #{$property}: -webkit-linear-gradient(224.53deg, var(--$gradient1) 0%, var(--$gradient2) 99.2%);
 }
 
+@mixin variable($property, $value) {
+    #{$property}: $value;
+}
+
 @mixin background {
-    @include variable(background, gradient-primary, gradient-secondary)
+    @include variable-gradient(background, gradient-primary, gradient-secondary)
 }
 
 @mixin background-color {
@@ -35,7 +39,7 @@
 
 @mixin input-title {
     width: 100%;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 150%;
     color: #8181A5;
     margin-bottom: 2px;

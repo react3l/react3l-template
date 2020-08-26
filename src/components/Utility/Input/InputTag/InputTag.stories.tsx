@@ -36,6 +36,15 @@ export function InputTagStories() {
                     placeHolder={'Select tree node...'}
                     onSearch={handleSearchItem}
                     onClear={handleClearItem}/>
+
+                <div style={{marginTop: '10px', width: '380px'}}>
+                    <InputTag listItem={listItem}
+                        isMaterial={isMaterial}
+                        placeHolder={'Select tree node...'}
+                        onSearch={handleSearchItem}
+                        onClear={handleClearItem}
+                        error={'Field required!'}/>
+                </div>
                     
                 <button className="btn btn-info" 
                     style={{marginTop: '10px'}}

@@ -4,6 +4,7 @@ import { Model } from 'react3l/core';
 import { Moment } from 'moment';
 import { DatePicker } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
+import { commonWebService } from 'services/common-web-service';
 
 const { RangePicker } = DatePicker;
 
@@ -26,6 +27,11 @@ function AdvanceDateRangeFilter(props: AdvanceDateRangeFilterProps<Model> & Rang
     onChange,
   } = props;
 
+  const internalValue: [Moment, Moment] = React.useMemo(() => {
+    return [typeof value[0] === 'string' ? commonWebService.toMomentDate(value[0]) : value[0],
+      typeof value[1] === 'string' ? commonWebService.toMomentDate(value[1]) : value[1]];
+  }, [value]);
+
   const handleClearDate = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
     onChange([null , null]);
@@ -34,6 +40,7 @@ function AdvanceDateRangeFilter(props: AdvanceDateRangeFilterProps<Model> & Rang
   return (
     <div className="advance-date-range-filter__container">
       <RangePicker {...props}
+          value={internalValue}
           style={{width: '100%'}}
           allowClear={false}
           format={dateFormat}

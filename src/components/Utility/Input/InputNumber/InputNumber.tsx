@@ -11,7 +11,7 @@ export interface InputNumberProps<T extends Model> {
   title?: string;
   allowPositive?: boolean;
   isMaterial?: boolean;
-  isError?: boolean;
+  error?: string;
   numberType?: string;
   isReverseSymb?: boolean;
   decimalDigit?: number;
@@ -27,7 +27,7 @@ function InputNumber(props: InputNumberProps<Model>) {
     title,
     allowPositive,
     isMaterial,
-    isError,
+    error,
     numberType,
     decimalDigit,
     isReverseSymb,
@@ -40,6 +40,10 @@ function InputNumber(props: InputNumberProps<Model>) {
   const [internalValue, setInternalValue] = React.useState<string>('');
 
   const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>(null);
+
+  const isError = React.useMemo(() => {
+    return error ? true : false;
+  }, [error]);
 
   const buildRegex = React.useCallback(() => {
     var regExDecimal = '';
@@ -163,9 +167,7 @@ function InputNumber(props: InputNumberProps<Model>) {
       if (isReverseSymb) {
         stringValue = stringValue.replace(/\./g, ',');
       }
-      if (stringValue !== internalValue) {
-        setInternalValue(formatString(stringValue));
-      }
+      setInternalValue(formatString(stringValue));
     } else {
       setInternalValue('');
     }
@@ -175,7 +177,7 @@ function InputNumber(props: InputNumberProps<Model>) {
     <>
       <div className="input-number__container">
         { title && 
-          <div className="input-number__title">{title}</div>
+          <div className={classNames('input-number__title', {'error-text': isError})}>{title}</div>
         }
         <div className="input-number__wrapper">
           <input type="text"
@@ -184,13 +186,15 @@ function InputNumber(props: InputNumberProps<Model>) {
             placeholder={placeHolder}
             ref={inputRef}
             disabled={disabled} 
-            className={classNames('component__input', {'component__input--material': isMaterial})}/>
+            className={classNames('component__input', 
+            {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial, 'error-border': isError})}/>
           { internalValue ? 
             <i className="input-number__icon tio-clear" onClick={handleClearInput}></i> :
             className && 
-            <i className={classNames('input-number__icon', className)}></i>
+            <i className={classNames('input-number__icon', className, {'error-text': isError})}></i>
           }
         </div>
+        {isError && <span className="error-text error-message">{error}</span>}
       </div>
     </>
   );
