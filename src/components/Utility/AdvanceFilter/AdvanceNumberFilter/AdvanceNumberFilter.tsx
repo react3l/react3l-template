@@ -137,14 +137,11 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
 
   const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const stringValue = formatString(event.target.value);
-    const [numberValue, isOutOfRange] = parseNumber(stringValue);
+    const isOutOfRange = parseNumber(stringValue)[1];
     if (!isOutOfRange) {
       setInternalValue(stringValue);
-      if (typeof onChange === 'function') {
-        onChange(numberValue);
-      }
     }
-  }, [formatString, parseNumber, onChange]);
+  }, [formatString, parseNumber]);
 
   const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setInternalValue('');
@@ -153,6 +150,18 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
     }
     inputRef.current.focus();
   }, [onChange]);
+
+  const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13 && event.currentTarget.value && typeof onChange === 'function') {
+      onChange(parseNumber(event.currentTarget.value)[0]);
+    }
+  }, [onChange, parseNumber]);
+
+  const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+    if (event.target.value && typeof onChange === 'function') {
+      onChange(parseNumber(event.currentTarget.value)[0]);
+    }
+  }, [onChange, parseNumber]);
 
   React.useEffect(() => {
     if (value) {
@@ -175,6 +184,8 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
         <div className="advance-number-filter__wrapper">
           <input type="text"
             value={internalValue}
+            onKeyDown={handleKeyPress}
+            onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeHolder}
             ref={inputRef}

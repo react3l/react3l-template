@@ -31,6 +31,8 @@ export interface SelectProps<T extends Model, TModelFilter extends ModelFilter> 
 
   error?: string;
 
+  title?: string;
+
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
   setModel?: (T: T ) => void;
@@ -54,6 +56,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     disabled,
     isMaterial,
     error,
+    title,
     getList,
     setModel,
     render,
@@ -138,6 +141,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
       <div className="select__input" onClick={handleToggle}>
         <InputSelect model={internalModel}
           render={render}
+          title={title}
           isMaterial={isMaterial}
           placeHolder={placeHolder}
           expanded={isExpand}

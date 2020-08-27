@@ -24,21 +24,19 @@ function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model>) {
     return true;
   }, []);
 
-  const handleChangeFrom = React.useCallback((number: number) => {
+  const handleBlurFrom = React.useCallback((number: number) => {
     if (validateRange(number, valueRange[1])) {
       onChangeRange([number, valueRange[1]]);
     } else {
-      const changeValue = valueRange[0] === null ? undefined : null;
-      onChangeRange([changeValue, valueRange[1]]);
+      onChangeRange([null, null]);
     }
   }, [onChangeRange, valueRange, validateRange]);
 
-  const handleChangeTo = React.useCallback((number: number) => {
+  const handleBlurTo = React.useCallback((number: number) => {
     if (validateRange(valueRange[0], number)) {
       onChangeRange([valueRange[0], number]);
     } else {
-      const changeValue = valueRange[1] === null ? undefined : null;
-      onChangeRange([valueRange[0], changeValue]);
+      onChangeRange([null, null]);
     }
   }, [onChangeRange, valueRange, validateRange]);
 
@@ -50,19 +48,21 @@ function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model>) {
         }
         <div className="input-range__wrapper">
           <div className="input-range__input-number">
-            <InputNumber {...props} value={valueRange[0]}
+            <InputNumber {...props} 
+              value={valueRange[0]}
               title={null} 
               placeHolder={placeHolderRange[0]}
-              onChange={handleChangeFrom}/>
+              onBlur={handleBlurFrom}/>
           </div>
           <span className="input-range__icon">
             <i className="tio-arrow_large_forward_outlined"></i>
           </span>
           <div className="input-range__input-number">
-            <InputNumber {...props} value={valueRange[1]}
+            <InputNumber {...props} 
+              value={valueRange[1]}
               title={null} 
               placeHolder={placeHolderRange[1]}
-              onChange={handleChangeTo}/>
+              onBlur={handleBlurTo}/>
           </div>
         </div>
       </div>

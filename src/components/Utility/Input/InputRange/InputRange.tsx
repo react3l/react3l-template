@@ -6,6 +6,7 @@ import { Model } from 'react3l/core';
 export interface InputRange <T extends Model> extends InputNumberProps<Model> {
   valueRange: [number, number];
   title?: string;
+  error?: string;
   placeHolderRange?: [string, string];
   onChangeRange: (T: [number, number]) => void;
 }
@@ -14,9 +15,14 @@ function InputRange(props: InputRange<Model>) {
   const {
     valueRange,
     title,
+    error,
     placeHolderRange = [null, null],
     onChangeRange,
   } = props;
+
+  const isError = React.useMemo(() => {
+    return error ? true : false;
+  }, [error]);
 
   const validateRange = React.useCallback((fromValue, toValue) => {
     if (fromValue === null || toValue === null) return true;
@@ -24,21 +30,19 @@ function InputRange(props: InputRange<Model>) {
     return true;
   }, []);
 
-  const handleChangeFrom = React.useCallback((number: number) => {
+  const handleBlurFrom = React.useCallback((number: number) => {
     if (validateRange(number, valueRange[1])) {
       onChangeRange([number, valueRange[1]]);
     } else {
-      const changeValue = valueRange[0] === null ? 0 : null;
-      onChangeRange([changeValue, valueRange[1]]);
+      onChangeRange([null, null]);
     }
   }, [onChangeRange, valueRange, validateRange]);
 
-  const handleChangeTo = React.useCallback((number: number) => {
+  const handleBlurTo = React.useCallback((number: number) => {
     if (validateRange(valueRange[0], number)) {
       onChangeRange([valueRange[0], number]);
     } else {
-      const changeValue = valueRange[1] === null ? 0 : null;
-      onChangeRange([valueRange[0], changeValue]);
+      onChangeRange([null, null]);
     }
   }, [onChangeRange, valueRange, validateRange]);
 
@@ -46,23 +50,23 @@ function InputRange(props: InputRange<Model>) {
     <>
       <div className="input-range__container">
         { title && 
-          <div className="input-range__title">{title}</div>
+          <div className={classNames('input-range__title', {'error-text': isError})}>{title}</div>
         }
         <div className="input-range__wrapper">
           <div className="input-range__input-number">
             <InputNumber {...props} value={valueRange[0]}
-              title={null} 
-              placeHolder={placeHolderRange[0]}
-              onChange={handleChangeFrom}/>
+              title={null}
+              onBlur={handleBlurFrom} 
+              placeHolder={placeHolderRange[0]}/>
           </div>
           <span className="input-range__icon">
             <i className="tio-arrow_large_forward_outlined"></i>
           </span>
           <div className="input-range__input-number">
             <InputNumber {...props} value={valueRange[1]}
-              title={null} 
-              placeHolder={placeHolderRange[1]}
-              onChange={handleChangeTo}/>
+              title={null}
+              onBlur={handleBlurTo}  
+              placeHolder={placeHolderRange[1]}/>
           </div>
         </div>
       </div>

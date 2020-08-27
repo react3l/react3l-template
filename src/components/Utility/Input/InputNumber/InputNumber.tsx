@@ -19,6 +19,8 @@ export interface InputNumberProps<T extends Model> {
   disabled?: boolean;
   className?: string;
   onChange?: (T: number) => void;
+  onEnter?: (T: number) => void;
+  onBlur?: (T: number) => void;
 }
 
 function InputNumber(props: InputNumberProps<Model>) {
@@ -35,6 +37,8 @@ function InputNumber(props: InputNumberProps<Model>) {
     className,
     disabled,
     onChange,
+    onEnter,
+    onBlur,
   } = props;
 
   const [internalValue, setInternalValue] = React.useState<string>('');
@@ -124,21 +128,25 @@ function InputNumber(props: InputNumberProps<Model>) {
 
   const parseNumber = React.useCallback((value: string): [number, boolean] => {
     var isOutOfRange, number, stringValue;
-    if (isReverseSymb) {
-      stringValue = value.replace(/[,.]/g, m => (m === '.' ? ',' : '.'));
-      stringValue = stringValue.replace(/,/g, '');
+    if (value) {
+      if (isReverseSymb) {
+        stringValue = value.replace(/[,.]/g, m => (m === '.' ? ',' : '.'));
+        stringValue = stringValue.replace(/,/g, '');
+      } else {
+        stringValue = value.replace(/,/g, '');
+      }
+      switch(numberType) {
+        case DECIMAL:
+          isOutOfRange = stringValue.length > 21 ? true : false;
+          number = parseFloat(stringValue);
+          return [number, isOutOfRange];
+        default:
+          isOutOfRange = stringValue.length > 17 ? true : false;
+          number = parseInt(stringValue);
+          return [number, isOutOfRange];
+      }
     } else {
-      stringValue = value.replace(/,/g, '');
-    }
-    switch(numberType) {
-      case DECIMAL:
-        isOutOfRange = stringValue.length > 21 ? true : false;
-        number = parseFloat(stringValue);
-        return [number, isOutOfRange];
-      default:
-        isOutOfRange = stringValue.length > 17 ? true : false;
-        number = parseInt(stringValue);
-        return [number, isOutOfRange];
+      return [null, false];
     }
   }, [numberType, isReverseSymb]);
 
@@ -155,11 +163,25 @@ function InputNumber(props: InputNumberProps<Model>) {
 
   const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setInternalValue('');
+    inputRef.current.focus();
     if (typeof onChange === 'function') {
       onChange(null);
     }
-    inputRef.current.focus();
   }, [onChange]);
+
+  const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      if (typeof onEnter === 'function') {
+        onEnter(parseNumber(event.currentTarget.value)[0]);
+      }
+    }
+  }, [onEnter, parseNumber]);
+
+  const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+      if (typeof onBlur === 'function') {
+        onBlur(parseNumber(event.currentTarget.value)[0]);
+      }
+  }, [onBlur, parseNumber]);
 
   React.useEffect(() => {
     if (value) {
@@ -183,6 +205,8 @@ function InputNumber(props: InputNumberProps<Model>) {
           <input type="text"
             value={internalValue}
             onChange={handleChange}
+            onKeyDown={handleKeyPress}
+            onBlur={handleBlur}
             placeholder={placeHolder}
             ref={inputRef}
             disabled={disabled} 

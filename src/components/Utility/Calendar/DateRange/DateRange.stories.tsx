@@ -9,6 +9,10 @@ export function DateRangeStories() {
     
     const [value, setValue] = React.useState<[Moment, Moment]>([null, null]);
 
+    const [isTitle, setIsTitle] = React.useState(false);
+
+    const [title, setTitle] = React.useState('');
+
     const handleChange = React.useCallback((dateMoment, dateString) => {
       setValue(dateMoment);
     }, []);
@@ -17,10 +21,26 @@ export function DateRangeStories() {
       setIsMaterial(event.target.value);
     }, []);
 
+    const handleChangeTitle = React.useCallback((event: RadioChangeEvent) => {
+      setIsTitle(event.target.value);
+      if (event.target.value) {
+          setTitle('Input text');
+      } else setTitle('');
+    }, []);
+
     return <div style={{margin: '10px', width: '250px'}}>
       <DateRange isMaterial={isMaterial}
         onChange={handleChange}
+        title={title}
         value={value}/>
+
+      <div style={{margin: '10px', width: '300px'}}>
+        <DateRange isMaterial={isMaterial}
+          onChange={handleChange}
+          title={title}
+          error={'Field required!'}
+          value={value}/>
+      </div>
 
       <div style={{margin: '10px', width: '300px'}}>
         <Radio.Group onChange={handleChangeStyle} value={isMaterial}>
@@ -28,5 +48,12 @@ export function DateRangeStories() {
             <Radio value={false}>Normal Style</Radio>
         </Radio.Group>
       </div>
+
+      <div style={{margin: '10px', width: '300px'}}>
+          <Radio.Group onChange={handleChangeTitle} value={isTitle}>
+              <Radio value={true}>Titled</Radio>
+              <Radio value={false}>Untitled</Radio>
+          </Radio.Group>
+        </div>
     </div>;
 }

@@ -12,6 +12,8 @@ interface InputText<T extends Model> {
   placeHolder?: string;
   className?: string;
   onChange?: (T: string) => void;
+  onEnter?: (T: string) => void;
+  onBlur?: (T: string) => void;
 }
 
 function InputText(props: InputText<Model>) {
@@ -24,6 +26,8 @@ function InputText(props: InputText<Model>) {
     placeHolder,
     className,
     onChange,
+    onEnter,
+    onBlur,
   } = props;
 
   const isError = React.useMemo(() => {
@@ -43,11 +47,26 @@ function InputText(props: InputText<Model>) {
 
   const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setInternalValue('');
+    inputRef.current.focus();
     if (typeof onChange === 'function') {
       onChange(null);
+      return;
     }
-    inputRef.current.focus();
   }, [onChange]);
+
+  const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      if (typeof onEnter === 'function') {
+        onEnter(event.currentTarget.value);
+      }
+    }
+  }, [onEnter]);
+
+  const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+    if (typeof onBlur === 'function') {
+      onBlur(event.currentTarget.value);
+    }
+  }, [onBlur]);
 
   React.useEffect(() => {
     if (value) {
@@ -67,6 +86,8 @@ function InputText(props: InputText<Model>) {
           <input type="text"
             value={internalValue}
             onChange={handleChange}
+            onKeyDown={handleKeyPress}
+            onBlur={handleBlur}
             placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
             ref={inputRef}
             disabled={disabled} 

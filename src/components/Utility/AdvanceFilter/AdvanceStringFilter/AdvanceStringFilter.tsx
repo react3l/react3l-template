@@ -28,10 +28,7 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
 
   const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setInternalValue(event.target.value);
-    if (typeof onChange === 'function') {
-      onChange(event.target.value);
-    }
-  }, [onChange]);
+  }, []);
 
   const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setInternalValue('');
@@ -39,6 +36,18 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
       onChange(null);
     }
     inputRef.current.focus();
+  }, [onChange]);
+
+  const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13 && event.currentTarget.value && typeof onChange === 'function') {
+      onChange(event.currentTarget.value);
+    }
+  }, [onChange]);
+
+  const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+    if (event.target.value && typeof onChange === 'function') {
+      onChange(event.target.value);
+    }
   }, [onChange]);
 
   React.useEffect(() => {
@@ -58,6 +67,8 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
         <div className="advance-string-filter__wrapper">
           <input type="text"
             value={internalValue}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyPress}
             onChange={handleChange}
             placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
             ref={inputRef}
