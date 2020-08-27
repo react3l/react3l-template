@@ -3,7 +3,6 @@ import DatePicker from './DatePicker';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { Moment } from 'moment';
-import InputNumber from 'components/Utility/Input/InputNumber/InputNumber';
 
 export function DatePickerStories() {
     const [isMaterial, setIsMaterial] = React.useState(false);

@@ -31,17 +31,11 @@ const demoSearchFunc = (TModelFilter: ModelFilter) => {
 };
 
 export function AdvanceIdFilterStories() {
-  const [AdvanceIdFilterModel, setAdvanceIdFilterModel] = React.useState<Model>({id: 0, name: 'Ban hành chính', code: 'FAD'});
-
   const [AdvanceIdFilterModelFilter] = React.useState<ModelFilter>(new ModelFilter());
 
   const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, IdFilter>>>(advanceFilterReducer, filterValue);
 
   const [id, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter>(filter, dispatch, 'id', 'equal');
-
-  const handleSetModel = React.useCallback((item: Model) => { 
-    setAdvanceIdFilterModel(item);
-  }, []);
 
   const handleRenderModel = React.useCallback((item: Model) => {
     if(item) {
@@ -59,7 +53,7 @@ export function AdvanceIdFilterStories() {
                 value={id}
                 classFilter={DemoFilter} 
                 modelFilter={AdvanceIdFilterModelFilter}
-                searchProperty={nameof(AdvanceIdFilterModel.name)}
+                searchProperty={nameof(DemoFilter.name)}
                 render={handleRenderModel}
                 setId={setValue}
                 getList={demoSearchFunc}/>

@@ -37,10 +37,15 @@ function AdvanceDateRangeFilter(props: AdvanceDateRangeFilterProps<Model> & Rang
     onChange([null , null]);
   }, [onChange]);
 
+  const handleChange = React.useCallback((values: [Moment, Moment], formatString: [string, string]) => {
+    onChange([values[0].startOf('day'), values[1].endOf('day')]);
+  }, [onChange]);
+
   return (
     <div className="advance-date-range-filter__container">
       <RangePicker {...props}
           value={internalValue}
+          onChange={handleChange}
           style={{width: '100%'}}
           allowClear={false}
           format={dateFormat}

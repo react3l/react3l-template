@@ -2,7 +2,7 @@ import React, { Reducer } from 'react';
 import InputRange from './InputRange';
 import Radio, { RadioChangeEvent } from 'antd/lib/radio';
 import { advanceFilterReducer, AdvanceFilterAction, advanceFilterService } from 'services/advance-filter-service';
-import { Model, ModelFilter } from 'react3l/core';
+import { ModelFilter } from 'react3l/core';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
 
 class DemoFilter extends ModelFilter {
@@ -11,9 +11,7 @@ class DemoFilter extends ModelFilter {
 
 export function InputRangeStories() {
     const [isMaterial, setIsMaterial] = React.useState(false);
-
-    const [value, setValue] = React.useState<[number, number]>([null , null]);
-
+    
     const [iconName, setIconName] = React.useState('');
 
     const [isTitle, setIsTitle] = React.useState(false);
@@ -32,10 +30,6 @@ export function InputRangeStories() {
         if (event.target.value) {
             setIconName('tio-dollar');
         } else setIconName('');
-    }, []);
-
-    const handleChange = React.useCallback((value: [number, number]) => {
-        setValue(value);
     }, []);
 
     const [filter, dispatch] = React.useReducer<Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, NumberFilter>>>(advanceFilterReducer, new DemoFilter());

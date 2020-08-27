@@ -52,7 +52,7 @@ export const commonWebService = {
         return [tree, keyNodes];
     },
 
-    toMomentDate(date: string, dateFormat: string = 'DD/MM/YYYY'): Moment {
-        return moment(date, dateFormat);
+    toMomentDate(date: string): Moment {
+        return moment(date);
     },
 };
