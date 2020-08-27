@@ -220,6 +220,48 @@ body {
         color: #8181a5;
         margin-bottom: 2px;
       }
+      .page__detail-tabs {
+        .ant-tabs {
+          overflow: unset;
+        }
+      }
+      .page__detail-invoice {
+        .page__detail-invoice-header {
+          background: #fafafc;
+          border-radius: 8px;
+          padding: 0px 14px;
+          .invoice__row {
+            @include gradient_text();
+            font-weight: bold;
+            font-size: 18px;
+          }
+        }
+      }
+      .invoice__delete {
+        @include gradient-text-delete();
+        font-weight: 600;
+      }
+      .invoice__add-row {
+        .invoice__add-row-text {
+          @include gradient-text();
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+      }
+      .page__detail-total {
+        border: 1px solid #eeeeee;
+        box-sizing: border-box;
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .page__detail-text-total {
+        @include gradient-text();
+        font-weight: 600;
+      }
+      .page__detail-card-right {
+        max-height: 373px;
+        font-size: 18px;
+      }
     }
     .page__master-table {
       .table-title {

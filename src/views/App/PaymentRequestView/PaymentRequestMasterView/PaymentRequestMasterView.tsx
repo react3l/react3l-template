@@ -19,6 +19,7 @@ import Pagination from 'components/Utility/Pagination/Pagination';
 import { DemoFilter } from 'components/Utility/Pagination/Pagination.stories';
 import { PAYMENT_REQUEST_DETAIL_ROUTE } from 'config/route-consts';
 import { routerService } from 'services/RouterService';
+import { ModelFilter } from 'react3l/core';
 
 
 function ProvinceMasterView() {
@@ -169,11 +170,11 @@ function ProvinceMasterView() {
                 <div className="d-flex">
                   <div className="pr-4 mt__1">
                     <label className="label">Phòng ban</label>
-                    <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                   </div>
                   <div className="pr-4 mt__1">
                     <label className="label">Trạng thái</label>
-                    <AdvanceIdFilter placeHolder={'Tất cả'} />
+                    <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                   </div>
                   <div>
                     <button
@@ -209,19 +210,19 @@ function ProvinceMasterView() {
                   <Row className="mt-4">
                     <Col lg={4} className="pr-4">
                       <label className="label">Người đề nghị</label>
-                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Bên nhận</label>
-                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Chi hộ</label>
-                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Loại ngân sách</label>
-                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Thời hạn thanh toán</label>
@@ -229,24 +230,22 @@ function ProvinceMasterView() {
                     </Col>
                     <Col lg={4}>
                       <label className="label">Kỳ ngân sách</label>
-                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                     </Col>
                   </Row>
                   <Row className="mt-4">
                     <Col lg={4} className="pr-4">
                       <label className="label">Loại đề nghị</label>
-                      <AdvanceIdFilter placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Mã đề nghị</label>
                       <AdvanceStringFilter
-                        isMaterial={false}
                         placeHolder={'Nhập mã đề nghị'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Mã số thuế NCC</label>
                       <AdvanceStringFilter
-                        isMaterial={false}
                         placeHolder={'Nhập mã số thuế'} />
                     </Col>
                     <Col lg={4} className="pr-4">
