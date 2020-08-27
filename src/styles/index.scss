@@ -179,6 +179,31 @@ body {
       }
     }
   }
+
+  .component__btn-cancel {
+    @include background-color-delete();
+    color: #ffffff;
+    color: $white;
+    border: none;
+    border-radius: 7px;
+    text-align: center;
+    height: 38px;
+    font-weight: 600;
+    padding: 0 16px;
+    &:hover {
+      color: $white;
+    }
+  }
+  .component__btn-save-template {
+    background: #f2f2f2;
+    color: #f5d117;
+  }
+  .component__btn-save-draft {
+    background-color: #f2f2f2;
+    span {
+      @include gradient-text();
+    }
+  }
   .gradient-btn-icon {
     @include gradient-text();
     font-size: 20px;

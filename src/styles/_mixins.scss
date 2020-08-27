@@ -101,3 +101,12 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+@mixin background-color-delete {
+  background: -webkit-linear-gradient(
+    180deg,
+    #fd0000 0%,
+    #fe007a 100%
+  ) !important;
+  background: linear-gradient(180deg, #fd0000 0%, #fe007a 100%) !important;
+}
