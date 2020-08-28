@@ -24,6 +24,9 @@ function App() {
     if (pathname.includes('detail')) {
       setDisplayFooter(true);
     }
+    if (pathname.includes('master')) {
+      setDisplayFooter(false);
+    }
   }, [pathname]);
   const handleOffOverlay = React.useCallback(() => {
     setGlobal<GlobalState>({ display: false });
@@ -44,13 +47,15 @@ function App() {
         >
         </div>
         <section className={classNames("flex-item", (!toggleMenu ? 'main content-in' : 'main content-out'))}>
-          <AppHeader />
+          <div className="header-wrapper">
+            <AppHeader />
+          </div>
           <main className="body">
             <Switch>{renderRoutes(routes)}</Switch>
           </main>
         </section>
         {
-          displayFooter === true && (<AppFooter />)
+          displayFooter === true ? (<AppFooter />) : (<></>)
         }
 
       </div>

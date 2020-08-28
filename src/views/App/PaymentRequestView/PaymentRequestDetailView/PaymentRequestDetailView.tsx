@@ -410,8 +410,8 @@ function PaymentRequestDetailView() {
               </Card>
             </Col>
           </Row>
-          <Row className="mt-3">
-            <button className="btn component__btn-primary pr-4">
+          <Row className="mt-3 mb-5">
+            <button className="btn component__btn-primary pr-4 mb-5">
               {/* {translate('general.actions.search')} */}
               Thêm hóa đơn
             </button>

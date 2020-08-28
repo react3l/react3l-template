@@ -167,40 +167,44 @@ function ProvinceMasterView() {
                 <div className="pr-4"><InputSearch /></div>
               </Col>
               <Col lg={12}>
-                <div className="d-flex">
-                  <div className="pr-4 mt__1">
+                <div className="d-flex justify-content-between">
+                  <div className="mt__1">
                     <label className="label">Phòng ban</label>
                     <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                   </div>
-                  <div className="pr-4 mt__1">
+                  <div className="mt__1">
                     <label className="label">Trạng thái</label>
                     <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
                   </div>
                   <div>
                     <button
-                      className={classNames('btn component__btn-toggle mr-4',
+                      className={classNames('btn component__btn-toggle',
                         (toggle === true ? 'component__btn-toggle-active' : ''))} onClick={handleToggleSearch}>
                       <span>
                         <div className="tio-down_ui" />
                         <div className="tio-down_ui" />
                       </span>
+                    </button>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <button className="btn component__btn-outline-primary">
+                      <span className="border-outline">
+                        {/* {translate('general.actions.reset')} */}
+                        <div className="text-outline">
+                          Bỏ lọc
+                      </div>
+                      </span>
 
                     </button>
 
                   </div>
-                  <button className="btn component__btn-outline-primary">
-                    <span className="border-outline">
-                      {/* {translate('general.actions.reset')} */}
-                      <div className="text-outline">
-                        Bỏ lọc
-                      </div>
-                    </span>
-
-                  </button>
-                  <button className="btn component__btn-primary pr-4">
-                    {/* {translate('general.actions.search')} */}
+                  <div>
+                    <button className="btn component__btn-primary pr-4">
+                      {/* {translate('general.actions.search')} */}
                         Tìm kiếm
                   </button>
+                  </div>
+
                 </div>
               </Col>
             </Row>

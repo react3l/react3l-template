@@ -23,7 +23,18 @@
   .header__display-none {
     display: none;
   }
-
+  @mixin wrapper {
+    position: fixed;
+    z-index: 1000;
+    background: #f9f9f9;
+    padding-top: 17px;
+    height: 30px;
+  }
+  .header-wrapper {
+    @include wrapper();
+    width: calc(100%);
+    margin-left: 50px;
+  }
   .flex-item {
     flex-grow: 1;
     overflow: scroll;
@@ -83,9 +94,12 @@
     transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
     margin-left: 0 !important;
     .app-header {
-      width: calc(100% - 144px) !important;
+      width: calc(100% - 150px) !important;
       margin-left: 34px !important;
     }
+    // .header-wrapper {
+    //   margin-left: 0px;
+    // }
     .app-content {
       margin: 115px 35px 34px 34px !important;
     }
