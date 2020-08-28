@@ -4,7 +4,7 @@ import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { ModelFilter } from 'react3l/core/model-filter';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
-import { AdvanceFilterAction, advanceFilterReducer, advanceFilterService } from 'services/advance-filter-service';
+import { AdvanceFilterAction, advanceFilterReducer, advanceFilterService } from 'services/AdvanceFilterService';
 import { Filter } from 'react3l-advanced-filters/Filter';
 
 class DemoFilter extends ModelFilter {

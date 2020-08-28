@@ -2,7 +2,7 @@ import Radio, { RadioChangeEvent } from 'antd/lib/radio';
 import React, { Reducer } from 'react';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
 import { ModelFilter } from 'react3l/core';
-import { AdvanceFilterAction, advanceFilterReducer, advanceFilterService } from 'services/advance-filter-service';
+import { AdvanceFilterAction, advanceFilterReducer, advanceFilterService } from 'services/AdvanceFilterService';
 import AdvanceNumberRangeFilter from './AdvanceNumberRangeFilter';
 
 class DemoFilter extends ModelFilter {

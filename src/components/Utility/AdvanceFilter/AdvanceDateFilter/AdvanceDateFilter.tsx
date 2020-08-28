@@ -4,7 +4,7 @@ import { DatePicker } from 'antd';
 import { DatePickerProps } from 'antd/lib/date-picker';
 import { Model } from 'react3l/core';
 import { Moment } from 'moment';
-import { commonWebService } from 'services/common-web-service';
+import { commonWebService } from 'services/CommonWebService';
 
 function SuffixDateIcon () {
   return <span className="advance-filter-date__icon">

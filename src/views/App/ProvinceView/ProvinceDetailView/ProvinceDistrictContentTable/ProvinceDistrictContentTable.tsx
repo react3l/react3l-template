@@ -1,6 +1,6 @@
 import React from 'react';
 import './ProvinceDistrictContentTable.scss';
-import {formService} from 'services/form-service';
+import {formService} from 'services/FormService';
 import {Province} from 'models/Province';
 import {District} from 'models/District';
 import {Model} from 'react3l/core';

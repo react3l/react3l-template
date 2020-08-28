@@ -4,7 +4,7 @@ import { Model } from 'react3l/core';
 import { Moment } from 'moment';
 import { DatePicker } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
-import { commonWebService } from 'services/common-web-service';
+import { commonWebService } from 'services/CommonWebService';
 
 const { RangePicker } = DatePicker;
 
