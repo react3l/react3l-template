@@ -6,8 +6,8 @@ import {useTranslation} from 'react-i18next';
 import {useParams} from 'react-router';
 import {administrativeTypeRepository} from 'repositories/administrative-type-repository';
 import {provinceRepository} from 'repositories/province-repository';
-import {enumService} from 'services/enum-service';
-import {formService} from 'services/form-service';
+import {enumService} from 'services/EnumService';
+import {formService} from 'services/FormService';
 import 'views/App/ProvinceView/ProvinceDetailView/ProvinceDetailView.scss';
 import ProvinceDistrictContentTable
   from 'views/App/ProvinceView/ProvinceDetailView/ProvinceDistrictContentTable/ProvinceDistrictContentTable';

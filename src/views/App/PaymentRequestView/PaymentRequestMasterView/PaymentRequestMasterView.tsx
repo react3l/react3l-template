@@ -5,7 +5,7 @@ import { ProvinceFilter } from 'models/ProvinceFilter';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { provinceRepository } from 'repositories/province-repository';
-import { tableService } from 'services/table-service';
+import { tableService } from 'services/TableService';
 import nameof from 'ts-nameof.macro';
 import classNames from 'classnames';
 import './PaymentRequestMasterView.scss';

@@ -1,7 +1,7 @@
 import React, { Reducer } from 'react';
 import InputRange from './InputRange';
 import Radio, { RadioChangeEvent } from 'antd/lib/radio';
-import { advanceFilterReducer, AdvanceFilterAction, advanceFilterService } from 'services/advance-filter-service';
+import { advanceFilterReducer, AdvanceFilterAction, advanceFilterService } from 'services/AdvanceFilterService';
 import { ModelFilter } from 'react3l/core';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
 

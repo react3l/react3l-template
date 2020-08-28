@@ -3,7 +3,7 @@ import nameof from 'ts-nameof.macro';
 import { Model, ModelFilter } from 'react3l/core';
 import { Observable } from 'rxjs';
 import AdvanceIdFilter from './AdvanceIdFilter';
-import { advanceFilterService, advanceFilterReducer, AdvanceFilterAction } from 'services/advance-filter-service';
+import { advanceFilterService, advanceFilterReducer, AdvanceFilterAction } from 'services/AdvanceFilterService';
 import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 

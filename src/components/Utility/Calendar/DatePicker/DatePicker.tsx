@@ -6,7 +6,7 @@ import { Moment } from 'moment';
 
 import classNames from 'classnames';
 import { DatePickerProps as AntdDatePickerProps } from 'antd/lib/date-picker';
-import { commonWebService } from 'services/common-web-service';
+import { commonWebService } from 'services/CommonWebService';
 
 function SuffixDateIcon (props: any) {
   return <span className={classNames('date-picker__icon', {'error-background': props.isError})}>
