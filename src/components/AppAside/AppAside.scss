@@ -1,7 +1,44 @@
-/* Style for AppAside.tsx */
+@import "../../styles/mixins";
 
-.app-aside {
-  > div {
-    width: 240px;
+$red: red;
+
+.aside {
+  position: fixed;
+  .aside__header {
+    position: fixed;
+    .aside__navbar-brand {
+      height: 68px;
+      width: 280px;
+      background: white;
+      padding-left: 23px;
+      padding-top: 21px;
+      .aside__name {
+        @include gradient-text();
+        font-weight: 600;
+        font-size: 22px;
+        line-height: 27px;
+      }
+    }
+  }
+  .aside__default-sidebar {
+    .ant-menu-item {
+      a {
+        display: flex;
+        align-items: center;
+        // margin: 0px 6px;
+        padding-left: 1rem;
+        width: 100%;
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        .material-icons {
+          height: 14px;
+          font-size: 14px;
+          margin-right: 10px;
+        }
+      }
+    }
   }
 }

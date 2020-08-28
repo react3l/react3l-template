@@ -83,14 +83,17 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@microsoft/signalr": "^3.1.7",
     "antd": "^4.5.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
     "i18next": "^19.6.3",
+    "js-cookie": "^2.2.1",
     "moment": "^2.27.0",
     "path": "^0.12.7",
     "react": "^16.13.1",
+    "react-avatar": "^3.9.7",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.7.0",
     "react-router-config": "^5.1.1",

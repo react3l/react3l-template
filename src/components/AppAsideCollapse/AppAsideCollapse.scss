@@ -1,0 +1,56 @@
+@import "../../styles/mixins";
+
+.aside-collapse {
+  background-color: #ffffff;
+  // position: fixed;
+  width: 80px;
+  .aside__header {
+    .aside__navbar-brand {
+      height: 68px;
+
+      background: white;
+      padding-left: 23px;
+      padding-top: 21px;
+    }
+  }
+  .aside-collapse__menu {
+    .dropright {
+      a {
+        color: #4f4f4f;
+      }
+      li {
+        display: block;
+      }
+      .aside-collapse__child {
+        padding-left: 20px;
+        background: #ffffff;
+        box-shadow: 0px 0px 10px rgba(151, 151, 151, 0.2);
+        position: absolute;
+        display: none;
+        left: 66px;
+        top: 0;
+        z-index: 10000;
+        color: #333333;
+        .aside-collapse__child-item {
+          padding: 10px 10px 10px 0px;
+        }
+      }
+      &:hover {
+        .aside-collapse__child {
+          display: block;
+        }
+      }
+    }
+    .aside-collapse__icon {
+      position: relative;
+      font-size: 22px;
+      margin: 20px 27px;
+      &:hover {
+        @include gradient-text;
+      }
+    }
+    .aside-collapse__icon-active {
+      @include gradient-text;
+    }
+  }
+}

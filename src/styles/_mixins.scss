@@ -1,54 +1,112 @@
 @mixin variable-gradient($property, $gradient1, $gradient2) {
-    #{$property}: linear-gradient(224.53deg, var(--$property) 0%, var(--$property) 99.2%);
-    #{$property}: -webkit-linear-gradient(224.53deg, var(--$gradient1) 0%, var(--$gradient2) 99.2%);
+  #{$property}: linear-gradient(
+    224.53deg,
+    var(--$property) 0%,
+    var(--$property) 99.2%
+  );
+  #{$property}: -webkit-linear-gradient(
+    224.53deg,
+    var(--$gradient1) 0%,
+    var(--$gradient2) 99.2%
+  );
 }
 
 @mixin variable($property, $value) {
-    #{$property}: $value;
+  #{$property}: $value;
 }
 
 @mixin background {
-    @include variable-gradient(background, gradient-primary, gradient-secondary)
+  @include variable-gradient(background, gradient-primary, gradient-secondary);
 }
 
 @mixin background-color {
-    background: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    background: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
+  background: -webkit-linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
 }
 
 @mixin border-color {
-    border-image-source: -webkit-linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    border-image-source: linear-gradient(224.53deg, #013FFB 0%, #A295F2 99.2%) !important;
-    border-image-slice: 1;
+  border-image-source: -webkit-linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  border-image-source: linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  border-image-slice: 1;
 }
 
 @mixin background-active-color {
-    background: -webkit-linear-gradient(0deg, rgba(94, 129, 244, 0.1), rgba(94, 129, 244, 0.1)), #FFFFFF !important;
-    background: linear-gradient(0deg, rgba(94, 129, 244, 0.1), rgba(94, 129, 244, 0.1)), #FFFFFF !important;
+  background: -webkit-linear-gradient(
+      0deg,
+      rgba(94, 129, 244, 0.1),
+      rgba(94, 129, 244, 0.1)
+    ),
+    #ffffff !important;
+  background: linear-gradient(
+      0deg,
+      rgba(94, 129, 244, 0.1),
+      rgba(94, 129, 244, 0.1)
+    ),
+    #ffffff !important;
 }
 
 @mixin gradient-text {
-    background:-moz-linear-gradient(180deg, #013FFB 0%, #A295F2 100%); 
-    background: -webkit-linear-gradient(180deg, #013FFB 0%, #A295F2 100%); 
-    background: linear-gradient(180deg, #013FFB 0%, #A295F2 100%);
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-   -webkit-text-fill-color:transparent;
+  background: -moz-linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
+  background: -webkit-linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
+  background: linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin background-hover-color {
+  background: -webkit-linear-gradient(
+    224.53deg,
+    #013ffb 0%,
+    #a295f2 99.2%
+  ) !important;
+  background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
 }
 
 @mixin input-title {
-    width: 100%;
-    font-size: 14px;
-    line-height: 150%;
-    color: #8181A5;
-    margin-bottom: 2px;
+  width: 100%;
+  font-size: 14px;
+  line-height: 150%;
+  color: #8181a5;
+  margin-bottom: 2px;
 }
 
 @mixin input-icon {
-    position: absolute;
-    right: 4%;
-    top: 25%;
-    font-size: 1.2rem;
-    cursor: pointer;
+  position: absolute;
+  right: 4%;
+  top: 25%;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+@mixin gradient-text-delete {
+  background: -moz-linear-gradient(180deg, #fd0000 0%, #fe007a 100%);
+  background: -webkit-linear-gradient(180deg, #fd0000 0%, #fe007a 100%);
+  background: linear-gradient(180deg, #fd0000 0%, #fe007a 100%);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin background-color-delete {
+  background: -webkit-linear-gradient(
+    180deg,
+    #fd0000 0%,
+    #fe007a 100%
+  ) !important;
+  background: linear-gradient(180deg, #fd0000 0%, #fe007a 100%) !important;
 }

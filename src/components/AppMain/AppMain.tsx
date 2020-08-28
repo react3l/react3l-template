@@ -1,21 +1,16 @@
 import React from 'react';
-import {Switch} from 'react-router';
-import {renderRoutes, RouteConfig} from 'react-router-config';
+import { Switch } from 'react-router';
+import { renderRoutes, RouteConfigComponentProps } from 'react-router-config';
 import './AppMain.scss';
-
-export interface AppMainProps {
-  routes: RouteConfig[];
-}
-
-function AppMain(props: AppMainProps) {
-  const {routes} = props;
+function AppMain(props: RouteConfigComponentProps) {
+  const { route } = props;
 
   return (
-    <main>
+    <div className="app-content">
       <Switch>
-        {renderRoutes(routes)}
+        {route?.routes instanceof Array && renderRoutes(route.routes)}
       </Switch>
-    </main>
+    </div>
   );
 }
 

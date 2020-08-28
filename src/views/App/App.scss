@@ -1,11 +1,32 @@
 .app {
-  width: 100vw;
-  height: 100vh;
+  // width: 100vw;
+  // height: 100vh;
   display: flex;
-  flex-direction: column;
+  background-color: #f9f9f9 !important;
 
-  > header {
-    height: 65px;
+  .header__overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 280px;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 3;
+    cursor: pointer;
+  }
+  .header__display-block {
+    display: block;
+  }
+  .header__display-none {
+    display: none;
+  }
+
+  .flex-item {
+    flex-grow: 1;
+    overflow: scroll;
   }
 
   > .body {
@@ -22,6 +43,51 @@
   }
 
   footer {
+  }
 
+  .slide-in {
+    transform: translateX(0);
+    margin-left: 0;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  .slide-out {
+    transform: translateX(-285px);
+    margin-left: -285px;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  //aside
+
+  .app_slide-in {
+    transform: translateX(0);
+    margin-left: none;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  .app_slide-out {
+    transform: translateX(-285px);
+    margin-left: -285px;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+  }
+
+  .content-in {
+    // transform: translateX(0);
+    margin-left: 184px !important;
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+    .app-content {
+      margin: 115px 33px 34px 51px;
+    }
+  }
+  .content-out {
+    transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+    margin-left: 0 !important;
+    .app-header {
+      width: calc(100% - 144px) !important;
+      margin-left: 34px !important;
+    }
+    .app-content {
+      margin: 115px 35px 34px 34px !important;
+    }
   }
 }

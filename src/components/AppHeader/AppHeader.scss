@@ -1,1 +1,99 @@
 /* Style for AppHeader.tsx */
+@import "../../styles/mixins";
+
+.header__navbar-default {
+  // padding: 1.3rem 2.2rem 2.2rem;
+  .app-header {
+    position: fixed;
+    top: 30px;
+    width: calc(100% - 343px);
+    height: 62px;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px rgba(218, 219, 216, 0.5);
+    border-radius: 7px;
+    margin-left: 51px;
+    z-index: 2;
+    .app-header__toggle {
+      cursor: pointer;
+      i {
+        @include gradient-text();
+      }
+      font-size: 20px;
+      margin: 13px 20px 20px 20px;
+    }
+    .btn {
+      height: 32px !important;
+      margin-top: 15px;
+      width: 34px;
+      position: relative;
+    }
+    .app-header__language {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 17px;
+      @include gradient-text();
+    }
+    .app-header__notifications {
+      font-size: 18px;
+      color: #4f4f4f;
+      margin-left: 42px;
+    }
+    .app-header__user {
+      margin-left: 30px;
+      .app-header__display-name {
+        color: #2c2c2c;
+        margin-top: -7px;
+      }
+      .app-header__username {
+        font-size: 11px;
+        color: #2c2c2c;
+      }
+    }
+    .app-header__avatar {
+      .app-header__avatar-img {
+        width: 34px;
+        height: 34px;
+      }
+    }
+  }
+  .header__list {
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 6px 20px rgba(153, 155, 168, 0.1);
+    border-radius: 10px;
+    width: 285px;
+    height: 434px;
+    z-index: 2000;
+    top: 80px;
+    right: 335px;
+
+    .header__menu {
+      margin: 19px 26px 35px;
+      cursor: pointer;
+      .header__menu-icon {
+        i {
+          @include gradient-text();
+          font-size: 22px;
+        }
+        background: linear-gradient(
+            0deg,
+            rgba(94, 129, 244, 0.1),
+            rgba(94, 129, 244, 0.1)
+          ),
+          #ffffff;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
+        padding: 8px;
+      }
+      .header__menu-title {
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 21px;
+        color: #1c1d21;
+        margin-left: 1rem;
+        white-space: nowrap;
+      }
+    }
+  }
+}
