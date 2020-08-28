@@ -1,3 +1,6 @@
 {
-  "menu.province": "Tỉnh / Thành phố"
+  "menu.provinceTitle": "",
+  "menu.paymentRequest": "Đề nghị thanh toán",
+  "menu.province": "Tỉnh / Thành phố",
+  "menu.salesmanMonitor": "Giám sát"
 }

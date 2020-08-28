@@ -32,12 +32,6 @@ export const menu: RouteConfig[] = [
         key: PROVINCE_ROUTE,
         icon: "tio tio-swap_vs",
       },
-      {
-        name: translate("menu.salesmanMonitor"),
-        path: INDIRECT_SALES_ORDER_ROUTE_PREFIX,
-        key: INDIRECT_SALES_ORDER_ROUTE_PREFIX,
-        icon: "tio tio-poi_user",
-      },
     ],
   },
   {

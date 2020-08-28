@@ -1,7 +1,10 @@
 {
-  "general.table.actions": "",
+  "general.actions.search": "",
+  "general.actions.action": "",
   "general.actions.view": "",
   "general.actions.edit": "",
   "general.actions.delete": "",
-  "general.actions.create": ""
+  "general.actions.create": "",
+  "general.search.title": "",
+  "general.actions.reset": ""
 }

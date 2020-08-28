@@ -1,7 +1,10 @@
 {
-  "general.table.actions": "Tác vụ",
+  "general.actions.search": "",
+  "general.actions.action": "",
   "general.actions.view": "Xem",
   "general.actions.edit": "Sửa",
   "general.actions.delete": "Xoá",
-  "general.actions.create": "Tạo mới"
+  "general.actions.create": "Tạo mới",
+  "general.search.title": "",
+  "general.actions.reset": ""
 }
