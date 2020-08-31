@@ -355,3 +355,24 @@
 .ant-menu-inline .ant-menu-submenu-title {
   margin-top: -10px !important;
 }
+
+/* custom tabs css*/
+
+.ant-tabs {
+  .ant-tabs-nav-wrap {
+    .ant-tabs-tab {
+      .ant-tabs-tab-btn {
+        @include gradient-text();
+      }
+    }
+    .ant-tabs-ink-bar {
+      background: #0743fb;
+    }
+  }
+}
+
+/* custom switch*/
+
+.ant-switch-checked {
+  @include background-color();
+}

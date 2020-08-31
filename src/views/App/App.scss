@@ -37,7 +37,7 @@
   }
   .flex-item {
     flex-grow: 1;
-    overflow: scroll;
+    min-height: 100vh;
   }
 
   > .body {
