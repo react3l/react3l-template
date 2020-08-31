@@ -19,7 +19,7 @@ interface PaginationProps extends AntdPaginationProps {
   skip?: number;
   take?: number;
   pageSizeOptions: string[];
-  onChange?: (page: number, pageSize?: number) => void;
+  onChange?: (skip: number, take: number) => void;
 }
 
 function Pagination(props: PaginationProps & AntdPaginationProps) {
@@ -37,9 +37,16 @@ function Pagination(props: PaginationProps & AntdPaginationProps) {
   }, [skip, take]);
 
   const handleMenuClick = React.useCallback((event: any) => {
-    onChange(currentPage, Number(event.key));
+    const takeValue = Number(event.key);
+    const skipValue = (currentPage - 1) * takeValue;
+    onChange(skipValue, takeValue);
   }, [onChange, currentPage]);
 
+  const handleChange = React.useCallback((page: number, pageSize: number) => {
+    const take = pageSize;
+    const skip = (page - 1) * take;
+    onChange(skip, take);
+  }, [onChange]);
 
   const menuPageSize = React.useMemo(() => {
     return <Menu onClick={handleMenuClick} selectedKeys={['' + take]}>
@@ -65,7 +72,7 @@ function Pagination(props: PaginationProps & AntdPaginationProps) {
         <AntdPagination current={currentPage}
           itemRender={itemRender}
           pageSize={take}
-          onChange={onChange} 
+          onChange={handleChange} 
           showSizeChanger={false}
           showLessItems={true}
           responsive={true}

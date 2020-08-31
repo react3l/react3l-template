@@ -1,34 +1,39 @@
-import {PaginationProps} from 'antd/lib/pagination';
 import {Key, RowSelectionType, SorterResult, SortOrder, TablePaginationConfig, TableRowSelection} from 'antd/lib/table/interface';
 import React from 'react';
-import {DEFAULT_TAKE} from 'react3l/config';
 import {Model, ModelFilter, OrderType} from 'react3l/core';
 import {kebabCase} from 'react3l/helpers';
 import {forkJoin, Observable, Subscription} from 'rxjs';
 import {finalize} from 'rxjs/operators';
+import { AdvanceFilterAction, ActionFilterEnum } from './AdvanceFilterService';
+import { Filter } from 'react3l-advanced-filters/Filter';
+import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
+import { DateFilter } from 'react3l-advanced-filters/DateFilter';
+import { IdFilter } from 'react3l-advanced-filters/IdFilter';
+import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 
 export const tableService = {
   useMasterTable<T extends Model, TFilter extends ModelFilter>(
-    FilterClass: new () => TFilter,
+    ClassFilter: new () => TFilter,
+    modelFilter: TFilter,
+    dispatch: (action: AdvanceFilterAction<TFilter, Filter>) => void,
     getList: (tFilter: TFilter) => Observable<T[]>,
     getTotal: (tFilter: TFilter) => Observable<number>,
   ): [
     T[],
-    TFilter,
+    number,
     boolean,
-    PaginationProps,
+    (fieldName: string, fieldType: keyof Filter) => (value: string | number) => void,
     (
       newPagination: TablePaginationConfig,
       filters: Record<string, Key[] | null>,
       sorter: SorterResult<T>,
     ) => void,
+    (skip: number, take: number) => void,
     () => void,
   ] {
     const [list, setList] = React.useState<T[]>([]);
 
     const [total, setTotal] = React.useState<number>(0);
-
-    const [filter, setFilter] = React.useState<TFilter>(new FilterClass());
 
     const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -36,8 +41,8 @@ export const tableService = {
       () => {
         setLoading(true);
         const subscription: Subscription = forkJoin([
-          getList(filter),
-          getTotal(filter),
+          getList(modelFilter),
+          getTotal(modelFilter),
         ])
           .pipe(
             finalize(() => {
@@ -53,60 +58,61 @@ export const tableService = {
           subscription.unsubscribe();
         };
       },
-      [filter, getList, getTotal],
+      [modelFilter, getList, getTotal],
     );
 
-    const pagination: PaginationProps = React.useMemo(
-      () => {
-        return {
-          current: Math.ceil(filter.skip / filter.take) + 1,
-          pageSize: filter.take,
-          total,
-        };
-      },
-      [filter.skip, filter.take, total],
-    );
+    const handlePagination = React.useCallback((skip: number, take: number) => {
+      dispatch({
+        type: ActionFilterEnum.ChangeSkipTake,
+        skip,
+        take,
+      });
+    }, [dispatch]);
 
-    const handleChange = React.useCallback(
+    const handleChange = React.useCallback((fieldName: string, fieldType: keyof Filter) => (value: string | number) => {
+      dispatch({
+        type: ActionFilterEnum.ChangeOneField,
+        fieldName: fieldName,
+        fieldType: fieldType,
+        fieldValue: value,
+      });
+    }, [dispatch]);
+
+    const handleChangeTable = React.useCallback(
       (
         newPagination: TablePaginationConfig,
         filters: Record<string, Key[] | null>,
         sorter: SorterResult<T>,
       ) => {
-        if (pagination.current !== newPagination.current || pagination.pageSize !== newPagination.pageSize) {
-          const skip: number = Math.ceil(((newPagination?.current ?? 0) - 1) * (newPagination?.pageSize ?? DEFAULT_TAKE));
-          setFilter({
-            ...filter,
-            skip,
-            take: newPagination.pageSize,
-          });
-          return;
-        }
-        if (sorter.field !== filter.orderBy || sorter.order !== this.getAntOrderType(filter, sorter.field)) {
-          setFilter({
-            ...filter,
+        if (sorter.field !== modelFilter.orderBy || sorter.order !== this.getAntOrderType(modelFilter, sorter.field)) {
+          dispatch({
+            type: ActionFilterEnum.ChangeOrderType,
             orderBy: sorter.field,
             orderType: this.getOrderType(sorter.order),
           });
           return;
         }
       },
-      [filter, pagination],
+      [dispatch, modelFilter],
     );
 
     const handleResetFilter = React.useCallback(
       () => {
-        setFilter(new FilterClass());
+        dispatch({
+          type: ActionFilterEnum.ChangeAllField,
+          data: new ClassFilter(),
+        });
       },
-      [FilterClass],
+      [dispatch, ClassFilter],
     );
 
     return [
       list,
-      filter,
+      total,
       loading,
-      pagination,
       handleChange,
+      handleChangeTable,
+      handlePagination,
       handleResetFilter,
     ];
   },

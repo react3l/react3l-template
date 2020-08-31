@@ -45,8 +45,6 @@ function InputSelect(props: InputSelectProps<Model>) {
     }
   }, [onSearch]);
 
-  const handleForResolve = React.useCallback(() => null, []);
-
   const handleClearInput = React.useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setInternalModel('');
     inputRef.current.focus();
@@ -77,7 +75,8 @@ function InputSelect(props: InputSelectProps<Model>) {
               value={internalModel}
               onChange={handleChange}
               placeholder={model ? render(model) : placeHolder}
-              ref={inputRef} 
+              ref={inputRef}
+              disabled={disabled} 
               className={classNames('component__input', 
               {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial})}/>
             { internalModel ? 
@@ -86,9 +85,8 @@ function InputSelect(props: InputSelectProps<Model>) {
           </div> :
           <div className="input-select__wrapper">
             <input type="text"
-              value={render(model)}
-              onChange={handleForResolve}
-              placeholder={placeHolder} 
+              value={render(model)|| ''}
+              readOnly 
               className={classNames('component__input', 
               {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial, 'error-border': isError})}
               disabled={disabled}/>

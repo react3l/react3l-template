@@ -132,11 +132,11 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
     const subscription = new Subscription();
     if (value) {
       const filterValue = new ClassFilter();
-      filterValue['id']['equal'] = value;
+      filterValue['id']['equal'] = Number(value);
       subscription.add(getList);
       getList(filterValue).subscribe((res: Model[]) => {
         if (res) {
-          res = res.filter((current) => current.id === value);
+          res = res.filter((current) => current.id === Number(value));
           setInternalModel(res[0]);
         }
       });

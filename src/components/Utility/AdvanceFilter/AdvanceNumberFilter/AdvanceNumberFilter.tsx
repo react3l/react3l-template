@@ -19,6 +19,7 @@ export interface AdvanceNumberFilterProps<T extends Model> {
   disabled?: boolean;
   className?: string;
   onChange?: (T: number) => void;
+  onBlur?: (T: number) => void;
 }
 
 function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
@@ -32,6 +33,7 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
     placeHolder,
     disabled,
     onChange,
+    onBlur,
   } = props;
 
   const [internalValue, setInternalValue] = React.useState<string>('');
@@ -158,10 +160,10 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
   }, [onChange, parseNumber]);
 
   const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
-    if (event.target.value && typeof onChange === 'function') {
-      onChange(parseNumber(event.currentTarget.value)[0]);
+    if (event.target.value && typeof onBlur === 'function') {
+      onBlur(parseNumber(event.currentTarget.value)[0]);
     }
-  }, [onChange, parseNumber]);
+  }, [onBlur, parseNumber]);
 
   React.useEffect(() => {
     if (value) {

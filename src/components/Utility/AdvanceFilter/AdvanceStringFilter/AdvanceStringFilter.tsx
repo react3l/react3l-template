@@ -11,6 +11,7 @@ interface AdvanceStringFilter<T extends Model> {
   placeHolder?: string;
   className?: string;
   onChange?: (T: string) => void;
+  onBlur?: (T: string) => void;
 }
 
 function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
@@ -20,6 +21,7 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
     disabled,
     placeHolder,
     onChange,
+    onBlur,
   } = props;
 
   const [internalValue, setInternalValue] = React.useState<string>('');
@@ -45,10 +47,10 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
   }, [onChange]);
 
   const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
-    if (event.target.value && typeof onChange === 'function') {
-      onChange(event.target.value);
+    if (event.target.value && typeof onBlur === 'function') {
+      onBlur(event.target.value);
     }
-  }, [onChange]);
+  }, [onBlur]);
 
   React.useEffect(() => {
     if (value) {

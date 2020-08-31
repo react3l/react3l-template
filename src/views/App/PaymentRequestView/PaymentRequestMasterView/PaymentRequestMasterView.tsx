@@ -16,23 +16,42 @@ import AdvanceDateRangeFilter from 'components/Utility/AdvanceFilter/AdvanceDate
 import { data } from './data';
 import AdvanceStringFilter from 'components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter';
 import Pagination from 'components/Utility/Pagination/Pagination';
-import { DemoFilter } from 'components/Utility/Pagination/Pagination.stories';
 import { PAYMENT_REQUEST_DETAIL_ROUTE } from 'config/route-consts';
 import { routerService } from 'services/RouterService';
-import { ModelFilter } from 'react3l/core';
+import { ModelFilter, Model } from 'react3l/core';
+import { queryStringService } from 'services/QueryStringService';
+import { IdFilter } from 'react3l-advanced-filters/IdFilter';
+import { StringFilter } from 'react3l-advanced-filters/StringFilter';
+import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
+import { DateFilter } from 'react3l-advanced-filters/DateFilter';
+
+class DemoFilter extends ModelFilter {
+  id: IdFilter = new IdFilter()
+  name: StringFilter = new StringFilter();
+  number: NumberFilter = new NumberFilter();
+  numberRange: NumberFilter = new NumberFilter();
+  date: DateFilter = new DateFilter();
+  dateRange: DateFilter = new DateFilter();
+  skip: number = 0;
+  take: number = 10;
+}
 
 
 function ProvinceMasterView() {
   const [translate] = useTranslation();
-
+  const [filter, dispatch] = queryStringService.useQueryString<DemoFilter>(DemoFilter);
   const [
-    ,
-    provinceFilter,
-    provinceLoading,
-    ,
+    list,
+    total,
+    loading,
     handleChange,
-  ] = tableService.useMasterTable<Province, ProvinceFilter>(
-    ProvinceFilter,
+    handleChangeTable,
+    handlePagination,
+    handleResetFilter,
+  ] = tableService.useMasterTable<Model, DemoFilter>(
+    DemoFilter,
+    filter,
+    dispatch,
     provinceRepository.list,
     provinceRepository.count,
   );
@@ -47,8 +66,6 @@ function ProvinceMasterView() {
 
 
   const [toggle, setToggle] = React.useState<boolean>(false);
-  const [filter] = React.useState<DemoFilter>(new DemoFilter());
-
 
   const columns: ColumnProps<Province>[] = React.useMemo(
     () => [
@@ -57,7 +74,7 @@ function ProvinceMasterView() {
         key: nameof(data[0].id),
         dataIndex: nameof(data[0].id),
         sorter: true,
-        sortOrder: tableService.getAntOrderType(provinceFilter, nameof(data[0].id)),
+        sortOrder: tableService.getAntOrderType(filter, nameof(data[0].id)),
         render(id: number) {
           return id;
         },
@@ -67,7 +84,7 @@ function ProvinceMasterView() {
         key: nameof(data[0].title),
         dataIndex: nameof(data[0].title),
         sorter: true,
-        sortOrder: tableService.getAntOrderType(provinceFilter, nameof(data[0].title)),
+        sortOrder: tableService.getAntOrderType(filter, nameof(data[0].title)),
         render(id: number) {
           return id;
         },
@@ -136,7 +153,7 @@ function ProvinceMasterView() {
         },
       },
     ],
-    [provinceFilter, translate],
+    [filter, translate],
   );
 
   const handleToggleSearch = React.useCallback(() => {
@@ -265,9 +282,9 @@ function ProvinceMasterView() {
               rowKey={nameof(data[0].id)}
               columns={columns}
               dataSource={data}
-              loading={provinceLoading}
+              loading={loading}
               pagination={false}
-              onChange={handleChange}
+              onChange={handleChangeTable}
               rowSelection={rowSelection}
               title={() => (
                 <>

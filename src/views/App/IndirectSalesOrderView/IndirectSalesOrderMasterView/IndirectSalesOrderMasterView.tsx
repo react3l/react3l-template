@@ -1,28 +1,110 @@
 import React from 'react';
-import { ModelFilter } from 'react3l/core';
+import { ModelFilter, Model } from 'react3l/core';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
 import { queryStringService } from 'services/QueryStringService';
 import { advanceFilterService } from 'services/AdvanceFilterService';
 import AdvanceStringFilter from 'components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter';
+import AdvanceNumberFilter from 'components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter';
+import AdvanceIdFilter from 'components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter';
+import AdvanceDateFilter from 'components/Utility/AdvanceFilter/AdvanceDateFilter/AdvanceDateFilter';
+import { Observable } from 'rxjs';
+import { IdFilter } from 'react3l-advanced-filters/IdFilter';
+import { DateFilter } from 'react3l-advanced-filters/DateFilter';
+import AdvanceDateRangeFilter from 'components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter';
+import AdvanceNumberRangeFilter from 'components/Utility/AdvanceFilter/AdvanceNumberRangeFilter/AdvanceNumberRangeFilter';
 
 class DemoFilter extends ModelFilter {
+  id: IdFilter = new IdFilter()
   name: StringFilter = new StringFilter();
   number: NumberFilter = new NumberFilter();
+  numberRange: NumberFilter = new NumberFilter();
+  date: DateFilter = new DateFilter();
+  dateRange: DateFilter = new DateFilter();
   skip: number = 0;
   take: number = 10;
 }
 
+export class DemoListFilter extends ModelFilter {
+  id: IdFilter = new IdFilter();
+  name: StringFilter = new StringFilter();
+  code: StringFilter = new StringFilter();
+}
+
+const demoObservable = new Observable<Model[]>((observer) => {
+  setTimeout(() => {
+    observer.next([
+    {id: 4, name: 'Ban hành chính', code: 'FAD'},
+    {id: 1, name: 'Ban công nghệ thông tin', code: 'FIM'}, 
+    {id: 2, name:'Ban nhân sự', code: 'FHR'},
+    {id: 3, name: 'Ban tài chính', code: 'FAF'}]);
+  }, 1000);
+});
+
+const demoSearchFunc = (TModelFilter: ModelFilter) => {
+  return demoObservable;
+};
+
 function IndirectSalesOrderMasterView() {
   const [filter, dispatch] = queryStringService.useQueryString<DemoFilter>(DemoFilter);
 
-  const [value, setValue] = advanceFilterService.useStringFilter<DemoFilter, StringFilter>(filter, dispatch, 'name', 'startWith');
+  const [valueString, setValueString] = advanceFilterService.useStringFilter<DemoFilter, StringFilter>(filter, dispatch, 'name', 'startWith');
+
+  const [valueNumber, setValueNumber] = advanceFilterService.useNumberFilter<DemoFilter, NumberFilter>(filter, dispatch, 'number', 'equal');
+
+  const [valueId, setValueId] = advanceFilterService.useIdFilter<DemoFilter, IdFilter>(filter, dispatch, 'id', 'equal');
+
+  const [valueDate, setValueDate] = advanceFilterService.useDateFilter<DemoFilter, DateFilter>(filter, dispatch, 'date', 'equal');
+
+  const [valueDateRange, setValueDateRange] = advanceFilterService.useDateRangeFilter<DemoFilter, DateFilter>(filter, dispatch, 'dateRange');
+
+  const [valueNumberRange, setValueNumberRange] = advanceFilterService.useNumberRangeFilter(filter, dispatch, 'numberRange');
 
   return (
-    <AdvanceStringFilter
-      value={value}
-      onChange={setValue}
-      placeHolder={'Enter text...'}/>
+    <>
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceStringFilter
+          value={valueString}
+          onChange={setValueString}
+          placeHolder={'Enter text...'}/>
+      </div>
+
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceNumberFilter
+          value={valueNumber}
+          allowPositive={true}
+          numberType={'DECIMAL'}
+          onChange={setValueNumber}
+          placeHolder={'Enter number...'}/>
+      </div>
+
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceIdFilter value={valueId}
+          classFilter={DemoListFilter}
+          setId={setValueId}
+          placeHolder={'Select id...'}
+          getList={demoSearchFunc}/>
+      </div>
+
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceDateFilter
+          onChange={setValueDate}
+          value={valueDate}/>
+      </div>
+
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceDateRangeFilter
+          onChange={setValueDateRange}
+          value={valueDateRange}/>
+      </div>
+
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceNumberRangeFilter
+          placeHolderRange={['From...', 'To...']}
+          valueRange={valueNumberRange}
+          onChangeRange={setValueNumberRange}/>
+      </div>
+    </>
   );
 }
 

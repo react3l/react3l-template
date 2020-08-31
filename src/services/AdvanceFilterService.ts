@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModelFilter } from 'react3l/core';
+import { ModelFilter, OrderType } from 'react3l/core';
 import { Filter } from 'react3l-advanced-filters/Filter';
 import { debounce } from 'react3l/helpers';
 import { DEBOUNCE_TIME_300 } from 'react3l/config';
@@ -23,7 +23,8 @@ export interface AdvanceFilterAction<T1, T2> {
     fieldValue?: any;
     skip?: number;
     take?: number;
-    orderType?: string; 
+    orderBy?: string | number | (string | number)[];
+    orderType?: OrderType; 
 }
 
 export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
@@ -47,6 +48,7 @@ export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
         case ActionFilterEnum.ChangeOrderType:
             return {
                 ...state,
+                orderBy: action.orderBy,
                 orderType: action.orderType,
             };
     }

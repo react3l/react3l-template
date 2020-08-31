@@ -10,7 +10,7 @@ export interface AdvanceNumberRangeFilter <T extends Model> extends InputNumberP
   onChangeRange?: (T: [number, number]) => void;
 }
 
-function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model>) {
+function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model> & InputNumberProps<Model>) {
   const {
     valueRange,
     title,
@@ -42,22 +42,22 @@ function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model>) {
 
   return (
     <>
-      <div className="input-range__container">
+      <div className="advance-number-range-filter__container">
         { title && 
-          <div className="input-range__title">{title}</div>
+          <div className="advance-number-range-filter__title">{title}</div>
         }
-        <div className="input-range__wrapper">
-          <div className="input-range__input-number">
+        <div className="advance-number-range-filter__wrapper">
+          <div className="advance-number-range-filter__input-number">
             <InputNumber {...props} 
               value={valueRange[0]}
               title={null} 
               placeHolder={placeHolderRange[0]}
               onBlur={handleBlurFrom}/>
           </div>
-          <span className="input-range__icon">
+          <span className="advance-number-range-filter__icon">
             <i className="tio-arrow_large_forward_outlined"></i>
           </span>
-          <div className="input-range__input-number">
+          <div className="advance-number-range-filter__input-number">
             <InputNumber {...props} 
               value={valueRange[1]}
               title={null} 
