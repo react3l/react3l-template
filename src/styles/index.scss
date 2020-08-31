@@ -100,6 +100,10 @@ body {
       }
     }
   }
+
+  .btn {
+    white-space: nowrap;
+  }
   .component__btn-primary {
     @include background-color;
     color: $white;
@@ -245,11 +249,11 @@ body {
         color: #8181a5;
         margin-bottom: 2px;
       }
-      .page__detail-tabs {
-        .ant-tabs {
-          overflow: unset;
-        }
-      }
+      // .page__detail-tabs {
+      //   .ant-tabs {
+      //     overflow: unset;
+      //   }
+      // }
       .page__detail-invoice {
         .page__detail-invoice-header {
           background: #fafafc;
@@ -352,7 +356,7 @@ body {
     }
   }
   .mt__1 {
-    margin-top: -2rem !important;
+    margin-top: -1.8rem !important;
   }
   .label {
     color: #4f4f4f;

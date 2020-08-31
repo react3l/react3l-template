@@ -1,17 +1,25 @@
 /* Style for AppHeader.tsx */
 @import "../../styles/mixins";
 
+@mixin wrapper {
+  position: fixed;
+  z-index: 1000;
+  background: #f5f5f5;
+  padding-top: 17px;
+  height: 30px;
+}
 .header__navbar-default {
+  @include wrapper();
   // padding: 1.3rem 2.2rem 2.2rem;
   .app-header {
     position: fixed;
     top: 30px;
-    width: calc(100% - 343px);
+    width: calc(100% - 348px);
     height: 62px;
     background: #ffffff;
     box-shadow: 0px 0px 8px rgba(218, 219, 216, 0.5);
     border-radius: 7px;
-    margin-left: 51px;
+    margin-left: 0px;
     z-index: 2;
     .app-header__toggle {
       cursor: pointer;

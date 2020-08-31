@@ -1,20 +1,20 @@
 @import "../../../styles/mixins";
 /* Style for TextArea.tsx */
 .text-area__container {
+  width: 100%;
+
+  background-color: #f2f2f2;
+  .text-area__title {
+    @include input-title;
+  }
+  .text-area_wrapper {
     width: 100%;
-    min-width: 220px;
-    background-color: #F2F2F2;
-    .text-area__title {
-        @include input-title;
+    position: relative;
+    .text-area__icon {
+      @include input-icon;
+      &:hover {
+        opacity: 0.7;
+      }
     }
-    .text-area_wrapper {
-        width: 100%;
-        position: relative;
-        .text-area__icon {
-            @include input-icon;
-            &:hover {
-                opacity: 0.7;
-            }
-        }
-    }
+  }
 }

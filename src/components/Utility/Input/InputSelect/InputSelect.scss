@@ -1,19 +1,19 @@
 @import "../../../../styles/mixins";
 /* Style for InputSelect.tsx */
 .input-select__container {
-    width: 100%;
-    min-width: 220px;
-    .input-select__title {
-        @include input-title;
+  width: 100%;
+
+  .input-select__title {
+    @include input-title;
+  }
+  .input-select__wrapper {
+    widows: 100%;
+    position: relative;
+    .input-select__icon {
+      @include input-icon;
+      &:hover {
+        opacity: 0.7;
+      }
     }
-    .input-select__wrapper {
-        widows: 100%;
-        position: relative;
-        .input-select__icon {
-            @include input-icon;
-            &:hover {
-                opacity: 0.7;
-            }
-        }
-    }
+  }
 }

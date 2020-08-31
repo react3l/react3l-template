@@ -20,8 +20,8 @@ function AppHeader() {
     setGlobal<GlobalState>({ toggle });
   }, [
     setToggleMenu,
-    toggleMenu
-  ])
+    toggleMenu,
+  ]);
 
   const menus = [
     {
