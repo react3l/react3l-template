@@ -28,10 +28,10 @@ import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {
     observer.next([
-    {id: 1, name: 'Hà Nội', code: 'HN'},
-    {id: 2, name: 'Hồ Chí Minh', code: 'HCM'}, 
-    {id: 3, name:'Đà Nẵng', code: 'DN'},
-    {id: 4, name: 'Nha Trang', code: 'CR'}]);
+      { id: 1, name: 'Hà Nội', code: 'HN' },
+      { id: 2, name: 'Hồ Chí Minh', code: 'HCM' },
+      { id: 3, name: 'Đà Nẵng', code: 'DN' },
+      { id: 4, name: 'Nha Trang', code: 'CR' }]);
   }, 1000);
 });
 
@@ -49,11 +49,11 @@ export class DemoListFilter extends ModelFilter {
 function PaymentMasterView() {
   const [translate] = useTranslation();
   const [
-    filter, 
+    filter,
     ,
-    handleChangeFilter, 
-    handleChangeOrder, 
-    handlePagination, 
+    handleChangeFilter,
+    handleChangeOrder,
+    handlePagination,
     ,
   ] = queryStringService.useQueryString<Payment, PaymentFilter>(PaymentFilter);
 
@@ -246,52 +246,41 @@ function PaymentMasterView() {
               <Col lg={12}>
                 <div className="pr-4"><InputSearch /></div>
               </Col>
-              <Col lg={12}>
-                <div className="d-flex justify-content-between">
-                  <div className="mt__1">
-                    <label className="label">Phòng ban</label>
-                    <AdvanceIdFilter classFilter={DemoListFilter}
-                      value={filter['proviceId']['equal']}
-                      onChange={handleChangeFilter('proviceId', 'equal')}
-                      getList={demoSearchFunc} 
-                      placeHolder={'Tất cả'} 
-                      />
-                  </div>
-                  <div className="mt__1">
-                    <label className="label">Trạng thái</label>
-                    <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
-                  </div>
-                  <div>
-                    <button
-                      className={classNames('btn component__btn-toggle',
-                        (toggle === true ? 'component__btn-toggle-active' : ''))} onClick={handleToggleSearch}>
-                      <span>
-                        <div className="tio-down_ui" />
-                        <div className="tio-down_ui" />
-                      </span>
-                    </button>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <button className="btn component__btn-outline-primary">
-                      <span className="border-outline">
-                        {/* {translate('general.actions.reset')} */}
-                        <div className="text-outline">
-                          Bỏ lọc
-                      </div>
-                      </span>
-
-                    </button>
-
-                  </div>
-                  <div>
-                    <button className="btn component__btn-primary pr-4">
-                      {/* {translate('general.actions.search')} */}
-                        Tìm kiếm
-                  </button>
-                  </div>
-
+              <Col lg={4} className="pr-4">
+                <div className="mt__1">
+                  <label className="label">Phòng ban</label>
+                  <AdvanceIdFilter classFilter={DemoListFilter}
+                    value={filter['proviceId']['equal']}
+                    onChange={handleChangeFilter('proviceId', 'equal')}
+                    getList={demoSearchFunc}
+                    placeHolder={'Tất cả'}
+                  />
                 </div>
               </Col>
+              <Col lg={4} className="pr-4">
+                <div className="mt__1">
+                  <label className="label">Trạng thái</label>
+                  <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
+                </div>
+              </Col>
+              <Col lg={4} >
+                <div className="d-flex justify-content-end">
+                  <button
+                    className={classNames('btn component__btn-toggle mr-4',
+                      (toggle === true ? 'component__btn-toggle-active' : ''))} onClick={handleToggleSearch}>
+                    <div className="tio-down_ui" />
+                    <div className="tio-down_ui" />
+                  </button>
+                  <div className="d-flex justify-content-between">
+                    <button className="btn component__btn-outline-primary">
+                      Bỏ lọc
+                    </button>
+
+                  </div>
+                </div>
+
+              </Col>
+
             </Row>
             {
               toggle && (
@@ -299,8 +288,8 @@ function PaymentMasterView() {
                   <Row className="mt-4">
                     <Col lg={4} className="pr-4">
                       <label className="label">Người đề nghị</label>
-                      <AdvanceIdFilter classFilter={ModelFilter} 
-                        placeHolder={'Tất cả'}/>
+                      <AdvanceIdFilter classFilter={ModelFilter}
+                        placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Bên nhận</label>
