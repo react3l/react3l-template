@@ -85,8 +85,9 @@ function InputSelect(props: InputSelectProps<Model>) {
           </div> :
           <div className="input-select__wrapper">
             <input type="text"
-              value={render(model)|| ''}
-              readOnly 
+              value={render(model) || ''}
+              readOnly
+              placeholder={placeHolder} 
               className={classNames('component__input', 
               {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial, 'error-border': isError})}
               disabled={disabled}/>

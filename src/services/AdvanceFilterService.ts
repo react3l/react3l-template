@@ -1,11 +1,9 @@
-import React from 'react';
-import { ModelFilter, OrderType } from 'react3l/core';
-import { Filter } from 'react3l-advanced-filters/Filter';
-import { debounce } from 'react3l/helpers';
-import { DEBOUNCE_TIME_300 } from 'react3l/config';
 import { Moment } from 'moment';
+import React from 'react';
 import { DateFilter } from 'react3l-advanced-filters/DateFilter';
+import { Filter } from 'react3l-advanced-filters/Filter';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
+import { ModelFilter, OrderType } from 'react3l/core';
 import nameof from 'ts-nameof.macro';
 
 export enum ActionFilterEnum {
@@ -55,6 +53,31 @@ export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
 }
 
 export const advanceFilterService = {
+    useAdvaceFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
+        modelFilter: T1Filter,
+        dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+        fieldName: keyof T1Filter,
+        fieldType: keyof T2Filter,
+    ):[
+        any,
+        (value: any) => void
+    ] {
+        const value = modelFilter[fieldName][fieldType];
+        const handleChangeFilter = React.useCallback((value: any) => {
+            dispatch({
+                type: ActionFilterEnum.ChangeOneField,
+                fieldName: fieldName,
+                fieldType: fieldType,
+                fieldValue: value,
+            });
+        }, [dispatch, fieldName, fieldType]);
+
+        return [
+            value, 
+            handleChangeFilter,
+        ];
+    },
+
     useStringFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
         modelFilter: T1Filter,
         dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
@@ -65,14 +88,14 @@ export const advanceFilterService = {
         (value: string) => void
     ] {
         const value = modelFilter[fieldName][fieldType];
-        const handleChangeFilter = React.useCallback(debounce((value: string) => {
+        const handleChangeFilter = React.useCallback((value: string) => {
             dispatch({
                 type: ActionFilterEnum.ChangeOneField,
                 fieldName: fieldName,
                 fieldType: fieldType,
                 fieldValue: value,
             });
-        }, DEBOUNCE_TIME_300), [dispatch, fieldName, fieldType]);
+        }, [dispatch, fieldName, fieldType]);
 
         return [
             value, 
@@ -90,46 +113,18 @@ export const advanceFilterService = {
         (value: number) => void
     ] {
         const value = modelFilter[fieldName][fieldType];
-        const handleChangeFilter = React.useCallback(debounce((value: number) => {
+        const handleChangeFilter = React.useCallback((value: number) => {
             dispatch({
                 type: ActionFilterEnum.ChangeOneField,
                 fieldName: fieldName,
                 fieldType: fieldType,
                 fieldValue: value,
             });
-        }, DEBOUNCE_TIME_300), [dispatch, fieldName, fieldType]);
+        }, [dispatch, fieldName, fieldType]);
         
         return [
             value, 
             handleChangeFilter,
-        ];
-    },
-
-    useNumberRangeFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
-        modelFilter: T1Filter,
-        dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
-        fieldName: keyof T1Filter,
-    ): [
-        [number, number],
-        (numberRange: [number, number]) => void,
-    ] {
-        const valueFrom = modelFilter[fieldName][nameof(NumberFilter.prototype.greater)];
-        const valueTo = modelFilter[fieldName][nameof(NumberFilter.prototype.less)];
-        const value: [number, number] = [valueFrom, valueTo];
-        const handleChangeNumberRange = React.useCallback((numberRange: [number, number]) => {
-            dispatch({
-                type: ActionFilterEnum.ChangeAllField,
-                data: {...modelFilter,
-                    [fieldName]: {
-                        [nameof(NumberFilter.prototype.greater)]: numberRange[0],
-                        [nameof(NumberFilter.prototype.less)]: numberRange[1],
-                    },
-                },
-            });
-        }, [dispatch, fieldName, modelFilter]);
-        return [
-            value,
-            handleChangeNumberRange,
         ];
     },
 
@@ -179,6 +174,34 @@ export const advanceFilterService = {
         return [
             value, 
             handleDateFilter,
+        ];
+    },
+
+    useNumberRangeFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
+        modelFilter: T1Filter,
+        dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+        fieldName: keyof T1Filter,
+    ): [
+        [number, number],
+        (numberRange: [number, number]) => void,
+    ] {
+        const valueFrom = modelFilter[fieldName][nameof(NumberFilter.prototype.greater)];
+        const valueTo = modelFilter[fieldName][nameof(NumberFilter.prototype.less)];
+        const value: [number, number] = [valueFrom, valueTo];
+        const handleChangeNumberRange = React.useCallback((numberRange: [number, number]) => {
+            dispatch({
+                type: ActionFilterEnum.ChangeAllField,
+                data: {...modelFilter,
+                    [fieldName]: {
+                        [nameof(NumberFilter.prototype.greater)]: numberRange[0],
+                        [nameof(NumberFilter.prototype.less)]: numberRange[1],
+                    },
+                },
+            });
+        }, [dispatch, fieldName, modelFilter]);
+        return [
+            value,
+            handleChangeNumberRange,
         ];
     },
 

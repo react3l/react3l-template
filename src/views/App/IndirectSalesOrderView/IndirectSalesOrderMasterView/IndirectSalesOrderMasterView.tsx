@@ -13,6 +13,7 @@ import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 import { DateFilter } from 'react3l-advanced-filters/DateFilter';
 import AdvanceDateRangeFilter from 'components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter';
 import AdvanceNumberRangeFilter from 'components/Utility/AdvanceFilter/AdvanceNumberRangeFilter/AdvanceNumberRangeFilter';
+import Pagination from 'components/Utility/Pagination/Pagination';
 
 class DemoFilter extends ModelFilter {
   id: IdFilter = new IdFilter()
@@ -46,15 +47,22 @@ const demoSearchFunc = (TModelFilter: ModelFilter) => {
 };
 
 function IndirectSalesOrderMasterView() {
-  const [filter, dispatch] = queryStringService.useQueryString<DemoFilter>(DemoFilter);
+  const [
+    filter, 
+    dispatch, 
+    handleChangeFilter,
+    , 
+    handlePagination, 
+    handleResetFilter,
+  ] = queryStringService.useQueryString<Model, DemoFilter>(DemoFilter);
 
-  const [valueString, setValueString] = advanceFilterService.useStringFilter<DemoFilter, StringFilter>(filter, dispatch, 'name', 'startWith');
+  const [valueString, setValueString] = advanceFilterService.useAdvaceFilter<DemoFilter, StringFilter>(filter, dispatch, 'name', 'startWith');
 
-  const [valueNumber, setValueNumber] = advanceFilterService.useNumberFilter<DemoFilter, NumberFilter>(filter, dispatch, 'number', 'equal');
+  const [valueNumber, setValueNumber] = advanceFilterService.useAdvaceFilter<DemoFilter, NumberFilter>(filter, dispatch, 'number', 'equal');
 
-  const [valueId, setValueId] = advanceFilterService.useIdFilter<DemoFilter, IdFilter>(filter, dispatch, 'id', 'equal');
+  const [valueId, setValueId] = advanceFilterService.useAdvaceFilter<DemoFilter, IdFilter>(filter, dispatch, 'id', 'equal');
 
-  const [valueDate, setValueDate] = advanceFilterService.useDateFilter<DemoFilter, DateFilter>(filter, dispatch, 'date', 'equal');
+  const [valueDate, setValueDate] = advanceFilterService.useAdvaceFilter<DemoFilter, DateFilter>(filter, dispatch, 'date', 'equal');
 
   const [valueDateRange, setValueDateRange] = advanceFilterService.useDateRangeFilter<DemoFilter, DateFilter>(filter, dispatch, 'dateRange');
 
@@ -66,6 +74,13 @@ function IndirectSalesOrderMasterView() {
         <AdvanceStringFilter
           value={valueString}
           onChange={setValueString}
+          placeHolder={'Enter text...'}/>
+      </div>
+
+      <div style={{marginTop: '10px', width: '220px'}}>
+        <AdvanceStringFilter
+          value={filter['name']['startWith']}
+          onChange={handleChangeFilter('name', 'startWith')}
           placeHolder={'Enter text...'}/>
       </div>
 
@@ -98,11 +113,21 @@ function IndirectSalesOrderMasterView() {
           value={valueDateRange}/>
       </div>
 
-      <div style={{marginTop: '10px', width: '220px'}}>
+      <div style={{marginTop: '10px', width: '250px'}}>
         <AdvanceNumberRangeFilter
           placeHolderRange={['From...', 'To...']}
           valueRange={valueNumberRange}
           onChangeRange={setValueNumberRange}/>
+      </div>
+
+      <div style={{marginTop: '10px'}}>
+        <Pagination skip={filter.skip}
+            take={filter.take}
+            onChange={handlePagination}/>
+      </div>
+
+      <div style={{marginTop: '10px'}}>
+        <button className="btn btn-info" onClick={handleResetFilter}>ResetFilter</button>
       </div>
     </>
   );

@@ -1,7 +1,6 @@
 import Card from 'antd/lib/card';
 import Table, { ColumnProps } from 'antd/lib/table';
 import { Province } from 'models/Province';
-import { ProvinceFilter } from 'models/ProvinceFilter';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { provinceRepository } from 'repositories/province-repository';
@@ -39,19 +38,20 @@ class DemoFilter extends ModelFilter {
 
 function ProvinceMasterView() {
   const [translate] = useTranslation();
-  const [filter, dispatch] = queryStringService.useQueryString<DemoFilter>(DemoFilter);
   const [
-    list,
-    total,
+    filter, 
+    ,
+    , 
+    handleChangeOrder, 
+    , 
+    ,
+  ] = queryStringService.useQueryString<Model, DemoFilter>(DemoFilter);
+  const [
+    ,
+    ,
     loading,
-    handleChange,
-    handleChangeTable,
-    handlePagination,
-    handleResetFilter,
   ] = tableService.useMasterTable<Model, DemoFilter>(
-    DemoFilter,
     filter,
-    dispatch,
     provinceRepository.list,
     provinceRepository.count,
   );
@@ -288,7 +288,7 @@ function ProvinceMasterView() {
               dataSource={data}
               loading={loading}
               pagination={false}
-              onChange={handleChangeTable}
+              onChange={handleChangeOrder}
               rowSelection={rowSelection}
               title={() => (
                 <>
