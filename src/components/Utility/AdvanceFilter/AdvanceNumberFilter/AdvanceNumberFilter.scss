@@ -2,7 +2,7 @@
 /* Style for InputNumber.tsx */
 .advance-number-filter__container {
     width: 100%;
-    min-width: 100px;
+    border-radius: 7px;
     background-color: #F2F2F2;
     .advance-number-filter__title {
         @include input-title;

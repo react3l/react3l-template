@@ -2,8 +2,7 @@
 /* Style for AdvanceStringFilter.tsx */
 .advance-string-filter__container {
   width: 100%;
-
-  background-color: #f2f2f2;
+  border-radius: 7px;
   .advance-string-filter__title {
     @include input-title;
   }

@@ -36,7 +36,7 @@ class DemoFilter extends ModelFilter {
 }
 
 
-function ProvinceMasterView() {
+function PaymentMasterView() {
   const [translate] = useTranslation();
   const [
     filter, 
@@ -347,4 +347,4 @@ function ProvinceMasterView() {
   );
 }
 
-export default ProvinceMasterView;
+export default PaymentMasterView;

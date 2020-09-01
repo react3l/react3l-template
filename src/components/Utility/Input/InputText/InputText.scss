@@ -2,7 +2,7 @@
 /* Style for InputText.tsx */
 .input-text__container {
   width: 100%;
-
+  border-radius: 7px;
   .input-text__title {
     @include input-title;
   }
