@@ -22,7 +22,7 @@ export class PriceListRepository extends Repository {
 
   public count = (filter: PriceListFilter): Observable<number> => {
     return this.httpObservable
-      .post<number>("total", filter)
+      .post<number>("count", filter)
       .pipe(map((response: AxiosResponse<number>) => response.data));
   };
 
