@@ -1,3 +1,4 @@
+import React from "react";
 import { RouteConfig } from "react-router-config";
 import path from "path";
 import nameof from "ts-nameof.macro";
