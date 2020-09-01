@@ -16,13 +16,18 @@
   "pages.checking.authority": "",
   "paymentRequest.detail.title": "",
   "paymentRequest.id": "",
+  "paymentRequest.name": "",
   "paymentRequest.code": "",
+  "paymentRequest.province": "",
   "paymentRequest.status": "",
+  "paymentRequest.date": "",
+  "paymentRequest.paymentNumber": "",
+  "paymentRequest.paymentDate": "",
   "paymentRequest.master.title": "",
-  "province.master.title": "Danh sách tỉnh / thành phố",
   "province.table.title": "",
   "province.code": "Mã",
   "province.name": "Tên",
   "province.englishName": "Tên tiếng Anh",
-  "province.administrativeType": ""
+  "province.administrativeType": "",
+  "province.master.title": "Danh sách tỉnh / thành phố"
 }

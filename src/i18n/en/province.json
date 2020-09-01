@@ -1,8 +1,8 @@
 {
-  "province.master.title": "",
   "province.table.title": "",
   "province.code": "",
   "province.name": "",
   "province.englishName": "",
-  "province.administrativeType": ""
+  "province.administrativeType": "",
+  "province.master.title": ""
 }

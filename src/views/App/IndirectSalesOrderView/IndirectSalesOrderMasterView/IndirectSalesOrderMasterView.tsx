@@ -96,7 +96,7 @@ function IndirectSalesOrderMasterView() {
       <div style={{marginTop: '10px', width: '220px'}}>
         <AdvanceIdFilter value={valueId}
           classFilter={DemoListFilter}
-          setId={setValueId}
+          onChange={setValueId}
           placeHolder={'Select id...'}
           getList={demoSearchFunc}/>
       </div>

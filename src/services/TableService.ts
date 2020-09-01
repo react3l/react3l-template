@@ -1,5 +1,5 @@
 import {RowSelectionType, SortOrder, TableRowSelection} from 'antd/lib/table/interface';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import {Model, ModelFilter, OrderType} from 'react3l/core';
 import {kebabCase} from 'react3l/helpers';
 import {forkJoin, Observable, Subscription} from 'rxjs';
@@ -12,8 +12,10 @@ export const tableService = {
     getTotal: (tFilter: TFilter) => Observable<number>,
   ): [
     T[],
+    Dispatch<SetStateAction<T[]>>,
     number,
     boolean,
+    Dispatch<SetStateAction<boolean>>,
   ] {
     const [list, setList] = React.useState<T[]>([]);
 
@@ -47,8 +49,10 @@ export const tableService = {
 
     return [
       list,
+      setList,
       total,
       loading,
+      setLoading,
     ];
   },
 
