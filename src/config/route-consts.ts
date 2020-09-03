@@ -27,3 +27,5 @@ export const PAYMENT_REQUEST_DETAIL_ROUTE: string = join(
   PAYMENT_REQUEST_ROOT_ROUTE,
   "payment-request-detail",
 );
+
+export const PRICE_LIST_ROUTE_PREFIX: string = "/price-list";

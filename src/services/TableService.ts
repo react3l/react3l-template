@@ -1,9 +1,13 @@
-import {RowSelectionType, SortOrder, TableRowSelection} from 'antd/lib/table/interface';
-import React, { Dispatch, SetStateAction } from 'react';
-import {Model, ModelFilter, OrderType} from 'react3l/core';
-import {kebabCase} from 'react3l/helpers';
-import {forkJoin, Observable, Subscription} from 'rxjs';
-import {finalize} from 'rxjs/operators';
+import {
+  RowSelectionType,
+  SortOrder,
+  TableRowSelection,
+} from "antd/lib/table/interface";
+import React, { Dispatch, SetStateAction } from "react";
+import { Model, ModelFilter, OrderType } from "react3l/core";
+import { kebabCase } from "react3l/helpers";
+import { forkJoin, Observable, Subscription } from "rxjs";
+import { finalize } from "rxjs/operators";
 
 export const tableService = {
   useMasterTable<T extends Model, TFilter extends ModelFilter>(
@@ -23,47 +27,41 @@ export const tableService = {
 
     const [loading, setLoading] = React.useState<boolean>(false);
 
-    React.useEffect(
-      () => {
-        setLoading(true);
-        const subscription: Subscription = forkJoin([
-          getList(modelFilter),
-          getTotal(modelFilter),
-        ])
-          .pipe(
-            finalize(() => {
-              setLoading(false);
-            }),
-          )
-          .subscribe(([list, total]) => {
-            setList(list);
-            setTotal(total);
-          });
+    React.useEffect(() => {
+      setLoading(true);
+      const subscription: Subscription = forkJoin([
+        getList(modelFilter),
+        getTotal(modelFilter),
+      ])
+        .pipe(
+          finalize(() => {
+            setLoading(false);
+          }),
+        )
+        .subscribe(([list, total]) => {
+          setList(list);
+          setTotal(total);
+        });
 
-        return function cleanup() {
-          subscription.unsubscribe();
-        };
-      },
-      [modelFilter, getList, getTotal],
-    );
+      return function cleanup() {
+        subscription.unsubscribe();
+      };
+    }, [modelFilter, getList, getTotal]);
 
-    return [
-      list,
-      setList,
-      total,
-      loading,
-      setLoading,
-    ];
+    return [list, setList, total, loading, setLoading];
   },
 
-  getAntOrderType<T extends Model, TFilter extends ModelFilter>(tFilter: TFilter, columnName: keyof T): SortOrder {
+  getAntOrderType<T extends Model, TFilter extends ModelFilter>(
+    tFilter: TFilter,
+    columnName: keyof T,
+  ): SortOrder {
     if (tFilter.orderBy === columnName) {
       switch (tFilter.orderType) {
-        case 'ASC':
-          return 'ascend';
+        case "ASC":
+          return "ascend";
 
-        case 'DESC':
-          return 'descend';
+        case "DESC":
+          return "descend";
 
         default:
           return null;
@@ -74,11 +72,11 @@ export const tableService = {
 
   getOrderType(sortOrder?: SortOrder): OrderType {
     switch (sortOrder) {
-      case 'ascend':
-        return 'ASC';
+      case "ascend":
+        return "ASC";
 
-      case 'descend':
-        return 'DESC';
+      case "descend":
+        return "DESC";
 
       default:
         return null;
@@ -89,10 +87,9 @@ export const tableService = {
     return `${kebabCase(TClass.name)}-actions`;
   },
 
-  useRowSelection<T extends Model>(selectionType: RowSelectionType = 'checkbox'): [
-    TableRowSelection<T>,
-    number[],
-  ] {
+  useRowSelection<T extends Model>(
+    selectionType: RowSelectionType = "checkbox",
+  ): [TableRowSelection<T>, number[]] {
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<number[]>([]);
 
     return [
@@ -113,25 +110,15 @@ export const tableService = {
     selectedRowKeys: number[],
     onDelete: (selectedRowKeys: number[]) => Observable<void>,
     onSuccess?: () => void,
-  ): [
-    () => Subscription,
-  ] {
-    const handleBatchDelete = React.useCallback(
-      () => {
-        return onDelete(selectedRowKeys)
-          .subscribe(
-            () => {
-              if (typeof onSuccess === 'function') {
-                onSuccess();
-              }
-            },
-          );
-      },
-      [onDelete, onSuccess, selectedRowKeys],
-    );
+  ): [() => Subscription] {
+    const handleBatchDelete = React.useCallback(() => {
+      return onDelete(selectedRowKeys).subscribe(() => {
+        if (typeof onSuccess === "function") {
+          onSuccess();
+        }
+      });
+    }, [onDelete, onSuccess, selectedRowKeys]);
 
-    return [
-      handleBatchDelete,
-    ];
+    return [handleBatchDelete];
   },
 };
