@@ -80,7 +80,7 @@ function InputText(props: InputText<Model>) {
     <>
       <div className="input-text__container">
         { title && 
-          <div className={classNames('input-text__title', {'error-text': isError})}>{title}</div>
+          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
         }
         <div className="input-text__wrapper">
           <input type="text"

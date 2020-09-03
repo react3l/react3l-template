@@ -60,7 +60,7 @@ function InputTag(props: InputTagProps<Model>) {
     <>
       <div className="input-tag__wrapper">
         { title && 
-          <div className={classNames('input-tag__title', {'error-text': isError})}>{title}</div>
+          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
         }
         <div className={classNames('input-tag__container', 
           {'input-tag__container--material': isMaterial, 'input-tag__container--bordered': !isMaterial, 'error-border': isError})} 

@@ -67,7 +67,7 @@ function InputSelect(props: InputSelectProps<Model>) {
     <>
       <div className="input-select__container">
         { title && 
-          <div className={classNames('input-select__title', {'error-text': isError})}>{title}</div>
+          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
         }
         { expanded ? 
           <div className="input-select__wrapper">

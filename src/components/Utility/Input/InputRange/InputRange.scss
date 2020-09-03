@@ -2,9 +2,6 @@
 /* Style for InputRange.tsx */
 .input-range__container {
     width: 100%;
-    .input-range__title {
-        @include input-title;
-    }
     .input-range__wrapper {
         width: 100%;
         display: flex;

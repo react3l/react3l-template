@@ -4,10 +4,6 @@
 .date-picker__container {
     width: 100%;
 
-    .date-picker__title {
-        @include input-title;
-    }
-
     .date-picker__wrapper {
         width: 100%;
         position: relative;

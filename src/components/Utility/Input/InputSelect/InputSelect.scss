@@ -2,10 +2,7 @@
 /* Style for InputSelect.tsx */
 .input-select__container {
   width: 100%;
-
-  .input-select__title {
-    @include input-title;
-  }
+  
   .input-select__wrapper {
     widows: 100%;
     position: relative;

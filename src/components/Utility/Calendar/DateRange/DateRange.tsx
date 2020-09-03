@@ -51,7 +51,7 @@ function DateRange(props: DateRangeProps<Model> & RangePickerProps) {
   return (
     <div className="date-range__container">
       { title && 
-        <div className={classNames('date-picker__title', {'error-text': isError})}>{title}</div>
+        <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
       }
       <div className="date-range__wrapper">
         <RangePicker {...props}

@@ -4,9 +4,6 @@
     width: 100%;
     min-width: 100px;
     border-radius: 7px;
-    .input-number__title {
-        @include input-title;
-    }
     .input-number__wrapper {
         width: 100%;
         position: relative;

@@ -1,0 +1,77 @@
+@import './../../../styles/variables';
+/* Style for FormValidation.tsx */
+.form-validation__container {
+    width: 100%;
+    position: relative;
+
+    .form-validation__content {
+        display: flex;
+        width: 100%;
+    }
+
+    .form-validation__message {
+        font-size: 14px;
+        color: #000000;
+        margin-top: 5px;
+    }
+
+    .form-validation__icon {
+        height: auto;
+        width: 1.5rem;
+        font-size: 1.2rem;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        margin-left: 2px;
+    }
+
+    &.form-validation__container--error {
+        .form-validation__content {
+            .form-validation__icon, .component__title, i {
+                color: $error-color !important;
+            }
+
+            input, i {
+                border-color: $error-color !important;
+            }
+        }
+
+        .form-validation__message {
+            color: $error-color !important;
+        }
+    }
+
+    &.form-validation__container--warning {
+        .form-validation__content {
+            .form-validation__icon, .component__title, i {
+                color: $warning-color !important;
+            }
+
+            input, i {
+                border-color: $warning-color !important;
+            }
+        }
+
+        .form-validation__message {
+            color: $warning-color !important;
+        }
+    }
+
+    &.form-validation__container--success {
+        .form-validation__content {
+            .form-validation__icon, .component__title, i {
+                color: $success-color !important;
+            }
+
+            input {
+                border-color: $success-color !important;
+            }
+        }
+
+        .form-validation__message {
+            color: $success-color !important;
+        }
+    }
+}

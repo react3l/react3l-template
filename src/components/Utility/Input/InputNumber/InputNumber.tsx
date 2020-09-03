@@ -199,7 +199,7 @@ function InputNumber(props: InputNumberProps<Model>) {
     <>
       <div className="input-number__container">
         { title && 
-          <div className={classNames('input-number__title', {'error-text': isError})}>{title}</div>
+          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
         }
         <div className="input-number__wrapper">
           <input type="text"

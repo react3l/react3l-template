@@ -27,6 +27,10 @@ body {
   background: #f2f2f2;
   font-size: 14px;
 
+  .component__title {
+    @include input-title
+  }
+
   .component__text-area {
     width: 100%;
     height: 40px;

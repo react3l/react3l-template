@@ -3,10 +3,6 @@
 .input-text__container {
   width: 100%;
   border-radius: 7px;
-  .input-text__title {
-    @include input-title;
-  }
-
   .input-text__wrapper {
     widows: 100%;
     position: relative;

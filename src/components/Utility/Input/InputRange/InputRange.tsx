@@ -50,7 +50,7 @@ function InputRange(props: InputRange<Model>) {
     <>
       <div className="input-range__container">
         { title && 
-          <div className={classNames('input-range__title', {'error-text': isError})}>{title}</div>
+          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
         }
         <div className="input-range__wrapper">
           <div className="input-range__input-number">

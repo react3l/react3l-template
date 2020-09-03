@@ -51,7 +51,7 @@ function DatePicker(props: DatePickerProps<Model> & AntdDatePickerProps) {
   return (
     <div className="date-picker__container">
       { title && 
-        <div className={classNames('date-picker__title', {'error-text': isError})}>{title}</div>
+        <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
       }
       <div className="date-picker__wrapper">
         <DatePickerAntd {...props}
