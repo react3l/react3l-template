@@ -3,7 +3,7 @@ import {
   SortOrder,
   TableRowSelection,
 } from "antd/lib/table/interface";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Model, ModelFilter, OrderType } from "react3l/core";
 import { kebabCase } from "react3l/helpers";
 import { forkJoin, Observable, Subscription } from "rxjs";
@@ -14,7 +14,13 @@ export const tableService = {
     modelFilter: TFilter,
     getList: (tFilter: TFilter) => Observable<T[]>,
     getTotal: (tFilter: TFilter) => Observable<number>,
-  ): [T[], number, boolean] {
+  ): [
+    T[],
+    Dispatch<SetStateAction<T[]>>,
+    number,
+    boolean,
+    Dispatch<SetStateAction<boolean>>,
+  ] {
     const [list, setList] = React.useState<T[]>([]);
 
     const [total, setTotal] = React.useState<number>(0);
@@ -42,7 +48,7 @@ export const tableService = {
       };
     }, [modelFilter, getList, getTotal]);
 
-    return [list, total, loading];
+    return [list, setList, total, loading, setLoading];
   },
 
   getAntOrderType<T extends Model, TFilter extends ModelFilter>(

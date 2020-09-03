@@ -45,25 +45,23 @@ export const queryStringService = {
             const queryFilter: TFilter = qs.parse(history.location.search.substring(1));
             if (!commonWebService.isEmpty(queryFilter)) {
                 for(let prop in queryFilter) {
-                    if (modelFilter.hasOwnProperty(prop)) {
-                        if(typeof queryFilter[prop] === 'object' && queryFilter[prop].constructor === Object) {
-                            for (let subProp in queryFilter[prop]) {
-                                if (queryFilter[prop][subProp]) {
-                                    modelFilter[prop][subProp] = isStringNumber(queryFilter[prop][subProp]) ? Number(queryFilter[prop][subProp]) : queryFilter[prop][subProp];
-                                } else {
-                                    modelFilter[prop][subProp] = null;
-                                }
+                    if(typeof queryFilter[prop] === 'object' && queryFilter[prop].constructor === Object) {
+                        for (let subProp in queryFilter[prop]) {
+                            if (queryFilter[prop][subProp]) {
+                                modelFilter[prop][subProp] = isStringNumber(queryFilter[prop][subProp]) ? Number(queryFilter[prop][subProp]) : queryFilter[prop][subProp];
+                            } else {
+                                modelFilter[prop][subProp] = null;
                             }
-                        } else {
-                            modelFilter[prop] = queryFilter[prop];
                         }
-                    } continue;
+                    } else {
+                        modelFilter[prop] = queryFilter[prop];
+                    }
                 }
                 modelFilter['skip'] = Number(modelFilter['skip']);
                 modelFilter['take'] = Number(modelFilter['take']);
             }
             return modelFilter;
-        }, [ClassFilter, history]);
+        }, [ClassFilter, history.location.search]);
 
         const [modelFilter, dispatch] = React.useReducer<Reducer<TFilter, AdvanceFilterAction<TFilter, Filter>>>(advanceFilterReducer, buildFilter);
 
@@ -81,7 +79,7 @@ export const queryStringService = {
         }, []);
 
         const handleChangeFilter = React.useCallback(
-            (fieldName: string, fieldType: keyof Filter) => (value: string | number) => {
+            (fieldName: string, fieldType: keyof Filter) => (value: any) => {
                 dispatch({
                 type: ActionFilterEnum.ChangeOneField,
                 fieldName: fieldName,
@@ -142,7 +140,6 @@ export const queryStringService = {
             });
 
             return function cleanup() {
-
             };
         }, [modelFilter , buildQuery, history]);
 

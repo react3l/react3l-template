@@ -3,6 +3,7 @@
 .input-number__container {
     width: 100%;
     min-width: 100px;
+    border-radius: 7px;
     .input-number__title {
         @include input-title;
     }

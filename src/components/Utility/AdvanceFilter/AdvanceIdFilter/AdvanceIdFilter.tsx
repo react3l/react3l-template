@@ -28,7 +28,7 @@ export interface AdvanceIdFilterProps<T extends Model, TModelFilter extends Mode
 
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
-  setId?: (T: number) => void;
+  onChange?: (T: number) => void;
 
   render?: (t: T) => string;
 
@@ -48,7 +48,7 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
     placeHolder,
     disabled,
     getList,
-    setId,
+    onChange,
     render,
     classFilter: ClassFilter,
   } = props;
@@ -105,10 +105,10 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
   const handleClickItem = React.useCallback(
     (item: Model) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       setInternalModel(item);
-      setId(item.id);
+      onChange(item.id);
       handleCloseAdvanceIdFilter();
     }, 
-  [handleCloseAdvanceIdFilter, setInternalModel, setId]);
+  [handleCloseAdvanceIdFilter, setInternalModel, onChange]);
 
   const handleSearchChange = React.useCallback(debounce((searchTerm: string) => {
     const cloneModelFilter = {...internalModelFilter};
@@ -125,8 +125,8 @@ function AdvanceIdFilter(props: AdvanceIdFilterProps<Model, ModelFilter>) {
   }, DEBOUNCE_TIME_300), []);
   
   const handleClearItem = React.useCallback(() => {
-    setId(null);
-  }, [setId]);
+    onChange(null);
+  }, [onChange]);
 
   React.useEffect(() => {
     const subscription = new Subscription();

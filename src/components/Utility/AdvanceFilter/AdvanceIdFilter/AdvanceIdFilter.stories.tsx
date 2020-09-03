@@ -55,7 +55,7 @@ export function AdvanceIdFilterStories() {
                 modelFilter={AdvanceIdFilterModelFilter}
                 searchProperty={nameof(DemoFilter.name)}
                 render={handleRenderModel}
-                setId={setValue}
+                onChange={setValue}
                 getList={demoSearchFunc}/>
     </div>;
 }

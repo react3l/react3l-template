@@ -1,9 +1,8 @@
 import Card from 'antd/lib/card';
 import Table, { ColumnProps } from 'antd/lib/table';
-import { Province } from 'models/Province';
+import { Payment } from 'models/Payment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { provinceRepository } from 'repositories/province-repository';
 import { tableService } from 'services/TableService';
 import nameof from 'ts-nameof.macro';
 import classNames from 'classnames';
@@ -12,53 +11,67 @@ import { Row, Col, Tooltip } from 'antd';
 import InputSearch from 'components/Utility/InputSearch/InputSearch';
 import AdvanceIdFilter from 'components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter';
 import AdvanceDateRangeFilter from 'components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter';
-import { data } from './data';
 import AdvanceStringFilter from 'components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter';
 import Pagination from 'components/Utility/Pagination/Pagination';
 import { PAYMENT_REQUEST_DETAIL_ROUTE } from 'config/route-consts';
 import { routerService } from 'services/RouterService';
 import { ModelFilter, Model } from 'react3l/core';
 import { queryStringService } from 'services/QueryStringService';
+import { PaymentFilter } from 'models/PaymenFilter';
+import { paymentRepository } from 'repositories/payment-repository';
+import { Province } from 'models/Province';
+import { Moment } from 'moment';
+import { Observable } from 'rxjs/internal/Observable';
 import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
-import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
-import { DateFilter } from 'react3l-advanced-filters/DateFilter';
 
-class DemoFilter extends ModelFilter {
-  id: IdFilter = new IdFilter()
+const demoObservable = new Observable<Model[]>((observer) => {
+  setTimeout(() => {
+    observer.next([
+      { id: 1, name: 'Hà Nội', code: 'HN' },
+      { id: 2, name: 'Hồ Chí Minh', code: 'HCM' },
+      { id: 3, name: 'Đà Nẵng', code: 'DN' },
+      { id: 4, name: 'Nha Trang', code: 'CR' }]);
+  }, 1000);
+});
+
+const demoSearchFunc = (TModelFilter: ModelFilter) => {
+  return demoObservable;
+};
+
+export class DemoListFilter extends ModelFilter {
+  id: IdFilter = new IdFilter();
   name: StringFilter = new StringFilter();
-  number: NumberFilter = new NumberFilter();
-  numberRange: NumberFilter = new NumberFilter();
-  date: DateFilter = new DateFilter();
-  dateRange: DateFilter = new DateFilter();
-  skip: number = 0;
-  take: number = 10;
+  code: StringFilter = new StringFilter();
 }
 
 
-function ProvinceMasterView() {
+function PaymentMasterView() {
   const [translate] = useTranslation();
   const [
-    filter, 
-    ,
-    , 
-    handleChangeOrder, 
-    , 
-    ,
-  ] = queryStringService.useQueryString<Model, DemoFilter>(DemoFilter);
-  const [
-    ,
-    ,
-    loading,
-  ] = tableService.useMasterTable<Model, DemoFilter>(
     filter,
-    provinceRepository.list,
-    provinceRepository.count,
+    ,
+    handleChangeFilter,
+    handleChangeOrder,
+    handlePagination,
+    ,
+  ] = queryStringService.useQueryString<Payment, PaymentFilter>(PaymentFilter);
+
+  const [
+    list,
+    ,
+    total,
+    loading,
+    ,
+  ] = tableService.useMasterTable<Payment, PaymentFilter>(
+    filter,
+    paymentRepository.list,
+    paymentRepository.count,
   );
 
   const [
     rowSelection,
-  ] = tableService.useRowSelection<Province>();
+  ] = tableService.useRowSelection<Payment>();
 
   const [handleGoCreate] = routerService.useMasterNavigation(
     PAYMENT_REQUEST_DETAIL_ROUTE,
@@ -67,32 +80,52 @@ function ProvinceMasterView() {
 
   const [toggle, setToggle] = React.useState<boolean>(false);
 
-  const columns: ColumnProps<Province>[] = React.useMemo(
+  const columns: ColumnProps<Payment>[] = React.useMemo(
     () => [
       {
         title: translate('paymentRequest.id'),
-        key: nameof(data[0].id),
-        dataIndex: nameof(data[0].id),
+        key: nameof(list[0].id),
+        dataIndex: nameof(list[0].id),
         sorter: true,
-        sortOrder: tableService.getAntOrderType(filter, nameof(data[0].id)),
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].id)),
+        render(id: number) {
+          return id;
+        },
+      },
+      {
+        title: translate('paymentRequest.name'),
+        key: nameof(list[0].name),
+        dataIndex: nameof(list[0].name),
+        sorter: true,
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].name)),
         render(id: number) {
           return id;
         },
       },
       {
         title: translate('paymentRequest.code'),
-        key: nameof(data[0].title),
-        dataIndex: nameof(data[0].title),
+        key: nameof(list[0].code),
+        dataIndex: nameof(list[0].code),
         sorter: true,
-        sortOrder: tableService.getAntOrderType(filter, nameof(data[0].title)),
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].code)),
         render(id: number) {
           return id;
         },
       },
       {
+        title: translate('paymentRequest.province'),
+        key: nameof(list[0].province),
+        dataIndex: nameof(list[0].province),
+        sorter: true,
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].province)),
+        render(province: Province) {
+          return province.name;
+        },
+      },
+      {
         title: translate('paymentRequest.status'),
-        key: nameof(data[0].status),
-        dataIndex: nameof(data[0].status),
+        key: nameof(list[0].status),
+        dataIndex: nameof(list[0].status),
         align: 'center',
         render(status) {
           return (
@@ -117,9 +150,39 @@ function ProvinceMasterView() {
         },
       },
       {
+        title: translate('paymentRequest.date'),
+        key: nameof(list[0].date),
+        dataIndex: nameof(list[0].date),
+        sorter: true,
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].date)),
+        render(date: Moment) {
+          return date.format('DD/MM/YYYY');
+        },
+      },
+      {
+        title: translate('paymentRequest.paymentNumber'),
+        key: nameof(list[0].paymentNumber),
+        dataIndex: nameof(list[0].paymentNumber),
+        sorter: true,
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].paymentNumber)),
+        render(id: number) {
+          return id;
+        },
+      },
+      {
+        title: translate('paymentRequest.paymentDate'),
+        key: nameof(list[0].paymentDate),
+        dataIndex: nameof(list[0].paymentDate),
+        sorter: true,
+        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].paymentDate)),
+        render(paymentDate: Moment) {
+          return paymentDate.format('DD/MM/YYYY');
+        },
+      },
+      {
         title: translate('general.actions.action'),
         key: nameof('general.actions.action'),
-        dataIndex: nameof(data[0].id),
+        dataIndex: nameof(list[0].id),
         align: 'center',
         render() {
           return (
@@ -153,7 +216,7 @@ function ProvinceMasterView() {
         },
       },
     ],
-    [filter, translate],
+    [list, filter, translate],
   );
 
   const handleToggleSearch = React.useCallback(() => {
@@ -183,47 +246,41 @@ function ProvinceMasterView() {
               <Col lg={12}>
                 <div className="pr-4"><InputSearch /></div>
               </Col>
-              <Col lg={12}>
-                <div className="d-flex justify-content-between">
-                  <div className="mt__1">
-                    <label className="label">Phòng ban</label>
-                    <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
-                  </div>
-                  <div className="mt__1">
-                    <label className="label">Trạng thái</label>
-                    <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
-                  </div>
-                  <div>
-                    <button
-                      className={classNames('btn component__btn-toggle',
-                        (toggle === true ? 'component__btn-toggle-active' : ''))} onClick={handleToggleSearch}>
-                      <span>
-                        <div className="tio-down_ui" />
-                        <div className="tio-down_ui" />
-                      </span>
-                    </button>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <button className="btn component__btn-outline-primary">
-                      <span className="border-outline">
-                        {/* {translate('general.actions.reset')} */}
-                        <div className="text-outline">
-                          Bỏ lọc
-                      </div>
-                      </span>
-
-                    </button>
-
-                  </div>
-                  <div>
-                    <button className="btn component__btn-primary pr-4">
-                      {/* {translate('general.actions.search')} */}
-                        Tìm kiếm
-                  </button>
-                  </div>
-
+              <Col lg={4} className="pr-4">
+                <div className="mt__1">
+                  <label className="label">Phòng ban</label>
+                  <AdvanceIdFilter classFilter={DemoListFilter}
+                    value={filter['proviceId']['equal']}
+                    onChange={handleChangeFilter('proviceId', 'equal')}
+                    getList={demoSearchFunc}
+                    placeHolder={'Tất cả'}
+                  />
                 </div>
               </Col>
+              <Col lg={4} className="pr-4">
+                <div className="mt__1">
+                  <label className="label">Trạng thái</label>
+                  <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
+                </div>
+              </Col>
+              <Col lg={4} >
+                <div className="d-flex justify-content-end">
+                  <button
+                    className={classNames('btn component__btn-toggle mr-4',
+                      (toggle === true ? 'component__btn-toggle-active' : ''))} onClick={handleToggleSearch}>
+                    <div className="tio-down_ui" />
+                    <div className="tio-down_ui" />
+                  </button>
+                  <div className="d-flex justify-content-between">
+                    <button className="btn component__btn-outline-primary">
+                      Bỏ lọc
+                    </button>
+
+                  </div>
+                </div>
+
+              </Col>
+
             </Row>
             {
               toggle && (
@@ -231,7 +288,8 @@ function ProvinceMasterView() {
                   <Row className="mt-4">
                     <Col lg={4} className="pr-4">
                       <label className="label">Người đề nghị</label>
-                      <AdvanceIdFilter classFilter={ModelFilter} placeHolder={'Tất cả'} />
+                      <AdvanceIdFilter classFilter={ModelFilter}
+                        placeHolder={'Tất cả'} />
                     </Col>
                     <Col lg={4} className="pr-4">
                       <label className="label">Bên nhận</label>
@@ -283,9 +341,9 @@ function ProvinceMasterView() {
           <Card>
             <Table
               tableLayout="fixed"
-              rowKey={nameof(data[0].id)}
+              rowKey={nameof(list[0].id)}
               columns={columns}
-              dataSource={data}
+              dataSource={list}
               loading={loading}
               pagination={false}
               onChange={handleChangeOrder}
@@ -332,6 +390,8 @@ function ProvinceMasterView() {
                       </Tooltip>
                       <Pagination skip={filter.skip}
                         take={filter.take}
+                        total={total}
+                        onChange={handlePagination}
                         style={{ margin: '10px' }} />
                     </div>
                   </div>
@@ -347,4 +407,4 @@ function ProvinceMasterView() {
   );
 }
 
-export default ProvinceMasterView;
+export default PaymentMasterView;

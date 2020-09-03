@@ -103,6 +103,10 @@ body {
 
   .btn {
     white-space: nowrap;
+    color: inherit;
+    &:focus {
+      box-shadow: none;
+    }
   }
   .component__btn-primary {
     @include background-color;
@@ -129,58 +133,34 @@ body {
     }
   }
   .component__btn-toggle-active {
-    background-image: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%);
     border-radius: 7px;
     box-sizing: border-box;
-    color: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%);
-    display: block;
+    border: 1px solid #4865f8;
     height: 38px;
     margin: 0 auto;
-    padding: 1px;
-    position: relative;
-    z-index: 2;
     min-width: 38px;
-    span {
-      display: block;
-      align-items: center;
-      background: #ffffff;
-      border-radius: 5px;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-      padding: 4px;
-      div {
-        @include gradient-text();
-        font-weight: 600;
-        -ms-transform: rotate(180deg); /* IE 9 */
-        transform: rotate(180deg);
-      }
+    div {
+      @include gradient-text();
+      font-weight: 600;
+      -ms-transform: rotate(180deg); /* IE 9 */
+      transform: rotate(180deg);
     }
   }
   .component__btn-outline-primary {
-    background-image: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%);
+    border: 1px solid #4865f8;
     border-radius: 7px;
-    box-sizing: border-box;
-    color: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%);
-    display: block;
     height: 38px;
     margin: 0 auto;
-    padding: 2px;
-    position: relative;
-    z-index: 2;
-    min-width: 75px;
-    .border-outline {
-      align-items: center;
-      background: $white;
-      border-radius: 3px;
-      display: flex;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-      .text-outline {
-        @include gradient-text();
-        font-weight: 600;
-      }
+    @include gradient-text;
+    font-weight: 500;
+    &:hover {
+      border: 1px solid transparent;
+      @include background-color;
+      color: #ffffff;
+      -webkit-background-clip: initial;
+      -moz-background-clip: initial;
+      background-clip: initial;
+      -webkit-text-fill-color: initial;
     }
   }
 
