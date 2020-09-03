@@ -1,79 +1,42 @@
+import { Col, Row, Switch, Tabs } from "antd";
 import Card from "antd/lib/card";
+import { DECIMAL } from "components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter";
+import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
+import InputNumber from "components/Utility/Input/InputNumber/InputNumber";
+import InputText from "components/Utility/Input/InputText/InputText";
+import Select from "components/Utility/Select/Select";
+import { formatNumber } from "helpers/number";
 import React from "react";
 import { useTranslation } from "react-i18next";
-// import { useParams } from "react-router";
-import { Row, Col, Tabs, Switch } from "antd";
-import InputText from "components/Utility/Input/InputText/InputText";
-import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
-import Select from "components/Utility/Select/Select";
 import { ModelFilter } from "react3l/core";
-import InputNumber from "components/Utility/Input/InputNumber/InputNumber";
-import { DECIMAL } from "components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter";
-import { formatNumber } from "helpers/number";
 
 const { TabPane } = Tabs;
 
 function PaymentRequestDetailView() {
-  // const { id } = useParams();
-
   const [translate] = useTranslation();
-
-  // const [
-  //   province,
-  //   handleChangeSimpleField,
-  //   handleChangeObjectField,
-  // ] = formService.useDetailForm<Province>(
-  //   Province,
-  //   parseInt(id),
-  //   provinceRepository.get
-  // );
-
-  // const [administrativeTypeList] = enumService.useEnumList<AdministrativeType>(
-  //   administrativeTypeRepository.list
-  // );
-
-  // const handleChangeCode = formService.useChangeHandler<Province>(
-  //   handleChangeSimpleField,
-  //   "code"
-  // );
-
-  // const handleChangeName = formService.useChangeHandler<Province>(
-  //   handleChangeSimpleField,
-  //   "name"
-  // );
-
-  // const handleChangeEnglishName = formService.useChangeHandler<Province>(
-  //   handleChangeSimpleField,
-  //   "englishName"
-  // );
-
-  // const handleChangeAdministrativeType = formService.useChangeHandler<Province>(
-  //   handleChangeObjectField,
-  //   "administrativeType"
-  // );
 
   return (
     <>
-      <div className="page page__detail">
-        <div className="page__header d-flex align-items-center ">
-          <div className="page__title mr-1">
+      <div className='page page__detail'>
+        <div className='page__header d-flex align-items-center '>
+          <div className='page__title mr-1'>
             {translate("paymentRequest.detail.title")}
           </div>
           {/* {
           id && ( */}
-          <div className="page__id">- # 1077620</div>
+          <div className='page__id'>- # 1077620</div>
           {/* )
         } */}
         </div>
 
-        <div className="w-100 mt-3 page__detail-tabs">
-          <Row className="d-flex">
+        <div className='w-100 mt-3 page__detail-tabs'>
+          <Row className='d-flex'>
             <Col lg={18}>
-              <Card className="mr-3">
-                <Tabs defaultActiveKey="2">
-                  <TabPane tab={translate("Thông tin chung")} key="1">
+              <Card className='mr-3'>
+                <Tabs defaultActiveKey='2'>
+                  <TabPane tab={translate("Thông tin chung")} key='1'>
                     <Row>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -82,7 +45,7 @@ function PaymentRequestDetailView() {
                           className={"tio-account_square_outlined"}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -91,7 +54,7 @@ function PaymentRequestDetailView() {
                           className={"tio-user_switch"}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -101,14 +64,14 @@ function PaymentRequestDetailView() {
                         />
                       </Col>
                       <Col lg={6}>
-                        <label className="label-detail">
+                        <label className='label-detail'>
                           {translate("Ngày gửi đề nghị")}
                         </label>
                         <DatePicker isMaterial={true} />
                       </Col>
                     </Row>
-                    <Row className="mt-3">
-                      <Col lg={6} className="pr-3">
+                    <Row className='mt-3'>
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -117,8 +80,8 @@ function PaymentRequestDetailView() {
                           className={"tio-event"}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
-                        <label className="label-detail">
+                      <Col lg={6} className='pr-3'>
+                        <label className='label-detail'>
                           {translate("Đơn vị yêu cầu")}
                         </label>
                         <Select
@@ -127,7 +90,7 @@ function PaymentRequestDetailView() {
                           isMaterial={true}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -137,7 +100,7 @@ function PaymentRequestDetailView() {
                         />
                       </Col>
                       <Col lg={6}>
-                        <label className="label-detail">
+                        <label className='label-detail'>
                           {translate("Thời hạn thanh toán")}
                         </label>
                         <DatePicker
@@ -146,7 +109,7 @@ function PaymentRequestDetailView() {
                         />
                       </Col>
                     </Row>
-                    <Row className="mt-3">
+                    <Row className='mt-3'>
                       <Col lg={24}>
                         <InputText
                           isMaterial={true}
@@ -168,15 +131,15 @@ function PaymentRequestDetailView() {
             </Col>
           </Row>
         </div>
-        <div className="w-100 mt-3 page__detail-tabs">
-          <Row className="d-flex">
+        <div className='w-100 mt-3 page__detail-tabs'>
+          <Row className='d-flex'>
             <Col lg={18}>
-              <Card className="mr-3">
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab={translate("Thông tin hóa đơn")} key="1">
+              <Card className='mr-3'>
+                <Tabs defaultActiveKey='1'>
+                  <TabPane tab={translate("Thông tin hóa đơn")} key='1'>
                     <Row>
-                      <Col lg={6} className="pr-3">
-                        <label className="label-detail">
+                      <Col lg={6} className='pr-3'>
+                        <label className='label-detail'>
                           {translate("Loại chứng từ")}
                         </label>
                         <Select
@@ -185,7 +148,7 @@ function PaymentRequestDetailView() {
                           isMaterial={true}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -194,8 +157,8 @@ function PaymentRequestDetailView() {
                           className={"tio-files_labeled_outlined"}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
-                        <label className="label-detail">
+                      <Col lg={6} className='pr-3'>
+                        <label className='label-detail'>
                           {translate("Loại tiền")}
                         </label>
                         <Select
@@ -205,7 +168,7 @@ function PaymentRequestDetailView() {
                         />
                       </Col>
                       <Col lg={6}>
-                        <label className="label-detail">
+                        <label className='label-detail'>
                           {translate("Nhà cung cấp")}
                         </label>
                         <Select
@@ -215,9 +178,9 @@ function PaymentRequestDetailView() {
                         />
                       </Col>
                     </Row>
-                    <Row className="mt-3">
-                      <Col lg={6} className="pr-3">
-                        <label className="label-detail">
+                    <Row className='mt-3'>
+                      <Col lg={6} className='pr-3'>
+                        <label className='label-detail'>
                           {translate("Ngày chứng từ")}
                         </label>
                         <DatePicker
@@ -225,7 +188,7 @@ function PaymentRequestDetailView() {
                           placeholder={"Chọn ngày chứng từ"}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -234,7 +197,7 @@ function PaymentRequestDetailView() {
                           className={"tio-files_labeled_outlined"}
                         />
                       </Col>
-                      <Col lg={6} className="pr-3">
+                      <Col lg={6} className='pr-3'>
                         <InputText
                           isMaterial={true}
                           value={null}
@@ -246,19 +209,21 @@ function PaymentRequestDetailView() {
                     </Row>
                   </TabPane>
                 </Tabs>
-                <div className="page__detail-invoice mt-4">
-                  <div className="page__detail-invoice-header d-flex justify-content-between align-items-center">
-                    <div className="invoice__row">Dòng</div>
-                    <div className="d-flex align-items-center">
-                      <button className="btn component__btn-delete">
-                        <i className="tio-delete" />
+                <div className='page__detail-invoice mt-4'>
+                  <div className='page__detail-invoice-header d-flex justify-content-between align-items-center'>
+                    <div className='invoice__row'>Dòng</div>
+                    <div className='d-flex align-items-center'>
+                      <button className='btn component__btn-delete'>
+                        <i className='tio-delete' />
                       </button>
-                      <span className="invoice__delete text-uppercase">Xóa</span>
+                      <span className='invoice__delete text-uppercase'>
+                        Xóa
+                      </span>
                     </div>
                   </div>
-                  <Row className="mt-3">
-                    <Col lg={6} className="pr-3">
-                      <label className="label-detail">
+                  <Row className='mt-3'>
+                    <Col lg={6} className='pr-3'>
+                      <label className='label-detail'>
                         {translate("Đơn vị")}
                       </label>
                       <Select
@@ -267,7 +232,7 @@ function PaymentRequestDetailView() {
                         isMaterial={true}
                       />
                     </Col>
-                    <Col lg={12} className="pr-3">
+                    <Col lg={12} className='pr-3'>
                       <InputText
                         isMaterial={true}
                         value={null}
@@ -276,7 +241,7 @@ function PaymentRequestDetailView() {
                         className={"tio-files_labeled_outlined"}
                       />
                     </Col>
-                    <Col lg={6} className="pr-3">
+                    <Col lg={6} className='pr-3'>
                       <InputNumber
                         title={"Thành tiền"}
                         className={""}
@@ -286,9 +251,9 @@ function PaymentRequestDetailView() {
                       />
                     </Col>
                   </Row>
-                  <Row className="mt-3">
-                    <Col lg={6} className="pr-3">
-                      <label className="label-detail">
+                  <Row className='mt-3'>
+                    <Col lg={6} className='pr-3'>
+                      <label className='label-detail'>
                         {translate("Đơn vị")}
                       </label>
                       <Select
@@ -297,7 +262,7 @@ function PaymentRequestDetailView() {
                         isMaterial={true}
                       />
                     </Col>
-                    <Col lg={6} className="pr-3">
+                    <Col lg={6} className='pr-3'>
                       <InputNumber
                         title={"Số lượng"}
                         className={""}
@@ -306,7 +271,7 @@ function PaymentRequestDetailView() {
                         allowPositive={true}
                       />
                     </Col>
-                    <Col lg={6} className="pr-3">
+                    <Col lg={6} className='pr-3'>
                       <InputNumber
                         title={"Đơn giá"}
                         className={""}
@@ -315,7 +280,7 @@ function PaymentRequestDetailView() {
                         allowPositive={true}
                       />
                     </Col>
-                    <Col lg={6} className="pr-3">
+                    <Col lg={6} className='pr-3'>
                       <InputNumber
                         title={"Thuế"}
                         className={""}
@@ -325,9 +290,9 @@ function PaymentRequestDetailView() {
                       />
                     </Col>
                   </Row>
-                  <Row className="mt-3">
-                    <Col lg={18} className="pr-3">
-                      <label className="label-detail">
+                  <Row className='mt-3'>
+                    <Col lg={18} className='pr-3'>
+                      <label className='label-detail'>
                         {translate("Đơn vị")}
                       </label>
                       <Select
@@ -336,7 +301,7 @@ function PaymentRequestDetailView() {
                         isMaterial={true}
                       />
                     </Col>
-                    <Col lg={6} className="pr-3">
+                    <Col lg={6} className='pr-3'>
                       <InputNumber
                         title={"Tổng tiền"}
                         className={""}
@@ -347,32 +312,32 @@ function PaymentRequestDetailView() {
                     </Col>
                   </Row>
                 </div>
-                <Row className="mt-3">
+                <Row className='mt-3'>
                   <Col lg={12}>
-                    <div className="invoice__add-row d-flex align-items-center">
-                      <img src="/assets/svg/plus.svg" alt="" />
-                      <div className="invoice__add-row-text ml-2">
+                    <div className='invoice__add-row d-flex align-items-center'>
+                      <img src='/assets/svg/plus.svg' alt='' />
+                      <div className='invoice__add-row-text ml-2'>
                         Thêm dòng
                       </div>
                     </div>
                   </Col>
-                  <Col lg={6} className="mt-3">
-                    <div className="d-flex align-items-center">
-                      <Switch size="small" defaultChecked />
-                      <span className="ml-3">Chi hộ</span>
+                  <Col lg={6} className='mt-3'>
+                    <div className='d-flex align-items-center'>
+                      <Switch size='small' defaultChecked />
+                      <span className='ml-3'>Chi hộ</span>
                     </div>
                   </Col>
                   <Col lg={6}>
-                    <div className="page__detail-total">
-                      <div className="d-flex justify-content-between mb-4">
+                    <div className='page__detail-total'>
+                      <div className='d-flex justify-content-between mb-4'>
                         <div>Thành tiền</div>
                         <div>$456</div>
                       </div>
-                      <div className="d-flex justify-content-between mb-4">
+                      <div className='d-flex justify-content-between mb-4'>
                         <div>Thuế</div>
                         <div>$456</div>
                       </div>
-                      <div className="page__detail-text-total d-flex justify-content-between">
+                      <div className='page__detail-text-total d-flex justify-content-between'>
                         <div>Tổng tiền</div>
                         <div>$912</div>
                       </div>
@@ -382,36 +347,36 @@ function PaymentRequestDetailView() {
               </Card>
             </Col>
             <Col lg={6}>
-              <Card className="page__detail-card-right">
-                <div className="d-flex justify-content-between mb-3">
+              <Card className='page__detail-card-right'>
+                <div className='d-flex justify-content-between mb-3'>
                   <div>Thành tiền</div>
                   <div>{formatNumber(100000)}</div>
                 </div>
-                <div className="page__detail-text-total d-flex justify-content-between mb-3">
+                <div className='page__detail-text-total d-flex justify-content-between mb-3'>
                   <div>Tổng tiền</div>
                   <div>{formatNumber(0)}</div>
                 </div>
-                <div className="d-flex justify-content-between mb-3">
+                <div className='d-flex justify-content-between mb-3'>
                   <div>Đã tạm ứng</div>
                   <div>{formatNumber(0)}</div>
                 </div>
-                <div className="d-flex justify-content-between mb-3">
+                <div className='d-flex justify-content-between mb-3'>
                   <div>Hoàn ứng</div>
                   <div>{formatNumber(0)}</div>
                 </div>
-                <div className="d-flex justify-content-between mb-3">
+                <div className='d-flex justify-content-between mb-3'>
                   <div>Chi thêm</div>
                   <div>{formatNumber(0)}</div>
                 </div>
-                <div className="d-flex justify-content-between mb-3 ">
-                  <div className="invoice__delete">Nộp lại</div>
-                  <div className="invoice__delete">{formatNumber(0)}</div>
+                <div className='d-flex justify-content-between mb-3 '>
+                  <div className='invoice__delete'>Nộp lại</div>
+                  <div className='invoice__delete'>{formatNumber(0)}</div>
                 </div>
               </Card>
             </Col>
           </Row>
-          <Row className="mt-3 mb-5">
-            <button className="btn component__btn-primary pr-4 mb-5">
+          <Row className='mt-3 mb-5'>
+            <button className='btn component__btn-primary pr-4 mb-5'>
               {/* {translate('general.actions.search')} */}
               Thêm hóa đơn
             </button>

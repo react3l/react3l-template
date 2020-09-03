@@ -26,6 +26,7 @@ import PaymentRequestView, {
 } from "views/App/PaymentRequestView/PaymentRequestView";
 import PriceListMasterView from "views/App/PriceListView/PriceListMasterView/PriceListMasterView";
 import { PRICE_LIST_ROUTE_PREFIX } from "config/route-consts";
+import PriceListDetailView from "views/App/PriceListView/PriceListDetailView/PriceListDetailView";
 
 const PriceListView = React.lazy(() =>
   import("views/App/PriceListView/PriceListView"),
@@ -98,14 +99,10 @@ export const routes: RouteConfig[] = [
             component: PriceListMasterView,
             exact: true,
           },
-          // {
-          //   path: path.join(PROVINCE_ROUTE_PREFIX, nameof(GeneralActions.create)),
-          //   component: ProvinceDetailView,
-          // },
-          // {
-          //   path: path.join(PROVINCE_ROUTE_PREFIX, ":id"),
-          //   component: ProvinceDetailView,
-          // },
+          {
+            path: path.join(PRICE_LIST_ROUTE_PREFIX, ":id"),
+            component: PriceListDetailView,
+          },
         ],
       },
     ],
