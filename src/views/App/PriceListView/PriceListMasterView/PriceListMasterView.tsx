@@ -54,7 +54,7 @@ function PriceListMasterView() {
     total,
     loadingList,
     pagination,
-    handleChange,
+    handleTableChange,
     handleServerDelete,
     // handleServerBulkDelete,
     rowSelection,
@@ -238,7 +238,7 @@ function PriceListMasterView() {
             pagination={false}
             dataSource={list}
             loading={loadingList}
-            onChange={handleChange}
+            onChange={handleTableChange}
             rowSelection={rowSelection}
             title={() => (
               <>

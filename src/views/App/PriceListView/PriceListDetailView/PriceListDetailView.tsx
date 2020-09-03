@@ -1,15 +1,17 @@
-import React from "react";
-import { Col, Row, Switch, Tabs, Card } from "antd";
-import { useTranslation } from "react-i18next";
-import { priceListRepository } from "repositories/price-list-repository";
-import { PriceList } from "models/PriceList";
-import detailService from "services/pages/detail-service";
+import React, { useState } from "react";
+import { Card, Col, Row, Switch, Tabs } from "antd";
+import nameof from "ts-nameof.macro";
+import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import { OrganizationFilter } from "models/OrganizationFilter";
-import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
+import { PriceList } from "models/PriceList";
+import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
-import nameof from "ts-nameof.macro";
+import { useTranslation } from "react-i18next";
+import { priceListRepository } from "repositories/price-list-repository";
+import detailService from "services/pages/detail-service";
+import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/ContentTable";
 
 const { TabPane } = Tabs;
 
@@ -17,10 +19,25 @@ function PriceListDetailView() {
   const [translate] = useTranslation();
   const {
     model,
+    handleUpdateNewModel,
     isDetail,
     handleChangeSimpleField,
     handleChangeObjectField,
   } = detailService.useDetail<PriceList>(PriceList, priceListRepository.get);
+
+  const {
+    content: storeMappingContents,
+    setContent: setStoreMappingContents,
+  } = detailService.useContentList(
+    model,
+    handleUpdateNewModel,
+    nameof(model.priceListStoreMappings),
+  );
+
+  const [filter, setFilter] = useState<PriceListStoreMappingsFilter>(
+    new PriceListStoreMappingsFilter(),
+  );
+
   return (
     <div className='page page__detail'>
       {/* start detail header */}
@@ -110,6 +127,7 @@ function PriceListDetailView() {
                       />
                     </Col>
                     <Col lg={6}>
+                      {/*  */}
                       <label className='label-detail input-select__title'>
                         {translate("priceList.organzation")}
                       </label>
@@ -129,8 +147,42 @@ function PriceListDetailView() {
         </Row>
       </div>
       {/* end general information */}
+      {/* start dependent lists*/}
+      <div className='w-100 mt-3 page__detail-tabs'>
+        <Row className='d-flex'>
+          <Col lg={18}>
+            <Card className='mr-3'>
+              <Tabs defaultActiveKey='1'>
+                <TabPane
+                  tab={translate("priceList.priceListStoreMappings")}
+                  key='1'
+                >
+                  <Row>
+                    <PriceListStoreMappingsTable
+                      filter={filter}
+                      setFilter={(filter) => setFilter(filter)}
+                      content={storeMappingContents}
+                      setContent={setStoreMappingContents}
+                      columnData={priceListStoreMappingsColumnData}
+                    />
+                  </Row>
+                </TabPane>
+                <TabPane
+                  tab={translate("priceList.priceListItemMappings")}
+                  key='2'
+                >
+                  <Row></Row>
+                </TabPane>
+              </Tabs>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+      {/* end dependent lists */}
     </div>
   );
 }
+
+const priceListStoreMappingsColumnData = [];
 
 export default PriceListDetailView;

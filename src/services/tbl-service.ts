@@ -2,11 +2,13 @@ import { Modal } from "antd";
 import { PaginationProps } from "antd/lib/pagination";
 import { RowSelectionType, SortOrder } from "antd/lib/table/interface";
 import { DEFAULT_TAKE } from "react3l/config";
-import Model from "core/models/Model";
+import { Model } from "react3l/core";
 import listService from "services/list-service";
 import { useCallback, useMemo, useState, Dispatch } from "react";
 import { ModelFilter } from "react3l/core";
 import { Observable } from "rxjs";
+import { ColumnProps } from "antd/lib/table";
+import { TableColumn } from "core/models/TableColumn";
 
 type KeyType = string | number;
 
@@ -74,7 +76,7 @@ export class TableService {
     setFilter: (filter: TFilter) => void,
     pagination: PaginationProps,
   ) {
-    return useCallback(
+    const handleTableChange = useCallback(
       (...[newPagination, , sorter]) => {
         // check pagination change or not
         if (
@@ -102,6 +104,15 @@ export class TableService {
       },
       [filter, pagination, setFilter],
     );
+
+    const handlePagination = useCallback(
+      (skip: number, take: number) => {
+        setFilter({ ...filter, skip, take });
+      },
+      [filter, setFilter],
+    );
+
+    return { handleTableChange, handlePagination };
   }
   /**
    *
@@ -176,6 +187,35 @@ export class TableService {
 
     return { handleLocalDelete, handleLocalBulkDelete };
   }
+
+  /**
+   *
+   * render columns of table
+   * @param: keyArray: string[]
+   * @return: ColumnProps<TContent>[]
+   *
+   * */
+  useRenderColumns<T extends Model>(keyArray: any[][]): ColumnProps<T>[] {
+    return useMemo(() => {
+      const columns = [];
+      keyArray.length ??
+        keyArray.forEach((arr: any[]) => {
+          const column = new TableColumn(
+            arr[0],
+            arr[1],
+            arr[2],
+            arr[3],
+            arr[4],
+            arr[5],
+            arr[6],
+            arr[7],
+          );
+          columns.push(column);
+        });
+      return columns;
+    }, [keyArray]);
+  }
+
   /**
    *
    * expose data and event handler for master table service
@@ -238,11 +278,9 @@ export class TableService {
     );
 
     // handleChange page or sorter
-    const handleChange = this.useTableChange<TFilter>(
-      filter,
-      setFilter,
-      pagination,
-    );
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination);
 
     // add confirmation
     const handleServerBulkDelete = useCallback(() => {
@@ -261,7 +299,8 @@ export class TableService {
       total,
       loadingList,
       pagination,
-      handleChange,
+      handleTableChange,
+      handlePagination,
       handleServerDelete,
       handleServerBulkDelete,
       rowSelection,
@@ -303,11 +342,9 @@ export class TableService {
     );
 
     // handleChange page or sorter
-    const handleChange = this.useTableChange<TFilter>(
-      filter,
-      setFilter,
-      pagination,
-    );
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination);
 
     const { handleLocalDelete, handleLocalBulkDelete } = this.useDelete<
       T,
@@ -326,7 +363,8 @@ export class TableService {
       total,
       loadingList,
       pagination,
-      handleChange,
+      handleTableChange,
+      handlePagination,
       handleLocalDelete,
       handleLocalBulkDelete,
       rowSelection,
