@@ -201,7 +201,7 @@ function PaymentMasterView() {
         },
       },
     ],
-    [list, filter, translate, handleChangeFilter],
+    [list, filter, translate],
   );
 
   const handleToggleSearch = React.useCallback(() => {

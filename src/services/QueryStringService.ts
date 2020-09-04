@@ -18,6 +18,7 @@ import { NumberFilter } from "react3l-advanced-filters/NumberFilter";
 import { DateFilter } from "react3l-advanced-filters/DateFilter";
 import { IdFilter } from "react3l-advanced-filters/IdFilter";
 import { useCallback } from "reactn";
+import nameof from 'ts-nameof.macro';
 
 const qs = require("qs");
 
@@ -51,14 +52,35 @@ export const queryStringService = {
 
     const buildFilter = React.useMemo(() => {
       const modelFilter = new ClassFilter();
-      modelFilter.orderBy = null;
-      modelFilter.orderType = null;
 
       const queryFilter: TFilter = qs.parse(
         history.location.search.substring(1),
       );
 
       if (!commonWebService.isEmpty(queryFilter)) {
+        Object.entries(queryFilter).forEach(([key, value]: [keyof TFilter, any]) => {
+          switch(key) {
+            case nameof(ModelFilter.prototype.orderBy):
+              modelFilter.orderBy = value;
+              break;
+            case nameof(ModelFilter.prototype.orderType):
+              modelFilter.orderType = value;
+              break;
+            case nameof(ModelFilter.prototype.skip):
+              modelFilter.skip = Number(value);
+              break;
+            case nameof(ModelFilter.prototype.take):
+              modelFilter.take = Number(value);
+              break;
+            default:
+              for (let prop in value) {
+                if (isStringNumber(value[prop]))
+                  value[prop] = Number(value[prop]);
+              }
+              modelFilter[key] = {...value};
+              break;
+          }
+        });
         for (let prop in queryFilter) {
           if (modelFilter.hasOwnProperty(prop)) {
             if (
@@ -175,6 +197,7 @@ export const queryStringService = {
         firstUpdate.current = false;
         return;
       }
+
       const queryFilter = buildQuery(modelFilter);
       history.push({
         pathname: history.location.pathname,

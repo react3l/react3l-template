@@ -27,7 +27,6 @@
 body {
   background: #f2f2f2;
   font-size: 14px;
-  width: min-content;
 
   .input-icon {
     @include input-icon;
@@ -453,6 +452,11 @@ body {
 @media screen and (max-width: 1440px) {
   .page {
     &.page__master {
+      .page__master-table {
+        .ant-card {
+          max-width: 1015px !important;
+        }
+      }
     }
   }
 }
