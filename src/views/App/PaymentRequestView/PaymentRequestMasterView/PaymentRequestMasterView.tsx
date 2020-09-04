@@ -97,14 +97,6 @@ function PaymentMasterView() {
         title: () => (
           <div>
             <div>{translate("paymentRequest.code")}</div>
-
-            <AdvanceIdFilter
-              classFilter={DemoListFilter}
-              value={filter["proviceId"]["equal"]}
-              onChange={handleChangeFilter("proviceId", "equal")}
-              getList={demoSearchFunc}
-              placeHolder={"Tất cả"}
-            />
           </div>
         ),
         key: nameof(list[0].code),
