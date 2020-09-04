@@ -12,6 +12,10 @@ import { useTranslation } from "react-i18next";
 import listService from "services/list-service";
 import tableService, { getAntOrderType } from "services/tbl-service";
 import nameof from "ts-nameof.macro";
+import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
+import { StoreTypeFilter } from "models/StoreTypeFilter";
+import { priceListRepository } from "repositories/price-list-repository";
+import { StoreType } from "models/StoreType";
 
 export interface ContentTableProps<TContent extends Model> {
   content: TContent[];
@@ -110,6 +114,41 @@ export default function PriceListStoreMappingTable(
             ellipsis: true,
             render(storeCode: string) {
               return storeCode;
+            },
+          },
+        ],
+      },
+      {
+        title: () => (
+          <>
+            <div>{translate("priceLists.store.storeType")}</div>
+          </>
+        ),
+        key: nameof(content[0].storeType), // must be the same with getAntOrderType param[1]
+        dataIndex: nameof(content[0].storeTypeId),
+        sorter: true,
+        sortOrder: getAntOrderType<
+          PriceListStoreMappings,
+          PriceListStoreMappingsFilter
+        >(filter, nameof(content[0].storeTypeId)), // and the same here
+        children: [
+          {
+            title: () => (
+              <>
+                <AdvanceIdFilter
+                  value={filter["storeTypeId"]["equal"]}
+                  onChange={handleFilter("storeTypeId", "equal")}
+                  classFilter={StoreTypeFilter}
+                  getList={priceListRepository.filterListStoreType}
+                  placeHolder={translate("general.filter.idFilter")} // -> tat ca
+                />
+              </>
+            ),
+            key: "storeType",
+            dataIndex: nameof(content[0].storeType),
+            ellipsis: true,
+            render(storeType: StoreType) {
+              return storeType?.name;
             },
           },
         ],
