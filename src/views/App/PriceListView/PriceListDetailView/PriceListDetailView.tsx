@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import nameof from "ts-nameof.macro";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
 import InputText from "components/Utility/Input/InputText/InputText";
+import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import Select from "components/Utility/Select/Select";
 import { OrganizationFilter } from "models/OrganizationFilter";
 import { PriceList } from "models/PriceList";
@@ -80,16 +81,16 @@ function PriceListDetailView() {
                       />
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <Select
-                        title={translate("priceList.organzation")}
-                        classFilter={OrganizationFilter}
-                        placeHolder={translate(
-                          "priceList.placeholder.organzation",
-                        )}
-                        onChange={handleChangeObjectField(
-                          nameof(model.organization),
-                        )}
+                      <TreeSelect
                         isMaterial={true}
+                        placeHolder={"Select Organization"}
+                        selectable={true}
+                        classFilter={OrganizationFilter}
+                        // onChange={handleChangeItem}
+                        checkStrictly={true}
+                        // item={item}
+                        // listItem={listItem}
+                        getTreeData={priceListRepository.singleListOrganization}
                       />
                     </Col>
                     <Col lg={6}>

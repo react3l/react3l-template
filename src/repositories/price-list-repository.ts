@@ -14,6 +14,9 @@ import { StoreTypeFilter } from "models/StoreTypeFilter";
 import { StoreType } from "models/StoreType";
 import { StoreFilter } from "models/StoreFilter";
 import { Store } from "antd/lib/form/interface";
+import { OrganizationFilter } from "models/OrganizationFilter";
+import { Organization } from "models/Organization";
+import { commonWebService } from "services/CommonWebService";
 
 export class PriceListRepository extends Repository {
   constructor() {
@@ -86,6 +89,21 @@ export class PriceListRepository extends Repository {
         filter,
       )
       .pipe(map((response: AxiosResponse<PriceListStatus[]>) => response.data));
+  };
+
+  singleListOrganization = (
+    filter: OrganizationFilter,
+  ): Observable<Organization[]> => {
+    return this.httpObservable
+      .post<OrganizationFilter[]>(
+        kebabCase(nameof(this.singleListOrganization)),
+        filter,
+      )
+      .pipe(
+        map((response: AxiosResponse<OrganizationFilter[]>) =>
+          commonWebService.buildTree(response.data),
+        ),
+      );
   };
 }
 
