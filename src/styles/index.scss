@@ -32,7 +32,7 @@ body {
   }
 
   .component__title {
-    @include input-title
+    @include input-title;
   }
 
   .component__text-area {
@@ -229,6 +229,7 @@ body {
       }
       .ant-card {
         height: 100%;
+        margin-right: -3px;
       }
       .label-detail {
         width: 100%;

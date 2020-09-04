@@ -263,7 +263,7 @@ function PaymentMasterView() {
                   </button>
                   <div className='d-flex justify-content-between'>
                     <button
-                      className='btn btn-info'
+                      className='btn component__btn-outline-primary'
                       onClick={handleResetFilter}
                     >
                       ResetFilter
