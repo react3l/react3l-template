@@ -94,7 +94,19 @@ function PaymentMasterView() {
         },
       },
       {
-        title: translate("paymentRequest.code"),
+        title: () => (
+          <div>
+            <div>{translate("paymentRequest.code")}</div>
+
+            <AdvanceIdFilter
+              classFilter={DemoListFilter}
+              value={filter["proviceId"]["equal"]}
+              onChange={handleChangeFilter("proviceId", "equal")}
+              getList={demoSearchFunc}
+              placeHolder={"Tất cả"}
+            />
+          </div>
+        ),
         key: nameof(list[0].code),
         dataIndex: nameof(list[0].code),
         sorter: true,
@@ -172,6 +184,8 @@ function PaymentMasterView() {
         key: nameof("general.actions.action"),
         dataIndex: nameof(list[0].id),
         align: "center",
+        fixed: 'right',
+        width: 200,
         render() {
           return (
             <div className='d-flex justify-content-center button-action-table'>
@@ -195,7 +209,7 @@ function PaymentMasterView() {
         },
       },
     ],
-    [list, filter, translate],
+    [list, filter, translate, handleChangeFilter],
   );
 
   const handleToggleSearch = React.useCallback(() => {
@@ -344,7 +358,7 @@ function PaymentMasterView() {
         <div className='page__master-table'>
           <Card>
             <Table
-              tableLayout='fixed'
+              // tableLayout='fixed'
               rowKey={nameof(list[0].id)}
               columns={columns}
               dataSource={list}
@@ -393,6 +407,7 @@ function PaymentMasterView() {
                   </div>
                 </>
               )}
+              scroll={{ x: 1900 }}
             />
           </Card>
         </div>
