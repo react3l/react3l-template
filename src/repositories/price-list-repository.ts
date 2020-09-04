@@ -10,6 +10,8 @@ import { AxiosResponse } from "axios";
 import nameof from "ts-nameof.macro";
 import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { PriceListStatus } from "models/PriceList/PriceListStatus";
+import { StoreTypeFilter } from "models/StoreTypeFilter";
+import { StoreType } from "models/StoreType";
 
 export class PriceListRepository extends Repository {
   constructor() {
@@ -53,6 +55,12 @@ export class PriceListRepository extends Repository {
     return this.httpObservable
       .post<PriceListStatus[]>(kebabCase(nameof(this.filterListStatus)), filter)
       .pipe(map((response: AxiosResponse<PriceListStatus[]>) => response.data));
+  };
+
+  filterListStoreType = (filter: StoreTypeFilter): Observable<StoreType[]> => {
+    return this.httpObservable
+      .post<StoreType[]>(kebabCase(nameof(this.filterListStoreType)), filter)
+      .pipe(map((response: AxiosResponse<StoreType[]>) => response.data));
   };
 
   filterListSalesOrderType = (
