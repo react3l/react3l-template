@@ -1,17 +1,18 @@
-import React, { useState } from "react";
 import { Card, Col, Row, Switch, Tabs } from "antd";
-import nameof from "ts-nameof.macro";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import { OrganizationFilter } from "models/OrganizationFilter";
 import { PriceList } from "models/PriceList";
-import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import detailService from "services/pages/detail-service";
-import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/ContentTable";
+import nameof from "ts-nameof.macro";
+import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable";
+// import { ColumnData } from "services/component-factory/table-column-service";
+// import { advanceFilterFactory } from "services/component-factory/advance-filter-factory-service";
 
 const { TabPane } = Tabs;
 
@@ -32,10 +33,6 @@ function PriceListDetailView() {
     model,
     handleUpdateNewModel,
     nameof(model.priceListStoreMappings),
-  );
-
-  const [filter, setFilter] = useState<PriceListStoreMappingsFilter>(
-    new PriceListStoreMappingsFilter(),
   );
 
   return (
@@ -159,11 +156,8 @@ function PriceListDetailView() {
                 >
                   <Row>
                     <PriceListStoreMappingsTable
-                      filter={filter}
-                      setFilter={(filter) => setFilter(filter)}
                       content={storeMappingContents}
                       setContent={setStoreMappingContents}
-                      columnData={priceListStoreMappingsColumnData}
                     />
                   </Row>
                 </TabPane>
@@ -183,6 +177,33 @@ function PriceListDetailView() {
   );
 }
 
-const priceListStoreMappingsColumnData = [];
-
 export default PriceListDetailView;
+
+// const priceListStoreMappingsColumnData: ColumnData[] = useMemo(
+//   () => [
+//     {
+//       title: translate("general.columns.index"),
+//       children: [
+//         {
+//           title: "",
+//           key: "index",
+//         },
+//       ],
+//     },
+//     {
+//       title: translate("priceLists.store.code"),
+//       children: [
+//         {
+//           renderTitle: advanceFilterFactory.renderStringFilter(
+//             filter["storeCode"]["contain"],
+//             handleFilter("storeCode", "contain"),
+//             translate("priceLists.store.code"),
+//           ),
+//           key: "name",
+//           dataIndex: "store",
+//         },
+//       ],
+//     },
+//   ],
+//   [filter, handleFilter, translate],
+// );

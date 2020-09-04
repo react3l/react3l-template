@@ -18,7 +18,7 @@ import {
 } from "react3l-advanced-filters";
 import { ModelFilter } from "react3l/core";
 import { forkJoin, Observable, of } from "rxjs";
-import { finalize, map, skip, take, tap } from "rxjs/operators";
+import { finalize, map, tap, take } from "rxjs/operators";
 import nameof from "ts-nameof.macro";
 // import subcriptionCancellation from "./SubscriptionService";
 import { commonService } from "react3l/services/common-service";
@@ -48,6 +48,7 @@ export interface ActionOfList<T extends Model> {
 export const SET_LIST: string = "FETCH_LIST";
 export const FETCH_INIT: string = "FETCH_INIT";
 export const FETCH_END: string = "FETCH_END";
+export const SEARCH_INIT: string = "SEARCH_INIT";
 
 function listReducer<T>(
   state: StateOfList<T>,
@@ -74,6 +75,12 @@ function listReducer<T>(
         ...state,
         loadingList: false,
         isLoadList: false,
+      };
+    }
+    case SEARCH_INIT: {
+      return {
+        ...state,
+        isLoadList: true,
       };
     }
   }
@@ -149,6 +156,7 @@ class ListService {
     list: T[];
     total: number;
     loadingList: boolean;
+    handleSearch: () => void;
     handleDelete: (item: T) => void;
     handleBulkDelete: (items: KeyType[]) => void;
   } {
@@ -277,12 +285,20 @@ class ListService {
         // trigger loadList only isLoadList == true
         handleLoadList();
       }
-      //   return () => {
-      //     cancelSubcription();
-      //   };
     }, [handleLoadList, shouldLoad]);
 
-    return { list, total, loadingList, handleDelete, handleBulkDelete };
+    const handleSearch = useCallback(() => {
+      dispatch({ type: SEARCH_INIT });
+    }, []);
+
+    return {
+      list,
+      total,
+      loadingList,
+      handleSearch,
+      handleDelete,
+      handleBulkDelete,
+    };
   }
 
   /**
@@ -300,7 +316,7 @@ class ListService {
     //  auto complete subscription until isCancelled == true (unMounted component)
     const [subscription] = commonService.useSubscription();
     // const { isCancelled, cancelSubcription } = subcriptionCancellation();
-    const [{ list, total, loadingList }, dispatch] = useReducer<
+    const [{ list, total, loadingList, isLoadList }, dispatch] = useReducer<
       Reducer<StateOfList<T>, ActionOfList<T>>
     >(listReducer, {
       list: source,
@@ -314,9 +330,16 @@ class ListService {
     // sortData by sortType and sortOrder
     const sortData: (item: T[]) => T[] = useCallback(
       (list: T[]) => {
-        return _.orderBy(list, modelFilter.orderBy, modelFilter.orderType);
+        return _.chain(list)
+          .orderBy(
+            modelFilter.orderBy,
+            modelFilter.orderType ? modelFilter.orderType : "desc",
+          )
+          .drop(modelFilter?.skip ? modelFilter.skip : 0)
+          .take(modelFilter?.take ? modelFilter.take : DEFAULT_TAKE) //take
+          .value();
       },
-      [modelFilter.orderBy, modelFilter.orderType],
+      [modelFilter],
     );
 
     // filter data based on filter properties and sort data
@@ -327,31 +350,32 @@ class ListService {
       [modelFilter, sortData],
     );
 
+    const handleSearch = useCallback(() => {
+      dispatch({ type: SEARCH_INIT });
+    }, []);
+
     useEffect(() => {
-      subscription.add(
-        of(source)
-          .pipe(
-            tap(handleFetchInit),
-            map(doFilter), // sort and filtering data
-            // takeUntil(isCancelled),
-            skip(modelFilter.skip ? modelFilter.skip : 0), // skip
-            take(modelFilter.take ? modelFilter.take : DEFAULT_TAKE), // take
-            finalize(handleFetchEnd),
-          )
-          .subscribe((results: T[]) => {
-            dispatch({
-              type: SET_LIST,
-              payload: {
-                list: results,
-                total: results?.length ? results?.length : 0,
-              },
-            });
-          }),
-      );
-      //   return () => {
-      //     cancelSubcription();
-      //   };
+      if (isLoadList && source?.length > 0) {
+        subscription.add(
+          of(source)
+            .pipe(
+              tap(handleFetchInit),
+              map(doFilter), // sort and filtering data
+              finalize(handleFetchEnd),
+            )
+            .subscribe((results: T[]) => {
+              dispatch({
+                type: SET_LIST,
+                payload: {
+                  list: results,
+                  total: source?.length ? source?.length : 0,
+                },
+              });
+            }),
+        );
+      }
     }, [
+      isLoadList,
       doFilter,
       handleFetchEnd,
       handleFetchInit,
@@ -362,14 +386,14 @@ class ListService {
       subscription,
     ]);
 
-    return { list, total, loadingList };
+    return { list, total, loadingList, handleSearch };
   }
 }
 
 function filterList<T extends Model, TFilter extends ModelFilter>(
   list: T[],
   search: TFilter,
-) {
+): T[] {
   if (typeof search === "object" && search !== null) {
     Object.entries<
       StringFilter | DateFilter | NumberFilter | IdFilter | GuidFilter

@@ -157,9 +157,9 @@ function PriceListMasterView() {
                   {translate("general.priceList.code")}
                 </label>
                 <AdvanceStringFilter
-                  value={filter["code"]["startWith"]}
-                  onChange={handleChangeFilter("code", "startWith")}
-                  placeHolder={translate("general.filter.idFilter")} // -> tat ca
+                  value={filter["code"]["contain"]}
+                  onChange={handleChangeFilter("code", "contain")}
+                  placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
               </div>
             </Col>
@@ -169,9 +169,9 @@ function PriceListMasterView() {
                   {translate("general.priceList.name")}
                 </label>
                 <AdvanceStringFilter
-                  value={filter["name"]["startWith"]}
-                  onChange={handleChangeFilter("name", "startWith")}
-                  placeHolder={translate("general.filter.idFilter")} // -> tat ca
+                  value={filter["name"]["contain"]}
+                  onChange={handleChangeFilter("name", "contain")}
+                  placeHolder={translate("priceList.filter.name")} // -> tat ca
                 />
               </div>
             </Col>
@@ -207,9 +207,11 @@ function PriceListMasterView() {
                     {translate("priceList.status")}
                   </label>
                   <AdvanceIdFilter
+                    value={filter["statusId"]["equal"]}
+                    onChange={handleChangeFilter("statusId", "equal")}
                     classFilter={PriceListStatusFilter}
                     getList={priceListRepository.filterListStatus}
-                    placeHolder={"Tất cả"}
+                    placeHolder={translate("general.filter.idFilter")}
                   />
                 </Col>
                 <Col lg={4} className='pr-4'>
@@ -217,9 +219,11 @@ function PriceListMasterView() {
                     {translate("priceList.saleOrderType")}
                   </label>
                   <AdvanceIdFilter
+                    value={filter["saleOrderTypeId"]["equal"]}
+                    onChange={handleChangeFilter("saleOrderTypeId", "equal")}
                     classFilter={SalesOrderTypeFilter}
                     getList={priceListRepository.filterListSalesOrderType}
-                    placeHolder={"Tất cả"}
+                    placeHolder={translate("general.filter.idFilter")}
                   />
                 </Col>
               </Row>
@@ -245,27 +249,29 @@ function PriceListMasterView() {
                 <div className='d-flex justify-content-between'>
                   <div className='flex-shrink-1 d-flex align-items-center'>
                     <div className='table-title ml-2'>
-                      {translate("province.table.title")}
+                      {translate("priceLists.table.title")}
                     </div>
                   </div>
 
                   <div className='flex-shrink-1 d-flex align-items-center'>
-                    <Tooltip title={translate("Xóa tất cả")}>
+                    <Tooltip title={translate("general.actions.bulkDelete")}>
                       <button className='btn component__btn-delete'>
                         <i className='tio-delete' />
                       </button>
                     </Tooltip>
-                    <Tooltip title={translate("Nhập excel")}>
+                    <Tooltip title={translate("general.actions.importExcel")}>
                       <button className='btn gradient-btn-icon'>
                         <i className='tio-file_add_outlined ' />
                       </button>
                     </Tooltip>
-                    <Tooltip title={translate("Xuất excel")}>
+                    <Tooltip title={translate("general.actions.exportExcel")}>
                       <button className='btn gradient-btn-icon'>
                         <i className='tio-file_outlined' />
                       </button>
                     </Tooltip>
-                    <Tooltip title={translate("Tải file mẫu")}>
+                    <Tooltip
+                      title={translate("general.actions.downloadTemplate")}
+                    >
                       <button className='btn gradient-btn-icon'>
                         <i className='tio-download_to' />
                       </button>

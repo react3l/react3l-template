@@ -7,8 +7,6 @@ import listService from "services/list-service";
 import { useCallback, useMemo, useState, Dispatch } from "react";
 import { ModelFilter } from "react3l/core";
 import { Observable } from "rxjs";
-import { ColumnProps } from "antd/lib/table";
-import { TableColumn } from "core/models/TableColumn";
 
 type KeyType = string | number;
 
@@ -75,6 +73,7 @@ export class TableService {
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
     pagination: PaginationProps,
+    handleSearch?: () => void,
   ) {
     const handleTableChange = useCallback(
       (...[newPagination, , sorter]) => {
@@ -93,23 +92,29 @@ export class TableService {
         // check sortOrder and sortDirection
         if (
           sorter.field !== filter.orderBy ||
-          sorter.order !== this.getAntOrderType(filter, sorter.field)
+          sorter.order !== getAntOrderType(filter, sorter.field)
         ) {
           setFilter({
             ...filter,
             orderBy: sorter.field,
-            orderType: this.getOrderType(sorter.order),
+            orderType: getOrderType(sorter.order),
           });
         }
+        if (typeof handleSearch === "function") {
+          handleSearch();
+        }
       },
-      [filter, pagination, setFilter],
+      [filter, pagination, setFilter, handleSearch],
     );
 
     const handlePagination = useCallback(
       (skip: number, take: number) => {
         setFilter({ ...filter, skip, take });
+        if (typeof handleSearch === "function") {
+          handleSearch();
+        }
       },
-      [filter, setFilter],
+      [filter, setFilter, handleSearch],
     );
 
     return { handleTableChange, handlePagination };
@@ -128,6 +133,7 @@ export class TableService {
     setSelectedRowKeys: Dispatch<React.SetStateAction<KeyType[]>>,
     source?: T[],
     setSource?: (source: T[]) => void,
+    handleSearch?: () => void,
   ) {
     // handleDelete, filter one item by its key and update source
     const handleLocalDelete = useCallback(
@@ -141,6 +147,9 @@ export class TableService {
             (selectedRowKeys as string[]).filter((item) => item !== key), // filter selectedRowKeys
           );
           setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE });
+          if (typeof handleSearch === "function") {
+            handleSearch();
+          }
           return;
         }
       },
@@ -151,6 +160,7 @@ export class TableService {
         selectedRowKeys,
         setFilter,
         filter,
+        handleSearch,
       ],
     );
 
@@ -172,6 +182,9 @@ export class TableService {
             }
             setSelectedRowKeys([]); // empty selectedRowKeys for disabling button
             setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE });
+            if (typeof handleSearch === "function") {
+              handleSearch();
+            }
             return;
           },
         });
@@ -183,37 +196,10 @@ export class TableService {
       setSource,
       setSelectedRowKeys,
       selectedRowKeys,
+      handleSearch,
     ]);
 
     return { handleLocalDelete, handleLocalBulkDelete };
-  }
-
-  /**
-   *
-   * render columns of table
-   * @param: keyArray: string[]
-   * @return: ColumnProps<TContent>[]
-   *
-   * */
-  useRenderColumns<T extends Model>(keyArray: any[][]): ColumnProps<T>[] {
-    return useMemo(() => {
-      const columns = [];
-      keyArray.length ??
-        keyArray.forEach((arr: any[]) => {
-          const column = new TableColumn(
-            arr[0],
-            arr[1],
-            arr[2],
-            arr[3],
-            arr[4],
-            arr[5],
-            arr[6],
-            arr[7],
-          );
-          columns.push(column);
-        });
-      return columns;
-    }, [keyArray]);
   }
 
   /**
@@ -243,6 +229,7 @@ export class TableService {
     checkBoxType?: RowSelectionType,
     isLoadControl?: boolean, // optional control for modal preLoading
     derivedRowKeys?: KeyType[],
+    handleSearch?: () => void,
   ) {
     // selectedRowKeys
     const {
@@ -280,7 +267,7 @@ export class TableService {
     // handleChange page or sorter
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
-    >(filter, setFilter, pagination);
+    >(filter, setFilter, pagination, handleSearch);
 
     // add confirmation
     const handleServerBulkDelete = useCallback(() => {
@@ -316,18 +303,15 @@ export class TableService {
    *
    * */
   useLocalTable<T extends Model, TFilter extends ModelFilter>(
+    list: T[],
+    total: number,
+    loadingList: boolean,
+    handleSearch: () => void,
     filter: TFilter,
-    // dispatchFilter: Dispatch<AdvanceFilterAction<TFilter, TFilter>>, // from TFilter to TFilter
     setFilter: (filter: TFilter) => void,
     source: T[],
     setSource: (source: T[]) => void,
   ) {
-    // from filter and source we calculate dataSource, total and loadingList
-    const { list, total, loadingList } = listService.useLocalList(
-      filter,
-      source,
-    );
-
     // selectedRowKeys
     const {
       rowSelection,
@@ -344,7 +328,7 @@ export class TableService {
     // handleChange page or sorter
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
-    >(filter, setFilter, pagination);
+    >(filter, setFilter, pagination, handleSearch);
 
     const { handleLocalDelete, handleLocalBulkDelete } = this.useDelete<
       T,
@@ -356,12 +340,10 @@ export class TableService {
       setSelectedRowKeys,
       source,
       setSource,
+      handleSearch,
     );
 
     return {
-      list,
-      total,
-      loadingList,
       pagination,
       handleTableChange,
       handlePagination,
@@ -370,37 +352,37 @@ export class TableService {
       rowSelection,
     };
   }
+}
 
-  getAntOrderType<T extends Model, TFilter extends ModelFilter>(
-    tFilter: TFilter,
-    columnName: keyof T,
-  ): SortOrder {
-    if (tFilter.orderBy === columnName) {
-      switch (tFilter.orderType) {
-        case "asc":
-          return "ascend";
+export function getAntOrderType<T extends Model, TFilter extends ModelFilter>(
+  tFilter: TFilter,
+  columnName: keyof T,
+): SortOrder {
+  if (tFilter.orderBy === columnName) {
+    switch (tFilter.orderType) {
+      case "asc":
+        return "ascend";
 
-        case "desc":
-          return "descend";
-
-        default:
-          return null;
-      }
-    }
-    return null;
-  }
-
-  getOrderType(sortOrder?: SortOrder) {
-    switch (sortOrder) {
-      case "ascend":
-        return "asc";
-
-      case "descend":
-        return "desc";
+      case "desc":
+        return "descend";
 
       default:
         return null;
     }
+  }
+  return null;
+}
+
+export function getOrderType(sortOrder?: SortOrder) {
+  switch (sortOrder) {
+    case "ascend":
+      return "asc";
+
+    case "descend":
+      return "desc";
+
+    default:
+      return null;
   }
 }
 
