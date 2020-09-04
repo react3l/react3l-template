@@ -146,7 +146,6 @@ export default function PriceListStoreMappingTable(
             ),
             key: "storeType",
             dataIndex: nameof(content[0].storeType),
-            ellipsis: true,
             render(storeType: StoreType) {
               return storeType?.name;
             },

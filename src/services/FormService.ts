@@ -156,11 +156,8 @@ export const formService = {
 
   useContentField<T extends Model, TContent extends Model>(
     ContentClass: new () => TContent,
-    model: T,
-    field: keyof T,
-    handleChangeSimpleField: (
-      fieldName: keyof T,
-    ) => (fieldValue: T[keyof T]) => void,
+    contentList: TContent[],
+    setContentList: (t: TContent[]) => void,
   ): [
     TContent[],
     (
@@ -171,13 +168,9 @@ export const formService = {
     () => void,
     (index: number) => () => void,
   ] {
-    const contentList: TContent[] = React.useMemo(() => {
-      return model[field] ?? [];
-    }, [field, model]);
-
     const handleChangeContentList: (
       contentList: TContent[],
-    ) => void = React.useCallback(handleChangeSimpleField(field), []);
+    ) => void = React.useCallback(setContentList, []);
 
     const handleChangeContent = React.useCallback(
       (index: number) => (content: TContent) => {

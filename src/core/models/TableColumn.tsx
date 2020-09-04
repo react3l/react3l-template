@@ -1,11 +1,11 @@
-import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
+import { tableColumnFactory } from "services/component-factory/table-column-service";
 
 export class TableColumn {
-  title: string | JSX.Element;
+  title: () => JSX.Element | JSX.Element;
   key: string;
   dataIndex: string;
-  render: (value: string | number) => JSX.Element = renderSimpleValue;
+  render: (value: string | number | object) => JSX.Element;
   sorter?: boolean = false;
   sortOrder?: SortOrder;
   ellipsis?: boolean = false;
@@ -13,59 +13,24 @@ export class TableColumn {
   children?: TableColumn[] = null;
 
   constructor(
-    title?: string | JSX.Element,
+    title?: () => JSX.Element | JSX.Element,
     key?: string,
     dataIndex?: string,
-    render?: (value: string | number | Object) => JSX.Element,
+    render?: (value: string | number | object) => JSX.Element,
     sorter?: boolean,
+    sortOrder?: "descend" | "ascend",
     ellipsis?: boolean,
     width?: number,
     children?: any[],
   ) {
-    this.title = title || "";
+    this.title = title;
     this.key = key;
     this.dataIndex = dataIndex;
-    this.render = render || renderSimpleValue;
+    this.render = render || tableColumnFactory.renderSimpleValue;
     this.sorter = sorter || false;
+    this.sortOrder = sortOrder || "ascend";
     this.ellipsis = ellipsis || false;
     this.width = width ? width : 120;
     this.children = children;
   }
-
-  // support two layers
-  nestedRender = (column: TableColumn) => {
-    if (column.hasOwnProperty("children")) {
-      const newChildren = [];
-      column["children"].forEach((child) => {
-        const item = {
-          title: child[0],
-          key: child[1],
-          dataIndex: child[2],
-          render: child[3],
-        };
-        newChildren.push(item);
-      });
-      return {
-        ...column,
-        children: newChildren,
-      };
-    }
-    return column;
-  };
 }
-
-const renderSimpleValue = (value: string | number | object) => {
-  if (typeof value === "string") {
-    return <div className='text-left'>{value}</div>;
-  }
-  if (typeof value === "number") {
-    return <div className='text-right'>{value}</div>;
-  }
-  if (typeof value === "object") {
-    if (value.hasOwnProperty("name")) {
-      return <div className='text-left'>{value["name"]}</div>;
-    }
-    return <div className='text-left'>{value["displayName"]}</div>;
-  }
-  return <>value</>;
-};

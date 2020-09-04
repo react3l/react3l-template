@@ -7,6 +7,11 @@ import { useTranslation } from "react-i18next";
 import { ModelFilter } from "react3l/core";
 import tableService from "services/tbl-service";
 import nameof from "ts-nameof.macro";
+import {
+  tableColumnFactory,
+  ColumnData,
+} from "services/component-factory/table-column-service";
+import listService from "services/list-service";
 
 export interface ContentTableProps<
   TContent extends Model,
@@ -16,7 +21,7 @@ export interface ContentTableProps<
   setFilter: (filter: TContentFilter) => void;
   content: TContent[];
   setContent: (content: TContent[]) => void;
-  columnData: any[][];
+  columnData: ColumnData[];
 }
 
 export default function ContentTable<
@@ -27,23 +32,34 @@ export default function ContentTable<
 
   const { filter, setFilter, content, setContent, columnData } = props;
 
+  const { list, total, loadingList, handleSearch } = listService.useLocalList(
+    filter,
+    content,
+  );
+
   const {
-    list,
-    total,
-    loadingList,
     handleTableChange,
     handlePagination,
     rowSelection,
-  } = tableService.useLocalTable(filter, setFilter, content, setContent);
+  } = tableService.useLocalTable(
+    list,
+    total,
+    loadingList,
+    handleSearch,
+    filter,
+    setFilter,
+    content,
+    setContent,
+  );
 
-  const columns = tableService.useRenderColumns(columnData);
+  const columns = tableColumnFactory.renderTableColumn(columnData);
 
   return (
     <>
       <Table
         tableLayout='fixed'
         bordered={true}
-        rowKey={nameof(list[0].id)}
+        rowKey={nameof(list[0].key)}
         columns={columns}
         pagination={false}
         dataSource={list}
@@ -53,29 +69,38 @@ export default function ContentTable<
         title={() => (
           <>
             <div className='d-flex justify-content-between'>
-              <div className='flex-shrink-1 d-flex align-items-center'>
+              <div
+                className='flex-shrink-1 d-flex align-items-center'
+                key='title'
+              >
                 <div className='table-title ml-2'>
                   {translate("province.table.title")}
                 </div>
               </div>
 
-              <div className='flex-shrink-1 d-flex align-items-center'>
-                <Tooltip title={translate("Xóa tất cả")}>
+              <div
+                className='flex-shrink-1 d-flex align-items-center'
+                key='actions'
+              >
+                <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
                   <button className='btn component__btn-delete'>
                     <i className='tio-delete' />
                   </button>
                 </Tooltip>
-                <Tooltip title={translate("Nhập excel")}>
+                <Tooltip title={translate("Nhập excel")} key='importExcel'>
                   <button className='btn gradient-btn-icon'>
                     <i className='tio-file_add_outlined ' />
                   </button>
                 </Tooltip>
-                <Tooltip title={translate("Xuất excel")}>
+                <Tooltip title={translate("Xuất excel")} key='exportExcel'>
                   <button className='btn gradient-btn-icon'>
                     <i className='tio-file_outlined' />
                   </button>
                 </Tooltip>
-                <Tooltip title={translate("Tải file mẫu")}>
+                <Tooltip
+                  title={translate("Tải file mẫu")}
+                  key='downLoadTemplate'
+                >
                   <button className='btn gradient-btn-icon'>
                     <i className='tio-download_to' />
                   </button>

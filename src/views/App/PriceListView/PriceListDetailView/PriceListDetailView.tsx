@@ -1,18 +1,16 @@
+import React from "react";
 import { Card, Col, Row, Switch, Tabs } from "antd";
+import { useTranslation } from "react-i18next";
+import nameof from "ts-nameof.macro";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import { OrganizationFilter } from "models/OrganizationFilter";
 import { PriceList } from "models/PriceList";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
-import React from "react";
-import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import detailService from "services/pages/detail-service";
-import nameof from "ts-nameof.macro";
 import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable";
-// import { ColumnData } from "services/component-factory/table-column-service";
-// import { advanceFilterFactory } from "services/component-factory/advance-filter-factory-service";
 
 const { TabPane } = Tabs;
 
@@ -88,7 +86,7 @@ function PriceListDetailView() {
                           "priceList.placeholder.organzation",
                         )}
                         onChange={handleChangeObjectField(
-                          nameof(model.organzation),
+                          nameof(model.organization),
                         )}
                         isMaterial={true}
                       />
