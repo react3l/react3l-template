@@ -5,12 +5,10 @@ import classNames from 'classnames';
 
 export interface InputSelectProps <T extends Model> {
   model?: T;
-  title?: string;
   disabled?: boolean;
   expanded?: boolean;
   isMaterial?: boolean;
   placeHolder?: string;
-  error?: string;
   render?: (t: T) => string;
   onClear?: (T: T) => void;
   onSearch?: (T: string) => void;
@@ -19,12 +17,10 @@ export interface InputSelectProps <T extends Model> {
 function InputSelect(props: InputSelectProps<Model>) {
   const {
     model,
-    title,
     disabled,
     expanded,
     isMaterial,
     placeHolder,
-    error,
     render,
     onClear,
     onSearch,
@@ -33,10 +29,6 @@ function InputSelect(props: InputSelectProps<Model>) {
   const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>(null);
 
   const [internalModel, setInternalModel] = React.useState('');
-
-  const isError = React.useMemo(() => {
-    return error ? true : false;
-  }, [error]);
 
   const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setInternalModel(event.target.value);
@@ -66,11 +58,8 @@ function InputSelect(props: InputSelectProps<Model>) {
   return (
     <>
       <div className="input-select__container">
-        { title && 
-          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
-        }
         { expanded ? 
-          <div className="input-select__wrapper">
+          <>
             <input type="text"
               value={internalModel}
               onChange={handleChange}
@@ -80,24 +69,24 @@ function InputSelect(props: InputSelectProps<Model>) {
               className={classNames('component__input', 
               {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial})}/>
             { internalModel ? 
-              <i className="input-select__icon tio-clear" onClick={handleClearInput}></i> :
-              ( model ? <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> : null)}
-          </div> :
-          <div className="input-select__wrapper">
+              <i className="input-icon input-select__icon tio-clear" onClick={handleClearInput}></i> :
+              ( model ? <i className="input-icon input-select__icon tio-clear" onClick={handleClearItem}></i> : null)
+            }
+          </> :
+          <>
             <input type="text"
               value={render(model) || ''}
               readOnly
               placeholder={placeHolder} 
               className={classNames('component__input', 
-              {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial, 'error-border': isError})}
+              {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial})}
               disabled={disabled}/>
             { model ? 
-              <i className="input-select__icon tio-clear" onClick={handleClearItem}></i> :
-              <i className={classNames('input-select__icon', 'tio-chevron_down', {'error-text': isError})}></i>
+              <i className="input-icon input-select__icon tio-clear" onClick={handleClearItem}></i> :
+              <i className={classNames('input-icon', 'input-select__icon', 'tio-chevron_down')}></i>
             }
-          </div>
+          </>
           }
-          {isError && <span className="error-text error-message">{error}</span>}
       </div>
     </>
   );

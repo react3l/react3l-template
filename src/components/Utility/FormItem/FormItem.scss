@@ -1,21 +1,24 @@
 @import './../../../styles/variables';
 /* Style for FormValidation.tsx */
-.form-validation__container {
+.form-item__container {
     width: 100%;
     position: relative;
 
-    .form-validation__content {
+    .form-item__content {
         display: flex;
         width: 100%;
+        .form-item__item {
+            width: 100%;
+        }
     }
 
-    .form-validation__message {
+    .form-item__message {
         font-size: 14px;
         color: #000000;
         margin-top: 5px;
     }
 
-    .form-validation__icon {
+    .form-item__icon {
         height: auto;
         width: 1.5rem;
         font-size: 1.2rem;
@@ -27,50 +30,59 @@
         margin-left: 2px;
     }
 
-    &.form-validation__container--error {
-        .form-validation__content {
-            .form-validation__icon, .component__title, i {
+    &.form-item__container--error {
+        .component__title {
+            color: $error-color !important;
+        }
+        .form-item__content {
+            .form-item__icon, i.input-icon {
                 color: $error-color !important;
             }
 
-            input, i {
+            input.component__input, textarea, .input-tag__container, .ant-picker {
                 border-color: $error-color !important;
             }
         }
 
-        .form-validation__message {
+        .form-item__message {
             color: $error-color !important;
         }
     }
 
-    &.form-validation__container--warning {
-        .form-validation__content {
-            .form-validation__icon, .component__title, i {
+    &.form-item__container--warning {
+        .component__title {
+            color: $warning-color !important;
+        }
+        .form-item__content {
+            .form-item__icon, i.input-icon {
                 color: $warning-color !important;
             }
 
-            input, i {
+            input.component__input, textarea, .input-tag__container, .ant-picker {
                 border-color: $warning-color !important;
             }
         }
 
-        .form-validation__message {
+        .form-item__message {
             color: $warning-color !important;
         }
     }
 
-    &.form-validation__container--success {
-        .form-validation__content {
-            .form-validation__icon, .component__title, i {
+    &.form-item__container--success {
+        .component__title {
+            color: $success-color !important;
+        }
+        .form-item__content {
+            .form-item__icon, i.input-icon {
                 color: $success-color !important;
             }
 
-            input {
+            input.component__input, textarea, .input-tag__container, .ant-picker {
                 border-color: $success-color !important;
             }
         }
 
-        .form-validation__message {
+        .form-item__message {
             color: $success-color !important;
         }
     }

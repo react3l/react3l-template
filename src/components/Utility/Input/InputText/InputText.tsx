@@ -6,8 +6,6 @@ import classNames from 'classnames';
 interface InputText<T extends Model> {
   value?: string;                                                                      
   isMaterial?: boolean;
-  title?: string;
-  error?: string;
   disabled?: boolean;
   placeHolder?: string;
   className?: string;
@@ -20,8 +18,6 @@ function InputText(props: InputText<Model>) {
   const {
     value,
     isMaterial,
-    title,
-    error,
     disabled,
     placeHolder,
     className,
@@ -29,10 +25,6 @@ function InputText(props: InputText<Model>) {
     onEnter,
     onBlur,
   } = props;
-
-  const isError = React.useMemo(() => {
-    return error ? true : false;
-  }, [error]);
 
   const [internalValue, setInternalValue] = React.useState<string>('');
 
@@ -79,27 +71,21 @@ function InputText(props: InputText<Model>) {
   return (
     <>
       <div className="input-text__container">
-        { title && 
-          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
+        <input type="text"
+          value={internalValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyPress}
+          onBlur={handleBlur}
+          placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
+          ref={inputRef}
+          disabled={disabled} 
+          className={classNames('component__input', 
+          {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial})}/>
+        { internalValue ? 
+          <i className="input-icon input-text__icon tio-clear" onClick={handleClearInput}></i> :
+          className && 
+          <i className={classNames('input-text__icon', className)}></i>
         }
-        <div className="input-text__wrapper">
-          <input type="text"
-            value={internalValue}
-            onChange={handleChange}
-            onKeyDown={handleKeyPress}
-            onBlur={handleBlur}
-            placeholder={placeHolder ? placeHolder : 'Nhập dữ liệu...'}
-            ref={inputRef}
-            disabled={disabled} 
-            className={classNames('component__input', 
-            {'component__input--material': isMaterial, 'component__input--bordered': !isMaterial, 'error-border': isError})}/>
-          { internalValue ? 
-            <i className="input-text__icon tio-clear" onClick={handleClearInput}></i> :
-            className && 
-            <i className={classNames('input-text__icon', className , {'error-text': isError})}></i>
-          }
-        </div>
-        {isError && <span className="error-text error-message">{error}</span>}
       </div>
     </>
   );

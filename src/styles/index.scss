@@ -27,6 +27,10 @@ body {
   background: #f2f2f2;
   font-size: 14px;
 
+  .input-icon {
+    @include input-icon;
+  }
+
   .component__title {
     @include input-title
   }

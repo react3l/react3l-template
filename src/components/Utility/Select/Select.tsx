@@ -31,10 +31,6 @@ export interface SelectProps<
 
   isMaterial?: boolean;
 
-  error?: string;
-
-  title?: string;
-
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
   onChange?: (id: number, T?: T) => void;
@@ -57,8 +53,6 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     placeHolder,
     disabled,
     isMaterial,
-    error,
-    title,
     getList,
     onChange,
     render,
@@ -153,12 +147,10 @@ function Select(props: SelectProps<Model, ModelFilter>) {
           <InputSelect
             model={internalModel}
             render={render}
-            title={title}
             isMaterial={isMaterial}
             placeHolder={placeHolder}
             expanded={isExpand}
             disabled={disabled}
-            error={error}
             onSearch={handleSearchChange}
             onClear={handleClearItem}
           />

@@ -1,6 +1,6 @@
 import React, { Reducer } from 'react';
 import AdvanceNumberFilter, { DECIMAL, LONG } from './AdvanceNumberFilter';
-import { Radio } from 'antd';
+import { Radio, Checkbox, Switch } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { ModelFilter } from 'react3l/core/model-filter';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
@@ -61,28 +61,34 @@ export function AdvanceNumberFilterStories() {
             isReverseSymb={isReverse}
             allowPositive={isPositive}/>
         <div style={{margin: '10px', width: '300px'}}>
-                    <Radio.Group onChange={handleChangeType} value={numberType}>
-                        <Radio value={DECIMAL}>Decimal</Radio>
-                        <Radio value={LONG}>Long</Radio>
-                    </Radio.Group>
+            <Radio.Group onChange={handleChangeType} value={numberType}>
+                <Radio value={DECIMAL}>Decimal</Radio>
+                <Radio value={LONG}>Long</Radio>
+            </Radio.Group>
         </div>
         <div style={{margin: '10px', width: '300px'}}>
-                    <Radio.Group onChange={handleChangeSeperation} value={isReverse}>
-                        <Radio value={true}>Reverse Seperation</Radio>
-                        <Radio value={false}>Normal</Radio>
-                    </Radio.Group>
+            <Radio.Group onChange={handleChangeSeperation} value={isReverse}>
+                <Radio value={true}>Reverse Seperation</Radio>
+                <Radio value={false}>Normal</Radio>
+            </Radio.Group>
         </div>
         <div style={{margin: '10px', width: '300px'}}>
-                    <Radio.Group onChange={handleChangePositive} value={isPositive}>
-                        <Radio value={true}>Allow Positive</Radio>
-                        <Radio value={false}>Not Allow Positive</Radio>
-                    </Radio.Group>
+            <Radio.Group onChange={handleChangePositive} value={isPositive}>
+                <Radio value={true}>Allow Positive</Radio>
+                <Radio value={false}>Not Allow Positive</Radio>
+            </Radio.Group>
         </div>
         <div style={{margin: '10px', width: '300px'}}>
-                    <Radio.Group onChange={handleChangeTitle} value={isTitle}>
-                        <Radio value={true}>Titled</Radio>
-                        <Radio value={false}>Untitled</Radio>
-                    </Radio.Group>
+            <Radio.Group onChange={handleChangeTitle} value={isTitle}>
+                <Radio value={true}>Titled</Radio>
+                <Radio value={false}>Untitled</Radio>
+            </Radio.Group>
+        </div>
+        <div style={{margin: '10px', width: '300px'}}>
+            <Checkbox >Checkbox</Checkbox>
+        </div>
+        <div style={{margin: '10px', width: '300px'}}>
+            <Switch defaultChecked />
         </div>
     </div>;
 }

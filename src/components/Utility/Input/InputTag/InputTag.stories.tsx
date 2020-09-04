@@ -5,6 +5,7 @@ import { debounce } from 'react3l/helpers';
 import { DEBOUNCE_TIME_300 } from 'react3l/config';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
+import FormItem, { ValidateStatus } from 'components/Utility/FormItem/FormItem';
 const demoItemList = [
     {id: 1, name: 'Tag 1', code: '1'},
     {id: 2, name: 'Tag 2', code: '2'},
@@ -38,12 +39,17 @@ export function InputTagStories() {
                     onClear={handleClearItem}/>
 
                 <div style={{marginTop: '10px', width: '380px'}}>
-                    <InputTag listItem={listItem}
-                        isMaterial={isMaterial}
-                        placeHolder={'Select tree node...'}
-                        onSearch={handleSearchItem}
-                        onClear={handleClearItem}
-                        error={'Field required!'}/>
+                    <FormItem validateStatus={ValidateStatus.error}
+                        label={'Select field:'}
+                        message={'Field required!'}
+                        hasIcon={!isMaterial}>
+                            <InputTag listItem={listItem}
+                                isMaterial={isMaterial}
+                                placeHolder={'Select tree node...'}
+                                onSearch={handleSearchItem}
+                                onClear={handleClearItem}
+                                error={'Field required!'}/>
+                    </FormItem>
                 </div>
                     
                 <button className="btn btn-info" 

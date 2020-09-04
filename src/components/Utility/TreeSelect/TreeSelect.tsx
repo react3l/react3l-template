@@ -47,7 +47,6 @@ function filterReducer(state: ModelFilter, action: filterAction<Model>): ModelFi
 
 function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
   const {
-    title,
     listItem,
     item,
     isMaterial,
@@ -60,7 +59,6 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
     classFilter: ClassFilter,
     modelFilter,
     placeHolder,
-    error,
     render,
     getTreeData,
     onChange,
@@ -122,18 +120,14 @@ function TreeSelect(props: TreeSelectProps<Model, ModelFilter>) {
         <div className="tree-select__input" onClick={handleExpand}>
           { checkable ? 
             <InputTag listItem={listItem}
-              title={title}
               isMaterial={isMaterial}
               render={render}
-              error={error}
               placeHolder={placeHolder}
               disabled={disabled}
               onSearch={handleSearchItem}
               onClear={handleClearItem}/> :
             <InputSelect model={item}
-              title={title}
               render={render}
-              error={error}
               isMaterial={isMaterial}
               placeHolder={placeHolder}
               expanded={expanded}

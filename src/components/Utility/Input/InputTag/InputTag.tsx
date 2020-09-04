@@ -17,11 +17,9 @@ export interface InputTagProps <T extends Model> {
 function InputTag(props: InputTagProps<Model>) {
   const { 
     listItem,
-    title,
     placeHolder,
     disabled,
     isMaterial,
-    error,
     render,
     onClear,
     onSearch,
@@ -30,10 +28,6 @@ function InputTag(props: InputTagProps<Model>) {
   const internalListItem = React.useMemo<Model[]>(() => {
     return listItem;
   },[listItem]);
-
-  const isError = React.useMemo(() => {
-    return error ? true : false;
-  }, [error]);
 
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
@@ -59,11 +53,8 @@ function InputTag(props: InputTagProps<Model>) {
   return (
     <>
       <div className="input-tag__wrapper">
-        { title && 
-          <div className={classNames('component__title', {'error-text': isError})}>{title}</div>
-        }
         <div className={classNames('input-tag__container', 
-          {'input-tag__container--material': isMaterial, 'input-tag__container--bordered': !isMaterial, 'error-border': isError})} 
+          {'input-tag__container--material': isMaterial, 'input-tag__container--bordered': !isMaterial})} 
           onClick={() => inputRef.current.focus()}>
             { internalListItem &&
               internalListItem.map((item, index) => 
@@ -79,7 +70,6 @@ function InputTag(props: InputTagProps<Model>) {
               disabled={disabled}
               onChange={handleChangeInput} />
         </div>
-        {isError && <span className="error-text error-message">{error}</span>}
       </div>
     </>
   );

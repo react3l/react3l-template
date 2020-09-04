@@ -3,15 +3,12 @@ import DateRange from './DateRange';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { Moment } from 'moment';
+import FormItem, { ValidateStatus } from 'components/Utility/FormItem/FormItem';
 
 export function DateRangeStories() {
     const [isMaterial, setIsMaterial] = React.useState(false);
     
     const [value, setValue] = React.useState<[Moment, Moment]>([null, null]);
-
-    const [isTitle, setIsTitle] = React.useState(false);
-
-    const [title, setTitle] = React.useState('');
 
     const handleChange = React.useCallback((dateMoment, dateString) => {
       setValue(dateMoment);
@@ -21,25 +18,20 @@ export function DateRangeStories() {
       setIsMaterial(event.target.value);
     }, []);
 
-    const handleChangeTitle = React.useCallback((event: RadioChangeEvent) => {
-      setIsTitle(event.target.value);
-      if (event.target.value) {
-          setTitle('Input text');
-      } else setTitle('');
-    }, []);
-
     return <div style={{margin: '10px', width: '250px'}}>
       <DateRange isMaterial={isMaterial}
         onChange={handleChange}
-        title={title}
         value={value}/>
 
       <div style={{margin: '10px', width: '300px'}}>
-        <DateRange isMaterial={isMaterial}
-          onChange={handleChange}
-          title={title}
-          error={'Field required!'}
-          value={value}/>
+        <FormItem label={"Date Picker:"}
+            validateStatus={ValidateStatus.error} 
+            message={'Field required!'} 
+            hasIcon={!isMaterial}>
+          <DateRange isMaterial={isMaterial}
+            onChange={handleChange}
+            value={value}/>
+        </FormItem>
       </div>
 
       <div style={{margin: '10px', width: '300px'}}>
@@ -49,11 +41,5 @@ export function DateRangeStories() {
         </Radio.Group>
       </div>
 
-      <div style={{margin: '10px', width: '300px'}}>
-          <Radio.Group onChange={handleChangeTitle} value={isTitle}>
-              <Radio value={true}>Titled</Radio>
-              <Radio value={false}>Untitled</Radio>
-          </Radio.Group>
-        </div>
     </div>;
 }

@@ -9,6 +9,7 @@ import { formatNumber } from "helpers/number";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ModelFilter } from "react3l/core";
+import FormItem from "components/Utility/FormItem/FormItem";
 
 const { TabPane } = Tabs;
 
@@ -37,87 +38,90 @@ function PaymentRequestDetailView() {
                   <TabPane tab={translate("Thông tin chung")} key='1'>
                     <Row>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Người đề nghị"}
-                          placeHolder={"Chọn người đề nghị"}
-                          className={"tio-account_square_outlined"}
-                        />
+                        <FormItem label={"Người đề nghị"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Chọn người đề nghị"}
+                            className={"tio-account_square_outlined"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Người nhận "}
-                          placeHolder={"Chọn người nhận hàng"}
-                          className={"tio-user_switch"}
-                        />
+                        <FormItem label={"Người nhận"}>
+                          <InputText
+                              isMaterial={true}
+                              value={null}
+                              placeHolder={"Chọn người nhận hàng"}
+                              className={"tio-user_switch"}
+                            />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Địa chỉ nhận hàng"}
-                          placeHolder={"Nhập địa chỉ"}
-                          className={"tio-group_add"}
-                        />
+                        <FormItem label={"Địa chỉ nhận hàng"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập địa chỉ"}
+                            className={"tio-group_add"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6}>
-                        <label className='label-detail'>
-                          {translate("Ngày gửi đề nghị")}
-                        </label>
-                        <DatePicker isMaterial={true} />
+                        <FormItem label={translate("Ngày gửi đề nghị")}>
+                          <DatePicker isMaterial={true} />
+                        </FormItem>
                       </Col>
                     </Row>
                     <Row className='mt-3'>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Đơn vị chịu phí"}
-                          placeHolder={"Nhập thông tin"}
-                          className={"tio-event"}
-                        />
+                        <FormItem label={"Đơn vị chịu phí"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập thông tin"}
+                            className={"tio-event"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <label className='label-detail'>
-                          {translate("Đơn vị yêu cầu")}
-                        </label>
-                        <Select
-                          classFilter={ModelFilter}
-                          placeHolder={"Chọn đơn vị"}
-                          isMaterial={true}
-                        />
+                        <FormItem label={translate("Đơn vị yêu cầu")}>
+                          <Select
+                            classFilter={ModelFilter}
+                            placeHolder={"Chọn đơn vị"}
+                            isMaterial={true}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"CC Email"}
-                          placeHolder={"Nhập thông tin"}
-                          className={"tio-email_outlined"}
-                        />
+                        <FormItem label={"CC Email"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập thông tin"}
+                            className={"tio-email_outlined"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6}>
-                        <label className='label-detail'>
-                          {translate("Thời hạn thanh toán")}
-                        </label>
-                        <DatePicker
-                          isMaterial={true}
-                          placeholder={"Chọn thời hạn"}
-                        />
+                        <FormItem label={translate("Thời hạn thanh toán")}>
+                          <DatePicker
+                            isMaterial={true}
+                            placeholder={"Chọn thời hạn"}
+                          />
+                        </FormItem>
                       </Col>
                     </Row>
                     <Row className='mt-3'>
                       <Col lg={24}>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Diễn giải mục đích mua"}
-                          placeHolder={"Nhập diễn giải chi tiết mục đích mua"}
-                          className={"tio-comment_text_outlined"}
-                        />
+                        <FormItem label={"Diễn giải mục đích mua"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập diễn giải chi tiết mục đích mua"}
+                            className={"tio-comment_text_outlined"}
+                          />
+                        </FormItem>
                       </Col>
                     </Row>
                   </TabPane>
@@ -139,72 +143,71 @@ function PaymentRequestDetailView() {
                   <TabPane tab={translate("Thông tin hóa đơn")} key='1'>
                     <Row>
                       <Col lg={6} className='pr-3'>
-                        <label className='label-detail'>
-                          {translate("Loại chứng từ")}
-                        </label>
-                        <Select
-                          classFilter={ModelFilter}
-                          placeHolder={"Chọn loại chứng từ"}
-                          isMaterial={true}
-                        />
+                        <FormItem label={translate("Loại chứng từ")}>
+                          <Select
+                            classFilter={ModelFilter}
+                            placeHolder={"Chọn loại chứng từ"}
+                            isMaterial={true}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Ký hiệu hóa đơn"}
-                          placeHolder={"Nhập ký hiệu hóa đơn"}
-                          className={"tio-files_labeled_outlined"}
-                        />
+                        <FormItem label={"Ký hiệu hóa đơn"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập ký hiệu hóa đơn"}
+                            className={"tio-files_labeled_outlined"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <label className='label-detail'>
-                          {translate("Loại tiền")}
-                        </label>
-                        <Select
-                          classFilter={ModelFilter}
-                          placeHolder={"Chọn loại tiền"}
-                          isMaterial={true}
-                        />
+                        <FormItem label={translate("Loại tiền")}>
+                          <Select
+                            classFilter={ModelFilter}
+                            placeHolder={"Chọn loại tiền"}
+                            isMaterial={true}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6}>
-                        <label className='label-detail'>
-                          {translate("Nhà cung cấp")}
-                        </label>
-                        <Select
-                          classFilter={ModelFilter}
-                          placeHolder={"Chọn nhà cung cấp"}
-                          isMaterial={true}
-                        />
+                        <FormItem label={translate("Nhà cung cấp")}>
+                          <Select
+                            classFilter={ModelFilter}
+                            placeHolder={"Chọn nhà cung cấp"}
+                            isMaterial={true}
+                          />
+                        </FormItem>
                       </Col>
                     </Row>
                     <Row className='mt-3'>
                       <Col lg={6} className='pr-3'>
-                        <label className='label-detail'>
-                          {translate("Ngày chứng từ")}
-                        </label>
-                        <DatePicker
-                          isMaterial={true}
-                          placeholder={"Chọn ngày chứng từ"}
-                        />
+                        <FormItem label={translate("Ngày chứng từ")}>
+                          <DatePicker
+                            isMaterial={true}
+                            placeholder={"Chọn ngày chứng từ"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Số hóa đơn"}
-                          placeHolder={"Nhập số hóa đơn"}
-                          className={"tio-files_labeled_outlined"}
-                        />
+                        <FormItem label={"Số hóa đơn"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập số hóa đơn"}
+                            className={"tio-files_labeled_outlined"}
+                          />
+                        </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
-                        <InputText
-                          isMaterial={true}
-                          value={null}
-                          title={"Tỷ giá"}
-                          placeHolder={"Nhập tỷ giá"}
-                          className={"tio-justice"}
-                        />
+                        <FormItem label={"Tỷ giá"}>
+                          <InputText
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Nhập tỷ giá"}
+                            className={"tio-justice"}
+                          />
+                        </FormItem>
                       </Col>
                     </Row>
                   </TabPane>
@@ -233,82 +236,86 @@ function PaymentRequestDetailView() {
                       />
                     </Col>
                     <Col lg={12} className='pr-3'>
-                      <InputText
-                        isMaterial={true}
-                        value={null}
-                        title={"Diễn giải chi tiết"}
-                        placeHolder={"Nhập diễn giải chi tiết"}
-                        className={"tio-files_labeled_outlined"}
-                      />
+                      <FormItem label={"Diễn giải chi tiết"}>
+                        <InputText
+                          isMaterial={true}
+                          value={null}
+                          placeHolder={"Nhập diễn giải chi tiết"}
+                          className={"tio-files_labeled_outlined"}
+                        />
+                        </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <InputNumber
-                        title={"Thành tiền"}
-                        className={""}
-                        isMaterial={true}
-                        numberType={DECIMAL}
-                        allowPositive={true}
-                      />
+                      <FormItem label={"Thành tiền"}>
+                        <InputNumber
+                          className={""}
+                          isMaterial={true}
+                          numberType={DECIMAL}
+                          allowPositive={true}
+                        />
+                      </FormItem>
                     </Col>
                   </Row>
                   <Row className='mt-3'>
                     <Col lg={6} className='pr-3'>
-                      <label className='label-detail'>
-                        {translate("Đơn vị")}
-                      </label>
-                      <Select
-                        classFilter={ModelFilter}
-                        placeHolder={"Chọn đơn vị"}
-                        isMaterial={true}
-                      />
+                      <FormItem label={translate("Đơn vị")}>
+                        <Select
+                          classFilter={ModelFilter}
+                          placeHolder={"Chọn đơn vị"}
+                          isMaterial={true}
+                        />
+                      </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <InputNumber
-                        title={"Số lượng"}
-                        className={""}
-                        isMaterial={true}
-                        numberType={DECIMAL}
-                        allowPositive={true}
-                      />
+                      <FormItem label={"Số lượng"}>
+                        <InputNumber
+                          className={""}
+                          isMaterial={true}
+                          numberType={DECIMAL}
+                          allowPositive={true}
+                        />
+                      </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <InputNumber
-                        title={"Đơn giá"}
-                        className={""}
-                        isMaterial={true}
-                        numberType={DECIMAL}
-                        allowPositive={true}
-                      />
+                      <FormItem label={"Đơn giá"}>
+                        <InputNumber
+                          className={""}
+                          isMaterial={true}
+                          numberType={DECIMAL}
+                          allowPositive={true}
+                        />
+                      </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <InputNumber
-                        title={"Thuế"}
-                        className={""}
-                        isMaterial={true}
-                        numberType={DECIMAL}
-                        allowPositive={true}
-                      />
+                      <FormItem label={"Thuế"}>
+                        <InputNumber
+                          className={""}
+                          isMaterial={true}
+                          numberType={DECIMAL}
+                          allowPositive={true}
+                        />
+                      </FormItem>
                     </Col>
                   </Row>
                   <Row className='mt-3'>
                     <Col lg={18} className='pr-3'>
-                      <label className='label-detail'>
-                        {translate("Đơn vị")}
-                      </label>
-                      <Select
-                        classFilter={ModelFilter}
-                        placeHolder={"Chọn đơn vị"}
-                        isMaterial={true}
-                      />
+                      <FormItem label={translate("Đơn vị")}>
+                        <Select
+                          classFilter={ModelFilter}
+                          placeHolder={"Chọn đơn vị"}
+                          isMaterial={true}
+                        />
+                      </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <InputNumber
-                        title={"Tổng tiền"}
-                        className={""}
-                        isMaterial={true}
-                        numberType={DECIMAL}
-                        allowPositive={true}
-                      />
+                      <FormItem label={"Tổng tiền"}>
+                        <InputNumber
+                          className={""}
+                          isMaterial={true}
+                          numberType={DECIMAL}
+                          allowPositive={true}
+                        />
+                      </FormItem>
                     </Col>
                   </Row>
                 </div>

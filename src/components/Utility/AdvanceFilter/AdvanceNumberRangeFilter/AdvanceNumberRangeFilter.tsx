@@ -50,7 +50,6 @@ function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model> & Input
           <div className="advance-number-range-filter__input-number">
             <InputNumber {...props} 
               value={valueRange[0]}
-              title={null} 
               placeHolder={placeHolderRange[0]}
               onBlur={handleBlurFrom}/>
           </div>
@@ -60,7 +59,6 @@ function AdvanceNumberRangeFilter(props: AdvanceNumberRangeFilter<Model> & Input
           <div className="advance-number-range-filter__input-number">
             <InputNumber {...props} 
               value={valueRange[1]}
-              title={null} 
               placeHolder={placeHolderRange[1]}
               onBlur={handleBlurTo}/>
           </div>

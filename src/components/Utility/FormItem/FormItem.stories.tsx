@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import nameof from 'ts-nameof.macro';
-import FormValidation, { ValidateStatus } from './FormValidation';
+import FormItem, { ValidateStatus } from './FormItem';
 import InputText from '../Input/InputText/InputText';
 import Select from '../Select/Select';
 import { ModelFilter } from 'react3l/core';
@@ -9,43 +9,43 @@ import { ModelFilter } from 'react3l/core';
 function Default() {
     return <>
         <div style={{margin: '10px', width: "250px"}}>
-            <FormValidation validateStatus={ValidateStatus.error} 
+            <FormItem validateStatus={ValidateStatus.error} 
                 message={'Field required!'} 
                 hasIcon={true}>
-                <InputText placeHolder={"Enter text..."} title={'Field1: '}/>
-            </FormValidation>
+                <InputText placeHolder={"Enter text..."}/>
+            </FormItem>
         </div>
         <div style={{margin: '10px', width: "250px"}}>
-            <FormValidation validateStatus={ValidateStatus.warning} 
+            <FormItem validateStatus={ValidateStatus.warning} 
                 message={'Field required!'}
                 hasIcon={true}>
                 <InputText placeHolder={"Enter text..."}/>
-            </FormValidation>
+            </FormItem>
         </div>
         <div style={{margin: '10px', width: "250px"}}>
-            <FormValidation validateStatus={ValidateStatus.success} 
+            <FormItem validateStatus={ValidateStatus.success} 
                 message={'Field required!'}
                 hasIcon={true}>
                 <InputText placeHolder={"Enter text..."}/>
-            </FormValidation>
+            </FormItem>
         </div>
         <div style={{margin: '10px', width: "250px"}}>
-            <FormValidation validateStatus={ValidateStatus.validating}
+            <FormItem validateStatus={ValidateStatus.validating}
                 renderIcon={<i className="tio-star_outlined"></i>} 
                 message={'Field required!'}
                 hasIcon={true}>
                 <InputText placeHolder={"Enter text..."}/>
-            </FormValidation>
+            </FormItem>
         </div>
         <div style={{margin: '10px', width: "250px"}}>
-        <FormValidation validateStatus={ValidateStatus.error}
+            <FormItem validateStatus={ValidateStatus.error}
                 message={'Field required!'}
                 hasIcon={true}>
                 <Select placeHolder={'Select Organization'} 
                     classFilter={ModelFilter}/>
-            </FormValidation>
+            </FormItem>
         </div>
     </>;
 }
 
-storiesOf('FormValidation', module).add(nameof(Default), Default);
+storiesOf('FormItem', module).add(nameof(Default), Default);

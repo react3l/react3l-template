@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import './FormValidation.scss';
+import './FormItem.scss';
 import classNames from 'classnames';
 
 export enum ValidateStatus {
@@ -9,7 +9,8 @@ export enum ValidateStatus {
   validating='validating'
 }
 
-interface FormValidationProps {
+interface FormItemProps {
+  label?: string;
   validateStatus?: ValidateStatus;
   hasIcon?: boolean;
   message?: string;
@@ -17,8 +18,9 @@ interface FormValidationProps {
   renderIcon?: ReactNode;
 }
 
-function FormValidation(props: FormValidationProps) {
+function FormItem(props: FormItemProps) {
   const {
+    label,
     validateStatus,
     hasIcon,
     message,
@@ -27,11 +29,14 @@ function FormValidation(props: FormValidationProps) {
   } = props;
   return (
     <>
-      <div className={classNames('form-validation__container', {[`form-validation__container--${validateStatus}`]: validateStatus})}>
-        <div className="form-validation__content">
+      <div className={classNames('form-item__container', {[`form-item__container--${validateStatus}`]: validateStatus})}>
+        { label && 
+          <div className={classNames('component__title')}>{label}</div>
+        }
+        <div className="form-item__content">
           {children}
           { hasIcon &&  
-            <div className="form-validation__icon">
+            <div className="form-item__icon">
                 { renderIcon ? renderIcon : (
                   <i className={classNames({
                     'tio-clear_circle_outlined': validateStatus === ValidateStatus.error,
@@ -42,7 +47,7 @@ function FormValidation(props: FormValidationProps) {
             </div>
           }
         </div>
-        <div className="form-validation__message">
+        <div className="form-item__message">
           {message}
         </div>
       </div>
@@ -50,9 +55,9 @@ function FormValidation(props: FormValidationProps) {
   );
 }
 
-FormValidation.defaultProps = {
+FormItem.defaultProps = {
   hasIcon: false,
   renderIcon: null,
 };
 
-export default FormValidation;
+export default FormItem;
