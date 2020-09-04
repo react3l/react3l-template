@@ -22,8 +22,7 @@ export class DetailService {
   ) {
     const content: TContent[] = useMemo(() => {
       if (model[contentField]?.length > 0) {
-        model[contentField].map((item) => ({ ...item, key: uuidv4() })); // assign key for each content item
-        return model[contentField];
+        return model[contentField].map((item) => ({ ...item, key: uuidv4() })); // assign key for each content item
       }
       return [];
     }, [contentField, model]);

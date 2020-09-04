@@ -22,6 +22,7 @@ function PriceListDetailView() {
     isDetail,
     handleChangeSimpleField,
     handleChangeObjectField,
+    // handleSave
   } = detailService.useDetail<PriceList>(PriceList, priceListRepository.get);
 
   const {
@@ -169,8 +170,15 @@ function PriceListDetailView() {
             </Card>
           </Col>
         </Row>
+        {/* end dependent lists */}
+        {/* start save action */}
+        <Row className='mt-3 mb-5'>
+          <button className='btn component__btn-primary pr-4 mb-5'>
+            {translate("general.actions.search")}
+          </button>
+        </Row>
+        {/* end save action */}
       </div>
-      {/* end dependent lists */}
     </div>
   );
 }
