@@ -42,9 +42,7 @@ export default function ContentTable<
     handlePagination,
     rowSelection,
   } = tableService.useLocalTable(
-    list,
     total,
-    loadingList,
     handleSearch,
     filter,
     setFilter,

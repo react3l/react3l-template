@@ -4,11 +4,58 @@ import { RowSelectionType, SortOrder } from "antd/lib/table/interface";
 import { DEFAULT_TAKE } from "react3l/config";
 import { Model } from "react3l/core";
 import listService from "services/list-service";
-import { useCallback, useMemo, useState, Dispatch } from "react";
+import {
+  useCallback,
+  useMemo,
+  useState,
+  Dispatch,
+  useReducer,
+  Reducer,
+} from "react";
 import { ModelFilter } from "react3l/core";
 import { Observable } from "rxjs";
 
 type KeyType = string | number;
+
+export interface ModalState {
+  visible?: boolean;
+  loadControl?: boolean;
+}
+
+export interface ModalAction {
+  type: ModalActionEnum;
+}
+
+export enum ModalActionEnum {
+  OPEN_MODAL,
+  CLOSE_MODAL,
+  END_LOAD_CONTROL,
+}
+
+function modalTableReducer(state: ModalState, action: ModalAction) {
+  switch (action.type) {
+    case ModalActionEnum.OPEN_MODAL: {
+      return {
+        ...state,
+        visible: true,
+        loadControl: true,
+      };
+    }
+    case ModalActionEnum.CLOSE_MODAL: {
+      return {
+        ...state,
+        visible: false,
+        loadControl: false,
+      };
+    }
+    case ModalActionEnum.END_LOAD_CONTROL: {
+      return {
+        ...state,
+        loadControl: false,
+      };
+    }
+  }
+}
 
 /* services to CRUD, import, export data in table */
 export class TableService {
@@ -227,9 +274,9 @@ export class TableService {
     bulkDeleteItems?: (t: KeyType[]) => Observable<void>,
     onUpdateListSuccess?: (item?: T) => void,
     checkBoxType?: RowSelectionType,
-    isLoadControl?: boolean, // optional control for modal preLoading
+    isLoadControl?: boolean | undefined, // optional control for modal preLoading
+    endLoadControl?: () => void, // end external control
     derivedRowKeys?: KeyType[],
-    handleSearch?: () => void,
   ) {
     // selectedRowKeys
     const {
@@ -245,6 +292,7 @@ export class TableService {
       loadingList,
       handleDelete: handleServerDelete,
       handleBulkDelete: onServerBulkDelete,
+      handleSearch,
     } = listService.useList(
       filter,
       setFilter,
@@ -256,6 +304,7 @@ export class TableService {
       setSelectedRowKeys,
       onUpdateListSuccess,
       isLoadControl,
+      endLoadControl,
     );
 
     // calculate pagination
@@ -291,6 +340,7 @@ export class TableService {
       handleServerDelete,
       handleServerBulkDelete,
       rowSelection,
+      handleSearch,
     };
   }
 
@@ -303,9 +353,7 @@ export class TableService {
    *
    * */
   useLocalTable<T extends Model, TFilter extends ModelFilter>(
-    list: T[],
     total: number,
-    loadingList: boolean,
     handleSearch: () => void,
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
@@ -350,6 +398,42 @@ export class TableService {
       handleLocalDelete,
       handleLocalBulkDelete,
       rowSelection,
+    };
+  }
+
+  /**
+   *
+   * control content modal business from open, close, save data from modal
+   * @param:
+   * @return: { visible, loadControl, handleEndControl, handleOpenModal, handleCloseModal }
+   *
+   * */
+  useContenModal() {
+    const [{ visible, loadControl }, dispatch] = useReducer<
+      Reducer<ModalState, ModalAction>
+    >(modalTableReducer, {
+      visible: false,
+      loadControl: false,
+    });
+
+    const handleOpenModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.OPEN_MODAL });
+    }, []);
+
+    const handleCloseModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.CLOSE_MODAL });
+    }, []);
+
+    const handleEndControl = useCallback(() => {
+      dispatch({ type: ModalActionEnum.END_LOAD_CONTROL });
+    }, []);
+
+    return {
+      visible,
+      loadControl,
+      handleEndControl,
+      handleOpenModal,
+      handleCloseModal,
     };
   }
 }

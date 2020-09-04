@@ -151,7 +151,8 @@ class ListService {
     selectedKeys?: KeyType[],
     setSelectedRowKeys?: Dispatch<SetStateAction<KeyType[]>>,
     onUpdateListSuccess?: (item?: T) => void,
-    isLoadControl?: boolean, // optional control for modal preLoading
+    isLoadControl?: boolean | undefined, // optional control for modal preLoading
+    endLoadControl?: () => void, // end external control
   ): {
     list: T[];
     total: number;
@@ -284,8 +285,11 @@ class ListService {
       if (shouldLoad) {
         // trigger loadList only isLoadList == true
         handleLoadList();
+        if (typeof endLoadControl === "function") {
+          endLoadControl();
+        }
       }
-    }, [handleLoadList, shouldLoad]);
+    }, [handleLoadList, shouldLoad, endLoadControl]);
 
     const handleSearch = useCallback(() => {
       dispatch({ type: SEARCH_INIT });
