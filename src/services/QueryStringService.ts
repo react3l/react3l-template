@@ -51,29 +51,35 @@ export const queryStringService = {
 
     const buildFilter = React.useMemo(() => {
       const modelFilter = new ClassFilter();
+      modelFilter.orderBy = null;
+      modelFilter.orderType = null;
+
       const queryFilter: TFilter = qs.parse(
         history.location.search.substring(1),
       );
+
       if (!commonWebService.isEmpty(queryFilter)) {
         for (let prop in queryFilter) {
-          if (
-            typeof queryFilter[prop] === "object" &&
-            queryFilter[prop].constructor === Object
-          ) {
-            for (let subProp in queryFilter[prop]) {
-              if (queryFilter[prop][subProp]) {
-                modelFilter[prop][subProp] = isStringNumber(
-                  queryFilter[prop][subProp],
-                )
-                  ? Number(queryFilter[prop][subProp])
-                  : queryFilter[prop][subProp];
-              } else {
-                modelFilter[prop][subProp] = null;
+          if (modelFilter.hasOwnProperty(prop)) {
+            if (
+              typeof queryFilter[prop] === "object" &&
+              queryFilter[prop].constructor === Object
+            ) {
+              for (let subProp in queryFilter[prop]) {
+                if (queryFilter[prop][subProp]) {
+                  modelFilter[prop][subProp] = isStringNumber(
+                    queryFilter[prop][subProp],
+                  )
+                    ? Number(queryFilter[prop][subProp])
+                    : queryFilter[prop][subProp];
+                } else {
+                  modelFilter[prop][subProp] = null;
+                }
               }
+            } else {
+              modelFilter[prop] = queryFilter[prop];
             }
-          } else {
-            modelFilter[prop] = queryFilter[prop];
-          }
+          } continue;
         }
         modelFilter["skip"] = Number(modelFilter["skip"]);
         modelFilter["take"] = Number(modelFilter["take"]);
@@ -89,6 +95,7 @@ export const queryStringService = {
       const cloneModelFilter = { ...modelFilter };
       for (let prop in cloneModelFilter) {
         if (
+          cloneModelFilter[prop] &&
           typeof cloneModelFilter[prop] === "object" &&
           cloneModelFilter[prop].constructor === Object
         ) {

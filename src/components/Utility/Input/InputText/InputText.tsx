@@ -84,7 +84,7 @@ function InputText(props: InputText<Model>) {
         { internalValue ? 
           <i className="input-icon input-text__icon tio-clear" onClick={handleClearInput}></i> :
           className && 
-          <i className={classNames('input-text__icon', className)}></i>
+          <i className={classNames('input-icon', 'input-text__icon', className)}></i>
         }
       </div>
     </>
