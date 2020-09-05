@@ -74,35 +74,13 @@ export const queryStringService = {
               break;
             default:
               for (let prop in value) {
-                if (isStringNumber(value[prop]))
+                if (value[prop] && isStringNumber(value[prop]))
                   value[prop] = Number(value[prop]);
               }
               modelFilter[key] = {...value};
               break;
           }
         });
-        for (let prop in queryFilter) {
-          if (modelFilter.hasOwnProperty(prop)) {
-            if (
-              typeof queryFilter[prop] === "object" &&
-              queryFilter[prop].constructor === Object
-            ) {
-              for (let subProp in queryFilter[prop]) {
-                if (queryFilter[prop][subProp]) {
-                  modelFilter[prop][subProp] = isStringNumber(
-                    queryFilter[prop][subProp],
-                  )
-                    ? Number(queryFilter[prop][subProp])
-                    : queryFilter[prop][subProp];
-                } else {
-                  modelFilter[prop][subProp] = null;
-                }
-              }
-            } else {
-              modelFilter[prop] = queryFilter[prop];
-            }
-          } continue;
-        }
         modelFilter["skip"] = Number(modelFilter["skip"]);
         modelFilter["take"] = Number(modelFilter["take"]);
       }
