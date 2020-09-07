@@ -12,6 +12,11 @@ import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { PriceListStatus } from "models/PriceList/PriceListStatus";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
 import { StoreType } from "models/StoreType";
+import { StoreFilter } from "models/StoreFilter";
+import { Store } from "antd/lib/form/interface";
+import { OrganizationFilter } from "models/OrganizationFilter";
+import { Organization } from "models/Organization";
+import { commonWebService } from "services/CommonWebService";
 
 export class PriceListRepository extends Repository {
   constructor() {
@@ -28,6 +33,18 @@ export class PriceListRepository extends Repository {
   count = (filter: PriceListFilter): Observable<number> => {
     return this.httpObservable
       .post<number>("count", filter)
+      .pipe(map((response: AxiosResponse<number>) => response.data));
+  };
+
+  listStore = (filter: StoreFilter): Observable<Store[]> => {
+    return this.httpObservable
+      .post<Store[]>(kebabCase(nameof(this.listStore)), filter)
+      .pipe(map((response: AxiosResponse<Store[]>) => response.data));
+  };
+
+  countStore = (filter: StoreFilter): Observable<number> => {
+    return this.httpObservable
+      .post<number>(kebabCase(nameof(this.countStore)), filter)
       .pipe(map((response: AxiosResponse<number>) => response.data));
   };
 
@@ -72,6 +89,21 @@ export class PriceListRepository extends Repository {
         filter,
       )
       .pipe(map((response: AxiosResponse<PriceListStatus[]>) => response.data));
+  };
+
+  singleListOrganization = (
+    filter: OrganizationFilter,
+  ): Observable<Organization[]> => {
+    return this.httpObservable
+      .post<OrganizationFilter[]>(
+        kebabCase(nameof(this.singleListOrganization)),
+        filter,
+      )
+      .pipe(
+        map((response: AxiosResponse<OrganizationFilter[]>) =>
+          commonWebService.buildTree(response.data),
+        ),
+      );
   };
 }
 

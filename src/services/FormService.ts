@@ -154,46 +154,53 @@ export const formService = {
     return React.useCallback(handleChangeField(index, fieldName), []);
   },
 
-  useContentField<T extends Model, TContent extends Model>(
+  useContentField<TContent extends Model>(
     ContentClass: new () => TContent,
     contentList: TContent[],
     setContentList: (t: TContent[]) => void,
   ): [
     TContent[],
     (
-      index: number,
+      key: string,
       field: keyof TContent,
     ) => (value: TContent[keyof TContent]) => void,
-    (index: number) => (content: TContent) => void,
+    (key: string) => (content: TContent) => void,
     () => void,
     (index: number) => () => void,
   ] {
+    /* change all rows */
     const handleChangeContentList: (
       contentList: TContent[],
     ) => void = React.useCallback(setContentList, []);
 
+    /* change one rows */
     const handleChangeContent = React.useCallback(
-      (index: number) => (content: TContent) => {
+      (key: string) => (content: TContent) => {
+        const index = contentList.findIndex((item) => item.key === key);
         contentList[index] = content;
         handleChangeContentList(contentList);
       },
       [contentList, handleChangeContentList],
     );
 
+    /* change one cell */
     const handleChangeContentField = React.useCallback(
-      (index: number, field: keyof TContent) => (
+      (key: string, field: keyof TContent) => (
         value: TContent[keyof TContent],
       ) => {
+        const index = contentList.findIndex((item) => item.key === key);
         contentList[index][field] = value;
         handleChangeContentList(contentList);
       },
       [contentList, handleChangeContentList],
     );
 
+    /* add one row */
     const handleAddContent = React.useCallback(() => {
       handleChangeContentList([...contentList, new ContentClass()]);
     }, [ContentClass, contentList, handleChangeContentList]);
 
+    /* remove */
     const handleRemoveContent = React.useCallback(
       (index: number) => () => {
         contentList.splice(index, 1);

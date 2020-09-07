@@ -1,30 +1,29 @@
-import { Tooltip } from "antd";
+import { Tooltip, Table } from "antd";
+import nameof from "ts-nameof.macro";
 import { Store } from "antd/lib/form/interface";
-import Table from "antd/lib/table";
+import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
+import InputText from "components/Utility/Input/InputText/InputText";
 import Pagination from "components/Utility/Pagination/Pagination";
-import Model from "core/models/Model";
 import { renderMasterIndex } from "helpers/table";
 import { PriceListStoreMappings } from "models/PriceList";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
+import { StoreType } from "models/StoreType";
+import { StoreTypeFilter } from "models/StoreTypeFilter";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { priceListRepository } from "repositories/price-list-repository";
+import { formService } from "services/FormService";
 import listService from "services/list-service";
 import tableService, { getAntOrderType } from "services/tbl-service";
-import nameof from "ts-nameof.macro";
-import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
-import { StoreTypeFilter } from "models/StoreTypeFilter";
-import { priceListRepository } from "repositories/price-list-repository";
-import { StoreType } from "models/StoreType";
+import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 
-export interface ContentTableProps<TContent extends Model> {
-  content: TContent[];
-  setContent: (content: TContent[]) => void;
+export interface ContentTableProps {
+  content: PriceListStoreMappings[];
+  setContent: (content: PriceListStoreMappings[]) => void;
 }
 
-export default function PriceListStoreMappingTable(
-  props: ContentTableProps<PriceListStoreMappings>,
-) {
+export default function PriceListStoreMappingTable(props: ContentTableProps) {
   const [translate] = useTranslation();
   const { content, setContent } = props;
 
@@ -43,12 +42,22 @@ export default function PriceListStoreMappingTable(
     rowSelection,
     pagination,
   } = tableService.useLocalTable(
-    list,
     total,
-    loadingList,
     handleSearch,
     filter,
     (filter) => setFilter(filter),
+    content,
+    setContent,
+  );
+
+  // cant be lift up when render column dynamically
+  const [
+    ,
+    handleChangeContentField,
+    ,
+    handleAddContent,
+  ] = formService.useContentField<PriceListStoreMappings>(
+    PriceListStoreMappings,
     content,
     setContent,
   );
@@ -70,6 +79,18 @@ export default function PriceListStoreMappingTable(
     },
     [filter, setFilter, handleSearch],
   );
+
+  // need separating to be reused
+  const handleAdd = useCallback(() => {
+    // add content
+    handleAddContent();
+    // go to the last page
+    setFilter({
+      ...filter,
+      skip: Math.round(total / filter.take) * filter.take,
+    });
+    handleSearch();
+  }, [handleAddContent, handleSearch, filter, total]);
 
   const columns = useMemo(
     () => [
@@ -112,8 +133,20 @@ export default function PriceListStoreMappingTable(
             key: "code",
             dataIndex: nameof(content[0].storeCode),
             ellipsis: true,
-            render(storeCode: string) {
-              return storeCode;
+            render(storeCode: string, record: PriceListStoreMappings) {
+              return (
+                <InputText
+                  isMaterial={true}
+                  value={storeCode}
+                  title={translate("priceList.storeCode")}
+                  placeHolder={translate("priceList.placeholder.storeCode")}
+                  className={"tio-account_square_outlined"}
+                  onChange={handleChangeContentField(
+                    record.key,
+                    nameof(content[0].storeCode),
+                  )}
+                />
+              );
             },
           },
         ],
@@ -153,8 +186,24 @@ export default function PriceListStoreMappingTable(
         ],
       },
     ],
-    [pagination, content, filter, translate, handleFilter],
+    [
+      pagination,
+      content,
+      filter,
+      translate,
+      handleFilter,
+      handleChangeContentField,
+    ],
   );
+
+  // state for modal
+  const {
+    visible,
+    loadControl,
+    handleEndControl,
+    handleOpenModal,
+    handleCloseModal,
+  } = tableService.useContenModal();
 
   return (
     <>
@@ -184,6 +233,14 @@ export default function PriceListStoreMappingTable(
                 className='flex-shrink-1 d-flex align-items-center'
                 key='actions'
               >
+                <Tooltip title={translate("Thêm nhiều dòng")} key='openModal'>
+                  <button
+                    className='btn gradient-btn-icon text-center'
+                    onClick={handleOpenModal}
+                  >
+                    <i className='tio-add ' />
+                  </button>
+                </Tooltip>
                 <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
                   <button className='btn component__btn-delete'>
                     <i className='tio-delete' />
@@ -218,6 +275,24 @@ export default function PriceListStoreMappingTable(
             </div>
           </>
         )}
+        footer={() => (
+          <div className='d-flex justify-content-end'>
+            <Tooltip title={translate("Thêm một dòng")} key='addRow'>
+              <button
+                className='btn btn-sm gradient-btn-icon text-center'
+                onClick={handleAdd}
+              >
+                <i className='tio-add mr-2' />
+              </button>
+            </Tooltip>
+          </div>
+        )}
+      />
+      <ContentModal
+        visible={visible}
+        loadControl={loadControl}
+        endLoadControl={handleEndControl}
+        onClose={handleCloseModal}
       />
     </>
   );

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import nameof from "ts-nameof.macro";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
 import InputText from "components/Utility/Input/InputText/InputText";
+import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import Select from "components/Utility/Select/Select";
 import { OrganizationFilter } from "models/OrganizationFilter";
 import { PriceList } from "models/PriceList";
@@ -22,6 +23,7 @@ function PriceListDetailView() {
     isDetail,
     handleChangeSimpleField,
     handleChangeObjectField,
+    // handleSave
   } = detailService.useDetail<PriceList>(PriceList, priceListRepository.get);
 
   const {
@@ -79,16 +81,16 @@ function PriceListDetailView() {
                       />
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <Select
-                        title={translate("priceList.organzation")}
-                        classFilter={OrganizationFilter}
-                        placeHolder={translate(
-                          "priceList.placeholder.organzation",
-                        )}
-                        onChange={handleChangeObjectField(
-                          nameof(model.organization),
-                        )}
+                      <TreeSelect
                         isMaterial={true}
+                        placeHolder={"Select Organization"}
+                        selectable={true}
+                        classFilter={OrganizationFilter}
+                        // onChange={handleChangeItem}
+                        checkStrictly={true}
+                        // item={item}
+                        // listItem={listItem}
+                        getTreeData={priceListRepository.singleListOrganization}
                       />
                     </Col>
                     <Col lg={6}>
@@ -169,8 +171,15 @@ function PriceListDetailView() {
             </Card>
           </Col>
         </Row>
+        {/* end dependent lists */}
+        {/* start save action */}
+        <Row className='mt-3 mb-5'>
+          <button className='btn component__btn-primary pr-4 mb-5'>
+            {translate("general.actions.search")}
+          </button>
+        </Row>
+        {/* end save action */}
       </div>
-      {/* end dependent lists */}
     </div>
   );
 }
