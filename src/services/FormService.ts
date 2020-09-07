@@ -60,6 +60,10 @@ export const formService = {
       fieldName: keyof T,
     ) => (fieldIdValue: number, fieldValue?: T[keyof T]) => void,
     (data: T) => void,
+    (
+      fieldName: string,
+      callback?: (id: number) => void,
+    ) => (list: T[keyof T][]) => void,
   ] {
     const [model, dispatch] = React.useReducer<Reducer<T, FormDetailAction<T>>>(
       formDetailReducer,
@@ -119,6 +123,22 @@ export const formService = {
       [],
     );
 
+    const handleChangeTreeObjectField = React.useCallback(
+      <P extends keyof T>(fieldName: P, callback?: (id: number) => void) => {
+        return (list: T[keyof T][]) => {
+          dispatch({
+            type: FORM_DETAIL_CHANGE_OBJECT_FIELD_ACTION,
+            fieldName,
+            fieldValue: list[0],
+          });
+          if (typeof callback === "function") {
+            callback(list[0]);
+          }
+        };
+      },
+      [],
+    );
+
     // allow external update model from hook's scope
     const handleUpdateNewModel = useCallback((data: T) => {
       dispatch({ type: FORM_DETAIL_SET_STATE_ACTION, data });
@@ -129,6 +149,7 @@ export const formService = {
       handleChangeSimpleField,
       handleChangeObjectField,
       handleUpdateNewModel,
+      handleChangeTreeObjectField,
     ];
   },
 

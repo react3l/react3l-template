@@ -1,22 +1,21 @@
-import { Repository } from "react3l/core";
-import { httpConfig } from "config/http";
-import { url, kebabCase } from "react3l/helpers";
-import { BASE_API_URL } from "config/consts";
-import { API_PRICELIST_PREFIX } from "config/api-consts";
-import { Observable } from "rxjs";
-import { PriceList, PriceListFilter } from "models/PriceList";
-import { map } from "rxjs/operators";
-import { AxiosResponse } from "axios";
-import nameof from "ts-nameof.macro";
-import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
-import { PriceListStatus } from "models/PriceList/PriceListStatus";
-import { StoreTypeFilter } from "models/StoreTypeFilter";
-import { StoreType } from "models/StoreType";
-import { StoreFilter } from "models/StoreFilter";
 import { Store } from "antd/lib/form/interface";
-import { OrganizationFilter } from "models/OrganizationFilter";
+import { AxiosResponse } from "axios";
+import { API_PRICELIST_PREFIX } from "config/api-consts";
+import { BASE_API_URL } from "config/consts";
+import { httpConfig } from "config/http";
 import { Organization } from "models/Organization";
-import { commonWebService } from "services/CommonWebService";
+import { OrganizationFilter } from "models/OrganizationFilter";
+import { PriceList, PriceListFilter } from "models/PriceList";
+import { PriceListStatus } from "models/PriceList/PriceListStatus";
+import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
+import { StoreFilter } from "models/StoreFilter";
+import { StoreType } from "models/StoreType";
+import { StoreTypeFilter } from "models/StoreTypeFilter";
+import { Repository } from "react3l/core";
+import { kebabCase, url } from "react3l/helpers";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import nameof from "ts-nameof.macro";
 
 export class PriceListRepository extends Repository {
   constructor() {
@@ -100,9 +99,7 @@ export class PriceListRepository extends Repository {
         filter,
       )
       .pipe(
-        map((response: AxiosResponse<OrganizationFilter[]>) =>
-          commonWebService.buildTree(response.data),
-        ),
+        map((response: AxiosResponse<OrganizationFilter[]>) => response.data),
       );
   };
 }
