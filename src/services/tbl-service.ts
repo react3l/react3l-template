@@ -54,6 +54,7 @@ export enum ModalActionEnum {
 }
 
 export enum ContentTableActionEnum {
+  SET_CONTENT_SELECTION,
   SINGLE_DELETE,
   BULK_DELETE,
 }
@@ -100,6 +101,12 @@ function contentTableReducer<TMapping extends Model, TMapper extends Model>(
         ...state,
         mappingList: [],
         mapperList: action.mapperList,
+      };
+    }
+    case ContentTableActionEnum.SET_CONTENT_SELECTION: {
+      return {
+        ...state,
+        mappingList: action.mappingList,
       };
     }
   }
@@ -505,11 +512,20 @@ export class TableService {
       mappingList: [],
       mapperList: [],
     });
+
+    // define setMappingList alternater for setSelectedContent
+    const setMappingList = useCallback((mappingList: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_CONTENT_SELECTION,
+        mappingList,
+      });
+    }, []);
+
     // selectedRowKeys
     const {
       rowSelection,
       canBulkDelete, // for UI
-    } = this.useContentRowSelection(source, setSource);
+    } = this.useContentRowSelection(mappingList, setMappingList);
 
     // calculate pagination
     const pagination: PaginationProps = this.usePagination<TFilter>(

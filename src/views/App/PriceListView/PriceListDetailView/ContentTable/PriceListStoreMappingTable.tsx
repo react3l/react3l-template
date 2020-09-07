@@ -21,11 +21,12 @@ import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 export interface ContentTableProps {
   content: PriceListStoreMappings[];
   setContent: (content: PriceListStoreMappings[]) => void;
+  mapperField: string;
 }
 
 export default function PriceListStoreMappingTable(props: ContentTableProps) {
   const [translate] = useTranslation();
-  const { content, setContent } = props;
+  const { content, setContent, mapperField } = props;
 
   const [filter, setFilter] = useState<PriceListStoreMappingsFilter>(
     new PriceListStoreMappingsFilter(),
@@ -48,6 +49,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     (filter) => setFilter(filter),
     content,
     setContent,
+    mapperField,
   );
 
   // cant be lift up when render column dynamically

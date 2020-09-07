@@ -28,7 +28,7 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const {
     visible,
     defaultSelectedRowKey,
-    onSave,
+    // onSave,
     width,
     onClose,
     loadControl,

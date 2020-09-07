@@ -22,6 +22,7 @@ export interface ContentTableProps<
   content: TContent[];
   setContent: (content: TContent[]) => void;
   columnData: ColumnData[];
+  mapperField?: string;
 }
 
 export default function ContentTable<
@@ -30,7 +31,14 @@ export default function ContentTable<
 >(props: ContentTableProps<TContent, TContentFilter>) {
   const [translate] = useTranslation();
 
-  const { filter, setFilter, content, setContent, columnData } = props;
+  const {
+    filter,
+    setFilter,
+    content,
+    setContent,
+    columnData,
+    mapperField,
+  } = props;
 
   const { list, total, loadingList, handleSearch } = listService.useLocalList(
     filter,
@@ -48,6 +56,7 @@ export default function ContentTable<
     setFilter,
     content,
     setContent,
+    mapperField,
   );
 
   const columns = tableColumnFactory.renderTableColumn(columnData);
