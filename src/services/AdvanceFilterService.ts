@@ -1,10 +1,15 @@
 import { Moment } from 'moment';
-import React from 'react';
+import React, { Reducer } from 'react';
 import { DateFilter } from 'react3l-advanced-filters/DateFilter';
 import { Filter } from 'react3l-advanced-filters/Filter';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
 import { ModelFilter, OrderType } from 'react3l/core';
 import nameof from 'ts-nameof.macro';
+import { TablePaginationConfig } from 'antd/lib/table';
+import { Key, SorterResult } from 'antd/lib/table/interface';
+import { tableService } from './TableService';
+import { StringFilter } from 'react3l-advanced-filters/StringFilter';
+import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 
 export enum ActionFilterEnum {
     ChangeAllField,
@@ -53,6 +58,106 @@ export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
 }
 
 export const advanceFilterService = {
+    useFilter <TFilter extends ModelFilter> (
+        modelFilter: TFilter,
+        dispatch: (action: AdvanceFilterAction<TFilter, StringFilter | NumberFilter | DateFilter | IdFilter>) => void,
+        ClassFilter: new () => TFilter,
+    ): [
+        (
+          fieldName: keyof TFilter,
+          fieldType: keyof StringFilter | NumberFilter | DateFilter | IdFilter | (keyof StringFilter | NumberFilter | DateFilter | IdFilter)[],
+        ) => (value: any) => void,
+        (
+          newPagination: TablePaginationConfig,
+          filters: Record<string, Key[] | null>,
+          sorter: SorterResult<TFilter>,
+        ) => void,
+        (skip: number, take: number) => void,
+        () => void,
+        (data: TFilter) => void,
+    ] {
+
+      const handleChangeFilter = React.useCallback(
+        (fieldName: string, fieldType: keyof Filter | (keyof Filter)[]) => (value: any) => {
+        if(fieldType instanceof Array) {
+            dispatch({
+                type: ActionFilterEnum.ChangeAllField,
+                data: {...modelFilter,
+                    [fieldName]: {
+                        [nameof('greater')]: value[0] || null,
+                        [nameof('less')]: value[1] || null,
+                    },
+                },
+            });
+        } else {
+            dispatch({
+                type: ActionFilterEnum.ChangeOneField,
+                fieldName: fieldName,
+                fieldType: fieldType,
+                fieldValue: value,
+              });
+        }
+        },
+        [dispatch, modelFilter],
+      );
+  
+      const handleChangeOrder = React.useCallback(
+        (
+          newPagination: TablePaginationConfig,
+          filters: Record<string, Key[] | null>,
+          sorter: SorterResult<TFilter>,
+        ) => {
+          if (
+            sorter.field !== modelFilter.orderBy ||
+            sorter.order !==
+              tableService.getAntOrderType(modelFilter, sorter.field)
+          ) {
+            dispatch({
+              type: ActionFilterEnum.ChangeOrderType,
+              orderBy: sorter.field,
+              orderType: tableService.getOrderType(sorter.order),
+            });
+            return;
+          }
+        },
+        [dispatch, modelFilter],
+      );
+  
+      const handlePagination = React.useCallback(
+        (skip: number, take: number) => {
+          dispatch({
+            type: ActionFilterEnum.ChangeSkipTake,
+            skip,
+            take,
+          });
+        },
+        [dispatch],
+      );
+  
+      const handleResetFilter = React.useCallback(() => {
+        const newFilter = new ClassFilter();
+        newFilter.skip = 0;
+        newFilter.take = 10;
+  
+        dispatch({
+          type: ActionFilterEnum.ChangeAllField,
+          data: newFilter,
+        });
+      }, [dispatch, ClassFilter]);
+  
+      const handleUpdateNewFilter = React.useCallback((data: TFilter) => {
+        dispatch({ type: ActionFilterEnum.ChangeAllField, data });
+      }, [dispatch]);
+
+      return [
+        handleChangeFilter,
+        handleChangeOrder,
+        handlePagination,
+        handleResetFilter,
+        handleUpdateNewFilter,
+      ];
+    },
+
     useAdvaceFilter <T1Filter extends ModelFilter, T2Filter extends Filter> (
         modelFilter: T1Filter,
         dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
@@ -75,6 +180,34 @@ export const advanceFilterService = {
         return [
             value, 
             handleChangeFilter,
+        ];
+    },
+
+    useAdvanceFilterRange <T1Filter extends ModelFilter, T2Filter extends Filter> (
+        modelFilter: T1Filter,
+        dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+        fieldName: keyof T1Filter,
+    ): [
+        [any, any],
+        (valueRange: [any, any]) => void,
+    ] {
+        const valueFrom = modelFilter[fieldName][nameof('greater')];
+        const valueTo = modelFilter[fieldName][nameof('less')];
+        const value: [any, any] = [valueFrom, valueTo];
+        const handleChangeRange = React.useCallback((valueRange: [any, any]) => {
+            dispatch({
+                type: ActionFilterEnum.ChangeAllField,
+                data: {...modelFilter,
+                    [fieldName]: {
+                        [nameof('greater')]: valueRange[0],
+                        [nameof('less')]: valueRange[1],
+                    },
+                },
+            });
+        }, [dispatch, fieldName, modelFilter]);
+        return [
+            value,
+            handleChangeRange,
         ];
     },
 
