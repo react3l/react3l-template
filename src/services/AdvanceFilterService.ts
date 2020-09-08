@@ -1,5 +1,5 @@
 import { Moment } from 'moment';
-import React, { Reducer } from 'react';
+import React from 'react';
 import { DateFilter } from 'react3l-advanced-filters/DateFilter';
 import { Filter } from 'react3l-advanced-filters/Filter';
 import { NumberFilter } from 'react3l-advanced-filters/NumberFilter';
@@ -20,6 +20,7 @@ export enum ActionFilterEnum {
 
 export interface AdvanceFilterAction<T1, T2> {
     type: ActionFilterEnum;
+    classFilter?: new (partial?: any) => T2;
     data?: T1;
     fieldName?: keyof T1;
     fieldType?: keyof T2;
@@ -27,7 +28,7 @@ export interface AdvanceFilterAction<T1, T2> {
     skip?: number;
     take?: number;
     orderBy?: string | number | (string | number)[];
-    orderType?: OrderType; 
+    orderType?: OrderType;
 }
 
 export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
@@ -36,9 +37,9 @@ export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>
         case ActionFilterEnum.ChangeOneField:
             return {
                 ...state,
-                [action.fieldName]: {
+                [action.fieldName]: new action.classFilter({
                     [action.fieldType]: action.fieldValue,
-                },
+                }),
             };
         case ActionFilterEnum.ChangeAllField:
             return action.data;
@@ -65,7 +66,8 @@ export const advanceFilterService = {
     ): [
         (
           fieldName: keyof TFilter,
-          fieldType: keyof StringFilter | NumberFilter | DateFilter | IdFilter | (keyof StringFilter | NumberFilter | DateFilter | IdFilter)[],
+          fieldType: keyof (StringFilter | NumberFilter | DateFilter | IdFilter) | (keyof StringFilter | NumberFilter | DateFilter | IdFilter)[],
+          ClassSubFilter: new () => (StringFilter | NumberFilter | DateFilter | IdFilter),
         ) => (value: any) => void,
         (
           newPagination: TablePaginationConfig,
@@ -78,15 +80,18 @@ export const advanceFilterService = {
     ] {
 
       const handleChangeFilter = React.useCallback(
-        (fieldName: string, fieldType: keyof Filter | (keyof Filter)[]) => (value: any) => {
+        (   fieldName: string, 
+            fieldType: keyof Filter | (keyof Filter)[], 
+            ClassSubFilter: new (partial?: any) => (StringFilter | NumberFilter | DateFilter | IdFilter),
+        ) => (value: any) => {
         if(fieldType instanceof Array) {
             dispatch({
                 type: ActionFilterEnum.ChangeAllField,
                 data: {...modelFilter,
-                    [fieldName]: {
-                        [nameof('greater')]: value[0] || null,
-                        [nameof('less')]: value[1] || null,
-                    },
+                    [fieldName]: new ClassSubFilter({
+                        [nameof('greater')]: value[0],
+                        [nameof('less')]: value[1],
+                    }),
                 },
             });
         } else {
@@ -95,6 +100,7 @@ export const advanceFilterService = {
                 fieldName: fieldName,
                 fieldType: fieldType,
                 fieldValue: value,
+                classFilter: ClassSubFilter,
               });
         }
         },
@@ -163,6 +169,7 @@ export const advanceFilterService = {
         dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
         fieldName: keyof T1Filter,
         fieldType: keyof T2Filter,
+        ClassFilter: new (partial?: any) => T2Filter,
     ):[
         any,
         (value: any) => void
@@ -173,9 +180,10 @@ export const advanceFilterService = {
                 type: ActionFilterEnum.ChangeOneField,
                 fieldName: fieldName,
                 fieldType: fieldType,
+                classFilter: ClassFilter,
                 fieldValue: value,
             });
-        }, [dispatch, fieldName, fieldType]);
+        }, [dispatch, fieldName, fieldType, ClassFilter]);
 
         return [
             value, 
@@ -187,6 +195,7 @@ export const advanceFilterService = {
         modelFilter: T1Filter,
         dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
         fieldName: keyof T1Filter,
+        ClassFilter: new (partial?: any) => T2Filter,
     ): [
         [any, any],
         (valueRange: [any, any]) => void,
@@ -198,13 +207,13 @@ export const advanceFilterService = {
             dispatch({
                 type: ActionFilterEnum.ChangeAllField,
                 data: {...modelFilter,
-                    [fieldName]: {
+                    [fieldName]: new ClassFilter({
                         [nameof('greater')]: valueRange[0],
                         [nameof('less')]: valueRange[1],
-                    },
+                    }),
                 },
             });
-        }, [dispatch, fieldName, modelFilter]);
+        }, [dispatch, fieldName, modelFilter, ClassFilter]);
         return [
             value,
             handleChangeRange,

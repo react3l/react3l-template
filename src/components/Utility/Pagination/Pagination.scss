@@ -52,7 +52,7 @@
 
         .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-link-icon, 
         .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-link-icon {
-            @include variable(color, #013FFB);
+            @include icon-color;
         }
 
     }

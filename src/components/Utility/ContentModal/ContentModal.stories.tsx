@@ -22,9 +22,11 @@ function Default() {
     const handleOpenModal = () => {
         setToogleModal(true);
     };
+
     const handleCloseModal = () => {
         setToogleModal(false);
-    }
+    };
+    
     const [list, , total, loading, ,] = tableService.useMasterTable<
     Payment,
     PaymentFilter

@@ -144,7 +144,8 @@ body {
   .component__btn-toggle-active {
     border-radius: 7px;
     box-sizing: border-box;
-    border: 1px solid #4865f8;
+    border: 1px solid;
+    @include border-radius-color;
     height: 38px;
     margin: 0 auto;
     min-width: 38px;
@@ -156,7 +157,8 @@ body {
     }
   }
   .component__btn-outline-primary {
-    border: 1px solid #4865f8;
+    border: 1px solid;
+    @include border-radius-color;
     border-radius: 7px;
     height: 38px;
     margin: 0 auto;

@@ -69,22 +69,22 @@ function IndirectSalesOrderMasterView() {
   const [valueString, setValueString] = advanceFilterService.useAdvaceFilter<
     DemoFilter,
     StringFilter
-  >(filter, dispatch, "name", "startWith");
+  >(filter, dispatch, "name", "startWith", StringFilter);
 
   const [valueNumber, setValueNumber] = advanceFilterService.useAdvaceFilter<
     DemoFilter,
     NumberFilter
-  >(filter, dispatch, "number", "equal");
+  >(filter, dispatch, "number", "equal", NumberFilter);
 
   const [valueId, setValueId] = advanceFilterService.useAdvaceFilter<
     DemoFilter,
     IdFilter
-  >(filter, dispatch, "id", "equal");
+  >(filter, dispatch, "id", "equal", IdFilter);
 
   const [valueDate, setValueDate] = advanceFilterService.useAdvaceFilter<
     DemoFilter,
     DateFilter
-  >(filter, dispatch, "date", "equal");
+  >(filter, dispatch, "date", "equal", DateFilter);
 
   const [
     valueDateRange,
