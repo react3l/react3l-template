@@ -1,6 +1,6 @@
 import Model from "core/models/Model";
 import { PaginationProps } from "antd/lib/pagination";
-import { DEFAULT_TAKE } from "react3l/config";
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
 
 export function renderMasterIndex<T extends Model>(
   pagination?: PaginationProps,

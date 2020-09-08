@@ -4,7 +4,7 @@ import Pagination from "components/Utility/Pagination/Pagination";
 import Model from "core/models/Model";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ModelFilter } from "react3l/core";
+import { ModelFilter } from "@react3l/react3l/core";
 import tableService from "services/tbl-service";
 import nameof from "ts-nameof.macro";
 import {

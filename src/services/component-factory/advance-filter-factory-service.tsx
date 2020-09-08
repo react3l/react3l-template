@@ -1,5 +1,5 @@
 import React from "react";
-import { ModelFilter } from "react3l/core";
+import { ModelFilter } from "@react3l/react3l/core";
 import { Observable } from "rxjs";
 import { Moment } from "moment";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";

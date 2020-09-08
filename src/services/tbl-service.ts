@@ -5,8 +5,8 @@ import {
   SortOrder,
   TableRowSelection,
 } from "antd/lib/table/interface";
-import { DEFAULT_TAKE } from "react3l/config";
-import { Model } from "react3l/core";
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
+import { Model } from "@react3l/react3l/core";
 import listService from "services/list-service";
 import {
   useCallback,
@@ -16,7 +16,7 @@ import {
   useReducer,
   Reducer,
 } from "react";
-import { ModelFilter } from "react3l/core";
+import { ModelFilter } from "@react3l/react3l/core";
 import { Observable } from "rxjs";
 
 type KeyType = string | number;
@@ -367,7 +367,8 @@ export class TableService {
             if (typeof setSource === "function") {
               setSource(
                 source.filter(
-                  (item) => !(selectedRowKeys as string[]).includes(item.key), // rowSelection serve either server table or local table, so we should cast selectedRowKeys as string[]
+                  (item) =>
+                    !(selectedRowKeys as string[]).includes(item.key as string), // rowSelection serve either server table or local table, so we should cast selectedRowKeys as string[]
                 ),
               ); // remove many items in source by key and update source
             }
@@ -659,10 +660,10 @@ export function getAntOrderType<T extends Model, TFilter extends ModelFilter>(
 ): SortOrder {
   if (tFilter.orderBy === columnName) {
     switch (tFilter.orderType) {
-      case "asc":
+      case "ASC":
         return "ascend";
 
-      case "desc":
+      case "DESC":
         return "descend";
 
       default:
@@ -675,10 +676,10 @@ export function getAntOrderType<T extends Model, TFilter extends ModelFilter>(
 export function getOrderType(sortOrder?: SortOrder) {
   switch (sortOrder) {
     case "ascend":
-      return "asc";
+      return "ASC";
 
     case "descend":
-      return "desc";
+      return "DESC";
 
     default:
       return null;

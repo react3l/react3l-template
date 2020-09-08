@@ -15,15 +15,15 @@ import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringF
 import Pagination from "components/Utility/Pagination/Pagination";
 import { PAYMENT_REQUEST_DETAIL_ROUTE } from "config/route-consts";
 import { routerService } from "services/RouterService";
-import { ModelFilter, Model } from "react3l/core";
+import { ModelFilter, Model } from "@react3l/react3l/core";
 import { queryStringService } from "services/QueryStringService";
 import { PaymentFilter } from "models/PaymenFilter";
 import { paymentRepository } from "repositories/payment-repository";
 import { Province } from "models/Province";
 import { Moment } from "moment";
 import { Observable } from "rxjs/internal/Observable";
-import { IdFilter } from "react3l-advanced-filters/IdFilter";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {
@@ -176,7 +176,7 @@ function PaymentMasterView() {
         key: nameof("general.actions.action"),
         dataIndex: nameof(list[0].id),
         align: "center",
-        fixed: 'right',
+        fixed: "right",
         width: 200,
         render() {
           return (

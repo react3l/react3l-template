@@ -1,6 +1,6 @@
 import React, { Reducer, useRef } from "react";
-import { ModelFilter } from "react3l/core/model-filter";
-import { Filter } from "react3l-advanced-filters/Filter";
+import { ModelFilter } from "@react3l/react3l/core/model-filter";
+import { Filter } from "@react3l/advanced-filters/Filter";
 import {
   AdvanceFilterAction,
   advanceFilterReducer,
@@ -11,14 +11,14 @@ import { commonWebService } from "./CommonWebService";
 import moment from "moment";
 import { TablePaginationConfig } from "antd/lib/table";
 import { Key, SorterResult } from "antd/lib/table/interface";
-import { Model } from "react3l/core";
+import { Model } from "@react3l/react3l/core";
 import { tableService } from "./TableService";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
-import { NumberFilter } from "react3l-advanced-filters/NumberFilter";
-import { DateFilter } from "react3l-advanced-filters/DateFilter";
-import { IdFilter } from "react3l-advanced-filters/IdFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
+import { DateFilter } from "@react3l/advanced-filters/DateFilter";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 import { useCallback } from "reactn";
-import nameof from 'ts-nameof.macro';
+import nameof from "ts-nameof.macro";
 
 const qs = require("qs");
 
@@ -58,29 +58,31 @@ export const queryStringService = {
       );
 
       if (!commonWebService.isEmpty(queryFilter)) {
-        Object.entries(queryFilter).forEach(([key, value]: [keyof TFilter, any]) => {
-          switch(key) {
-            case nameof(ModelFilter.prototype.orderBy):
-              modelFilter.orderBy = value;
-              break;
-            case nameof(ModelFilter.prototype.orderType):
-              modelFilter.orderType = value;
-              break;
-            case nameof(ModelFilter.prototype.skip):
-              modelFilter.skip = Number(value);
-              break;
-            case nameof(ModelFilter.prototype.take):
-              modelFilter.take = Number(value);
-              break;
-            default:
-              for (let prop in value) {
-                if (value[prop] && isStringNumber(value[prop]))
-                  value[prop] = Number(value[prop]);
-              }
-              modelFilter[key] = {...value};
-              break;
-          }
-        });
+        Object.entries(queryFilter).forEach(
+          ([key, value]: [keyof TFilter, any]) => {
+            switch (key) {
+              case nameof(ModelFilter.prototype.orderBy):
+                modelFilter.orderBy = value;
+                break;
+              case nameof(ModelFilter.prototype.orderType):
+                modelFilter.orderType = value;
+                break;
+              case nameof(ModelFilter.prototype.skip):
+                modelFilter.skip = Number(value);
+                break;
+              case nameof(ModelFilter.prototype.take):
+                modelFilter.take = Number(value);
+                break;
+              default:
+                for (let prop in value) {
+                  if (value[prop] && isStringNumber(value[prop]))
+                    value[prop] = Number(value[prop]);
+                }
+                modelFilter[key] = { ...value };
+                break;
+            }
+          },
+        );
         modelFilter["skip"] = Number(modelFilter["skip"]);
         modelFilter["take"] = Number(modelFilter["take"]);
       }

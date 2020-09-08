@@ -17,6 +17,7 @@ import { formService } from "services/FormService";
 import listService from "services/list-service";
 import tableService, { getAntOrderType } from "services/tbl-service";
 import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
+import { advanceFilterService } from "services/AdvanceFilterService";
 
 export interface ContentTableProps {
   content: PriceListStoreMappings[];
@@ -52,6 +53,10 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     mapperField,
   );
 
+  const handleFilter = advanceFilterService.useChangeLocalFilter<
+    PriceListStoreMappingsFilter
+  >(filter, setFilter, handleSearch);
+
   // cant be lift up when render column dynamically
   const [
     ,
@@ -62,24 +67,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     PriceListStoreMappings,
     content,
     setContent,
-  );
-
-  //   need separating to be reused
-  const handleFilter = useCallback(
-    (fieldName: string, fieldType: string) => {
-      return (value: any) => {
-        setFilter({
-          ...filter,
-          [fieldName]: {
-            [fieldType]: value,
-          },
-        });
-        if (typeof handleSearch === "function") {
-          handleSearch();
-        }
-      };
-    },
-    [filter, setFilter, handleSearch],
   );
 
   // need separating to be reused
@@ -140,7 +127,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                 <InputText
                   isMaterial={true}
                   value={storeCode}
-                  title={translate("priceList.storeCode")}
                   placeHolder={translate("priceList.placeholder.storeCode")}
                   className={"tio-account_square_outlined"}
                   onChange={handleChangeContentField(

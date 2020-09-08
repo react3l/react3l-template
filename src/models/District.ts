@@ -1,7 +1,7 @@
-import {Commune} from 'models/Commune';
-import {Province} from 'models/Province';
-import {Model, RegisteredModel} from 'react3l/core';
-import {AdministrativeType} from 'models/AdministrativeType';
+import { Commune } from "models/Commune";
+import { Province } from "models/Province";
+import { Model, RegisteredModel } from "@react3l/react3l/core";
+import { AdministrativeType } from "models/AdministrativeType";
 
 @RegisteredModel()
 export class District extends Model {

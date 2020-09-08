@@ -1,7 +1,9 @@
 import Model from "core/models/Model";
 import { Moment } from "moment";
-import { ModelFilter } from "react3l/core";
-import { IdFilter, StringFilter, DateFilter } from "react3l-advanced-filters";
+import { ModelFilter } from "@react3l/react3l/core";
+import { IdFilter, StringFilter, DateFilter } from "@react3l/advanced-filters";
+import { Organization } from "./Organization";
+import { SalesOrderType } from "./PriceList/SalesOrderType";
 
 export class PriceList extends Model {
   id?: number;
@@ -15,6 +17,8 @@ export class PriceList extends Model {
   priceListTypeId?: number;
   salesOrderTypeId?: number;
   priceListStoreMappings?: PriceListStoreMappings[];
+  organization: Organization;
+  saleOrderType: SalesOrderType;
 }
 
 export class PriceListFilter extends ModelFilter {

@@ -1,17 +1,19 @@
-import React from 'react';
-import './AdvanceDateRangeFilter.scss';
-import { Model } from 'react3l/core';
-import { Moment } from 'moment';
-import { DatePicker } from 'antd';
-import { RangePickerProps } from 'antd/lib/date-picker';
-import { commonWebService } from 'services/CommonWebService';
+import React from "react";
+import "./AdvanceDateRangeFilter.scss";
+import { Model } from "@react3l/react3l/core";
+import { Moment } from "moment";
+import { DatePicker } from "antd";
+import { RangePickerProps } from "antd/lib/date-picker";
+import { commonWebService } from "services/CommonWebService";
 
 const { RangePicker } = DatePicker;
 
-function SuffixDateIcon () {
-  return <span className="advance-date-range-filter__icon">
-    <i className="tio-calendar"></i>
-  </span>;
+function SuffixDateIcon() {
+  return (
+    <span className='advance-date-range-filter__icon'>
+      <i className='tio-calendar'></i>
+    </span>
+  );
 }
 
 interface AdvanceDateRangeFilterProps<T extends Model> {
@@ -20,49 +22,64 @@ interface AdvanceDateRangeFilterProps<T extends Model> {
   onChange?: (value: [Moment, Moment], dateString?: [string, string]) => void;
 }
 
-function AdvanceDateRangeFilter(props: AdvanceDateRangeFilterProps<Model> & RangePickerProps) { 
-  const {
-    value,
-    dateFormat,
-    onChange,
-  } = props;
+function AdvanceDateRangeFilter(
+  props: AdvanceDateRangeFilterProps<Model> & RangePickerProps,
+) {
+  const { value, dateFormat, onChange } = props;
 
   const internalValue: [Moment, Moment] = React.useMemo(() => {
-    return [typeof value[0] === 'string' ? commonWebService.toMomentDate(value[0]) : value[0],
-      typeof value[1] === 'string' ? commonWebService.toMomentDate(value[1]) : value[1]];
+    return [
+      typeof value[0] === "string"
+        ? commonWebService.toMomentDate(value[0])
+        : value[0],
+      typeof value[1] === "string"
+        ? commonWebService.toMomentDate(value[1])
+        : value[1],
+    ];
   }, [value]);
 
-  const handleClearDate = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    event.stopPropagation();
-    onChange([null , null]);
-  }, [onChange]);
+  const handleClearDate = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      event.stopPropagation();
+      onChange([null, null]);
+    },
+    [onChange],
+  );
 
-  const handleChange = React.useCallback((values: [Moment, Moment], formatString: [string, string]) => {
-    onChange([values[0].startOf('day'), values[1].endOf('day')]);
-  }, [onChange]);
+  const handleChange = React.useCallback(
+    (values: [Moment, Moment], formatString: [string, string]) => {
+      onChange([values[0].startOf("day"), values[1].endOf("day")]);
+    },
+    [onChange],
+  );
 
   return (
-    <div className="advance-date-range-filter__container">
-      <RangePicker {...props}
-          value={internalValue}
-          onChange={handleChange}
-          style={{width: '100%'}}
-          allowClear={false}
-          format={dateFormat}
-          placeholder={['Pick date1...', 'Pick date2...']}
-          suffixIcon={<SuffixDateIcon />}/>
-        { value[0] &&
-          <span className="advance-date-range-filter__icon-wrapper">
-              <i className="advance-date-range-filter__icon-clear tio-clear" onClick={handleClearDate}></i>
-          </span> 
-        }
+    <div className='advance-date-range-filter__container'>
+      <RangePicker
+        {...props}
+        value={internalValue}
+        onChange={handleChange}
+        style={{ width: "100%" }}
+        allowClear={false}
+        format={dateFormat}
+        placeholder={["Pick date1...", "Pick date2..."]}
+        suffixIcon={<SuffixDateIcon />}
+      />
+      {value[0] && (
+        <span className='advance-date-range-filter__icon-wrapper'>
+          <i
+            className='advance-date-range-filter__icon-clear tio-clear'
+            onClick={handleClearDate}
+          ></i>
+        </span>
+      )}
     </div>
   );
 }
 
 AdvanceDateRangeFilter.defaultProps = {
   isMaterial: false,
-  dateFormat: ['DD/MM/YYYY', 'YYYY/MM/DD'],
+  dateFormat: ["DD/MM/YYYY", "YYYY/MM/DD"],
 };
 
 export default AdvanceDateRangeFilter;

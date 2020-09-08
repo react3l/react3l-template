@@ -1,7 +1,7 @@
-import React, { Reducer } from "react";
-import { Model } from "react3l/core";
+import React, { Reducer, useCallback } from "react";
+import { Model, ErrorMap } from "@react3l/react3l/core";
 import { Observable, Subscription } from "rxjs";
-import { useCallback } from "reactn";
+import { ValidateStatus } from "components/Utility/FormItem/FormItem";
 
 export const FORM_DETAIL_SET_STATE_ACTION: string =
   "FORM_DETAIL_SET_STATE_ACTION";
@@ -64,6 +64,7 @@ export const formService = {
       fieldName: string,
       callback?: (id: number) => void,
     ) => (list: T[keyof T][]) => void,
+    React.Dispatch<FormDetailAction<T>>,
   ] {
     const [model, dispatch] = React.useReducer<Reducer<T, FormDetailAction<T>>>(
       formDetailReducer,
@@ -124,7 +125,10 @@ export const formService = {
     );
 
     const handleChangeTreeObjectField = React.useCallback(
-      <P extends keyof T>(fieldName: P, callback?: (id: number) => void) => {
+      <P extends keyof T>(
+        fieldName: P,
+        callback?: (item: T[keyof T]) => void,
+      ) => {
         return (list: T[keyof T][]) => {
           dispatch({
             type: FORM_DETAIL_CHANGE_OBJECT_FIELD_ACTION,
@@ -150,6 +154,7 @@ export const formService = {
       handleChangeObjectField,
       handleUpdateNewModel,
       handleChangeTreeObjectField,
+      dispatch,
     ];
   },
 
@@ -237,5 +242,16 @@ export const formService = {
       handleAddContent,
       handleRemoveContent,
     ];
+  },
+
+  getValidationStatus<T extends Model>(errors: ErrorMap<T>, field: string) {
+    if (typeof errors === "object" && errors !== null) {
+      if (errors.hasOwnProperty("field")) {
+        if (typeof errors[field] === "string" && errors[field] !== "") {
+          return ValidateStatus.error;
+        }
+      }
+    }
+    return null;
   },
 };

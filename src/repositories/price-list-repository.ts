@@ -11,11 +11,13 @@ import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { StoreFilter } from "models/StoreFilter";
 import { StoreType } from "models/StoreType";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
-import { Repository } from "react3l/core";
-import { kebabCase, url } from "react3l/helpers";
+import { Repository } from "@react3l/react3l/core";
+import { kebabCase, url } from "@react3l/react3l/helpers";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import nameof from "ts-nameof.macro";
+import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
+import { SalesOrderType } from "models/PriceList/SalesOrderType";
 
 export class PriceListRepository extends Repository {
   constructor() {
@@ -51,6 +53,22 @@ export class PriceListRepository extends Repository {
     return this.httpObservable
       .post<PriceList>(kebabCase(nameof(this.get)), { id })
       .pipe(map((response: AxiosResponse<PriceList>) => response.data));
+  };
+
+  public create = (priceList: PriceList): Observable<PriceList> => {
+    return this.httpObservable
+      .post<PriceList>(kebabCase(nameof(this.create)), priceList)
+      .pipe(map((response: AxiosResponse<PriceList>) => response.data));
+  };
+
+  public update = (priceList: PriceList): Observable<PriceList> => {
+    return this.httpObservable
+      .post<PriceList>(kebabCase(nameof(this.update)), priceList)
+      .pipe(map((response: AxiosResponse<PriceList>) => response.data));
+  };
+
+  public save = (priceList: PriceList): Observable<PriceList> => {
+    return priceList.id ? this.update(priceList) : this.create(priceList);
   };
 
   delete = (priceList: PriceList): Observable<PriceList> => {
@@ -94,13 +112,22 @@ export class PriceListRepository extends Repository {
     filter: OrganizationFilter,
   ): Observable<Organization[]> => {
     return this.httpObservable
-      .post<OrganizationFilter[]>(
+      .post<Organization[]>(
         kebabCase(nameof(this.singleListOrganization)),
         filter,
       )
-      .pipe(
-        map((response: AxiosResponse<OrganizationFilter[]>) => response.data),
-      );
+      .pipe(map((response: AxiosResponse<Organization[]>) => response.data));
+  };
+
+  singleListSalesOrderType = (
+    filter: SalesOrderTypeFilter,
+  ): Observable<SalesOrderType[]> => {
+    return this.httpObservable
+      .post<SalesOrderType[]>(
+        kebabCase(nameof(this.singleListSalesOrderType)),
+        filter,
+      )
+      .pipe(map((response: AxiosResponse<Organization[]>) => response.data));
   };
 }
 

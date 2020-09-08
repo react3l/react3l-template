@@ -15,15 +15,14 @@ import {
   IdFilter,
   NumberFilter,
   StringFilter,
-} from "react3l-advanced-filters";
-import { ModelFilter } from "react3l/core";
+} from "@react3l/advanced-filters";
+import { ModelFilter, Model } from "@react3l/react3l/core";
 import { forkJoin, Observable, of } from "rxjs";
 import { finalize, map, tap, take } from "rxjs/operators";
 import nameof from "ts-nameof.macro";
 // import subcriptionCancellation from "./SubscriptionService";
-import { commonService } from "react3l/services/common-service";
-import { DEFAULT_TAKE } from "react3l/config";
-import Model from "core/models/Model";
+import { commonService } from "@react3l/react3l/services/common-service";
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
 
 type KeyType = string | number;
 
@@ -442,339 +441,336 @@ function filterList<T extends Model, TFilter extends ModelFilter>(
                 break;
             }
           }
-          // filter by NumberFilter
-          if (value instanceof NumberFilter) {
-            Object.entries(value).forEach(([filterKey, filterValue]) => {
-              if (filterKey === nameof(value.range)) {
-                list = list.filter((t: T) => {
-                  const v: number = t[key] as number;
-                  if (typeof v === "number") {
-                    let result: boolean = true;
-                    if (filterValue instanceof Array) {
-                      if (typeof filterValue[0] === "number") {
-                        result = result && v >= filterValue[0];
-                      }
-                      if (typeof filterValue[1] === "number") {
-                        result = result && v <= filterValue[1];
-                      }
-                    }
-                    return result;
+        });
+      }
+      // filter by NumberFilter
+      if (value instanceof NumberFilter) {
+        Object.entries(value).forEach(([filterKey, filterValue]) => {
+          if (filterKey === nameof(value.range)) {
+            list = list.filter((t: T) => {
+              const v: number = t[key] as number;
+              if (typeof v === "number") {
+                let result: boolean = true;
+                if (filterValue instanceof Array) {
+                  if (typeof filterValue[0] === "number") {
+                    result = result && v >= filterValue[0];
                   }
-                  return true;
-                });
-              } else {
-                if (
-                  typeof filterValue === "number" &&
-                  !Number.isNaN(filterValue)
-                ) {
-                  switch (filterKey) {
-                    case nameof(value.equal):
-                      list = list.filter((t: T) => {
-                        const v: number = t[key] as number;
-                        if (
-                          typeof v === "number" &&
-                          typeof filterValue === "number"
-                        ) {
-                          return v === filterValue;
-                        }
-                        return true;
-                      });
-                      break;
-
-                    case nameof(value.notEqual):
-                      list = list.filter((t: T) => {
-                        const v: number = t[key] as number;
-                        if (
-                          typeof v === "number" &&
-                          typeof filterValue === "number"
-                        ) {
-                          return v !== filterValue;
-                        }
-                        return true;
-                      });
-                      break;
-
-                    case nameof(value.less):
-                      list = list.filter((t: T) => {
-                        const v: number = t[key] as number;
-                        if (
-                          typeof v === "number" &&
-                          typeof filterValue === "number"
-                        ) {
-                          return v < filterValue;
-                        }
-                        return true;
-                      });
-                      break;
-
-                    case nameof(value.greater):
-                      list = list.filter((t: T) => {
-                        const v: number = t[key] as number;
-                        if (
-                          typeof v === "number" &&
-                          typeof filterValue === "number"
-                        ) {
-                          return v > filterValue;
-                        }
-                        return true;
-                      });
-                      break;
-
-                    case nameof(value.lessEqual):
-                      list = list.filter((t: T) => {
-                        const v: number = t[key] as number;
-                        if (
-                          typeof v === "number" &&
-                          typeof filterValue === "number"
-                        ) {
-                          return v <= filterValue;
-                        }
-                        return true;
-                      });
-                      break;
-
-                    case nameof(value.greaterEqual):
-                      list = list.filter((t: T) => {
-                        const v: number = t[key] as number;
-                        if (
-                          typeof v === "number" &&
-                          typeof filterValue === "number"
-                        ) {
-                          return v >= filterValue;
-                        }
-                        return true;
-                      });
-                      break;
-
-                    default:
-                      // Do nothing
-                      break;
+                  if (typeof filterValue[1] === "number") {
+                    result = result && v <= filterValue[1];
                   }
                 }
+                return result;
               }
+              return true;
             });
+          } else {
+            if (typeof filterValue === "number" && !Number.isNaN(filterValue)) {
+              switch (filterKey) {
+                case nameof(value.equal):
+                  list = list.filter((t: T) => {
+                    const v: number = t[key] as number;
+                    if (
+                      typeof v === "number" &&
+                      typeof filterValue === "number"
+                    ) {
+                      return v === filterValue;
+                    }
+                    return true;
+                  });
+                  break;
+
+                case nameof(value.notEqual):
+                  list = list.filter((t: T) => {
+                    const v: number = t[key] as number;
+                    if (
+                      typeof v === "number" &&
+                      typeof filterValue === "number"
+                    ) {
+                      return v !== filterValue;
+                    }
+                    return true;
+                  });
+                  break;
+
+                case nameof(value.less):
+                  list = list.filter((t: T) => {
+                    const v: number = t[key] as number;
+                    if (
+                      typeof v === "number" &&
+                      typeof filterValue === "number"
+                    ) {
+                      return v < filterValue;
+                    }
+                    return true;
+                  });
+                  break;
+
+                case nameof(value.greater):
+                  list = list.filter((t: T) => {
+                    const v: number = t[key] as number;
+                    if (
+                      typeof v === "number" &&
+                      typeof filterValue === "number"
+                    ) {
+                      return v > filterValue;
+                    }
+                    return true;
+                  });
+                  break;
+
+                case nameof(value.lessEqual):
+                  list = list.filter((t: T) => {
+                    const v: number = t[key] as number;
+                    if (
+                      typeof v === "number" &&
+                      typeof filterValue === "number"
+                    ) {
+                      return v <= filterValue;
+                    }
+                    return true;
+                  });
+                  break;
+
+                case nameof(value.greaterEqual):
+                  list = list.filter((t: T) => {
+                    const v: number = t[key] as number;
+                    if (
+                      typeof v === "number" &&
+                      typeof filterValue === "number"
+                    ) {
+                      return v >= filterValue;
+                    }
+                    return true;
+                  });
+                  break;
+
+                default:
+                  // Do nothing
+                  break;
+              }
+            }
           }
-          // filter by DateFilter
-          if (value instanceof DateFilter) {
-            Object.entries(value).forEach(([filterKey, filterValue]) => {
-              if (filterKey === nameof(value.range)) {
+        });
+      }
+      // filter by DateFilter
+      if (value instanceof DateFilter) {
+        Object.entries(value).forEach(([filterKey, filterValue]) => {
+          if (filterKey === nameof(value.range)) {
+            list = list.filter((t: T) => {
+              const v: number = (t[key] as Moment)?.toDate().getTime();
+              if (typeof v === "number") {
+                const [minValue, maxValue] = (filterValue ?? []) as [
+                  Moment,
+                  Moment,
+                ];
+                let result: boolean = true;
+                if (minValue !== null && typeof minValue === "object") {
+                  const minTimeValue: number = minValue.toDate().getTime();
+                  result = result && minTimeValue <= v;
+                }
+                if (maxValue !== null && typeof maxValue === "object") {
+                  const maxTimeValue: number = maxValue.toDate().getTime();
+                  result = result && maxTimeValue >= v;
+                }
+                return result;
+              }
+              return true;
+            });
+          } else {
+            switch (filterKey) {
+              case nameof(value.equal):
                 list = list.filter((t: T) => {
                   const v: number = (t[key] as Moment)?.toDate().getTime();
-                  if (typeof v === "number") {
-                    const [minValue, maxValue] = (filterValue ?? []) as [
-                      Moment,
-                      Moment,
-                    ];
-                    let result: boolean = true;
-                    if (minValue !== null && typeof minValue === "object") {
-                      const minTimeValue: number = minValue.toDate().getTime();
-                      result = result && minTimeValue <= v;
+                  if (
+                    typeof v === "number" &&
+                    typeof filterValue === "object" &&
+                    filterValue !== null
+                  ) {
+                    const comparisonValue: number = (filterValue as Moment)
+                      ?.toDate()
+                      .getTime();
+                    if (typeof comparisonValue === "number") {
+                      return v === comparisonValue;
                     }
-                    if (maxValue !== null && typeof maxValue === "object") {
-                      const maxTimeValue: number = maxValue.toDate().getTime();
-                      result = result && maxTimeValue >= v;
-                    }
-                    return result;
+                    return true;
                   }
                   return true;
                 });
-              } else {
-                switch (filterKey) {
-                  case nameof(value.equal):
-                    list = list.filter((t: T) => {
-                      const v: number = (t[key] as Moment)?.toDate().getTime();
-                      if (
-                        typeof v === "number" &&
-                        typeof filterValue === "object" &&
-                        filterValue !== null
-                      ) {
-                        const comparisonValue: number = (filterValue as Moment)
-                          ?.toDate()
-                          .getTime();
-                        if (typeof comparisonValue === "number") {
-                          return v === comparisonValue;
-                        }
-                        return true;
-                      }
-                      return true;
-                    });
-                    break;
+                break;
 
-                  case nameof(value.notEqual):
-                    list = list.filter((t: T) => {
-                      const v: number = (t[key] as Moment)?.toDate().getTime();
-                      if (
-                        typeof v === "number" &&
-                        typeof filterValue === "object" &&
-                        filterValue !== null
-                      ) {
-                        const comparisonValue: number = (filterValue as Moment)
-                          ?.toDate()
-                          .getTime();
-                        if (typeof comparisonValue === "number") {
-                          return v !== comparisonValue;
-                        }
-                        return true;
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.notEqual):
+                list = list.filter((t: T) => {
+                  const v: number = (t[key] as Moment)?.toDate().getTime();
+                  if (
+                    typeof v === "number" &&
+                    typeof filterValue === "object" &&
+                    filterValue !== null
+                  ) {
+                    const comparisonValue: number = (filterValue as Moment)
+                      ?.toDate()
+                      .getTime();
+                    if (typeof comparisonValue === "number") {
+                      return v !== comparisonValue;
+                    }
+                    return true;
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.less):
-                    list = list.filter((t: T) => {
-                      const v: number = (t[key] as Moment)?.toDate().getTime();
-                      if (
-                        typeof v === "number" &&
-                        typeof filterValue === "object" &&
-                        filterValue !== null
-                      ) {
-                        const comparisonValue: number = (filterValue as Moment)
-                          ?.toDate()
-                          .getTime();
-                        if (typeof comparisonValue === "number") {
-                          return v < comparisonValue;
-                        }
-                        return true;
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.less):
+                list = list.filter((t: T) => {
+                  const v: number = (t[key] as Moment)?.toDate().getTime();
+                  if (
+                    typeof v === "number" &&
+                    typeof filterValue === "object" &&
+                    filterValue !== null
+                  ) {
+                    const comparisonValue: number = (filterValue as Moment)
+                      ?.toDate()
+                      .getTime();
+                    if (typeof comparisonValue === "number") {
+                      return v < comparisonValue;
+                    }
+                    return true;
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.greater):
-                    list = list.filter((t: T) => {
-                      const v: number = (t[key] as Moment)?.toDate().getTime();
-                      if (
-                        typeof v === "number" &&
-                        typeof filterValue === "object" &&
-                        filterValue !== null
-                      ) {
-                        const comparisonValue: number = (filterValue as Moment)
-                          ?.toDate()
-                          .getTime();
-                        if (typeof comparisonValue === "number") {
-                          return v > comparisonValue;
-                        }
-                        return true;
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.greater):
+                list = list.filter((t: T) => {
+                  const v: number = (t[key] as Moment)?.toDate().getTime();
+                  if (
+                    typeof v === "number" &&
+                    typeof filterValue === "object" &&
+                    filterValue !== null
+                  ) {
+                    const comparisonValue: number = (filterValue as Moment)
+                      ?.toDate()
+                      .getTime();
+                    if (typeof comparisonValue === "number") {
+                      return v > comparisonValue;
+                    }
+                    return true;
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.lessEqual):
-                    list = list.filter((t: T) => {
-                      const v: number = (t[key] as Moment)?.toDate().getTime();
-                      if (
-                        typeof v === "number" &&
-                        typeof filterValue === "object" &&
-                        filterValue !== null
-                      ) {
-                        const comparisonValue: number = (filterValue as Moment)
-                          ?.toDate()
-                          .getTime();
-                        if (typeof comparisonValue === "number") {
-                          return v <= comparisonValue;
-                        }
-                        return true;
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.lessEqual):
+                list = list.filter((t: T) => {
+                  const v: number = (t[key] as Moment)?.toDate().getTime();
+                  if (
+                    typeof v === "number" &&
+                    typeof filterValue === "object" &&
+                    filterValue !== null
+                  ) {
+                    const comparisonValue: number = (filterValue as Moment)
+                      ?.toDate()
+                      .getTime();
+                    if (typeof comparisonValue === "number") {
+                      return v <= comparisonValue;
+                    }
+                    return true;
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.greaterEqual):
-                    list = list.filter((t: T) => {
-                      const v: number = (t[key] as Moment)?.toDate().getTime();
-                      if (
-                        typeof v === "number" &&
-                        typeof filterValue === "object" &&
-                        filterValue !== null
-                      ) {
-                        const comparisonValue: number = (filterValue as Moment)
-                          ?.toDate()
-                          .getTime();
-                        if (typeof comparisonValue === "number") {
-                          return v >= comparisonValue;
-                        }
-                        return true;
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.greaterEqual):
+                list = list.filter((t: T) => {
+                  const v: number = (t[key] as Moment)?.toDate().getTime();
+                  if (
+                    typeof v === "number" &&
+                    typeof filterValue === "object" &&
+                    filterValue !== null
+                  ) {
+                    const comparisonValue: number = (filterValue as Moment)
+                      ?.toDate()
+                      .getTime();
+                    if (typeof comparisonValue === "number") {
+                      return v >= comparisonValue;
+                    }
+                    return true;
+                  }
+                  return true;
+                });
+                break;
 
-                  default:
-                    // Do nothing
-                    break;
-                }
-              }
-            });
+              default:
+                // Do nothing
+                break;
+            }
           }
-          // filter by IdFilter
-          if (value instanceof IdFilter || value instanceof GuidFilter) {
-            Object.entries(value).forEach(([filterKey, filterValue]) => {
-              if (
-                (typeof filterValue === "string" && filterValue !== "") ||
-                (typeof filterValue === "number" && !Number.isNaN(filterValue))
-              ) {
-                switch (filterKey) {
-                  case nameof(value.equal):
-                    list = list.filter((t: T) => {
-                      const v: number = t[key] as number;
-                      if (
-                        (typeof v === "number" || typeof value === "string") &&
-                        (typeof filterValue === "number" ||
-                          typeof filterValue === "string")
-                      ) {
-                        return v === +filterValue;
-                      }
-                      return true;
-                    });
-                    break;
+        });
+      }
+      // filter by IdFilter
+      if (value instanceof IdFilter || value instanceof GuidFilter) {
+        Object.entries(value).forEach(([filterKey, filterValue]) => {
+          if (
+            (typeof filterValue === "string" && filterValue !== "") ||
+            (typeof filterValue === "number" && !Number.isNaN(filterValue))
+          ) {
+            switch (filterKey) {
+              case nameof(value.equal):
+                list = list.filter((t: T) => {
+                  const v: number = t[key] as number;
+                  if (
+                    (typeof v === "number" || typeof value === "string") &&
+                    (typeof filterValue === "number" ||
+                      typeof filterValue === "string")
+                  ) {
+                    return v === +filterValue;
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.notEqual):
-                    list = list.filter((t: T) => {
-                      const v: number = t[key] as number;
-                      if (
-                        (typeof v === "number" || typeof value === "string") &&
-                        (typeof filterValue === "number" ||
-                          typeof filterValue === "string")
-                      ) {
-                        return v !== filterValue;
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.notEqual):
+                list = list.filter((t: T) => {
+                  const v: number = t[key] as number;
+                  if (
+                    (typeof v === "number" || typeof value === "string") &&
+                    (typeof filterValue === "number" ||
+                      typeof filterValue === "string")
+                  ) {
+                    return v !== filterValue;
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.in):
-                    list = list.filter((t: T) => {
-                      const v: number = t[key] as number;
-                      if (
-                        (typeof v === "number" || typeof value === "string") &&
-                        (filterValue as any) instanceof Array
-                      ) {
-                        return (filterValue as any).includes(v);
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.in):
+                list = list.filter((t: T) => {
+                  const v: number = t[key] as number;
+                  if (
+                    (typeof v === "number" || typeof value === "string") &&
+                    (filterValue as any) instanceof Array
+                  ) {
+                    return (filterValue as any).includes(v);
+                  }
+                  return true;
+                });
+                break;
 
-                  case nameof(value.notIn):
-                    list = list.filter((t: T) => {
-                      const v: number = t[key] as number;
-                      if (
-                        (typeof v === "number" || typeof value === "string") &&
-                        (filterValue as any) instanceof Array
-                      ) {
-                        return !(filterValue as any).includes(v);
-                      }
-                      return true;
-                    });
-                    break;
+              case nameof(value.notIn):
+                list = list.filter((t: T) => {
+                  const v: number = t[key] as number;
+                  if (
+                    (typeof v === "number" || typeof value === "string") &&
+                    (filterValue as any) instanceof Array
+                  ) {
+                    return !(filterValue as any).includes(v);
+                  }
+                  return true;
+                });
+                break;
 
-                  default:
-                    // Do nothing
-                    break;
-                }
-              }
-            });
+              default:
+                // Do nothing
+                break;
+            }
           }
         });
       }

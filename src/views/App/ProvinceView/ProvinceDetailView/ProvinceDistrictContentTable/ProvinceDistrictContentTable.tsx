@@ -1,7 +1,7 @@
 import { District } from "models/District";
 import { Province } from "models/Province";
 import React from "react";
-import { Model } from "react3l/core";
+import { Model } from "@react3l/react3l/core";
 import "./ProvinceDistrictContentTable.scss";
 
 interface ProvinceDistrictContentTableProps<

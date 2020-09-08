@@ -1,7 +1,7 @@
-import { IdFilter } from "react3l-advanced-filters/IdFilter";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
-import { NumberFilter } from "react3l-advanced-filters/NumberFilter";
-import { ModelFilter } from "react3l/core";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
+import { ModelFilter } from "@react3l/react3l/core";
 export class StoreFilter extends ModelFilter {
   public id?: IdFilter = new IdFilter();
   public code?: StringFilter = new StringFilter();

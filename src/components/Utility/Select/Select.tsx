@@ -2,15 +2,15 @@ import React, { RefObject } from "react";
 import "./Select.scss";
 import classNames from "classnames";
 import { commonWebService } from "services/CommonWebService";
-import { Model, ModelFilter } from "react3l/core";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import Spin from "antd/lib/spin";
-import { debounce } from "react3l/helpers";
-import { DEBOUNCE_TIME_300 } from "react3l/config";
+import { debounce } from "@react3l/react3l/helpers";
+import { DEBOUNCE_TIME_300 } from "@react3l/react3l/config";
 import { Observable, ErrorObserver } from "rxjs";
 import nameof from "ts-nameof.macro";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import { Empty } from "antd";
-import { commonService } from "react3l/services/common-service";
+import { commonService } from "@react3l/react3l/services/common-service";
 import InputSelect from "../Input/InputSelect/InputSelect";
 
 export interface SelectProps<

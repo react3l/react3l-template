@@ -1,18 +1,19 @@
+import React from "react";
 import { Card, Col, Row, Switch, Tabs } from "antd";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
+import FormItem from "components/Utility/FormItem/FormItem";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import { OrganizationFilter } from "models/OrganizationFilter";
 import { PriceList } from "models/PriceList";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
+import { formService } from "services/FormService";
 import detailService from "services/pages/detail-service";
 import nameof from "ts-nameof.macro";
 import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable";
-import FormItem from "components/Utility/FormItem/FormItem";
 
 const { TabPane } = Tabs;
 
@@ -20,29 +21,26 @@ function PriceListDetailView() {
   const [translate] = useTranslation();
   const {
     model,
-    handleUpdateNewModel,
+    dispatch, // expose dispatch to update model
     isDetail,
     handleChangeSimpleField,
-    // handleChangeObjectField,
-    // handleSave
-  } = detailService.useDetail<PriceList>(PriceList, priceListRepository.get);
+    handleChangeTreeObjectField,
+    handleChangeObjectField,
+    handleSave,
+  } = detailService.useDetail<PriceList>(
+    PriceList,
+    priceListRepository.get,
+    priceListRepository.save,
+  );
 
   const {
     content: storeMappingContents,
     setContent: setStoreMappingContents,
   } = detailService.useContentList(
     model,
-    handleUpdateNewModel,
+    dispatch, // update content has sideEffect update model
     nameof(model.priceListStoreMappings),
   );
-
-  // const handleChangeItem = useCallback(
-  //   (list: Organization[], isMultiple: boolean) => {
-  //     console.log(`list: `, list);
-  //     console.log(`isMultiple: `, isMultiple);
-  //   },
-  //   [],
-  // );
 
   return (
     <div className='page page__detail'>
@@ -81,7 +79,14 @@ function PriceListDetailView() {
                       </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <FormItem label={translate("priceList.name")}>
+                      <FormItem
+                        label={translate("priceList.name")}
+                        validateStatus={formService.getValidationStatus(
+                          model?.errors,
+                          "name",
+                        )}
+                        message={model?.errors?.name}
+                      >
                         <InputText
                           isMaterial={true}
                           value={model.name}
@@ -98,13 +103,15 @@ function PriceListDetailView() {
                           placeHolder={"Select Organization"}
                           selectable={true}
                           classFilter={OrganizationFilter}
-                          // onChange={handleChangeItem}
+                          onChange={handleChangeTreeObjectField(
+                            nameof(model.organization),
+                          )} // handleChange Tree
                           checkStrictly={true}
-                          // item={item}
-                          // listItem={listItem}
                           getTreeData={
                             priceListRepository.singleListOrganization
                           }
+                          item={model.organization}
+                          // listItem={listItem}
                         />
                       </FormItem>
                     </Col>
@@ -115,6 +122,11 @@ function PriceListDetailView() {
                           placeHolder={translate(
                             "priceList.placeholder.saleOrderType",
                           )}
+                          getList={priceListRepository.singleListSalesOrderType}
+                          onChange={handleChangeObjectField(
+                            nameof(model.saleOrderType),
+                          )} // handleChange Object Field
+                          model={model.saleOrderType}
                           isMaterial={true}
                         />
                       </FormItem>
@@ -125,6 +137,9 @@ function PriceListDetailView() {
                       <FormItem label={translate("priceList.startDate")}>
                         <DatePicker
                           value={model.startDate}
+                          onChange={handleChangeSimpleField(
+                            nameof(model.startDate),
+                          )} // handleChange Date
                           isMaterial={true}
                           placeholder={translate(
                             "priceList.placeholder.startDate",
@@ -133,9 +148,18 @@ function PriceListDetailView() {
                       </FormItem>
                     </Col>
                     <Col lg={6}>
-                      <FormItem label={translate("priceList.endDate")}>
+                      <FormItem
+                        label={translate("priceList.endDate")}
+                        validateStatus={formService.getValidationStatus(
+                          model?.errors,
+                          nameof(model.endDate),
+                        )}
+                      >
                         <DatePicker
                           value={model.endDate}
+                          onChange={handleChangeSimpleField(
+                            nameof(model.endDate),
+                          )} // handleChange Date
                           isMaterial={true}
                           placeholder={translate(
                             "priceList.placeholder.endDate",
@@ -146,7 +170,7 @@ function PriceListDetailView() {
                     <Col lg={6}>
                       {/*  */}
                       <label className='label-detail input-select__title'>
-                        {translate("priceList.organzation")}
+                        {translate("priceList.status")}
                       </label>
                       <Switch
                         size='small'
@@ -195,8 +219,11 @@ function PriceListDetailView() {
         {/* end dependent lists */}
         {/* start save action */}
         <Row className='mt-3 mb-5'>
-          <button className='btn component__btn-primary pr-4 mb-5'>
-            {translate("general.actions.search")}
+          <button
+            className='btn component__btn-primary pr-4 mb-5'
+            onClick={handleSave()}
+          >
+            {translate("priceList.actions.saveModel")}
           </button>
         </Row>
         {/* end save action */}

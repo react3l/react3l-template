@@ -1,6 +1,6 @@
-import { ModelFilter } from "react3l/core";
+import { ModelFilter } from "@react3l/react3l/core";
 
-import { StringFilter, IdFilter } from "react3l-advanced-filters";
+import { StringFilter, IdFilter } from "@react3l/advanced-filters";
 
 export class PriceListStoreMappingsFilter extends ModelFilter {
   storeCode?: StringFilter = new StringFilter();

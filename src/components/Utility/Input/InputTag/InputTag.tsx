@@ -1,9 +1,9 @@
-import React, { RefObject } from 'react';
-import './InputTag.scss';
-import { Model } from 'react3l/core/model';
-import classNames from 'classnames';
+import React, { RefObject } from "react";
+import "./InputTag.scss";
+import { Model } from "@react3l/react3l/core/model";
+import classNames from "classnames";
 
-export interface InputTagProps <T extends Model> {
+export interface InputTagProps<T extends Model> {
   listItem?: T[];
   title?: string;
   placeHolder?: string;
@@ -15,7 +15,7 @@ export interface InputTagProps <T extends Model> {
   onSearch?: (T: string) => void;
 }
 function InputTag(props: InputTagProps<Model>) {
-  const { 
+  const {
     listItem,
     placeHolder,
     disabled,
@@ -27,48 +27,64 @@ function InputTag(props: InputTagProps<Model>) {
 
   const internalListItem = React.useMemo<Model[]>(() => {
     return listItem;
-  },[listItem]);
+  }, [listItem]);
 
-  const [searchTerm, setSearchTerm] = React.useState<string>('');
+  const [searchTerm, setSearchTerm] = React.useState<string>("");
 
   const inputRef: RefObject<HTMLInputElement> = React.useRef();
 
-  const handleChangeInput = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    if (typeof onSearch === 'function') {
-      onSearch(event.target.value);
-    }
-  }, [onSearch]);
+  const handleChangeInput = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+      if (typeof onSearch === "function") {
+        onSearch(event.target.value);
+      }
+    },
+    [onSearch],
+  );
 
   const handleClearItem = React.useCallback(
-    (item) => (event: React.MouseEvent<HTMLElement, MouseEvent>) => 
-      {
-        event.stopPropagation();
-        if (typeof onClear === 'function') {
-          onClear(item);
-        }
-      }, 
-    [onClear]);
+    (item) => (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      event.stopPropagation();
+      if (typeof onClear === "function") {
+        onClear(item);
+      }
+    },
+    [onClear],
+  );
 
   return (
     <>
-      <div className="input-tag__wrapper">
-        <div className={classNames('input-tag__container', 
-          {'input-tag__container--material': isMaterial, 'input-tag__container--bordered': !isMaterial})} 
-          onClick={() => inputRef.current.focus()}>
-            { internalListItem &&
-              internalListItem.map((item, index) => 
-                <span className="input-tag__label" key={index} onClick={(e) => e.stopPropagation()}>
-                  <span className="input-tag__text">{render(item)}</span>
-                  <i className="input-tag__icon tio-clear" onClick={handleClearItem(item)}></i>
-                </span>)
-            }
-            <input type="text"
-              value={searchTerm}
-              placeholder={placeHolder} 
-              ref={inputRef}
-              disabled={disabled}
-              onChange={handleChangeInput} />
+      <div className='input-tag__wrapper'>
+        <div
+          className={classNames("input-tag__container", {
+            "input-tag__container--material": isMaterial,
+            "input-tag__container--bordered": !isMaterial,
+          })}
+          onClick={() => inputRef.current.focus()}
+        >
+          {internalListItem &&
+            internalListItem.map((item, index) => (
+              <span
+                className='input-tag__label'
+                key={index}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className='input-tag__text'>{render(item)}</span>
+                <i
+                  className='input-tag__icon tio-clear'
+                  onClick={handleClearItem(item)}
+                ></i>
+              </span>
+            ))}
+          <input
+            type='text'
+            value={searchTerm}
+            placeholder={placeHolder}
+            ref={inputRef}
+            disabled={disabled}
+            onChange={handleChangeInput}
+          />
         </div>
       </div>
     </>
