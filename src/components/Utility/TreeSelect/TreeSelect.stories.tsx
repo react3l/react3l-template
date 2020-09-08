@@ -8,6 +8,7 @@ import { IdFilter } from 'react3l-advanced-filters/IdFilter';
 import { StringFilter } from 'react3l-advanced-filters/StringFilter';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
+import FormItem, { ValidateStatus } from '../FormItem/FormItem';
 
 export class DistrictFilter extends ModelFilter {
     public id: IdFilter = new IdFilter();
@@ -89,6 +90,24 @@ function Default() {
                     item={item}
                     listItem={listItem}
                     getTreeData={demoSearchFunc}/>
+
+                <div style={{margin: '10px', width: '300px'}}>
+                    <FormItem validateStatus={ValidateStatus.error}
+                        label={'Tree Select:'} 
+                        message={'Field required!'} 
+                        hasIcon={!isMaterial}>
+                        <TreeSelect checkable={isMultiple}
+                            isMaterial={isMaterial}
+                            placeHolder={'Select Organization'} 
+                            selectable={!isMultiple}
+                            classFilter={DistrictFilter}
+                            onChange={handleChangeItem}
+                            checkStrictly={true}
+                            item={item}
+                            listItem={listItem}
+                            getTreeData={demoSearchFunc}/>
+                    </FormItem>
+                </div>
 
                 <div style={{margin: '10px', width: '300px'}}>
                     <Radio.Group onChange={handleChangeRadio} value={isMultiple}>

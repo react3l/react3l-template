@@ -35,6 +35,9 @@
     width: calc(100%);
     margin-left: 50px;
   }
+  .header-wrapper__block {
+    background: transparent;
+  }
   .flex-item {
     flex-grow: 1;
     min-height: 100vh;

@@ -57,7 +57,7 @@ function AppHeader() {
   ];
 
   return (
-    <div className="header__navbar-default">
+    <div>
       <header className="app-header d-flex justify-content-between">
         <div className="app-header__toggle" onClick={handleToggleMenu}>
           <i className="tio-menu_hamburger" />

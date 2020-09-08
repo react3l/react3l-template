@@ -1,0 +1,12 @@
+/* Style for ContentModal.tsx */
+.content-modal__container {
+    .content-modal__table {
+        margin-top: 15px;
+    }
+
+    .ant-modal-footer {
+        .component__btn-primary {
+            float: left;
+        }
+    }
+}

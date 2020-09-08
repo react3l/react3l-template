@@ -8,6 +8,7 @@ import { Model, ModelFilter } from "react3l/core";
 import { Observable } from "rxjs";
 import nameof from "ts-nameof.macro";
 import Select from "./Select";
+import FormItem, { ValidateStatus } from "../FormItem/FormItem";
 
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {
@@ -70,6 +71,25 @@ function Default() {
         getList={demoSearchFunc}
         classFilter={DemoFilter}
       />
+
+      <div style={{ margin: "10px", width: "300px" }}>
+        <FormItem validateStatus={ValidateStatus.error}
+                label={'Select field:'}
+                message={'Field required!'}
+                hasIcon={!isMaterial}>
+          <Select
+            placeHolder={"Select Organization"}
+            model={selectModel}
+            isMaterial={isMaterial}
+            modelFilter={selectModelFilter}
+            searchProperty={nameof(selectModel.name)}
+            render={handleRenderModel}
+            onChange={handleSetModel}
+            getList={demoSearchFunc}
+            classFilter={DemoFilter}
+          />
+        </FormItem>
+      </div>
 
       <div style={{ margin: "10px", width: "300px" }}>
         <Radio.Group onChange={handleChangeStyle} value={isMaterial}>

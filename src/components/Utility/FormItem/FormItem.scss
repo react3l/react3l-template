@@ -1,0 +1,89 @@
+@import './../../../styles/variables';
+/* Style for FormValidation.tsx */
+.form-item__container {
+    width: 100%;
+    position: relative;
+
+    .form-item__content {
+        display: flex;
+        width: 100%;
+        .form-item__item {
+            width: 100%;
+        }
+    }
+
+    .form-item__message {
+        font-size: 14px;
+        color: #000000;
+        margin-top: 5px;
+    }
+
+    .form-item__icon {
+        height: auto;
+        width: 1.5rem;
+        font-size: 1.2rem;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        margin-left: 2px;
+    }
+
+    &.form-item__container--error {
+        .component__title {
+            color: $error-color !important;
+        }
+        .form-item__content {
+            .form-item__icon, i.input-icon {
+                color: $error-color !important;
+            }
+
+            input.component__input, textarea, .input-tag__container, .ant-picker {
+                border-color: $error-color !important;
+            }
+        }
+
+        .form-item__message {
+            color: $error-color !important;
+        }
+    }
+
+    &.form-item__container--warning {
+        .component__title {
+            color: $warning-color !important;
+        }
+        .form-item__content {
+            .form-item__icon, i.input-icon {
+                color: $warning-color !important;
+            }
+
+            input.component__input, textarea, .input-tag__container, .ant-picker {
+                border-color: $warning-color !important;
+            }
+        }
+
+        .form-item__message {
+            color: $warning-color !important;
+        }
+    }
+
+    &.form-item__container--success {
+        .component__title {
+            color: $success-color !important;
+        }
+        .form-item__content {
+            .form-item__icon, i.input-icon {
+                color: $success-color !important;
+            }
+
+            input.component__input, textarea, .input-tag__container, .ant-picker {
+                border-color: $success-color !important;
+            }
+        }
+
+        .form-item__message {
+            color: $success-color !important;
+        }
+    }
+}

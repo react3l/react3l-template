@@ -47,7 +47,8 @@ function App() {
         >
         </div>
         <section className={classNames("flex-item", (!toggleMenu ? 'main content-in' : 'main content-out'))}>
-          <div className="header-wrapper">
+          <div className={classNames("header-wrapper", { "header-wrapper__block": display },
+          )}>
             <AppHeader />
           </div>
           <main className="body">

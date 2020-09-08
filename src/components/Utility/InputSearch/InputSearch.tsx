@@ -68,9 +68,9 @@ function InputSearch(props: InputSearch<Model>) {
             disabled={disabled}
             className={classNames('component__input', { 'component__input--material': isMaterial })} />
           {internalValue ?
-            <i className="input-search__icon tio-clear" onClick={handleClearInput}></i> :
+            <i className="input-icon input-search__icon tio-clear" onClick={handleClearInput}></i> :
             className &&
-            <i className={classNames('input-search__icon', className)}></i>
+            <i className={classNames('input-icon', 'input-search__icon', className)}></i>
           }
         </div>
       </div>

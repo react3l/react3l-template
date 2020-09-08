@@ -94,7 +94,11 @@ function PaymentMasterView() {
         },
       },
       {
-        title: translate("paymentRequest.code"),
+        title: () => (
+          <div>
+            <div>{translate("paymentRequest.code")}</div>
+          </div>
+        ),
         key: nameof(list[0].code),
         dataIndex: nameof(list[0].code),
         sorter: true,
@@ -172,6 +176,8 @@ function PaymentMasterView() {
         key: nameof("general.actions.action"),
         dataIndex: nameof(list[0].id),
         align: "center",
+        fixed: 'right',
+        width: 200,
         render() {
           return (
             <div className='d-flex justify-content-center button-action-table'>
@@ -263,7 +269,7 @@ function PaymentMasterView() {
                   </button>
                   <div className='d-flex justify-content-between'>
                     <button
-                      className='btn btn-info'
+                      className='btn component__btn-outline-primary'
                       onClick={handleResetFilter}
                     >
                       ResetFilter
@@ -344,7 +350,7 @@ function PaymentMasterView() {
         <div className='page__master-table'>
           <Card>
             <Table
-              tableLayout='fixed'
+              // tableLayout='fixed'
               rowKey={nameof(list[0].id)}
               columns={columns}
               dataSource={list}
@@ -393,6 +399,7 @@ function PaymentMasterView() {
                   </div>
                 </>
               )}
+              scroll={{ x: 1900 }}
             />
           </Card>
         </div>

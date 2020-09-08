@@ -5,8 +5,6 @@ import { Model } from 'react3l/core';
 
 export interface InputRange <T extends Model> extends InputNumberProps<Model> {
   valueRange: [number, number];
-  title?: string;
-  error?: string;
   placeHolderRange?: [string, string];
   onChangeRange: (T: [number, number]) => void;
 }
@@ -14,15 +12,9 @@ export interface InputRange <T extends Model> extends InputNumberProps<Model> {
 function InputRange(props: InputRange<Model>) {
   const {
     valueRange,
-    title,
-    error,
     placeHolderRange = [null, null],
     onChangeRange,
   } = props;
-
-  const isError = React.useMemo(() => {
-    return error ? true : false;
-  }, [error]);
 
   const validateRange = React.useCallback((fromValue, toValue) => {
     if (fromValue === null || toValue === null) return true;
@@ -49,25 +41,18 @@ function InputRange(props: InputRange<Model>) {
   return (
     <>
       <div className="input-range__container">
-        { title && 
-          <div className={classNames('input-range__title', {'error-text': isError})}>{title}</div>
-        }
-        <div className="input-range__wrapper">
-          <div className="input-range__input-number">
-            <InputNumber {...props} value={valueRange[0]}
-              title={null}
-              onBlur={handleBlurFrom} 
-              placeHolder={placeHolderRange[0]}/>
-          </div>
-          <span className="input-range__icon">
+        <div className="input-range__input-number">
+          <InputNumber {...props} value={valueRange[0]}
+            onBlur={handleBlurFrom} 
+            placeHolder={placeHolderRange[0]}/>
+        </div>
+        <span className="input-range__icon">
             <i className="tio-arrow_large_forward_outlined"></i>
-          </span>
-          <div className="input-range__input-number">
-            <InputNumber {...props} value={valueRange[1]}
-              title={null}
-              onBlur={handleBlurTo}  
-              placeHolder={placeHolderRange[1]}/>
-          </div>
+        </span>
+        <div className="input-range__input-number">
+          <InputNumber {...props} value={valueRange[1]}
+            onBlur={handleBlurTo}  
+            placeHolder={placeHolderRange[1]}/>
         </div>
       </div>
     </>

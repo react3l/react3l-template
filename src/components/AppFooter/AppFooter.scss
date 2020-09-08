@@ -56,8 +56,8 @@
 @media screen and (max-width: 1440px) {
   .app-footer {
     .app-footer__steps {
-      min-width: 620px;
-      margin-right: 12px;
+      min-width: 620px !important;
+      margin-right: 12px !important;
     }
   }
 }

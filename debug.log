@@ -1,0 +1,20 @@
+[0901/184400.649:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0901/184400.652:ERROR:exception_snapshot_win.cc(99)] thread ID 2648 not found in process
+[0901/184400.656:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0901/184400.656:ERROR:exception_snapshot_win.cc(99)] thread ID 7416 not found in process
+[0901/184400.658:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.658:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.658:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.674:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.674:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.674:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0901/184400.674:ERROR:exception_snapshot_win.cc(99)] thread ID 10876 not found in process
+[0901/184400.674:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.674:ERROR:process_reader_win.cc(123)] NtOpenThread: An invalid Client ID was specified. (0xc000000b)
+[0901/184400.674:ERROR:exception_snapshot_win.cc(99)] thread ID 16860 not found in process
+[0901/184400.674:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0901/184400.674:ERROR:exception_snapshot_win.cc(99)] thread ID 2236 not found in process
+[0901/184400.690:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.690:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0901/184400.690:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0901/184400.690:ERROR:exception_snapshot_win.cc(99)] thread ID 8304 not found in process

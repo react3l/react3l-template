@@ -58,6 +58,14 @@ function IndirectSalesOrderMasterView() {
     handleResetFilter,
   ] = queryStringService.useQueryString<Model, DemoFilter>(DemoFilter);
 
+  const [
+    ,
+    ,
+    ,
+    ,
+    ,
+  ] = advanceFilterService.useFilter<DemoFilter>(filter, dispatch, DemoFilter);
+
   const [valueString, setValueString] = advanceFilterService.useAdvaceFilter<
     DemoFilter,
     StringFilter
