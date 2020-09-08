@@ -215,7 +215,9 @@ export const formService = {
         value: TContent[keyof TContent],
       ) => {
         const index = contentList.findIndex((item) => item.key === key);
-        contentList[index][field] = value;
+        if (index > 0) {
+          contentList[index][field] = value;
+        }
         handleChangeContentList(contentList);
       },
       [contentList, handleChangeContentList],
