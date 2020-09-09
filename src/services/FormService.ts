@@ -194,19 +194,14 @@ export const formService = {
     () => void,
     (index: number) => () => void,
   ] {
-    /* change all rows */
-    const handleChangeContentList: (
-      contentList: TContent[],
-    ) => void = React.useCallback(setContentList, []);
-
     /* change one rows */
     const handleChangeContent = React.useCallback(
       (key: string) => (content: TContent) => {
         const index = contentList.findIndex((item) => item.key === key);
         contentList[index] = content;
-        handleChangeContentList(contentList);
+        setContentList(contentList);
       },
-      [contentList, handleChangeContentList],
+      [contentList, setContentList],
     );
 
     /* change one cell */
@@ -218,23 +213,23 @@ export const formService = {
         if (index > 0) {
           contentList[index][field] = value;
         }
-        handleChangeContentList(contentList);
+        setContentList(contentList);
       },
-      [contentList, handleChangeContentList],
+      [contentList, setContentList],
     );
 
     /* add one row */
     const handleAddContent = React.useCallback(() => {
-      handleChangeContentList([...contentList, new ContentClass()]);
-    }, [ContentClass, contentList, handleChangeContentList]);
+      setContentList([...contentList, new ContentClass()]);
+    }, [ContentClass, contentList, setContentList]);
 
     /* remove */
     const handleRemoveContent = React.useCallback(
       (index: number) => () => {
         contentList.splice(index, 1);
-        handleChangeContentList([...contentList]);
+        setContentList([...contentList]);
       },
-      [contentList, handleChangeContentList],
+      [contentList, setContentList],
     );
 
     return [

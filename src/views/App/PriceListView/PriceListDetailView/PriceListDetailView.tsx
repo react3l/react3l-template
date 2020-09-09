@@ -21,7 +21,7 @@ function PriceListDetailView() {
   const [translate] = useTranslation();
   const {
     model,
-    dispatch, // expose dispatch to update model
+    handleUpdateNewModel, // expose dispatch to update model
     isDetail,
     handleChangeSimpleField,
     handleChangeTreeObjectField,
@@ -38,7 +38,7 @@ function PriceListDetailView() {
     setContent: setStoreMappingContents,
   } = detailService.useContentList(
     model,
-    dispatch, // update content has sideEffect update model
+    handleUpdateNewModel, // update content has sideEffect update model
     nameof(model.priceListStoreMappings),
   );
 

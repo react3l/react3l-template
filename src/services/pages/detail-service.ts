@@ -5,12 +5,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
-import {
-  FormDetailAction,
-  formService,
-  FORM_DETAIL_CHANGE_SIMPLE_FIELD_ACTION,
-} from "services/FormService";
+import { formService } from "services/FormService";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect } from "reactn";
 
 export class DetailService {
   /**
@@ -24,30 +21,32 @@ export class DetailService {
    * */
   useContentList<T extends Model, TContent extends Model>(
     model: T,
-    dispatch: React.Dispatch<FormDetailAction<T>>,
+    setModel: (model: T) => void,
     contentField: string,
   ) {
     const content: TContent[] = useMemo(() => {
       if (model) {
         if (model[contentField]?.length > 0) {
-          return model[contentField].map((item) => ({
-            ...item,
-            key: uuidv4(),
-          })); // assign key for each content item
+          return model[contentField].map((item) => {
+            if (item.hasOwnProperty("key")) {
+              return { ...item };
+            }
+            return { ...item, key: uuidv4() }; // assign key for each content item
+          });
         }
       }
       return [];
     }, [contentField, model]);
 
+    useEffect(() => {
+      console.log(`content: `, content);
+    }, [content]);
+
     const setContent = useCallback(
       (v: TContent[]) => {
-        dispatch({
-          type: FORM_DETAIL_CHANGE_SIMPLE_FIELD_ACTION,
-          fieldName: contentField,
-          fieldValue: v as T[keyof T],
-        });
+        setModel({ ...model, [contentField]: v });
       },
-      [contentField, dispatch],
+      [contentField, setModel, model],
     );
 
     return { content, setContent };

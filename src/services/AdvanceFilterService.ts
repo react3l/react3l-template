@@ -176,7 +176,7 @@ export const advanceFilterService = {
     ];
   },
 
-  useAdvaceFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useAdvanceFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
     modelFilter: T1Filter,
     dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
     fieldName: keyof T1Filter,

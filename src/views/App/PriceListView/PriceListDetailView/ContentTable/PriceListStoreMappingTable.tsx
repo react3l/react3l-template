@@ -1,4 +1,4 @@
-import { Tooltip, Table } from "antd";
+import { Tooltip, Table, Popconfirm } from "antd";
 import nameof from "ts-nameof.macro";
 import { Store } from "antd/lib/form/interface";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
@@ -43,6 +43,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handlePagination,
     rowSelection,
     pagination,
+    handleLocalDelete, // delete local content in table
   } = tableService.useLocalTable(
     total,
     handleSearch,
@@ -173,6 +174,36 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
           },
         ],
       },
+      {
+        title: () => <>{translate("general.actions.label")}</>,
+        children: [
+          {
+            title: "",
+            key: nameof("general.actions"),
+            dataIndex: nameof(content[0].key),
+            width: 120,
+            render(...params: [string, PriceListStoreMappings, number]) {
+              return (
+                <div className='button-action-table'>
+                  {/* {validAction('create') && ( */}
+                  <Popconfirm
+                    placement='left'
+                    title={translate("general.delete.content")}
+                    onConfirm={() => handleLocalDelete(params[1])}
+                    okText={translate("general.actions.delete")}
+                    cancelText={translate("general.actions.cancel")}
+                  >
+                    <button className='btn btn-link mr-2'>
+                      <i className='tio-delete_outlined text-danger' />
+                    </button>
+                  </Popconfirm>
+                  {/* )} */}
+                </div>
+              );
+            },
+          },
+        ],
+      },
     ],
     [
       pagination,
@@ -181,6 +212,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       translate,
       handleFilter,
       handleChangeContentField,
+      handleLocalDelete,
     ],
   );
 
