@@ -14,7 +14,12 @@ import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import { formService } from "services/FormService";
 import listService from "services/list-service";
-import tableService, { getAntOrderType } from "services/tbl-service";
+import tableService, {
+  getAntOrderType,
+  filterContentNotInList,
+  filterContentInList,
+  getIdsFromContent,
+} from "services/tbl-service";
 import nameof from "ts-nameof.macro";
 import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 import { useReducer } from "reactn";
@@ -256,6 +261,42 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handleSearchModal,
   } = tableService.useContenModal();
 
+  // callback for save modal
+  const handleSaveModal = useCallback(
+    (list: Store[]) => {
+      if (list?.length > 0) {
+        if (content.length > 0) {
+          // merge old and new content
+          list
+            .filter(
+              filterContentNotInList(
+                getIdsFromContent(content, `${mapperField}Id`),
+                `id`,
+              ),
+            )
+            .forEach((item: Store) => {
+              content.push(mapper(item));
+            });
+          // remove contents which id not included in list ids
+          const newContent = content.filter(
+            filterContentInList(
+              getIdsFromContent(list, `id`),
+              `${mapperField}Id`,
+            ),
+          );
+          setContent([...newContent]);
+          return;
+        }
+        const newContents = list.map((item: Store) => mapper(item));
+        setContent([...newContents]);
+        return;
+      }
+      // if list empty, setContent to []
+      setContent([]);
+    },
+    [content, mapperField, setContent],
+  );
+
   return (
     <>
       <Table
@@ -350,6 +391,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
         onClose={handleCloseModal}
         onSearch={handleSearchModal}
         selectedList={selectedList}
+        onSave={handleSaveModal}
       />
     </>
   );

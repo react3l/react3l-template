@@ -8,7 +8,7 @@ import Pagination from "components/Utility/Pagination/Pagination";
 import { renderMasterIndex } from "helpers/table";
 import { StoreFilter } from "models/StoreFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
-import React, { useMemo, useReducer, useCallback, useEffect } from "react";
+import React, { useCallback, useMemo, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import {
@@ -41,10 +41,6 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
     endLoadControl,
     selectedList,
   } = props;
-
-  useEffect(() => {
-    console.log(`selectedList: `, selectedList);
-  }, [selectedList]);
 
   const [filter, dispatch] = useReducer(
     advanceFilterReducer,
@@ -82,19 +78,20 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   );
 
   // need separate to reused
-  const handleSaveModal = useCallback(() => {
-    if (typeof onSave === "function") {
-      return onSave(mapperList);
-    }
-  }, [mapperList, onSave]);
-
-  // need separate to reused
   const handleCloseModal = useCallback(() => {
     handleResetFilter(); // resetFilter to default
     if (typeof onClose === "function") {
       return onClose();
     }
   }, [handleResetFilter, onClose]);
+
+  // need separate to reused
+  const handleSaveModal = useCallback(() => {
+    if (typeof onSave === "function") {
+      onSave(mapperList);
+    }
+    handleCloseModal();
+  }, [mapperList, onSave, handleCloseModal]);
 
   //   need separating to be reused
   const columns = useMemo(

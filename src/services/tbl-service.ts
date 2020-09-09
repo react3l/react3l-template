@@ -785,19 +785,29 @@ export function getOrderType(sortOrder?: SortOrder) {
   }
 }
 
-function filterContent<T extends Model>(content: T) {
+export function filterContent<T extends Model>(content: T) {
   return (item: T) => item.key !== content.key;
 }
 
-function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
+export function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
   return list.map((item) => item[fieldId]);
 }
 
-function filterContentNotInList<T extends Model>(list: any[], fieldId: string) {
+export function filterContentNotInList<T extends Model>(
+  list: any[],
+  fieldId: string,
+) {
   return (item: T) => !list.includes(item[fieldId]);
 }
 
-function mappingToMapper<T extends Model>(mapperField: string) {
+export function filterContentInList<T extends Model>(
+  list: any[],
+  fieldId: string,
+) {
+  return (item: T) => list.includes(item[fieldId]);
+}
+
+export function mappingToMapper<T extends Model>(mapperField: string) {
   return (item: T) => item[mapperField];
 }
 
