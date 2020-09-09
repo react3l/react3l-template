@@ -67,7 +67,6 @@ export const advanceFilterService = {
       >,
     ) => void,
     ClassFilter: new () => TFilter,
-    handleSearch?: () => void,
   ): {
     handleChangeFilter: (
       fieldName: keyof TFilter,
@@ -79,9 +78,10 @@ export const advanceFilterService = {
         | NumberFilter
         | DateFilter
         | IdFilter,
+      handleSearch?: () => void,
     ) => (value: any) => void;
     handleResetFilter: () => void;
-    handleUpdateNewFilter: (data: TFilter) => void;
+    handleUpdateNewFilter: (data: TFilter, handleSearch?: () => void) => void;
   } {
     const handleChangeFilter = React.useCallback(
       (
@@ -92,6 +92,7 @@ export const advanceFilterService = {
           | NumberFilter
           | DateFilter
           | IdFilter,
+        handleSearch?: () => void,
       ) => (value: any) => {
         if (fieldType instanceof Array) {
           dispatch({
@@ -117,7 +118,7 @@ export const advanceFilterService = {
           handleSearch();
         }
       },
-      [dispatch, modelFilter, handleSearch],
+      [dispatch, modelFilter],
     );
 
     const handleResetFilter = React.useCallback(() => {
@@ -132,13 +133,13 @@ export const advanceFilterService = {
     }, [dispatch, ClassFilter]);
 
     const handleUpdateNewFilter = React.useCallback(
-      (data: TFilter) => {
+      (data: TFilter, handleSearch?: () => void) => {
         dispatch({ type: ActionFilterEnum.ChangeAllField, data });
         if (typeof handleSearch === "function") {
           handleSearch();
         }
       },
-      [dispatch, handleSearch],
+      [dispatch],
     );
 
     return {
