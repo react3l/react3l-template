@@ -52,7 +52,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     filter,
     dispatch,
     PriceListStoreMappingsFilter,
-    handleSearch,
   );
 
   const {
@@ -138,6 +137,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                     nameof(content[0].storeCode),
                     "contain" as any,
                     StringFilter,
+                    handleSearch,
                   )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
@@ -186,6 +186,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                     nameof(content[0].storeTypeId),
                     "equal" as any,
                     IdFilter,
+                    handleSearch,
                   )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}
@@ -238,6 +239,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       filter,
       translate,
       handleChangeFilter,
+      handleSearch,
       handleChangeContentField,
       handleLocalDelete,
     ],
