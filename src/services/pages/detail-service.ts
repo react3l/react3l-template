@@ -7,7 +7,6 @@ import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
 import { formService } from "services/FormService";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect } from "reactn";
 
 export class DetailService {
   /**
@@ -37,10 +36,6 @@ export class DetailService {
       }
       return [];
     }, [contentField, model]);
-
-    useEffect(() => {
-      console.log(`content: `, content);
-    }, [content]);
 
     const setContent = useCallback(
       (v: TContent[]) => {

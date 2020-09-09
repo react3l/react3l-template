@@ -1,45 +1,45 @@
+@import "variables";
+
 @mixin variable-gradient($property, $gradient1, $gradient2) {
   #{$property}: linear-gradient(
     224.53deg,
-    var(--$property) 0%,
-    var(--$property) 99.2%
+    var(--$gradient1, $gradient-primary-color) 0%,
+    var(--$gradient2, $gradient-secondary-color) 99.2%
   );
   #{$property}: -webkit-linear-gradient(
     224.53deg,
-    var(--$gradient1) 0%,
-    var(--$gradient2) 99.2%
+    var(--$gradient1, $gradient-primary-color) 0%,
+    var(--$gradient2, $gradient-secondary-color) 99.2%
   );
 }
 
-@mixin variable($property, $value) {
-  #{$property}: $value;
-}
-
-@mixin background {
-  @include variable-gradient(background, gradient-primary, gradient-secondary);
+@mixin variable($property, $value, $default-value) {
+  #{$property}: var(--$value, $default-value);
 }
 
 @mixin background-color {
-  background: -webkit-linear-gradient(
-    224.53deg,
-    #013ffb 0%,
-    #a295f2 99.2%
-  ) !important;
-  background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
+  @include variable-gradient(background, gradient-primary, gradient-secondary);
 }
 
 @mixin border-color {
-  border-image-source: -webkit-linear-gradient(
-    224.53deg,
-    #013ffb 0%,
-    #a295f2 99.2%
-  ) !important;
-  border-image-source: linear-gradient(
-    224.53deg,
-    #013ffb 0%,
-    #a295f2 99.2%
-  ) !important;
+  @include variable-gradient(border-image-source, gradient-primary, gradient-secondary);
   border-image-slice: 1;
+}
+
+@mixin border-radius-color {
+  @include variable(border-color, primary-color, $primary-color);
+}
+
+@mixin icon-color {
+  @include variable(color, primary-color, $primary-color);
+}
+
+@mixin gradient-text {
+  @include variable-gradient(background, gradient-primary, gradient-secondary);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 @mixin background-active-color {
@@ -55,25 +55,6 @@
       rgba(94, 129, 244, 0.1)
     ),
     #ffffff !important;
-}
-
-@mixin gradient-text {
-  background: -moz-linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
-  background: -webkit-linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
-  background: linear-gradient(180deg, #013ffb 0%, #a295f2 100%);
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-@mixin background-hover-color {
-  background: -webkit-linear-gradient(
-    224.53deg,
-    #013ffb 0%,
-    #a295f2 99.2%
-  ) !important;
-  background: linear-gradient(224.53deg, #013ffb 0%, #a295f2 99.2%) !important;
 }
 
 @mixin input-title {
@@ -93,9 +74,9 @@
 }
 
 @mixin gradient-text-delete {
-  background: -moz-linear-gradient(180deg, #fd0000 0%, #fe007a 100%);
-  background: -webkit-linear-gradient(180deg, #fd0000 0%, #fe007a 100%);
-  background: linear-gradient(180deg, #fd0000 0%, #fe007a 100%);
+  background: -moz-linear-gradient(180deg, $error-color 0%, $error-color 100%);
+  background: -webkit-linear-gradient(180deg, $error-color 0%, $error-color 100%);
+  background: linear-gradient(180deg, $error-color 0%, $error-color 100%);
   -webkit-background-clip: text;
   -moz-background-clip: text;
   background-clip: text;
@@ -105,8 +86,8 @@
 @mixin background-color-delete {
   background: -webkit-linear-gradient(
     180deg,
-    #fd0000 0%,
-    #fe007a 100%
+    $error-color 0%,
+    $error-color 100%
   ) !important;
-  background: linear-gradient(180deg, #fd0000 0%, #fe007a 100%) !important;
+  background: linear-gradient(180deg, $error-color 0%, $error-color 100%) !important;
 }

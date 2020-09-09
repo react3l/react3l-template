@@ -1,5 +1,4 @@
-import { Tooltip, Table, Popconfirm } from "antd";
-import nameof from "ts-nameof.macro";
+import { Popconfirm, Table, Tooltip } from "antd";
 import { Store } from "antd/lib/form/interface";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
@@ -10,14 +9,21 @@ import { PriceListStoreMappings } from "models/PriceList";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { StoreType } from "models/StoreType";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import { formService } from "services/FormService";
 import listService from "services/list-service";
 import tableService, { getAntOrderType } from "services/tbl-service";
+import nameof from "ts-nameof.macro";
 import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
-import { advanceFilterService } from "services/AdvanceFilterService";
+import { useReducer } from "reactn";
+import {
+  advanceFilterReducer,
+  advanceFilterService,
+} from "services/AdvanceFilterService";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 
 export interface ContentTableProps {
   content: PriceListStoreMappings[];
@@ -29,13 +35,24 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
   const [translate] = useTranslation();
   const { content, setContent, mapperField } = props;
 
-  const [filter, setFilter] = useState<PriceListStoreMappingsFilter>(
+  const [filter, dispatch] = useReducer(
+    advanceFilterReducer,
     new PriceListStoreMappingsFilter(),
   );
 
   const { list, total, loadingList, handleSearch } = listService.useLocalList(
     filter,
     content.map(mapper),
+  );
+
+  const {
+    handleChangeFilter,
+    handleUpdateNewFilter,
+  } = advanceFilterService.useFilter<PriceListStoreMappingsFilter>(
+    filter,
+    dispatch,
+    PriceListStoreMappingsFilter,
+    handleSearch,
   );
 
   const {
@@ -46,19 +63,19 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     pagination,
     handleLocalDelete, // delete local content in table
     handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
-  } = tableService.useLocalTable(
+  } = tableService.useLocalTable<
+    PriceListStoreMappings,
+    Store,
+    PriceListStoreMappingsFilter
+  >(
     total,
     handleSearch,
     filter,
-    (filter) => setFilter(filter),
+    handleUpdateNewFilter,
     content,
     setContent,
     mapperField,
   );
-
-  const handleFilter = advanceFilterService.useChangeLocalFilter<
-    PriceListStoreMappingsFilter
-  >(filter, setFilter, handleSearch);
 
   // cant be lift up when render column dynamically
   const [
@@ -77,12 +94,12 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     // add content
     handleAddContent();
     // go to the last page
-    setFilter({
+    handleUpdateNewFilter({
       ...filter,
       skip: Math.round(total / filter.take) * filter.take,
     });
     handleSearch();
-  }, [handleAddContent, handleSearch, filter, total]);
+  }, [handleAddContent, handleUpdateNewFilter, filter, total, handleSearch]);
 
   const columns = useMemo(
     () => [
@@ -117,7 +134,11 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
               <>
                 <AdvanceStringFilter
                   value={filter["storeCode"]["contain"]}
-                  onChange={handleFilter("storeCode", "contain")}
+                  onChange={handleChangeFilter(
+                    nameof(content[0].storeCode),
+                    "contain" as any,
+                    StringFilter,
+                  )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
               </>
@@ -161,7 +182,11 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
               <>
                 <AdvanceIdFilter
                   value={filter["storeTypeId"]["equal"]}
-                  onChange={handleFilter("storeTypeId", "equal")}
+                  onChange={handleChangeFilter(
+                    nameof(content[0].storeTypeId),
+                    "equal" as any,
+                    IdFilter,
+                  )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}
                   placeHolder={translate("general.filter.idFilter")} // -> tat ca
@@ -212,7 +237,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       content,
       filter,
       translate,
-      handleFilter,
+      handleChangeFilter,
       handleChangeContentField,
       handleLocalDelete,
     ],

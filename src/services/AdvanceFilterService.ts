@@ -4,13 +4,9 @@ import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import { ModelFilter, OrderType } from "@react3l/react3l/core";
-import { TablePaginationConfig } from "antd/lib/table";
-import { Key, SorterResult } from "antd/lib/table/interface";
 import { Moment } from "moment";
 import React from "react";
-import { useCallback } from "reactn";
 import nameof from "ts-nameof.macro";
-import { tableService } from "./TableService";
 
 export enum ActionFilterEnum {
   ChangeAllField,
@@ -21,6 +17,7 @@ export enum ActionFilterEnum {
 
 export interface AdvanceFilterAction<T1, T2> {
   type: ActionFilterEnum;
+  classFilter?: new (partial?: any) => T2;
   data?: T1;
   fieldName?: keyof T1;
   fieldType?: keyof T2;
@@ -39,9 +36,9 @@ export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>(
     case ActionFilterEnum.ChangeOneField:
       return {
         ...state,
-        [action.fieldName]: {
+        [action.fieldName]: new action.classFilter({
           [action.fieldType]: action.fieldValue,
-        },
+        }),
       };
     case ActionFilterEnum.ChangeAllField:
       return action.data;
@@ -70,38 +67,41 @@ export const advanceFilterService = {
       >,
     ) => void,
     ClassFilter: new () => TFilter,
-  ): [
-    (
+    handleSearch?: () => void,
+  ): {
+    handleChangeFilter: (
       fieldName: keyof TFilter,
       fieldType:
-        | keyof StringFilter
+        | keyof (StringFilter | NumberFilter | DateFilter | IdFilter)
+        | (keyof StringFilter | NumberFilter | DateFilter | IdFilter)[],
+      ClassSubFilter: new () =>
+        | StringFilter
         | NumberFilter
         | DateFilter
-        | IdFilter
-        | (keyof StringFilter | NumberFilter | DateFilter | IdFilter)[],
-    ) => (value: any) => void,
-    (
-      newPagination: TablePaginationConfig,
-      filters: Record<string, Key[] | null>,
-      sorter: SorterResult<TFilter>,
-    ) => void,
-    (skip: number, take: number) => void,
-    () => void,
-    (data: TFilter) => void,
-  ] {
+        | IdFilter,
+    ) => (value: any) => void;
+    handleResetFilter: () => void;
+    handleUpdateNewFilter: (data: TFilter) => void;
+  } {
     const handleChangeFilter = React.useCallback(
-      (fieldName: string, fieldType: keyof Filter | (keyof Filter)[]) => (
-        value: any,
-      ) => {
+      (
+        fieldName: string,
+        fieldType: keyof Filter | (keyof Filter)[],
+        ClassSubFilter: new (partial?: any) =>
+          | StringFilter
+          | NumberFilter
+          | DateFilter
+          | IdFilter,
+      ) => (value: any) => {
         if (fieldType instanceof Array) {
           dispatch({
             type: ActionFilterEnum.ChangeAllField,
             data: {
               ...modelFilter,
-              [fieldName]: {
-                [nameof("greater")]: value[0] || null,
-                [nameof("less")]: value[1] || null,
-              },
+              [fieldName]: new ClassSubFilter({
+                [nameof("greater")]: value[0],
+                [nameof("less")]: value[1],
+              }),
             },
           });
         } else {
@@ -110,43 +110,14 @@ export const advanceFilterService = {
             fieldName: fieldName,
             fieldType: fieldType,
             fieldValue: value,
+            classFilter: ClassSubFilter,
           });
         }
-      },
-      [dispatch, modelFilter],
-    );
-
-    const handleChangeOrder = React.useCallback(
-      (
-        newPagination: TablePaginationConfig,
-        filters: Record<string, Key[] | null>,
-        sorter: SorterResult<TFilter>,
-      ) => {
-        if (
-          sorter.field !== modelFilter.orderBy ||
-          sorter.order !==
-            tableService.getAntOrderType(modelFilter, sorter.field)
-        ) {
-          dispatch({
-            type: ActionFilterEnum.ChangeOrderType,
-            orderBy: sorter.field,
-            orderType: tableService.getOrderType(sorter.order),
-          });
-          return;
+        if (typeof handleSearch === "function") {
+          handleSearch();
         }
       },
-      [dispatch, modelFilter],
-    );
-
-    const handlePagination = React.useCallback(
-      (skip: number, take: number) => {
-        dispatch({
-          type: ActionFilterEnum.ChangeSkipTake,
-          skip,
-          take,
-        });
-      },
-      [dispatch],
+      [dispatch, modelFilter, handleSearch],
     );
 
     const handleResetFilter = React.useCallback(() => {
@@ -163,17 +134,18 @@ export const advanceFilterService = {
     const handleUpdateNewFilter = React.useCallback(
       (data: TFilter) => {
         dispatch({ type: ActionFilterEnum.ChangeAllField, data });
+        if (typeof handleSearch === "function") {
+          handleSearch();
+        }
       },
-      [dispatch],
+      [dispatch, handleSearch],
     );
 
-    return [
+    return {
       handleChangeFilter,
-      handleChangeOrder,
-      handlePagination,
       handleResetFilter,
       handleUpdateNewFilter,
-    ];
+    };
   },
 
   useAdvanceFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
@@ -181,6 +153,7 @@ export const advanceFilterService = {
     dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
     fieldName: keyof T1Filter,
     fieldType: keyof T2Filter,
+    ClassFilter: new (partial?: any) => T2Filter,
   ): [any, (value: any) => void] {
     const value = modelFilter[fieldName][fieldType];
     const handleChangeFilter = React.useCallback(
@@ -189,39 +162,14 @@ export const advanceFilterService = {
           type: ActionFilterEnum.ChangeOneField,
           fieldName: fieldName,
           fieldType: fieldType,
+          classFilter: ClassFilter,
           fieldValue: value,
         });
       },
-      [dispatch, fieldName, fieldType],
+      [dispatch, fieldName, fieldType, ClassFilter],
     );
 
     return [value, handleChangeFilter];
-  },
-
-  useAdvanceFilterRange<T1Filter extends ModelFilter, T2Filter extends Filter>(
-    modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
-    fieldName: keyof T1Filter,
-  ): [[any, any], (valueRange: [any, any]) => void] {
-    const valueFrom = modelFilter[fieldName][nameof("greater")];
-    const valueTo = modelFilter[fieldName][nameof("less")];
-    const value: [any, any] = [valueFrom, valueTo];
-    const handleChangeRange = React.useCallback(
-      (valueRange: [any, any]) => {
-        dispatch({
-          type: ActionFilterEnum.ChangeAllField,
-          data: {
-            ...modelFilter,
-            [fieldName]: {
-              [nameof("greater")]: valueRange[0],
-              [nameof("less")]: valueRange[1],
-            },
-          },
-        });
-      },
-      [dispatch, fieldName, modelFilter],
-    );
-    return [value, handleChangeRange];
   },
 
   useStringFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
@@ -242,8 +190,34 @@ export const advanceFilterService = {
       },
       [dispatch, fieldName, fieldType],
     );
-
     return [value, handleChangeFilter];
+  },
+
+  useAdvanceFilterRange<T1Filter extends ModelFilter, T2Filter extends Filter>(
+    modelFilter: T1Filter,
+    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    fieldName: keyof T1Filter,
+    ClassFilter: new (partial?: any) => T2Filter,
+  ): [[any, any], (valueRange: [any, any]) => void] {
+    const valueFrom = modelFilter[fieldName][nameof("greater")];
+    const valueTo = modelFilter[fieldName][nameof("less")];
+    const value: [any, any] = [valueFrom, valueTo];
+    const handleChangeRange = React.useCallback(
+      (valueRange: [any, any]) => {
+        dispatch({
+          type: ActionFilterEnum.ChangeAllField,
+          data: {
+            ...modelFilter,
+            [fieldName]: new ClassFilter({
+              [nameof("greater")]: valueRange[0],
+              [nameof("less")]: valueRange[1],
+            }),
+          },
+        });
+      },
+      [dispatch, fieldName, modelFilter, ClassFilter],
+    );
+    return [value, handleChangeRange];
   },
 
   useNumberFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
@@ -365,39 +339,4 @@ export const advanceFilterService = {
     );
     return [value, handleDateRangeFilter];
   },
-
-  useChangeLocalFilter<TFilter extends ModelFilter>(
-    filter: TFilter,
-    setFilter: (filter: TFilter) => void,
-    handleSearch?: () => void,
-  ) {
-    return useCallback(
-      <TChildFilter extends Filter>(fieldName: string, fieldType: string) => {
-        return (value: any) => {
-          setFilter({
-            ...filter,
-            [fieldName]: {
-              [fieldType]: value,
-            } as TChildFilter,
-          });
-          if (typeof handleSearch === "function") {
-            handleSearch();
-          }
-        };
-      },
-      [filter, handleSearch, setFilter],
-    );
-  },
-
-  //   useLocalFilter<T extends Model, TFilter extends ModelFilter>(
-  //     list: T[],
-  //     childFilter: TFilter,
-  //   ) {
-  //     const handleStringFilter = () => {};
-  //   },
 };
-
-type StringFilterKey = keyof StringFilter;
-type IdFilterKey = keyof IdFilter;
-type DateFilterKey = keyof DateFilter;
-type NumberFilterKey = keyof NumberFilter;
