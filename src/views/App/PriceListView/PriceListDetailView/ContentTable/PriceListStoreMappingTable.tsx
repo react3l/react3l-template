@@ -42,8 +42,10 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handleTableChange,
     handlePagination,
     rowSelection,
+    canBulkDelete,
     pagination,
     handleLocalDelete, // delete local content in table
+    handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
   } = tableService.useLocalTable(
     total,
     handleSearch,
@@ -262,7 +264,11 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                   </button>
                 </Tooltip>
                 <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
-                  <button className='btn component__btn-delete'>
+                  <button
+                    className='btn component__btn-delete'
+                    onClick={handleLocalBulkDelete} // local bulk Delete onChange
+                    disabled={!canBulkDelete} // disabled when selectedList length === 0
+                  >
                     <i className='tio-delete' />
                   </button>
                 </Tooltip>

@@ -202,7 +202,9 @@ function PriceListDetailView() {
                     <PriceListStoreMappingsTable
                       content={storeMappingContents}
                       setContent={setStoreMappingContents}
-                      mapperField={nameof(model.priceListStoreMappings)}
+                      mapperField={nameof(
+                        model.priceListStoreMappings[0].store,
+                      )}
                     />
                   </Row>
                 </TabPane>

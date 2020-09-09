@@ -159,6 +159,7 @@ class ListService {
     handleSearch: () => void;
     handleDelete: (item: T) => void;
     handleBulkDelete: (items: KeyType[]) => void;
+    dispatch: Dispatch<ActionOfList<T>>;
   } {
     //  auto complete subscription until isCancelled == true (unMounted component)
     // const { isCancelled, cancelSubcription } = subcriptionCancellation();
@@ -298,9 +299,10 @@ class ListService {
       list,
       total,
       loadingList,
-      handleSearch,
+      handleSearch, // control loadList, recalculate all state. Eg: list, total, loading, loadList
       handleDelete,
       handleBulkDelete,
+      dispatch, // full control out side
     };
   }
 
