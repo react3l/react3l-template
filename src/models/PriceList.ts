@@ -4,6 +4,8 @@ import { ModelFilter } from "@react3l/react3l/core";
 import { IdFilter, StringFilter, DateFilter } from "@react3l/advanced-filters";
 import { Organization } from "./Organization";
 import { SalesOrderType } from "./PriceList/SalesOrderType";
+import { StoreType } from "./StoreType";
+import { Province } from "./Province";
 
 export class PriceList extends Model {
   id?: number;
@@ -41,8 +43,10 @@ export class PriceListStoreMappings extends Model {
   storeCode?: string;
   storeName?: string;
   storeTypeId?: number;
+  storeType?: StoreType;
   storeGroupingId?: number;
   provinceId?: number;
+  province?: Province;
 }
 
 export class Store extends Model {

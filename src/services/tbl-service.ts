@@ -1,3 +1,5 @@
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Modal } from "antd";
 import { PaginationProps } from "antd/lib/pagination";
 import {
@@ -5,19 +7,16 @@ import {
   SortOrder,
   TableRowSelection,
 } from "antd/lib/table/interface";
-import { DEFAULT_TAKE } from "@react3l/react3l/config";
-import { Model } from "@react3l/react3l/core";
-import listService from "services/list-service";
 import {
+  Dispatch,
+  Reducer,
   useCallback,
   useMemo,
-  useState,
-  Dispatch,
   useReducer,
-  Reducer,
+  useState,
 } from "react";
-import { ModelFilter } from "@react3l/react3l/core";
 import { Observable } from "rxjs";
+import listService from "services/list-service";
 
 type KeyType = string | number;
 
@@ -32,7 +31,7 @@ export interface ModalAction {
 
 export interface ContentTableState<
   TMapping extends Model,
-  TMapper extends Model
+  TMapper extends Model = any
 > {
   mappingList?: TMapping[]; // for content table
   mapperList?: TMapper[]; // for content modal table
@@ -40,7 +39,7 @@ export interface ContentTableState<
 
 export interface ContentTableAction<
   TMapping extends Model,
-  TMapper extends Model
+  TMapper extends Model = any
 > {
   type: ContentTableActionEnum;
   mappingList?: TMapping[];
@@ -51,6 +50,7 @@ export enum ModalActionEnum {
   OPEN_MODAL,
   CLOSE_MODAL,
   END_LOAD_CONTROL,
+  INIT_SEARCH,
 }
 
 export enum ContentTableActionEnum {
@@ -79,6 +79,12 @@ function modalTableReducer(state: ModalState, action: ModalAction) {
       return {
         ...state,
         loadControl: false,
+      };
+    }
+    case ModalActionEnum.INIT_SEARCH: {
+      return {
+        ...state,
+        loadControl: true,
       };
     }
   }
@@ -491,6 +497,90 @@ export class TableService {
 
   /**
    *
+   * expose data and event handler for master table service
+   * @param: filter: TFilter
+   * @param: setFilter: (filter: TFilter) => void
+   * @param: getList: (filter: TFilter) => Observable<T[]>
+   * @param: getTotal: (filter: TFilter) => Observable<number>
+   * @param: deleteItem?: (t: T) => Observable<T>
+   * @param: bulkDeleteItems?: (t: number[] | string[]) => Observable<void>,
+   * @param: onUpdateListSuccess?: (item?: T) => void,
+   * @param: checkBoxType?: RowSelectionType,
+   * @param: isLoadControl?: boolean,
+   * @param: derivedRowKeys?: KeyType[],
+   * @return: { list, total, loadingList, pagination, handleChange, handleServerDelete, handleServerBulkDelete, rowSelection }
+   *
+   * */
+  useModalTable<T extends Model, TFilter extends ModelFilter>(
+    filter: TFilter,
+    setFilter: (filter: TFilter) => void, // from TFilter to TFilter
+    getList: (filter: TFilter) => Observable<T[]>,
+    getTotal: (filter: TFilter) => Observable<number>,
+    isLoadControl: boolean | undefined, // optional control for modal preLoading
+    endLoadControl: () => void, // end external control
+    handleSearch: () => void, // trigger loadList
+    mapperList?: T[],
+  ) {
+    // mappingList, mapperList reducer
+    const [{ mapperList: selectedList }, dispatch] = useReducer<
+      Reducer<ContentTableState<T>, ContentTableAction<T>>
+    >(contentTableReducer, {
+      mapperList: mapperList ?? [],
+    });
+
+    const setSelectedList = useCallback((mapperList: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_CONTENT_SELECTION,
+        mapperList,
+      });
+    }, []);
+
+    // selectedRowKeys
+    const { rowSelection } = this.useContentRowSelection(
+      selectedList,
+      setSelectedList,
+    );
+
+    // from filter and source we calculate dataSource, total and loadingList
+    const { list, total, loadingList } = listService.useList(
+      filter,
+      setFilter,
+      getList,
+      getTotal,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      isLoadControl,
+      endLoadControl,
+    );
+
+    // calculate pagination
+    const pagination: PaginationProps = this.usePagination<TFilter>(
+      filter,
+      total,
+    );
+
+    // handleChange page or sorter
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination, handleSearch);
+
+    return {
+      list,
+      total,
+      loadingList,
+      pagination,
+      handleTableChange,
+      handlePagination,
+      rowSelection,
+      mapperList,
+    };
+  }
+
+  /**
+   *
    * expose data and event handler for localtable service
    * @param: source: T[]
    * @param: setSource: (source: T[]) => void
@@ -510,15 +600,16 @@ export class TableService {
     const [{ mappingList, mapperList }, dispatch] = useReducer<
       Reducer<ContentTableState<T, T2>, ContentTableAction<T, T2>>
     >(contentTableReducer, {
-      mappingList: [],
-      mapperList: [],
+      mappingList: [], // selectedContent
+      mapperList:
+        source?.length > 0 ? source.map(mappingToMapper(mapperField)) : [],
     });
 
     // define setMappingList alternater for setSelectedContent
     const setMappingList = useCallback((mappingList: T[]) => {
       dispatch({
         type: ContentTableActionEnum.SET_CONTENT_SELECTION,
-        mappingList,
+        mappingList, // update mappingList.Eg: selectedContent[]
       });
     }, []);
 
@@ -644,12 +735,17 @@ export class TableService {
       dispatch({ type: ModalActionEnum.END_LOAD_CONTROL });
     }, []);
 
+    const handleSearchModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.INIT_SEARCH });
+    }, []);
+
     return {
       visible,
       loadControl,
       handleEndControl,
       handleOpenModal,
       handleCloseModal,
+      handleSearchModal,
     };
   }
 }
@@ -703,6 +799,10 @@ function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
 
 function filterContentNotInList<T extends Model>(list: any[], fieldId: string) {
   return (item: T) => !list.includes(item[fieldId]);
+}
+
+function mappingToMapper<T extends Model>(mapperField: string) {
+  return (item: T) => item[mapperField];
 }
 
 export default new TableService();

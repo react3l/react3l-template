@@ -1,24 +1,30 @@
+import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { Card, Col, Modal, Row } from "antd";
-import nameof from "ts-nameof.macro";
 import { Store } from "antd/lib/form/interface";
+import Table from "antd/lib/table";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
+import Pagination from "components/Utility/Pagination/Pagination";
+import { renderMasterIndex } from "helpers/table";
 import { StoreFilter } from "models/StoreFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useMemo, useReducer, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
+import {
+  advanceFilterReducer,
+  advanceFilterService,
+} from "services/AdvanceFilterService";
 import tableService from "services/tbl-service";
-import Pagination from "components/Utility/Pagination/Pagination";
-import Table from "antd/lib/table";
-import { renderMasterIndex } from "helpers/table";
+import nameof from "ts-nameof.macro";
 
 export interface PriceListStoreMappingsModalProps {
   visible: boolean;
   loadControl: boolean;
   endLoadControl: () => void;
+  onSearch: () => void;
   width?: number;
-  defaultSelectedRowKey?: number[];
+  selectedList?: Store[];
   onSave?: (selectedList: Store[]) => void;
   onClose?: () => void;
 }
@@ -27,15 +33,33 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const [translate] = useTranslation();
   const {
     visible,
-    defaultSelectedRowKey,
-    // onSave,
+    onSearch,
+    onSave,
     width,
     onClose,
     loadControl,
     endLoadControl,
+    selectedList,
   } = props;
 
-  const [filter, setFilter] = useState<StoreFilter>(new StoreFilter());
+  useEffect(() => {
+    console.log(`selectedList: `, selectedList);
+  }, [selectedList]);
+
+  const [filter, dispatch] = useReducer(
+    advanceFilterReducer,
+    new StoreFilter(),
+  );
+
+  const {
+    handleChangeFilter,
+    handleUpdateNewFilter,
+    handleResetFilter,
+  } = advanceFilterService.useFilter<StoreFilter>(
+    filter,
+    dispatch,
+    StoreFilter,
+  );
 
   const {
     list,
@@ -44,39 +68,33 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
     pagination,
     handlePagination,
     handleTableChange,
-    handleSearch,
     rowSelection,
-  } = tableService.useTable<Store, StoreFilter>(
+    mapperList,
+  } = tableService.useModalTable<Store, StoreFilter>(
     filter,
-    setFilter,
+    handleUpdateNewFilter,
     priceListRepository.listStore,
     priceListRepository.countStore,
-    null,
-    null,
-    null,
-    "checkbox",
     loadControl,
     endLoadControl,
-    defaultSelectedRowKey,
+    onSearch,
+    selectedList,
   );
 
-  //   need separating to be reused
-  const handleFilter = useCallback(
-    (fieldName: string, fieldType: string) => {
-      return (value: any) => {
-        setFilter({
-          ...filter,
-          [fieldName]: {
-            [fieldType]: value,
-          },
-        });
-        if (typeof handleSearch === "function") {
-          handleSearch();
-        }
-      };
-    },
-    [filter, setFilter, handleSearch],
-  );
+  // need separate to reused
+  const handleSaveModal = useCallback(() => {
+    if (typeof onSave === "function") {
+      return onSave(mapperList);
+    }
+  }, [mapperList, onSave]);
+
+  // need separate to reused
+  const handleCloseModal = useCallback(() => {
+    handleResetFilter(); // resetFilter to default
+    if (typeof onClose === "function") {
+      return onClose();
+    }
+  }, [handleResetFilter, onClose]);
 
   //   need separating to be reused
   const columns = useMemo(
@@ -105,17 +123,23 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const modalFooter = useMemo(
     () => (
       <div className='d-flex justify-content-end'>
-        <button className='btn btn-sm component__btn-primary mr-2'>
+        <button
+          className='btn btn-sm component__btn-primary mr-2'
+          onClick={handleSaveModal}
+        >
           <span>
             <i className='tio-save' /> Lưu
           </span>
         </button>
-        <button className='btn btn-sm component__btn-cancel' onClick={onClose}>
+        <button
+          className='btn btn-sm component__btn-cancel'
+          onClick={handleCloseModal}
+        >
           <i className='tio-clear' /> Hủy
         </button>
       </div>
     ),
-    [onClose],
+    [handleSaveModal, handleCloseModal],
   );
 
   return (
@@ -133,14 +157,24 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
               <Col lg={6} className='pr-3'>
                 <AdvanceStringFilter
                   value={filter["code"]["contain"]}
-                  onChange={handleFilter("code", "contain")}
+                  onChange={handleChangeFilter(
+                    nameof(list[0].code),
+                    "contain" as any,
+                    StringFilter,
+                    onSearch,
+                  )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
               </Col>
               <Col lg={6}>
                 <AdvanceIdFilter
                   value={filter["statusId"]["equal"]}
-                  onChange={handleFilter("statusId", "equal")}
+                  onChange={handleChangeFilter(
+                    nameof(list[0].statusId),
+                    "equal" as any,
+                    IdFilter,
+                    onSearch,
+                  )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}
                   placeHolder={translate("general.filter.idFilter")}

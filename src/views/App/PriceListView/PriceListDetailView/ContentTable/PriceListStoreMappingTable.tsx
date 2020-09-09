@@ -40,11 +40,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     new PriceListStoreMappingsFilter(),
   );
 
-  const { list, total, loadingList, handleSearch } = listService.useLocalList(
-    filter,
-    content.map(mapper),
-  );
-
   const {
     handleChangeFilter,
     handleUpdateNewFilter,
@@ -52,7 +47,11 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     filter,
     dispatch,
     PriceListStoreMappingsFilter,
-    handleSearch,
+  );
+
+  const { list, total, loadingList, handleSearch } = listService.useLocalList(
+    filter,
+    content.map(mapper),
   );
 
   const {
@@ -63,6 +62,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     pagination,
     handleLocalDelete, // delete local content in table
     handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
+    selectedList,
   } = tableService.useLocalTable<
     PriceListStoreMappings,
     Store,
@@ -138,6 +138,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                     nameof(content[0].storeCode),
                     "contain" as any,
                     StringFilter,
+                    handleSearch,
                   )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
@@ -186,6 +187,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                     nameof(content[0].storeTypeId),
                     "equal" as any,
                     IdFilter,
+                    handleSearch,
                   )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}
@@ -238,6 +240,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       filter,
       translate,
       handleChangeFilter,
+      handleSearch,
       handleChangeContentField,
       handleLocalDelete,
     ],
@@ -250,6 +253,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handleEndControl,
     handleOpenModal,
     handleCloseModal,
+    handleSearchModal,
   } = tableService.useContenModal();
 
   return (
@@ -344,6 +348,8 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
         loadControl={loadControl}
         endLoadControl={handleEndControl}
         onClose={handleCloseModal}
+        onSearch={handleSearchModal}
+        selectedList={selectedList}
       />
     </>
   );
@@ -367,7 +373,6 @@ function mapper(model: PriceListStoreMappings | Store): PriceListStoreMappings {
       provinceId: store?.provinceId,
       storeGroupingId: store?.storeGroupingId,
       storeType: store?.storeType,
-      storeGrouping: store?.storeGrouping,
       province: store?.province,
     };
   }
