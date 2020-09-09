@@ -14,6 +14,7 @@ import {
   useMemo,
   useReducer,
   useState,
+  useEffect,
 } from "react";
 import { Observable } from "rxjs";
 import listService from "services/list-service";
@@ -42,8 +43,10 @@ export interface ContentTableAction<
   TMapper extends Model = any
 > {
   type: ContentTableActionEnum;
+  listName?: string;
   mappingList?: TMapping[];
   mapperList?: TMapper[];
+  data?: any[];
 }
 
 export enum ModalActionEnum {
@@ -54,7 +57,7 @@ export enum ModalActionEnum {
 }
 
 export enum ContentTableActionEnum {
-  SET_CONTENT_SELECTION,
+  SET_LIST_SELECTION,
   SINGLE_DELETE,
   BULK_DELETE,
 }
@@ -98,7 +101,6 @@ function contentTableReducer<TMapping extends Model, TMapper extends Model>(
     case ContentTableActionEnum.SINGLE_DELETE: {
       return {
         ...state,
-        mapperList: action.mapperList,
         mappingList: action.mappingList,
       };
     }
@@ -106,13 +108,12 @@ function contentTableReducer<TMapping extends Model, TMapper extends Model>(
       return {
         ...state,
         mappingList: [],
-        mapperList: action.mapperList,
       };
     }
-    case ContentTableActionEnum.SET_CONTENT_SELECTION: {
+    case ContentTableActionEnum.SET_LIST_SELECTION: {
       return {
         ...state,
-        mappingList: action.mappingList,
+        [action.listName]: action.data,
       };
     }
   }
@@ -527,11 +528,11 @@ export class TableService {
     >(contentTableReducer, {
       mapperList: mapperList ?? [],
     });
-
-    const setSelectedList = useCallback((mapperList: T[]) => {
+    const setSelectedList = useCallback((list: T[]) => {
       dispatch({
-        type: ContentTableActionEnum.SET_CONTENT_SELECTION,
-        mapperList,
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mapperList",
+        data: list,
       });
     }, []);
 
@@ -540,6 +541,22 @@ export class TableService {
       selectedList,
       setSelectedList,
     );
+
+    // define setMapperList alternater for setSelectedList
+    const setMapperList = useCallback((mapperList: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mapperList",
+        data: mapperList, // update mappingList.Eg: selectedContent[]
+      });
+    }, []);
+
+    // update mapperList when source changed
+    useEffect(() => {
+      if (mapperList?.length > 0) {
+        setMapperList(mapperList);
+      }
+    }, [mapperList, setMapperList]);
 
     // from filter and source we calculate dataSource, total and loadingList
     const { list, total, loadingList } = listService.useList(
@@ -597,19 +614,24 @@ export class TableService {
     mapperField: string,
   ) {
     // mappingList, mapperList reducer
-    const [{ mappingList, mapperList }, dispatch] = useReducer<
+    const [{ mappingList }, dispatch] = useReducer<
       Reducer<ContentTableState<T, T2>, ContentTableAction<T, T2>>
     >(contentTableReducer, {
       mappingList: [], // selectedContent
-      mapperList:
-        source?.length > 0 ? source.map(mappingToMapper(mapperField)) : [],
     });
+
+    // calculate selectedList from updated source
+    const selectedList = useMemo(
+      () => (source.length > 0 ? source.map(mappingToMapper(mapperField)) : []),
+      [mapperField, source],
+    );
 
     // define setMappingList alternater for setSelectedContent
     const setMappingList = useCallback((mappingList: T[]) => {
       dispatch({
-        type: ContentTableActionEnum.SET_CONTENT_SELECTION,
-        mappingList, // update mappingList.Eg: selectedContent[]
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mappingList",
+        data: mappingList, // update mappingList.Eg: selectedContent[]
       });
     }, []);
 
@@ -637,23 +659,11 @@ export class TableService {
         dispatch({
           type: ContentTableActionEnum.SINGLE_DELETE,
           mappingList: mappingList.filter(filterContent(content)), // for content table
-          mapperList: mapperList.filter(
-            filterListFromContent(content, `${mapperField}Id`),
-          ), // for modal
         });
         setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
         handleSearch(); // trigger reLoad list
       },
-      [
-        filter,
-        handleSearch,
-        mapperField,
-        mapperList,
-        mappingList,
-        setFilter,
-        setSource,
-        source,
-      ],
+      [filter, handleSearch, mappingList, setFilter, setSource, source],
     );
 
     //  handle bulk delete
@@ -673,12 +683,6 @@ export class TableService {
           ); // update source
           dispatch({
             type: ContentTableActionEnum.BULK_DELETE,
-            mapperList: mapperList.filter(
-              filterContentNotInList(
-                getIdsFromContent(mappingList, `${mapperField}Id`),
-                `id`,
-              ),
-            ), // for modal
           });
           setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
           handleSearch(); // trigger reLoad list
@@ -688,7 +692,6 @@ export class TableService {
       filter,
       handleSearch,
       mapperField,
-      mapperList,
       mappingList,
       setFilter,
       setSource,
@@ -704,7 +707,7 @@ export class TableService {
       rowSelection,
       canBulkDelete,
       selectedContent: mappingList,
-      selectedList: mapperList,
+      selectedList,
     };
   }
 
@@ -784,13 +787,6 @@ export function getOrderType(sortOrder?: SortOrder) {
 
 function filterContent<T extends Model>(content: T) {
   return (item: T) => item.key !== content.key;
-}
-
-function filterListFromContent<T extends Model, T2 extends Model>(
-  content: T,
-  field: string,
-) {
-  return (item: T2) => item.id !== content[field];
 }
 
 function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
