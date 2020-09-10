@@ -1,3 +1,5 @@
+import React, { useMemo } from "react";
+import { Moment } from "moment";
 import { Col, Row, Tooltip } from "antd";
 import Card from "antd/lib/card";
 import Table, { ColumnProps } from "antd/lib/table";
@@ -10,12 +12,12 @@ import { renderMasterIndex } from "helpers/table";
 import { PriceList, PriceListFilter } from "models/PriceList";
 import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
-import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import masterService from "services/pages/master-service";
 import nameof from "ts-nameof.macro";
 import { IdFilter, StringFilter } from "@react3l/advanced-filters";
+import { formatDateTime } from "helpers/date-time";
 
 function PriceListMasterView() {
   const [translate] = useTranslation();
@@ -56,11 +58,39 @@ function PriceListMasterView() {
         render: renderMasterIndex<PriceList>(pagination),
       },
       {
-        title: "code",
-        key: "code",
-        dataIndex: "code",
-        render(...[code]) {
-          return <div className='display-code'>{code}</div>;
+        title: "Code",
+        key: nameof(list[0].code),
+        dataIndex: nameof(list[0].code),
+        // render(...params: [string, PriceList, number]) {
+        //   return <div className='text-left'>{params[0]}</div>; // string align left
+        // },
+      },
+      {
+        title: "Tên",
+        key: nameof(list[0].name),
+        dataIndex: nameof(list[0].name),
+        // render(...params: [string, PriceList, number]) {
+        //   return <div className='display-code'>{params[0]}</div>; // string align left
+        // },
+      },
+      {
+        title: <div className='text-center'>Ngày cập nhật</div>,
+        key: nameof(list[0].updatedAt),
+        dataIndex: nameof(list[0].updatedAt),
+        render(...params: [Moment, PriceList, number]) {
+          return <div className='text-center'>{formatDateTime(params[0])}</div>;
+        },
+      },
+      {
+        title: <div className='text-center'>Trạng thái</div>,
+        key: nameof(list[0].statusId),
+        dataIndex: nameof(list[0].statusId),
+        render(...params: [number, PriceList, number]) {
+          return (
+            <div className={params[0] === 1 ? "active" : ""}>
+              <i className='tio-checkmark_circle d-flex justify-content-center'></i>
+            </div>
+          );
         },
       },
       {
@@ -101,7 +131,7 @@ function PriceListMasterView() {
       },
     ],
 
-    [handleGoDetail, handleServerDelete, pagination, translate],
+    [handleGoDetail, handleServerDelete, list, pagination, translate],
   );
 
   return (
