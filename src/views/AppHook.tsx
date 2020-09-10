@@ -2,8 +2,8 @@ import { commonService } from "@react3l/react3l/services";
 import { Reducer, useCallback, useEffect, useReducer } from "react";
 import { useLocation } from "react-router";
 import { Subscription } from "rxjs";
-import { appMessageService } from "services/AppMessageService";
 import { AppAction, AppActionEnum, appReducer, AppState } from "./AppStore";
+import appMessageService, { messageType } from "services/AppMessageService";
 
 export default function useApp() {
   const { pathname } = useLocation();
@@ -40,10 +40,14 @@ export default function useApp() {
   useEffect(() => {
     const successSubscription: Subscription = appMessageService
       ._success()
-      .subscribe(appMessageService.handleNotify("thanh cong"));
+      .subscribe(
+        appMessageService.handleNotify(messageType.SUCCESS, "thanh cong"),
+      ); // subscribe success
+
     const errorSubscription: Subscription = appMessageService
       ._error()
-      .subscribe(appMessageService.handleNotify("that bai"));
+      .subscribe(appMessageService.handleNotify(messageType.ERROR, "that bai")); // subscribe error
+
     subscription.add(successSubscription);
     subscription.add(errorSubscription);
   }, [subscription]);
@@ -81,6 +85,7 @@ export default function useApp() {
     displayOverlay,
     handleOffOverlay,
     handleCloseErrorModal,
+    dispatch,
     appMessageService, // service instance
   };
 }

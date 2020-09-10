@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo } from "react";
 import { Popconfirm, Table, Tooltip } from "antd";
 import { Store } from "antd/lib/form/interface";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Pagination from "components/Utility/Pagination/Pagination";
 import { renderMasterIndex } from "helpers/table";
-import { PriceListStoreMappings } from "models/PriceList";
+import { PriceList, PriceListStoreMappings } from "models/PriceList";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { StoreType } from "models/StoreType";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
@@ -27,10 +29,9 @@ import {
   advanceFilterReducer,
   advanceFilterService,
 } from "services/AdvanceFilterService";
-import { StringFilter } from "@react3l/advanced-filters/StringFilter";
-import { IdFilter } from "@react3l/advanced-filters/IdFilter";
-
+import { importExportDataService } from "services/import-export-data-service";
 export interface ContentTableProps {
+  model: PriceList;
   content: PriceListStoreMappings[];
   setContent: (content: PriceListStoreMappings[]) => void;
   mapperField: string;
@@ -38,8 +39,7 @@ export interface ContentTableProps {
 
 export default function PriceListStoreMappingTable(props: ContentTableProps) {
   const [translate] = useTranslation();
-  const { content, setContent, mapperField } = props;
-
+  const { content, setContent, mapperField, model } = props;
   const [filter, dispatch] = useReducer(
     advanceFilterReducer,
     new PriceListStoreMappingsFilter(),
@@ -297,6 +297,13 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     [content, mapperField, setContent],
   );
 
+  // import data service
+  const {
+    ref,
+    handleClick,
+    handleImportContentList,
+  } = importExportDataService.useImport();
+
   return (
     <>
       <Table
@@ -343,9 +350,12 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                   </button>
                 </Tooltip>
                 <Tooltip title={translate("Nhập excel")} key='importExcel'>
-                  <button className='btn gradient-btn-icon'>
+                  <label
+                    className='btn gradient-btn-icon mb-0'
+                    htmlFor='master-import-store'
+                  >
                     <i className='tio-file_add_outlined ' />
-                  </button>
+                  </label>
                 </Tooltip>
                 <Tooltip title={translate("Xuất excel")} key='exportExcel'>
                   <button className='btn gradient-btn-icon'>
@@ -392,6 +402,18 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
         onSearch={handleSearchModal}
         selectedList={selectedList}
         onSave={handleSaveModal}
+      />
+      {/* input import file */}
+      <input
+        ref={ref}
+        type='file'
+        className='invisible'
+        id='master-import-store'
+        onChange={handleImportContentList(
+          model?.id,
+          priceListRepository.importStore,
+        )}
+        onClick={handleClick}
       />
     </>
   );

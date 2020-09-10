@@ -6,7 +6,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import { Observable } from "rxjs";
 import { saveAs } from "file-saver";
 import { AppAction, AppActionEnum } from "views/AppStore";
-import { AppMessageContext } from "views/AppContext";
+import { AppMessageContext, AppDispatchContext } from "views/AppContext";
 import { AppMessageService } from "services/AppMessageService";
 export const importExportDataService = {
   /**
@@ -17,10 +17,8 @@ export const importExportDataService = {
    * @return:
    *
    * */
-  useImport<T extends Model>(
-    dispatch?: Dispatch<AppAction>,
-    onImportSuccess?: (list?: T[]) => void,
-  ) {
+  useImport<T extends Model>(onImportSuccess?: (list?: T[]) => void) {
+    const dispatch = useContext<Dispatch<AppAction>>(AppDispatchContext); // use dispatch AppContext
     const [subscription] = commonService.useSubscription(); // subscription avoid leak memory
     const messageContext = useContext<AppMessageService>(AppMessageContext); // message context for side effect
     const ref: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null); // ref object to clear value of input after import
@@ -73,7 +71,7 @@ export const importExportDataService = {
       ],
     );
 
-    const handleContentList = useCallback(
+    const handleImportContentList = useCallback(
       (
         modelId: number,
         onImport: (file: File, priceListId: number) => Observable<T[]>,
@@ -109,14 +107,12 @@ export const importExportDataService = {
       ref.current.value = null;
     }, []);
 
-    return { handleClick, handleImportList, handleContentList };
+    return { ref, handleClick, handleImportList, handleImportContentList };
   },
 
   /**
    *
    * return exportList, exportContent, exportTemplateList, exportTemplateContent
-   * @param: dispatch
-   * @param: onImportSuccess?: (list?: T[]) => void,
    * @return:
    *
    * */

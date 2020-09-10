@@ -200,6 +200,7 @@ function PriceListDetailView() {
                 >
                   <Row>
                     <PriceListStoreMappingsTable
+                      model={model}
                       content={storeMappingContents}
                       setContent={setStoreMappingContents}
                       mapperField={nameof(

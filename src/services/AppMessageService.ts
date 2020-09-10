@@ -6,43 +6,43 @@ notification.config({
   placement: "bottomRight",
 });
 
-export interface AppMessageService {
-  success$: BehaviorSubject<boolean>;
-  error$: BehaviorSubject<boolean>;
-  _success: () => Observable<boolean>;
-  _error: () => Observable<boolean>;
-  setSuccess: () => void;
-  setError: () => void;
-  handleNotify: (
-    message: string,
-    description?: string,
-  ) => (value: boolean) => void;
-  useCRUDMessage: () => {
-    notifyUpdateItemSuccess: (description?: string) => void;
-    notifyUpdateItemError: (description?: string) => void;
-  };
+export enum messageType {
+  SUCCESS,
+  ERROR,
 }
 
-export const appMessageService: AppMessageService = {
-  success$: new BehaviorSubject<boolean>(false), // success subject for app message
-  error$: new BehaviorSubject<boolean>(false), // error subject for app message
-  _success: () => this.success$ as Observable<boolean>, // expose get success$ Observable
-  _error: () => this.error$ as Observable<boolean>, // expose get error$ as Observable
-  setSuccess: () => {
+export class AppMessageService {
+  success$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false); // success subject for app message
+  error$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false); // error subject for app message
+  _success: () => Observable<boolean> = () =>
+    this.success$ as Observable<boolean>; // expose get success$ Observable
+  _error: () => Observable<boolean> = () => this.error$ as Observable<boolean>; // expose get error$ as Observable
+  setSuccess: () => void = () => {
     this.success$.next(true);
-  },
-  setError: () => {
+  };
+  setError: () => void = () => {
     this.error$.next(true);
-  },
-  handleNotify: (message: string, description?: string) => {
-    return (value: boolean) => {
-      value ??
-        notification.success({
+  };
+
+  messageFactory(messType: messageType, message: string, description?: string) {
+    messType === messageType.SUCCESS
+      ? notification.success({
+          message,
+          description,
+        })
+      : notification.error({
           message,
           description,
         });
+  } // factory a snack from  messType, message as title and descripton as body
+
+  handleNotify(messType: messageType, message: string, description?: string) {
+    return (value: boolean) => {
+      if (value) {
+        this.messageFactory(messType, message, description);
+      }
     };
-  }, // handle any Success message
+  } // handle any Success message
   useCRUDMessage() {
     const [translate] = useTranslation();
 
@@ -66,5 +66,8 @@ export const appMessageService: AppMessageService = {
       notifyUpdateItemSuccess,
       notifyUpdateItemError,
     };
-  },
-};
+  }
+}
+
+const appMessageService = new AppMessageService();
+export default appMessageService;

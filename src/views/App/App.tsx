@@ -10,7 +10,7 @@ import { routes } from "config/routes";
 import { Switch, withRouter } from "react-router";
 import { renderRoutes } from "react-router-config";
 import useApp from "views/AppHook";
-import { AppMessageContext } from "views/AppContext";
+import { AppMessageContext, AppDispatchContext } from "views/AppContext";
 import ErrorBoundary from "antd/lib/alert/ErrorBoundary";
 import "./App.scss";
 
@@ -23,6 +23,7 @@ function App() {
     displayOverlay,
     handleOffOverlay,
     handleCloseErrorModal,
+    dispatch, // app dispatch
     appMessageService, // service instance
   } = useApp();
 
@@ -111,8 +112,10 @@ function App() {
     <>
       <ErrorBoundary>
         <AppMessageContext.Provider value={appMessageService}>
-          {renderLayout}
-          {renderErrorModal}
+          <AppDispatchContext.Provider value={dispatch}>
+            {renderLayout}
+            {renderErrorModal}
+          </AppDispatchContext.Provider>
         </AppMessageContext.Provider>
       </ErrorBoundary>
     </>

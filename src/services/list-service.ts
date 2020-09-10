@@ -379,6 +379,7 @@ class ListService {
               });
             }),
         );
+        dispatch({ type: END_LOAD }); // endLoad control
       }
     }, [
       isLoadList,

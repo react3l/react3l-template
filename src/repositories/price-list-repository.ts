@@ -5,7 +5,11 @@ import { BASE_API_URL } from "config/consts";
 import { httpConfig } from "config/http";
 import { Organization } from "models/Organization";
 import { OrganizationFilter } from "models/OrganizationFilter";
-import { PriceList, PriceListFilter } from "models/PriceList";
+import {
+  PriceList,
+  PriceListFilter,
+  PriceListStoreMappings,
+} from "models/PriceList";
 import { PriceListStatus } from "models/PriceList/PriceListStatus";
 import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { StoreFilter } from "models/StoreFilter";
@@ -128,6 +132,33 @@ export class PriceListRepository extends Repository {
         filter,
       )
       .pipe(map((response: AxiosResponse<Organization[]>) => response.data));
+  };
+
+  public importStore = (
+    file: File,
+    priceListId: number,
+  ): Observable<PriceListStoreMappings[]> => {
+    const formData: FormData = new FormData();
+    formData.append(nameof(file), file);
+    formData.append(
+      nameof(priceListId),
+      typeof priceListId !== "undefined" ? priceListId.toString() : "0", // if create case, send priceListId = 0 to server
+    );
+    return this.httpObservable
+      .post<PriceListStoreMappings[]>(
+        kebabCase(nameof(this.importStore)),
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
+      )
+      .pipe(
+        map(
+          (response: AxiosResponse<PriceListStoreMappings[]>) => response.data,
+        ),
+      );
   };
 }
 
