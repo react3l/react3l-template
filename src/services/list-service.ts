@@ -44,10 +44,11 @@ export interface ActionOfList<T extends Model> {
   payload?: StateOfList<T>;
 }
 
-export const SET_LIST: string = "FETCH_LIST";
-export const FETCH_INIT: string = "FETCH_INIT";
-export const FETCH_END: string = "FETCH_END";
-export const SEARCH_INIT: string = "SEARCH_INIT";
+export const SET_LIST: string = "SET_LIST";
+export const INIT_FETCH: string = "INIT_FETCH";
+export const END_FETCH: string = "END_FETCH";
+export const END_LOAD: string = "END_LOAD";
+export const INIT_SEARCH: string = "INIT_SEARCH";
 
 function listReducer<T>(
   state: StateOfList<T>,
@@ -62,21 +63,25 @@ function listReducer<T>(
         total,
       };
     }
-    case FETCH_INIT: {
+    case INIT_FETCH: {
       return {
         ...state,
         loadingList: true,
-        isLoadList: false,
       };
     }
-    case FETCH_END: {
+    case END_FETCH: {
       return {
         ...state,
         loadingList: false,
+      };
+    }
+    case END_LOAD: {
+      return {
+        ...state,
         isLoadList: false,
       };
     }
-    case SEARCH_INIT: {
+    case INIT_SEARCH: {
       return {
         ...state,
         isLoadList: true,
@@ -101,11 +106,11 @@ class ListService {
     handleFetchEnd: () => void;
   } {
     const handleFetchInit = () => {
-      dispatch({ type: FETCH_INIT });
+      dispatch({ type: INIT_FETCH });
     };
     const handleFetchEnd = () => {
       dispatch({
-        type: FETCH_END,
+        type: END_FETCH,
       });
     };
     return { handleFetchInit, handleFetchEnd };
@@ -252,11 +257,7 @@ class ListService {
         if (typeof bulkDeleteItems === "function") {
           subscription.add(
             bulkDeleteItems(keys)
-              .pipe(
-                tap(handleFetchInit),
-                //   takeUntil(isCancelled),
-                finalize(handleFetchEnd),
-              )
+              .pipe(tap(handleFetchInit), finalize(handleFetchEnd))
               .subscribe(() => {
                 if (typeof onUpdateListSuccess === "function") {
                   onUpdateListSuccess(); // sideEffect when update list successfully
@@ -283,16 +284,16 @@ class ListService {
 
     useEffect(() => {
       if (shouldLoad) {
-        // trigger loadList only isLoadList == true
-        handleLoadList();
+        handleLoadList(); // trigger loadList only isLoadList == true
+        dispatch({ type: END_LOAD }); // end loading internally
         if (typeof endLoadControl === "function") {
-          endLoadControl();
+          endLoadControl(); // end loading externally
         }
       }
     }, [handleLoadList, shouldLoad, endLoadControl]);
 
     const handleSearch = useCallback(() => {
-      dispatch({ type: SEARCH_INIT });
+      dispatch({ type: INIT_SEARCH });
     }, []);
 
     return {
@@ -356,7 +357,7 @@ class ListService {
     );
 
     const handleSearch = useCallback(() => {
-      dispatch({ type: SEARCH_INIT });
+      dispatch({ type: INIT_SEARCH });
     }, []);
 
     useEffect(() => {
