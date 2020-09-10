@@ -1,12 +1,15 @@
 import { commonService } from "@react3l/react3l/services";
 import { AxiosError } from "axios";
+import { PRICE_LIST_ROUTE_PREFIX } from "config/route-consts";
 import Model from "core/models/Model";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
 import { formService } from "services/FormService";
+import { routerService } from "services/RouterService";
 import { v4 as uuidv4 } from "uuid";
+import { appMessageService } from "services/AppMessageService";
 
 export class DetailService {
   /**
@@ -62,6 +65,16 @@ export class DetailService {
   ) {
     // get id from url
     const { id } = useParams();
+    // navigating master when update or create successfully
+    const [, , , handleGoBase] = routerService.useMasterNavigation(
+      PRICE_LIST_ROUTE_PREFIX, // master route
+    );
+    // message service
+    const {
+      notifyUpdateItemSuccess,
+      notifyUpdateItemError,
+    } = appMessageService.useCRUDMessage();
+    // subscription service for clearing subscription
     const [subscription] = commonService.useSubscription();
 
     const isDetail = useMemo(
@@ -88,25 +101,36 @@ export class DetailService {
             saveModel(model)
               .pipe(finalize(() => setLoading(false)))
               .subscribe(
-                () => (item: T) => {
-                  handleUpdateNewModel(item);
+                (item: T) => {
+                  handleUpdateNewModel(item); // setModel
+                  handleGoBase(); // go master
+                  notifyUpdateItemSuccess(); // global message service go here
                   if (typeof onSaveSuccess === "function") {
-                    onSaveSuccess(item);
+                    onSaveSuccess(item); // trigger custom effect when updating success
                   }
                 },
                 (error: AxiosError<T>) => {
                   if (error.response && error.response.status === 400) {
-                    handleUpdateNewModel(error.response?.data);
+                    handleUpdateNewModel(error.response?.data); // setModel for catching error
                   }
+                  notifyUpdateItemError(); // global message service go here
                   if (typeof onSaveError === "function") {
-                    onSaveError(error.response?.data);
+                    onSaveError(error.response?.data); // trigger custom effect when updating success
                   }
                 },
               ),
           );
         };
       },
-      [handleUpdateNewModel, model, saveModel, subscription],
+      [
+        handleGoBase,
+        handleUpdateNewModel,
+        model,
+        notifyUpdateItemError,
+        notifyUpdateItemSuccess,
+        saveModel,
+        subscription,
+      ],
     );
 
     return {
