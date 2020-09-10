@@ -14,7 +14,12 @@ import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import { formService } from "services/FormService";
 import listService from "services/list-service";
-import tableService, { getAntOrderType } from "services/tbl-service";
+import tableService, {
+  getAntOrderType,
+  filterContentNotInList,
+  filterContentInList,
+  getIdsFromContent,
+} from "services/tbl-service";
 import nameof from "ts-nameof.macro";
 import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 import { useReducer } from "reactn";
@@ -40,11 +45,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     new PriceListStoreMappingsFilter(),
   );
 
-  const { list, total, loadingList, handleSearch } = listService.useLocalList(
-    filter,
-    content.map(mapper),
-  );
-
   const {
     handleChangeFilter,
     handleUpdateNewFilter,
@@ -52,6 +52,11 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     filter,
     dispatch,
     PriceListStoreMappingsFilter,
+  );
+
+  const { list, total, loadingList, handleSearch } = listService.useLocalList(
+    filter,
+    content.map(mapper),
   );
 
   const {
@@ -62,6 +67,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     pagination,
     handleLocalDelete, // delete local content in table
     handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
+    selectedList,
   } = tableService.useLocalTable<
     PriceListStoreMappings,
     Store,
@@ -252,7 +258,44 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handleEndControl,
     handleOpenModal,
     handleCloseModal,
+    handleSearchModal,
   } = tableService.useContenModal();
+
+  // callback for save modal
+  const handleSaveModal = useCallback(
+    (list: Store[]) => {
+      if (list?.length > 0) {
+        if (content.length > 0) {
+          // merge old and new content
+          list
+            .filter(
+              filterContentNotInList(
+                getIdsFromContent(content, `${mapperField}Id`),
+                `id`,
+              ),
+            )
+            .forEach((item: Store) => {
+              content.push(mapper(item));
+            });
+          // remove contents which id not included in list ids
+          const newContent = content.filter(
+            filterContentInList(
+              getIdsFromContent(list, `id`),
+              `${mapperField}Id`,
+            ),
+          );
+          setContent([...newContent]);
+          return;
+        }
+        const newContents = list.map((item: Store) => mapper(item));
+        setContent([...newContents]);
+        return;
+      }
+      // if list empty, setContent to []
+      setContent([]);
+    },
+    [content, mapperField, setContent],
+  );
 
   return (
     <>
@@ -346,6 +389,9 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
         loadControl={loadControl}
         endLoadControl={handleEndControl}
         onClose={handleCloseModal}
+        onSearch={handleSearchModal}
+        selectedList={selectedList}
+        onSave={handleSaveModal}
       />
     </>
   );
@@ -369,7 +415,6 @@ function mapper(model: PriceListStoreMappings | Store): PriceListStoreMappings {
       provinceId: store?.provinceId,
       storeGroupingId: store?.storeGroupingId,
       storeType: store?.storeType,
-      storeGrouping: store?.storeGrouping,
       province: store?.province,
     };
   }

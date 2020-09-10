@@ -1,3 +1,5 @@
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Modal } from "antd";
 import { PaginationProps } from "antd/lib/pagination";
 import {
@@ -5,19 +7,17 @@ import {
   SortOrder,
   TableRowSelection,
 } from "antd/lib/table/interface";
-import { DEFAULT_TAKE } from "@react3l/react3l/config";
-import { Model } from "@react3l/react3l/core";
-import listService from "services/list-service";
 import {
+  Dispatch,
+  Reducer,
   useCallback,
   useMemo,
-  useState,
-  Dispatch,
   useReducer,
-  Reducer,
+  useState,
+  useEffect,
 } from "react";
-import { ModelFilter } from "@react3l/react3l/core";
 import { Observable } from "rxjs";
+import listService from "services/list-service";
 
 type KeyType = string | number;
 
@@ -32,7 +32,7 @@ export interface ModalAction {
 
 export interface ContentTableState<
   TMapping extends Model,
-  TMapper extends Model
+  TMapper extends Model = any
 > {
   mappingList?: TMapping[]; // for content table
   mapperList?: TMapper[]; // for content modal table
@@ -40,21 +40,24 @@ export interface ContentTableState<
 
 export interface ContentTableAction<
   TMapping extends Model,
-  TMapper extends Model
+  TMapper extends Model = any
 > {
   type: ContentTableActionEnum;
+  listName?: string;
   mappingList?: TMapping[];
   mapperList?: TMapper[];
+  data?: any[];
 }
 
 export enum ModalActionEnum {
   OPEN_MODAL,
   CLOSE_MODAL,
   END_LOAD_CONTROL,
+  INIT_SEARCH,
 }
 
 export enum ContentTableActionEnum {
-  SET_CONTENT_SELECTION,
+  SET_LIST_SELECTION,
   SINGLE_DELETE,
   BULK_DELETE,
 }
@@ -81,6 +84,12 @@ function modalTableReducer(state: ModalState, action: ModalAction) {
         loadControl: false,
       };
     }
+    case ModalActionEnum.INIT_SEARCH: {
+      return {
+        ...state,
+        loadControl: true,
+      };
+    }
   }
 }
 
@@ -92,7 +101,6 @@ function contentTableReducer<TMapping extends Model, TMapper extends Model>(
     case ContentTableActionEnum.SINGLE_DELETE: {
       return {
         ...state,
-        mapperList: action.mapperList,
         mappingList: action.mappingList,
       };
     }
@@ -100,13 +108,12 @@ function contentTableReducer<TMapping extends Model, TMapper extends Model>(
       return {
         ...state,
         mappingList: [],
-        mapperList: action.mapperList,
       };
     }
-    case ContentTableActionEnum.SET_CONTENT_SELECTION: {
+    case ContentTableActionEnum.SET_LIST_SELECTION: {
       return {
         ...state,
-        mappingList: action.mappingList,
+        [action.listName]: action.data,
       };
     }
   }
@@ -491,6 +498,106 @@ export class TableService {
 
   /**
    *
+   * expose data and event handler for master table service
+   * @param: filter: TFilter
+   * @param: setFilter: (filter: TFilter) => void
+   * @param: getList: (filter: TFilter) => Observable<T[]>
+   * @param: getTotal: (filter: TFilter) => Observable<number>
+   * @param: deleteItem?: (t: T) => Observable<T>
+   * @param: bulkDeleteItems?: (t: number[] | string[]) => Observable<void>,
+   * @param: onUpdateListSuccess?: (item?: T) => void,
+   * @param: checkBoxType?: RowSelectionType,
+   * @param: isLoadControl?: boolean,
+   * @param: derivedRowKeys?: KeyType[],
+   * @return: { list, total, loadingList, pagination, handleChange, handleServerDelete, handleServerBulkDelete, rowSelection }
+   *
+   * */
+  useModalTable<T extends Model, TFilter extends ModelFilter>(
+    filter: TFilter,
+    setFilter: (filter: TFilter) => void, // from TFilter to TFilter
+    getList: (filter: TFilter) => Observable<T[]>,
+    getTotal: (filter: TFilter) => Observable<number>,
+    isLoadControl: boolean | undefined, // optional control for modal preLoading
+    endLoadControl: () => void, // end external control
+    handleSearch: () => void, // trigger loadList
+    mapperList?: T[],
+  ) {
+    // mappingList, mapperList reducer
+    const [{ mapperList: selectedList }, dispatch] = useReducer<
+      Reducer<ContentTableState<T>, ContentTableAction<T>>
+    >(contentTableReducer, {
+      mapperList: mapperList ?? [],
+    });
+    const setSelectedList = useCallback((list: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mapperList",
+        data: list,
+      });
+    }, []);
+
+    // selectedRowKeys
+    const { rowSelection } = this.useContentRowSelection(
+      selectedList,
+      setSelectedList,
+    );
+
+    // define setMapperList alternater for setSelectedList
+    const setMapperList = useCallback((mapperList: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mapperList",
+        data: mapperList, // update mappingList.Eg: selectedContent[]
+      });
+    }, []);
+
+    // update mapperList when source changed
+    useEffect(() => {
+      if (mapperList?.length > 0) {
+        setMapperList(mapperList);
+      }
+    }, [mapperList, setMapperList]);
+
+    // from filter and source we calculate dataSource, total and loadingList
+    const { list, total, loadingList } = listService.useList(
+      filter,
+      setFilter,
+      getList,
+      getTotal,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      isLoadControl,
+      endLoadControl,
+    );
+
+    // calculate pagination
+    const pagination: PaginationProps = this.usePagination<TFilter>(
+      filter,
+      total,
+    );
+
+    // handleChange page or sorter
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination, handleSearch);
+
+    return {
+      list,
+      total,
+      loadingList,
+      pagination,
+      handleTableChange,
+      handlePagination,
+      rowSelection,
+      mapperList,
+    };
+  }
+
+  /**
+   *
    * expose data and event handler for localtable service
    * @param: source: T[]
    * @param: setSource: (source: T[]) => void
@@ -507,18 +614,24 @@ export class TableService {
     mapperField: string,
   ) {
     // mappingList, mapperList reducer
-    const [{ mappingList, mapperList }, dispatch] = useReducer<
+    const [{ mappingList }, dispatch] = useReducer<
       Reducer<ContentTableState<T, T2>, ContentTableAction<T, T2>>
     >(contentTableReducer, {
-      mappingList: [],
-      mapperList: [],
+      mappingList: [], // selectedContent
     });
+
+    // calculate selectedList from updated source
+    const selectedList = useMemo(
+      () => (source.length > 0 ? source.map(mappingToMapper(mapperField)) : []),
+      [mapperField, source],
+    );
 
     // define setMappingList alternater for setSelectedContent
     const setMappingList = useCallback((mappingList: T[]) => {
       dispatch({
-        type: ContentTableActionEnum.SET_CONTENT_SELECTION,
-        mappingList,
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mappingList",
+        data: mappingList, // update mappingList.Eg: selectedContent[]
       });
     }, []);
 
@@ -546,23 +659,11 @@ export class TableService {
         dispatch({
           type: ContentTableActionEnum.SINGLE_DELETE,
           mappingList: mappingList.filter(filterContent(content)), // for content table
-          mapperList: mapperList.filter(
-            filterListFromContent(content, `${mapperField}Id`),
-          ), // for modal
         });
         setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
         handleSearch(); // trigger reLoad list
       },
-      [
-        filter,
-        handleSearch,
-        mapperField,
-        mapperList,
-        mappingList,
-        setFilter,
-        setSource,
-        source,
-      ],
+      [filter, handleSearch, mappingList, setFilter, setSource, source],
     );
 
     //  handle bulk delete
@@ -582,12 +683,6 @@ export class TableService {
           ); // update source
           dispatch({
             type: ContentTableActionEnum.BULK_DELETE,
-            mapperList: mapperList.filter(
-              filterContentNotInList(
-                getIdsFromContent(mappingList, `${mapperField}Id`),
-                `id`,
-              ),
-            ), // for modal
           });
           setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
           handleSearch(); // trigger reLoad list
@@ -597,7 +692,6 @@ export class TableService {
       filter,
       handleSearch,
       mapperField,
-      mapperList,
       mappingList,
       setFilter,
       setSource,
@@ -613,7 +707,7 @@ export class TableService {
       rowSelection,
       canBulkDelete,
       selectedContent: mappingList,
-      selectedList: mapperList,
+      selectedList,
     };
   }
 
@@ -644,12 +738,17 @@ export class TableService {
       dispatch({ type: ModalActionEnum.END_LOAD_CONTROL });
     }, []);
 
+    const handleSearchModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.INIT_SEARCH });
+    }, []);
+
     return {
       visible,
       loadControl,
       handleEndControl,
       handleOpenModal,
       handleCloseModal,
+      handleSearchModal,
     };
   }
 }
@@ -686,23 +785,30 @@ export function getOrderType(sortOrder?: SortOrder) {
   }
 }
 
-function filterContent<T extends Model>(content: T) {
+export function filterContent<T extends Model>(content: T) {
   return (item: T) => item.key !== content.key;
 }
 
-function filterListFromContent<T extends Model, T2 extends Model>(
-  content: T,
-  field: string,
-) {
-  return (item: T2) => item.id !== content[field];
-}
-
-function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
+export function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
   return list.map((item) => item[fieldId]);
 }
 
-function filterContentNotInList<T extends Model>(list: any[], fieldId: string) {
+export function filterContentNotInList<T extends Model>(
+  list: any[],
+  fieldId: string,
+) {
   return (item: T) => !list.includes(item[fieldId]);
+}
+
+export function filterContentInList<T extends Model>(
+  list: any[],
+  fieldId: string,
+) {
+  return (item: T) => list.includes(item[fieldId]);
+}
+
+export function mappingToMapper<T extends Model>(mapperField: string) {
+  return (item: T) => item[mapperField];
 }
 
 export default new TableService();
