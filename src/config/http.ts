@@ -34,7 +34,9 @@ Repository.responseInterceptor = function(
   response: AxiosResponse,
 ): AxiosResponse {
   if (typeof response.data === "object" && response.data !== null) {
-    response.data = serialize(response.data);
+    if (response.headers["content-type"]?.startsWith("application/json")) {
+      response.data = serialize(response.data);
+    } // serialize data just apply with json
   }
   return response;
 };
