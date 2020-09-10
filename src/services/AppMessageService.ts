@@ -46,21 +46,19 @@ export class AppMessageService {
   useCRUDMessage() {
     const [translate] = useTranslation();
 
-    // updateSuccess method
     const notifyUpdateItemSuccess = (description?: string) => {
       return notification.success({
         message: translate("general.update.success"),
         description,
       });
-    };
+    }; // updateSuccess method
 
-    // updateSuccess method
     const notifyUpdateItemError = (description?: string) => {
       return notification.error({
         message: translate("general.update.error"),
         description,
       });
-    };
+    }; // updateSuccess method
 
     return {
       notifyUpdateItemSuccess,

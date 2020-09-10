@@ -160,6 +160,28 @@ export class PriceListRepository extends Repository {
         ),
       );
   };
+
+  public exportStore = (model?: PriceList): Observable<AxiosResponse<any>> => {
+    return this.httpObservable.post(
+      kebabCase(nameof(this.exportStore)),
+      model,
+      {
+        responseType: "arraybuffer",
+      },
+    );
+  };
+
+  public exportTemplateStore = (
+    id: number | string,
+  ): Observable<AxiosResponse<any>> => {
+    return this.httpObservable.post(
+      kebabCase(nameof(this.exportTemplateStore)),
+      { id },
+      {
+        responseType: "arraybuffer",
+      },
+    );
+  };
 }
 
 export const priceListRepository: PriceListRepository = new PriceListRepository();

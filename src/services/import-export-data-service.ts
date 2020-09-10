@@ -168,7 +168,7 @@ export const importExportDataService = {
     );
 
     // handleExport listContent template from server
-    const handleExportTemplate = useCallback(
+    const handleContentExportTemplate = useCallback(
       <T extends Model>(
         model: T,
         onExport: (id: number) => Observable<AxiosResponse<any>>,
@@ -187,7 +187,7 @@ export const importExportDataService = {
     return {
       handleListExport,
       handleContentExport,
-      handleExportTemplate,
+      handleContentExportTemplate,
     };
   },
 };

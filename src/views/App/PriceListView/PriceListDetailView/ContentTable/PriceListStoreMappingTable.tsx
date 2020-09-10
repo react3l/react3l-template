@@ -40,10 +40,11 @@ export interface ContentTableProps {
 export default function PriceListStoreMappingTable(props: ContentTableProps) {
   const [translate] = useTranslation();
   const { content, setContent, mapperField, model } = props;
+
   const [filter, dispatch] = useReducer(
     advanceFilterReducer,
     new PriceListStoreMappingsFilter(),
-  );
+  ); // filter factory
 
   const {
     handleChangeFilter,
@@ -52,12 +53,12 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     filter,
     dispatch,
     PriceListStoreMappingsFilter,
-  );
+  ); // filter service
 
   const { list, total, loadingList, handleSearch } = listService.useLocalList(
     filter,
     content.map(mapper),
-  );
+  ); // list service
 
   const {
     handleTableChange,
@@ -80,9 +81,8 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     content,
     setContent,
     mapperField,
-  );
+  ); // table service
 
-  // cant be lift up when render column dynamically
   const [
     ,
     handleChangeContentField,
@@ -92,9 +92,8 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     PriceListStoreMappings,
     content,
     setContent,
-  );
+  ); // cant be lift up when render column dynamically
 
-  // need separating to be reused
   const handleAdd = useCallback(() => {
     // add content
     handleAddContent();
@@ -104,7 +103,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       skip: Math.round(total / filter.take) * filter.take,
     });
     handleSearch();
-  }, [handleAddContent, handleUpdateNewFilter, filter, total, handleSearch]);
+  }, [handleAddContent, handleUpdateNewFilter, filter, total, handleSearch]); // need separating to be reused
 
   const columns = useMemo(
     () => [
@@ -249,9 +248,8 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       handleChangeContentField,
       handleLocalDelete,
     ],
-  );
+  ); // columns
 
-  // state for modal
   const {
     visible,
     loadControl,
@@ -259,9 +257,8 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handleOpenModal,
     handleCloseModal,
     handleSearchModal,
-  } = tableService.useContenModal();
+  } = tableService.useContenModal(); // state for modal
 
-  // callback for save modal
   const handleSaveModal = useCallback(
     (list: Store[]) => {
       if (list?.length > 0) {
@@ -295,14 +292,18 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       setContent([]);
     },
     [content, mapperField, setContent],
-  );
+  ); // callback for save modal
 
-  // import data service
   const {
     ref,
     handleClick,
     handleImportContentList,
-  } = importExportDataService.useImport();
+  } = importExportDataService.useImport(); // import data service
+
+  const {
+    handleContentExport,
+    handleContentExportTemplate,
+  } = importExportDataService.useExport(); // export data service
 
   return (
     <>
@@ -358,7 +359,13 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                   </label>
                 </Tooltip>
                 <Tooltip title={translate("Xuất excel")} key='exportExcel'>
-                  <button className='btn gradient-btn-icon'>
+                  <button
+                    className='btn gradient-btn-icon'
+                    onClick={handleContentExport(
+                      model,
+                      priceListRepository.exportStore,
+                    )}
+                  >
                     <i className='tio-file_outlined' />
                   </button>
                 </Tooltip>
@@ -366,7 +373,13 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                   title={translate("Tải file mẫu")}
                   key='downLoadTemplate'
                 >
-                  <button className='btn gradient-btn-icon'>
+                  <button
+                    className='btn gradient-btn-icon'
+                    onClick={handleContentExportTemplate(
+                      model,
+                      priceListRepository.exportTemplateStore,
+                    )}
+                  >
                     <i className='tio-download_to' />
                   </button>
                 </Tooltip>
