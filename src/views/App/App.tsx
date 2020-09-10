@@ -11,6 +11,7 @@ import { useGlobal, setGlobal } from 'reactn';
 import { GlobalState } from 'config/global-state';
 import classNames from 'classnames';
 import AppAsideCollapse from 'components/AppAsideCollapse/AppAsideCollapse';
+import {Animated} from "react-animated-css";
 
 function App() {
 
@@ -28,37 +29,48 @@ function App() {
       setDisplayFooter(false);
     }
   }, [pathname]);
-  const handleOffOverlay = React.useCallback(() => {
-    setGlobal<GlobalState>({ display: false });
-  }, []);
 
   return (
     <>
       <div className="app d-flex">
-
-        <AppAsideCollapse className={toggleMenu ? 'slide-in' : 'slide-out'} routes={menu} />
-        <AppAside className={!toggleMenu ? 'app_slide-in' : 'app_slide-out'} routes={menu} />
-
-        <div
-          className={classNames(
-            { "header__overlay header__display-block": display },
-          )}
-          onClick={handleOffOverlay}
-        >
-        </div>
-        <section className={classNames("flex-item", (!toggleMenu ? 'main content-in' : 'main content-out'))}>
+        {
+          !toggleMenu ? 
+          <Animated animationIn="slideInLeft" 
+            animationOut="slideOutLeft" 
+            animationInDuration={800} 
+            animationOutDuration={400} 
+            isVisible={!toggleMenu as boolean}>
+            <div className="left-side column">
+              <AppAside routes={menu} />
+            </div>
+          </Animated> :
+          <Animated animationIn="slideInLeft" 
+            animationOut="slideOutLeft" 
+            animationInDuration={800} 
+            animationOutDuration={400} 
+            isVisible={toggleMenu as boolean}>
+            <div className="left-side column">
+              <AppAsideCollapse routes={menu} />
+            </div>
+          </Animated>
+        }
+        <div className="right-side column">
           <div className={classNames("header-wrapper", { "header-wrapper__block": display },
-          )}>
-            <AppHeader />
+            )}>
+              <AppHeader />
           </div>
           <main className="body">
             <Switch>{renderRoutes(routes)}</Switch>
           </main>
-        </section>
+          <div
+            className={classNames(
+              { "header__overlay header__display-block": display },
+            )}>
+          </div>
+        </div>
         {
-          displayFooter === true ? (<AppFooter />) : (<></>)
+          displayFooter === true ? <AppFooter /> : null
         }
-
       </div>
     </>
 

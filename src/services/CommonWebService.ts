@@ -6,7 +6,7 @@ import { Moment } from "moment";
 import moment from "moment";
 
 export const commonWebService = {
-  useClickOutside(ref: RefObject<HTMLDivElement>, callback: () => void) {
+  useClickOutside(ref: RefObject<any>, callback: () => void) {
     const handleClickOutside = React.useCallback(
       (event) => {
         if (ref.current && !ref.current.contains(event.target)) {

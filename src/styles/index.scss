@@ -28,6 +28,11 @@ body {
   background: #f2f2f2;
   font-size: 14px;
 
+  #root {
+    width: 100%;
+    height: 100%;
+  }
+
   .input-icon {
     @include input-icon;
   }
@@ -230,11 +235,6 @@ body {
           border-bottom: none;
         }
       }
-      .ant-card {
-        height: 100%;
-        margin-right: -3px;
-        max-width: 1569px;
-      }
       .label-detail {
         width: 100%;
         font-size: 13px;
@@ -286,6 +286,9 @@ body {
       }
     }
     .page__master-table {
+      .ant-card {
+        height: 100%;
+      }
       .table-title {
         color: #4f4f4f;
         font-weight: bold;
@@ -452,13 +455,8 @@ body {
 }
 
 @media screen and (max-width: 1440px) {
-  .page {
-    &.page__master {
-      .page__master-table {
-        .ant-card {
-          max-width: 1015px !important;
-        }
-      }
-    }
+  .ant-layout-sider {
+    max-width: 225px !important;
+    min-width: 225px !important;
   }
 }

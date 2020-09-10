@@ -1,13 +1,19 @@
-import React from "react";
+import React, { RefObject } from "react";
 import "./AppHeader.scss";
 import Avatar, { ConfigProvider } from "react-avatar";
 import { GlobalState } from "config/global-state";
 import { setGlobal, useGlobal } from 'reactn';
+import { commonWebService } from "services/CommonWebService";
 function AppHeader() {
   const [display, setDisplay] = React.useState<boolean>(false);
+
   const [displayHeader] = useGlobal<GlobalState>('display');
 
   const [toggleMenu, setToggleMenu] = React.useState<boolean>(false);
+
+  const buttonRef: RefObject<HTMLButtonElement> = React.useRef<HTMLButtonElement>(
+    null,
+  );
 
   const handleClick = React.useCallback(() => {
     setGlobal<GlobalState>({ display: true });
@@ -22,6 +28,12 @@ function AppHeader() {
     setToggleMenu,
     toggleMenu,
   ]);
+
+  const handleOffOverlay = React.useCallback(() => {
+    setGlobal<GlobalState>({ display: false });
+  }, []);
+
+  commonWebService.useClickOutside(buttonRef, handleOffOverlay);
 
   const menus = [
     {
@@ -65,10 +77,26 @@ function AppHeader() {
         <div className="float-right ">
           <div className="d-flex align-items-center">
             <button
+              style={{position: 'relative'}}
               className="btn btn-sm component__btn-primary mr-3"
               onClick={handleClick}
+              ref={buttonRef}
             >
               <i className="tio-add d-flex justify-content-center" />
+              {(display === true && displayHeader === true) && (
+                <div className=" header__list">
+                  {menus &&
+                    menus.length > 0 &&
+                    menus.map((menu, index) => (
+                      <div className="header__menu d-flex align-items-center" key={index}>
+                        <div className="header__menu-icon">
+                          <i className={menu?.icon} />
+                        </div>
+                        <div className="header__menu-title">{menu?.title}</div>
+                      </div>
+                    ))}
+                </div>
+              )}
             </button>
             <div className="app-header__language mt-3">Tiếng Việt</div>
             <div className="app-header__notifications mt-3">
@@ -92,20 +120,6 @@ function AppHeader() {
           </div>
         </div>
       </header>
-      {(display === true && displayHeader === true) && (
-        <div className=" header__list">
-          {menus &&
-            menus.length > 0 &&
-            menus.map((menu, index) => (
-              <div className="header__menu d-flex align-items-center" key={index}>
-                <div className="header__menu-icon">
-                  <i className={menu?.icon} />
-                </div>
-                <div className="header__menu-title">{menu?.title}</div>
-              </div>
-            ))}
-        </div>
-      )}
     </div>
   );
 }

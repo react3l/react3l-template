@@ -60,7 +60,7 @@ function AppAsideCollapse(props: ISidebarProps) {
                   )
                 }
               </div>
-            )
+            );
           })
         }
       </section>

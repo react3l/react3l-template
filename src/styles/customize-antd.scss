@@ -161,12 +161,10 @@
   height: calc(100% - (68px));
   overflow-y: auto;
   overflow-x: hidden;
-  position: fixed !important;
   transition: transform 400ms ease-in;
   display: block;
   max-width: 280px !important;
   min-width: 280px !important;
-  margin-top: 68px;
 }
 
 .ant-layout-sider {

@@ -44,8 +44,8 @@ function AppAside(props: IDefaultSidebarProps) {
 
 
   return (
-    <div className="aside">
-      <div className={classNames('aside__header pb-4', className)}>
+    <>
+      <div className={classNames('aside__header', className)}>
         <div className="aside__navbar-brand d-flex">
           <div className="app-aside__logo">
             <img src="/assets/img/logo.png" alt="" width="38" />
@@ -53,32 +53,32 @@ function AppAside(props: IDefaultSidebarProps) {
           <div className="aside__name ml-3">ePayment</div>
         </div>
       </div>
-      <Sider
-        collapsible={false}
-        className={classNames('pb-4', className)}
-        style={style}
-      >
-        <Menu
-          mode="inline"
-          className="aside__default-sidebar"
-          inlineIndent={0}
-          selectedKeys={selectedKeys}
-          openKeys={openKeys}
-          onOpenChange={handleChange}
-          onSelect={handleSelect}
-          theme="light"
-        >
-          {routes.length > 0 &&
-            routes.map((route: RouteConfig) => (
-              <AsideMenu
-                {...props}
-                key={route.key ? route.key : uuidv4()}
-                item={route}
-              />
-            ))}
-        </Menu>
-      </Sider>
-    </div>
+      <div className="aside__content">
+        <Sider
+          collapsible={false}
+          className={classNames('pb-4', className)}
+          style={style}>
+          <Menu
+            mode="inline"
+            className="aside__default-sidebar"
+            inlineIndent={0}
+            selectedKeys={selectedKeys}
+            openKeys={openKeys}
+            onOpenChange={handleChange}
+            onSelect={handleSelect}
+            theme="light">
+            {routes.length > 0 &&
+              routes.map((route: RouteConfig) => (
+                <AsideMenu
+                  {...props}
+                  key={route.key ? route.key : uuidv4()}
+                  item={route}
+                />
+              ))}
+          </Menu>
+        </Sider>
+      </div>
+    </>
   );
 }
 

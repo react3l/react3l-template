@@ -399,7 +399,7 @@ function PaymentMasterView() {
                   </div>
                 </>
               )}
-              scroll={{ x: 1900 }}
+              scroll={{ x: 'max-content' }}
             />
           </Card>
         </div>
