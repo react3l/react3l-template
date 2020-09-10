@@ -8,13 +8,12 @@ import {
   TableRowSelection,
 } from "antd/lib/table/interface";
 import {
-  Dispatch,
   Reducer,
   useCallback,
+  useEffect,
   useMemo,
   useReducer,
   useState,
-  useEffect,
 } from "react";
 import { Observable } from "rxjs";
 import listService from "services/list-service";
@@ -316,89 +315,6 @@ export class TableService {
     );
 
     return { handleTableChange, handlePagination };
-  }
-  /**
-   *
-   * return handleLocalDelete, handleLocalBulkDelete
-   * @param:
-   * @return: {handleLocalDelete, handleLocalBulkDelete}
-   *
-   * */
-  useLocalDelete<T extends Model, TFilter extends ModelFilter>(
-    filter: TFilter,
-    setFilter: (filter: TFilter) => void,
-    selectedRowKeys: KeyType[],
-    setSelectedRowKeys: Dispatch<React.SetStateAction<KeyType[]>>,
-    source?: T[],
-    setSource?: (source: T[]) => void,
-    handleSearch?: () => void,
-  ) {
-    // handleDelete, filter one item by its key and update source
-    const handleLocalDelete = useCallback(
-      (key: KeyType) => {
-        // delete local item
-        if (source?.length > 0) {
-          if (typeof setSource === "function") {
-            setSource(source.filter((item) => item.key !== key)); // remove one item in source by key and update source
-          }
-          setSelectedRowKeys(
-            (selectedRowKeys as string[]).filter((item) => item !== key), // filter selectedRowKeys
-          );
-          setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE });
-          if (typeof handleSearch === "function") {
-            handleSearch();
-          }
-          return;
-        }
-      },
-      [
-        source,
-        setSource,
-        setSelectedRowKeys,
-        selectedRowKeys,
-        setFilter,
-        filter,
-        handleSearch,
-      ],
-    );
-
-    // delete local by key
-    const handleLocalBulkDelete = useCallback(() => {
-      // delete local list
-      if (source?.length > 0) {
-        Modal.confirm({
-          title: "ban co chac muon xoa thao tac",
-          content: "thao tac khong the khoi phuc",
-          okType: "danger",
-          onOk() {
-            if (typeof setSource === "function") {
-              setSource(
-                source.filter(
-                  (item) =>
-                    !(selectedRowKeys as string[]).includes(item.key as string), // rowSelection serve either server table or local table, so we should cast selectedRowKeys as string[]
-                ),
-              ); // remove many items in source by key and update source
-            }
-            setSelectedRowKeys([]); // empty selectedRowKeys for disabling button
-            setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE });
-            if (typeof handleSearch === "function") {
-              handleSearch();
-            }
-            return;
-          },
-        });
-      }
-    }, [
-      source,
-      setFilter,
-      filter,
-      setSource,
-      setSelectedRowKeys,
-      selectedRowKeys,
-      handleSearch,
-    ]);
-
-    return { handleLocalDelete, handleLocalBulkDelete };
   }
 
   /**

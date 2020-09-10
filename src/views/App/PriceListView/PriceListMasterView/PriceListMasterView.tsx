@@ -52,29 +52,25 @@ function PriceListMasterView() {
   const columns: ColumnProps<PriceList>[] = useMemo(
     () => [
       {
-        title: "STT",
+        title: translate("general.columns.index"),
         key: "index",
         width: 100,
         render: renderMasterIndex<PriceList>(pagination),
       },
       {
-        title: "Code",
+        title: translate("priceList.code"),
         key: nameof(list[0].code),
         dataIndex: nameof(list[0].code),
-        // render(...params: [string, PriceList, number]) {
-        //   return <div className='text-left'>{params[0]}</div>; // string align left
-        // },
       },
       {
-        title: "Tên",
+        title: translate("priceList.name"),
         key: nameof(list[0].name),
         dataIndex: nameof(list[0].name),
-        // render(...params: [string, PriceList, number]) {
-        //   return <div className='display-code'>{params[0]}</div>; // string align left
-        // },
       },
       {
-        title: <div className='text-center'>Ngày cập nhật</div>,
+        title: (
+          <div className='text-center'>{translate("priceList.updatedAt")}</div>
+        ),
         key: nameof(list[0].updatedAt),
         dataIndex: nameof(list[0].updatedAt),
         render(...params: [Moment, PriceList, number]) {
@@ -82,7 +78,9 @@ function PriceListMasterView() {
         },
       },
       {
-        title: <div className='text-center'>Trạng thái</div>,
+        title: (
+          <div className='text-center'>{translate("priceList.status")}</div>
+        ),
         key: nameof(list[0].statusId),
         dataIndex: nameof(list[0].statusId),
         render(...params: [number, PriceList, number]) {
@@ -94,9 +92,9 @@ function PriceListMasterView() {
         },
       },
       {
-        title: "action",
+        title: translate("general.actions.label"),
         key: "action",
-        dataIndex: "id",
+        dataIndex: nameof(list[0].id),
         width: 200,
         align: "center",
         render(id: number, priceList: PriceList) {
@@ -233,7 +231,7 @@ function PriceListMasterView() {
                     value={filter[nameof(list[0].statusId)]["equal"]}
                     onChange={handleChangeFilter(
                       nameof(list[0].statusId),
-                      "equal",
+                      "equal" as any,
                       IdFilter,
                       handleSearch,
                     )}
@@ -250,7 +248,7 @@ function PriceListMasterView() {
                     value={filter[nameof(list[0].salesOrderTypeId)]["equal"]}
                     onChange={handleChangeFilter(
                       nameof(list[0].salesOrderTypeId),
-                      "equal",
+                      "equal" as any,
                       IdFilter,
                       handleSearch,
                     )}
