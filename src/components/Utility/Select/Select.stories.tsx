@@ -12,12 +12,7 @@ import FormItem, { ValidateStatus } from "../FormItem/FormItem";
 
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {
-    observer.next([
-      { id: 4, name: "Ban hành chính", code: "FAD" },
-      { id: 1, name: "Ban công nghệ thông tin", code: "FIM" },
-      { id: 2, name: "Ban nhân sự", code: "FHR" },
-      { id: 3, name: "Ban tài chính", code: "FAF" },
-    ]);
+    observer.next([]);
   }, 1000);
 });
 

@@ -140,7 +140,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
       <div className="tree-container">
         { loading ? 
           <div className="tree__loading">
-              <Spin tip="Loading..."></Spin>
+              <img className="img-loading" src="/assets/svg/spinner.svg"  alt=''/>
           </div> :
           <>
             { 
@@ -159,7 +159,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
                 onCheck={handleCheck}
                 onSelect={handleSelect}
               ></TreeAntd> :
-              <Empty imageStyle={{height: 60}}/>
+              <img className="img-emty" src="/assets/img/no-data.png"  alt=''/>
             }
           </>
         }
