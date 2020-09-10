@@ -77,7 +77,7 @@ export class PriceListRepository extends Repository {
       .pipe(map((response: AxiosResponse<PriceList>) => response.data));
   };
 
-  bulkDelete = (idList: number[]): Observable<void> => {
+  bulkDelete = (idList: KeyType[]): Observable<void> => {
     return this.httpObservable
       .post<void>("bulk-delete", idList)
       .pipe(map((response: AxiosResponse<void>) => response.data));

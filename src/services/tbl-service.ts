@@ -435,6 +435,7 @@ export class TableService {
       rowSelection,
       selectedRowKeys,
       setSelectedRowKeys,
+      canBulkDelete,
     } = this.useRowSelection(checkBoxType, derivedRowKeys);
 
     // from filter and source we calculate dataSource, total and loadingList
@@ -493,6 +494,7 @@ export class TableService {
       handleServerBulkDelete,
       rowSelection,
       handleSearch,
+      canBulkDelete,
     };
   }
 

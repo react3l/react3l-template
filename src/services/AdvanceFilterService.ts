@@ -80,7 +80,7 @@ export const advanceFilterService = {
         | IdFilter,
       handleSearch?: () => void,
     ) => (value: any) => void;
-    handleResetFilter: () => void;
+    handleResetFilter: (handleSearch?: () => void) => () => void;
     handleUpdateNewFilter: (data: TFilter, handleSearch?: () => void) => void;
   } {
     const handleChangeFilter = React.useCallback(
@@ -121,16 +121,24 @@ export const advanceFilterService = {
       [dispatch, modelFilter],
     );
 
-    const handleResetFilter = React.useCallback(() => {
-      const newFilter = new ClassFilter();
-      newFilter.skip = 0;
-      newFilter.take = 10;
+    const handleResetFilter = React.useCallback(
+      (handleSearch?: () => void) => {
+        return () => {
+          const newFilter = new ClassFilter();
+          newFilter.skip = 0;
+          newFilter.take = 10;
 
-      dispatch({
-        type: ActionFilterEnum.ChangeAllField,
-        data: newFilter,
-      });
-    }, [dispatch, ClassFilter]);
+          dispatch({
+            type: ActionFilterEnum.ChangeAllField,
+            data: newFilter,
+          });
+          if (typeof handleSearch === "function") {
+            handleSearch();
+          }
+        };
+      },
+      [dispatch, ClassFilter],
+    );
 
     const handleUpdateNewFilter = React.useCallback(
       (data: TFilter, handleSearch?: () => void) => {

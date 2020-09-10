@@ -1,24 +1,14 @@
-import React, { Reducer, useRef } from "react";
-import { ModelFilter } from "@react3l/react3l/core/model-filter";
 import { Filter } from "@react3l/advanced-filters/Filter";
+import { ModelFilter } from "@react3l/react3l/core/model-filter";
+import moment from "moment";
+import React, { Reducer, useRef } from "react";
+import { useHistory } from "react-router";
+import nameof from "ts-nameof.macro";
 import {
   AdvanceFilterAction,
   advanceFilterReducer,
-  ActionFilterEnum,
 } from "./AdvanceFilterService";
-import { useHistory } from "react-router";
 import { commonWebService } from "./CommonWebService";
-import moment from "moment";
-import { TablePaginationConfig } from "antd/lib/table";
-import { Key, SorterResult } from "antd/lib/table/interface";
-import { Model } from "@react3l/react3l/core";
-import { tableService } from "./TableService";
-import { StringFilter } from "@react3l/advanced-filters/StringFilter";
-import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
-import { DateFilter } from "@react3l/advanced-filters/DateFilter";
-import { IdFilter } from "@react3l/advanced-filters/IdFilter";
-import { useCallback } from "reactn";
-import nameof from "ts-nameof.macro";
 
 const qs = require("qs");
 
@@ -28,24 +18,9 @@ function isStringNumber(stringValue: string) {
 }
 
 export const queryStringService = {
-  useQueryString<T extends Model, TFilter extends ModelFilter>(
+  useQueryString<TFilter extends ModelFilter>(
     ClassFilter: new () => TFilter,
-  ): [
-    TFilter,
-    (data: TFilter) => void,
-    (action: AdvanceFilterAction<TFilter, Filter>) => void,
-    (
-      fieldName: keyof TFilter,
-      fieldType: keyof StringFilter | NumberFilter | DateFilter | IdFilter,
-    ) => (value: string | number) => void,
-    (
-      newPagination: TablePaginationConfig,
-      filters: Record<string, Key[] | null>,
-      sorter: SorterResult<T>,
-    ) => void,
-    (skip: number, take: number) => void,
-    () => void,
-  ] {
+  ): [TFilter, (action: AdvanceFilterAction<TFilter, Filter>) => void] {
     const history = useHistory();
 
     const firstUpdate = useRef(true);
@@ -112,66 +87,6 @@ export const queryStringService = {
       return qs.stringify(cloneModelFilter);
     }, []);
 
-    const handleChangeFilter = React.useCallback(
-      (fieldName: string, fieldType: keyof Filter) => (value: any) => {
-        dispatch({
-          type: ActionFilterEnum.ChangeOneField,
-          fieldName: fieldName,
-          fieldType: fieldType,
-          fieldValue: value,
-        });
-      },
-      [dispatch],
-    );
-
-    const handleChangeOrder = React.useCallback(
-      (
-        newPagination: TablePaginationConfig,
-        filters: Record<string, Key[] | null>,
-        sorter: SorterResult<T>,
-      ) => {
-        if (
-          sorter.field !== modelFilter.orderBy ||
-          sorter.order !==
-            tableService.getAntOrderType(modelFilter, sorter.field)
-        ) {
-          dispatch({
-            type: ActionFilterEnum.ChangeOrderType,
-            orderBy: sorter.field,
-            orderType: tableService.getOrderType(sorter.order),
-          });
-          return;
-        }
-      },
-      [dispatch, modelFilter],
-    );
-
-    const handlePagination = React.useCallback(
-      (skip: number, take: number) => {
-        dispatch({
-          type: ActionFilterEnum.ChangeSkipTake,
-          skip,
-          take,
-        });
-      },
-      [dispatch],
-    );
-
-    const handleResetFilter = React.useCallback(() => {
-      const newFilter = new ClassFilter();
-      newFilter.skip = 0;
-      newFilter.take = 10;
-
-      dispatch({
-        type: ActionFilterEnum.ChangeAllField,
-        data: newFilter,
-      });
-    }, [dispatch, ClassFilter]);
-
-    const handleUpdateNewFilter = useCallback((data: TFilter) => {
-      dispatch({ type: ActionFilterEnum.ChangeAllField, data });
-    }, []);
-
     React.useLayoutEffect(() => {
       if (firstUpdate.current) {
         firstUpdate.current = false;
@@ -187,14 +102,6 @@ export const queryStringService = {
       return function cleanup() {};
     }, [modelFilter, buildQuery, history]);
 
-    return [
-      modelFilter,
-      handleUpdateNewFilter,
-      dispatch,
-      handleChangeFilter,
-      handleChangeOrder,
-      handlePagination,
-      handleResetFilter,
-    ];
+    return [modelFilter, dispatch];
   },
 };
