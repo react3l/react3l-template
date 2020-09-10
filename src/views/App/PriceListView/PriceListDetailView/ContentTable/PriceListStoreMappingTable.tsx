@@ -30,6 +30,8 @@ import {
   advanceFilterService,
 } from "services/AdvanceFilterService";
 import { importExportDataService } from "services/import-export-data-service";
+import { CreateTableColumns, CreateColumn } from "core/models/TableColumn";
+
 export interface ContentTableProps {
   model: PriceList;
   content: PriceListStoreMappings[];
@@ -305,6 +307,41 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     handleContentExportTemplate,
   } = importExportDataService.useExport(); // export data service
 
+  const priceListStoreMappingsTable = useMemo(
+    () =>
+      CreateTableColumns(
+        CreateColumn()
+          .Title(() => <>{translate("general.columns.index")}</>)
+          .Key("index") // key
+          .Render(renderMasterIndex<PriceListStoreMappings>(pagination)), // render
+        CreateColumn()
+          .Title(() => <>{translate("priceLists.store.code")}</>)
+          .Key(nameof(content[0].storeCode)) //Key
+          .DataIndex(nameof(content[0].storeCode))
+          .AddChild(
+            CreateColumn()
+              .Title(() => (
+                <>
+                  <AdvanceIdFilter
+                    value={filter["storeTypeId"]["equal"]}
+                    onChange={handleChangeFilter(
+                      nameof(content[0].storeTypeId),
+                      "equal" as any,
+                      IdFilter,
+                      handleSearch,
+                    )}
+                    classFilter={StoreTypeFilter}
+                    getList={priceListRepository.filterListStoreType}
+                    placeHolder={translate("general.filter.idFilter")} // -> tat ca
+                  />
+                </>
+              ))
+              .DataIndex(nameof(content[0].storeType)),
+          ), // dataIndex
+      ),
+    [content, filter, handleChangeFilter, handleSearch, pagination, translate],
+  ); // test columns factory
+
   return (
     <>
       <Table
@@ -407,6 +444,19 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
           </div>
         )}
       />
+      {/* test table */}
+      <Table
+        tableLayout='fixed'
+        bordered={true}
+        rowKey={nameof(list[0].key)}
+        columns={priceListStoreMappingsTable}
+        pagination={false}
+        dataSource={list}
+        loading={loadingList}
+        onChange={handleTableChange}
+        rowSelection={rowSelection}
+      />
+      {/* end test table */}
       <ContentModal
         visible={visible}
         loadControl={loadControl}
