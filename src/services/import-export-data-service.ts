@@ -1,11 +1,13 @@
-import { useRef, useCallback, ChangeEvent } from "react";
+import { useRef, useCallback, ChangeEvent, Dispatch, useContext } from "react";
 import { Model, ModelFilter } from "@react3l/react3l/core";
 import { commonService } from "@react3l/react3l/services";
 import { RefObject } from "react";
 import { AxiosError, AxiosResponse } from "axios";
 import { Observable } from "rxjs";
 import { saveAs } from "file-saver";
-
+import { AppAction, AppActionEnum } from "views/AppStore";
+import { AppMessageContext } from "views/AppContext";
+import { AppMessageService } from "services/AppMessageService";
 export const importExportDataService = {
   /**
    *
@@ -16,38 +18,59 @@ export const importExportDataService = {
    *
    * */
   useImport<T extends Model>(
-    dispatch?: any,
+    dispatch?: Dispatch<AppAction>,
     onImportSuccess?: (list?: T[]) => void,
   ) {
-    const [subscription] = commonService.useSubscription();
-    // ref object to clear value of input after import
-    const ref: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
+    const [subscription] = commonService.useSubscription(); // subscription avoid leak memory
+    const messageContext = useContext<AppMessageService>(AppMessageContext); // message context for side effect
+    const ref: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null); // ref object to clear value of input after import
+
+    // handle Import Error
+    const handleImportError = useCallback(
+      (error: AxiosError<any>) => {
+        messageContext.setError();
+        dispatch({
+          type: AppActionEnum.IMPORT_ERROR,
+          errorMessage: error.response.data,
+        }); // setError Message and visible modal
+      },
+      [dispatch, messageContext],
+    );
+
+    // handleEnd Import
+    const handleEndImport = useCallback(() => {
+      dispatch({ type: AppActionEnum.END_IMPORT }); // setLoading false
+    }, [dispatch]);
+
     const handleImportList = useCallback(
       (onImport: (file: File) => Observable<void>) => {
         return (event: ChangeEvent<HTMLInputElement>) => {
           if (event.target.files.length > 0) {
             const file: File = event.target.files[0];
-            dispatch({ type: "INIT_IMPORT" }); // dispatch appAction
+            dispatch({ type: AppActionEnum.INIT_IMPORT }); // dispatch appAction
             subscription.add(
               onImport(file).subscribe(
                 () => {
-                  dispatch({ type: "IMPORT_SUCCESS" }); // ...appAction
+                  messageContext.setSuccess(); // ...some sideEffect here
                   if (typeof onImportSuccess === "function") {
                     onImportSuccess();
                   }
                 }, // onSuccess
-                (error: AxiosError<any>) => {
-                  dispatch({ type: "IMPORT_ERROR", data: error.response.data });
-                }, // onError
-                () => {
-                  dispatch({ type: "END_IMPORT" });
-                }, //finally
+                handleImportError, // onError
+                handleEndImport, //finally
               ),
             );
           }
         };
       },
-      [dispatch, subscription, onImportSuccess],
+      [
+        dispatch,
+        subscription,
+        handleImportError,
+        handleEndImport,
+        messageContext,
+        onImportSuccess,
+      ],
     );
 
     const handleContentList = useCallback(
@@ -57,26 +80,29 @@ export const importExportDataService = {
       ) => {
         return (event: ChangeEvent<HTMLInputElement>) => {
           const file: File = event.target.files[0];
-          dispatch({ type: "INIT_IMPORT" }); // dispatch appAction
+          dispatch({ type: AppActionEnum.INIT_IMPORT }); // dispatch appAction
           subscription.add(
             onImport(file, modelId).subscribe(
               (list: T[]) => {
-                dispatch({ type: "IMPORT_SUCCESS" }); // ...appAction
+                messageContext.setSuccess(); // ...some sideEffect here
                 if (typeof onImportSuccess === "function") {
                   onImportSuccess(list);
                 }
               },
-              (error: AxiosError<any>) => {
-                dispatch({ type: "IMPORT_ERROR", data: error.response.data });
-              }, // onError
-              () => {
-                dispatch({ type: "END_IMPORT" });
-              }, //finally
+              handleImportError, // onError
+              handleEndImport, //finally
             ),
           );
         };
       },
-      [dispatch, onImportSuccess, subscription],
+      [
+        dispatch,
+        handleEndImport,
+        handleImportError,
+        messageContext,
+        onImportSuccess,
+        subscription,
+      ],
     );
 
     const handleClick = useCallback(() => {
