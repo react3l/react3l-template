@@ -50,13 +50,13 @@ export default function ContentTable<
     handlePagination,
     rowSelection,
   } = tableService.useLocalTable(
-    total,
-    handleSearch,
     filter,
     setFilter,
     content,
     setContent,
+    undefined,
     mapperField,
+    undefined,
   );
 
   const columns = tableColumnFactory.renderTableColumn(columnData);

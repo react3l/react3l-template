@@ -523,54 +523,55 @@ export class TableService {
    *
    * */
   useLocalTable<T extends Model, T2 extends Model, TFilter extends ModelFilter>(
-    total: number,
-    handleSearch: () => void,
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
     source: T[],
     setSource: (source: T[]) => void,
+    contentMapper: (model: T | T2) => T,
     mapperField: string,
+    ContentClass: new () => T,
   ) {
-    // mappingList, mapperList reducer
     const [{ mappingList }, dispatch] = useReducer<
       Reducer<ContentTableState<T, T2>, ContentTableAction<T, T2>>
     >(contentTableReducer, {
       mappingList: [], // selectedContent
-    });
+    }); // mappingList, mapperList reducer
 
-    // calculate selectedList from updated source
+    const { list, total, loadingList, handleSearch } = listService.useLocalList(
+      filter,
+      typeof contentMapper === "function" ? source.map(contentMapper) : source,
+    ); // list service
+
     const selectedList = useMemo(
       () => (source.length > 0 ? source.map(mappingToMapper(mapperField)) : []),
       [mapperField, source],
-    );
-
-    // define setMappingList alternater for setSelectedContent
+    ); // calculate selectedList from updated source
     const setMappingList = useCallback((mappingList: T[]) => {
       dispatch({
         type: ContentTableActionEnum.SET_LIST_SELECTION,
         listName: "mappingList",
         data: mappingList, // update mappingList.Eg: selectedContent[]
       });
-    }, []);
+    }, []); // define setMappingList alternater for setSelectedContent
 
-    // selectedRowKeys
     const {
       rowSelection,
       canBulkDelete, // for UI
-    } = this.useContentRowSelection(mappingList, setMappingList);
+    } = this.useContentRowSelection(mappingList, setMappingList); // selectedRowKeys
 
-    // calculate pagination
     const pagination: PaginationProps = this.usePagination<TFilter>(
       filter,
       total,
-    );
+    ); // calculate pagination
 
-    // handleChange page or sorter
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
-    >(filter, setFilter, pagination, handleSearch);
+    >(filter, setFilter, pagination, handleSearch); // handleChange page or sorter
+    const resetTableFilter = useCallback(() => {
+      setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
+      handleSearch(); // trigger reLoad list
+    }, [filter, handleSearch, setFilter]); // reset table filter and re-load
 
-    // handle single delete
     const handleLocalDelete = useCallback(
       (content: T) => {
         setSource(source.filter(filterContent(content))); // remove one item in source by key and update source
@@ -578,13 +579,10 @@ export class TableService {
           type: ContentTableActionEnum.SINGLE_DELETE,
           mappingList: mappingList.filter(filterContent(content)), // for content table
         });
-        setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
-        handleSearch(); // trigger reLoad list
+        resetTableFilter();
       },
-      [filter, handleSearch, mappingList, setFilter, setSource, source],
-    );
-
-    //  handle bulk delete
+      [mappingList, resetTableFilter, setSource, source],
+    ); // handle single delete
     const handleLocalBulkDelete = useCallback(() => {
       Modal.confirm({
         title: "ban co chac muon xoa thao tac",
@@ -602,30 +600,55 @@ export class TableService {
           dispatch({
             type: ContentTableActionEnum.BULK_DELETE,
           });
-          setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
-          handleSearch(); // trigger reLoad list
+          resetTableFilter();
         },
       });
-    }, [
-      filter,
-      handleSearch,
-      mapperField,
-      mappingList,
-      setFilter,
-      setSource,
-      source,
-    ]);
+    }, [mapperField, mappingList, resetTableFilter, setSource, source]); //  handle bulk delete
+
+    const handleChangeOneCell = useCallback(
+      (key: string, field: keyof T) => (value: T[keyof T]) => {
+        const index = source.findIndex((item) => item.key === key);
+        if (index > 0) {
+          source[index][field] = value;
+        }
+        setSource(source);
+        resetTableFilter();
+      },
+      [setSource, source, resetTableFilter],
+    ); // update one cell in source
+
+    const handleChangeOneRow = useCallback(
+      (key: string) => (value: T) => {
+        const index = source.findIndex((item) => item.key === key);
+        source[index] = value;
+        setSource(source);
+        resetTableFilter();
+      },
+      [source, resetTableFilter, setSource], // change one row
+    );
+
+    const handleAddContent = useCallback(() => {
+      setSource([...source, new ContentClass()]);
+    }, [ContentClass, setSource, source]); // add Content
 
     return {
+      list,
+      total,
+      loadingList,
+      handleSearch,
       pagination,
       handleTableChange,
       handlePagination,
-      handleLocalDelete,
-      handleLocalBulkDelete,
       rowSelection,
       canBulkDelete,
       selectedContent: mappingList,
       selectedList,
+      resetTableFilter, // reset filter and trigger search
+      handleLocalDelete, // single delete
+      handleLocalBulkDelete, // bulk delete
+      handleChangeOneCell, // update single row by field and keys
+      handleChangeOneRow, // update single row
+      handleAddContent, // add single
     };
   }
 

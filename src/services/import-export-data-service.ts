@@ -46,18 +46,20 @@ export const importExportDataService = {
           if (event.target.files.length > 0) {
             const file: File = event.target.files[0];
             dispatch({ type: AppActionEnum.INIT_IMPORT }); // dispatch appAction
-            subscription.add(
-              onImport(file).subscribe(
-                () => {
-                  messageContext.setSuccess(); // ...some sideEffect here
-                  if (typeof onImportSuccess === "function") {
-                    onImportSuccess();
-                  }
-                }, // onSuccess
-                handleImportError, // onError
-                handleEndImport, //finally
-              ),
-            );
+            if (typeof onImport === "function") {
+              subscription.add(
+                onImport(file).subscribe(
+                  () => {
+                    messageContext.setSuccess(); // ...some sideEffect here
+                    if (typeof onImportSuccess === "function") {
+                      onImportSuccess();
+                    }
+                  }, // onSuccess
+                  handleImportError, // onError
+                  handleEndImport, //finally
+                ),
+              );
+            }
           }
         };
       },
@@ -79,18 +81,20 @@ export const importExportDataService = {
         return (event: ChangeEvent<HTMLInputElement>) => {
           const file: File = event.target.files[0];
           dispatch({ type: AppActionEnum.INIT_IMPORT }); // dispatch appAction
-          subscription.add(
-            onImport(file, modelId).subscribe(
-              (list: T[]) => {
-                messageContext.setSuccess(); // ...some sideEffect here
-                if (typeof onImportSuccess === "function") {
-                  onImportSuccess(list);
-                }
-              },
-              handleImportError, // onError
-              handleEndImport, //finally
-            ),
-          );
+          if (typeof onImport === "function") {
+            subscription.add(
+              onImport(file, modelId).subscribe(
+                (list: T[]) => {
+                  messageContext.setSuccess(); // ...some sideEffect here
+                  if (typeof onImportSuccess === "function") {
+                    onImportSuccess(list);
+                  }
+                },
+                handleImportError, // onError
+                handleEndImport, //finally
+              ),
+            );
+          }
         };
       },
       [
@@ -140,11 +144,13 @@ export const importExportDataService = {
         onExport: (filter: TFilter) => Observable<AxiosResponse<any>>,
       ) => {
         return () => {
-          subscription.add(
-            onExport(filter).subscribe(
-              handleExportSuccess, // onSuccess
-            ),
-          );
+          if (typeof onExport === "function") {
+            subscription.add(
+              onExport(filter).subscribe(
+                handleExportSuccess, // onSuccess
+              ),
+            );
+          }
         };
       },
       [subscription],
@@ -157,11 +163,13 @@ export const importExportDataService = {
         onExport: (model: T) => Observable<AxiosResponse<any>>,
       ) => {
         return () => {
-          subscription.add(
-            onExport(model).subscribe(
-              handleExportSuccess, // onSuccess
-            ),
-          );
+          if (typeof onExport === "function") {
+            subscription.add(
+              onExport(model).subscribe(
+                handleExportSuccess, // onSuccess
+              ),
+            );
+          }
         };
       },
       [subscription],
@@ -174,11 +182,13 @@ export const importExportDataService = {
         onExport: (id: number) => Observable<AxiosResponse<any>>,
       ) => {
         return () => {
-          subscription.add(
-            onExport(model?.id).subscribe(
-              handleExportSuccess, // onSuccess
-            ),
-          );
+          if (typeof onExport === "function") {
+            subscription.add(
+              onExport(model?.id).subscribe(
+                handleExportSuccess, // onSuccess
+              ),
+            );
+          }
         };
       },
       [subscription],

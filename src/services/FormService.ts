@@ -185,7 +185,6 @@ export const formService = {
     contentList: TContent[],
     setContentList: (t: TContent[]) => void,
   ): [
-    TContent[],
     (
       key: string,
       field: keyof TContent,
@@ -233,7 +232,6 @@ export const formService = {
     );
 
     return [
-      contentList,
       handleChangeContentField,
       handleChangeContent,
       handleAddContent,
