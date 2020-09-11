@@ -31,10 +31,12 @@ export function InputNumberStories() {
     Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, Filter>>
   >(advanceFilterReducer, new DemoFilter());
 
-  const [value, setValue] = advanceFilterService.useNumberFilter<
-    DemoFilter,
-    NumberFilter
-  >(filter, dispatch, "number", "equal");
+  const [value, setValue] = advanceFilterService.useNumberFilter<DemoFilter>(
+    filter,
+    dispatch,
+    "number",
+    "equal",
+  );
 
   const handleChangeType = React.useCallback(
     (event: RadioChangeEvent) => {

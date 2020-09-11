@@ -26,7 +26,7 @@ export function AdvanceNumberRangeFilterStories() {
   }, []);
 
   const [filter, dispatch] = React.useReducer<
-    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, NumberFilter>>
+    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter>>
   >(advanceFilterReducer, new DemoFilter());
 
   const [

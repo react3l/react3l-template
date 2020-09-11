@@ -15,7 +15,12 @@ export enum ActionFilterEnum {
   ChangeOrderType,
 }
 
-export interface AdvanceFilterAction<T1, T2> {
+type CoreFilter = StringFilter | NumberFilter | DateFilter | IdFilter;
+
+export interface AdvanceFilterAction<
+  T1,
+  T2 = CoreFilter // default
+> {
   type: ActionFilterEnum;
   classFilter?: new (partial?: any) => T2;
   data?: T1;
@@ -28,9 +33,9 @@ export interface AdvanceFilterAction<T1, T2> {
   orderType?: OrderType;
 }
 
-export function advanceFilterReducer<T1 extends ModelFilter, T2 extends Filter>(
+export function advanceFilterReducer<T1 extends ModelFilter>(
   state: T1,
-  action: AdvanceFilterAction<T1, T2>,
+  action: AdvanceFilterAction<T1>,
 ) {
   switch (action.type) {
     case ActionFilterEnum.ChangeOneField:
@@ -181,11 +186,11 @@ export const advanceFilterService = {
     return [value, handleChangeFilter];
   },
 
-  useStringFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useStringFilter<T1Filter extends ModelFilter>(
     modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    dispatch: (action: AdvanceFilterAction<T1Filter>) => void,
     fieldName: keyof T1Filter,
-    fieldType: keyof T2Filter,
+    fieldType: keyof StringFilter,
   ): [string, (value: string) => void] {
     const value = modelFilter[fieldName][fieldType];
     const handleChangeFilter = React.useCallback(
@@ -193,7 +198,7 @@ export const advanceFilterService = {
         dispatch({
           type: ActionFilterEnum.ChangeOneField,
           fieldName: fieldName,
-          fieldType: fieldType,
+          fieldType: fieldType as keyof CoreFilter,
           fieldValue: value,
         });
       },
@@ -202,7 +207,10 @@ export const advanceFilterService = {
     return [value, handleChangeFilter];
   },
 
-  useAdvanceFilterRange<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useAdvanceFilterRange<
+    T1Filter extends ModelFilter,
+    T2Filter extends ModelFilter
+  >(
     modelFilter: T1Filter,
     dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
     fieldName: keyof T1Filter,
@@ -229,11 +237,11 @@ export const advanceFilterService = {
     return [value, handleChangeRange];
   },
 
-  useNumberFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useNumberFilter<T1Filter extends ModelFilter>(
     modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    dispatch: (action: AdvanceFilterAction<T1Filter>) => void,
     fieldName: keyof T1Filter,
-    fieldType: keyof T2Filter,
+    fieldType: keyof NumberFilter,
   ): [number, (value: number) => void] {
     const value = modelFilter[fieldName][fieldType];
     const handleChangeFilter = React.useCallback(
@@ -241,7 +249,7 @@ export const advanceFilterService = {
         dispatch({
           type: ActionFilterEnum.ChangeOneField,
           fieldName: fieldName,
-          fieldType: fieldType,
+          fieldType: fieldType as keyof CoreFilter,
           fieldValue: value,
         });
       },
@@ -251,11 +259,11 @@ export const advanceFilterService = {
     return [value, handleChangeFilter];
   },
 
-  useIdFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useIdFilter<T1Filter extends ModelFilter>(
     modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    dispatch: (action: AdvanceFilterAction<T1Filter>) => void,
     fieldName: keyof T1Filter,
-    fieldType: keyof T2Filter,
+    fieldType: keyof CoreFilter,
   ): [number, (id: number) => void] {
     const idValue = modelFilter[fieldName][fieldType];
     const handleIdFilter = React.useCallback(
@@ -272,11 +280,11 @@ export const advanceFilterService = {
     return [idValue, handleIdFilter];
   },
 
-  useDateFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useDateFilter<T1Filter extends ModelFilter>(
     modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    dispatch: (action: AdvanceFilterAction<T1Filter>) => void,
     fieldName: keyof T1Filter,
-    fieldType: keyof T2Filter,
+    fieldType: keyof DateFilter,
   ): [Moment, (date: Moment) => void] {
     const value = modelFilter[fieldName][fieldType];
     const handleDateFilter = React.useCallback(
@@ -284,7 +292,7 @@ export const advanceFilterService = {
         dispatch({
           type: ActionFilterEnum.ChangeOneField,
           fieldName: fieldName,
-          fieldType: fieldType,
+          fieldType: fieldType as keyof CoreFilter,
           fieldValue: date || null,
         });
       },
@@ -294,9 +302,9 @@ export const advanceFilterService = {
     return [value, handleDateFilter];
   },
 
-  useNumberRangeFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useNumberRangeFilter<T1Filter extends ModelFilter>(
     modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    dispatch: (action: AdvanceFilterAction<T1Filter>) => void,
     fieldName: keyof T1Filter,
   ): [[number, number], (numberRange: [number, number]) => void] {
     const valueFrom =
@@ -321,9 +329,9 @@ export const advanceFilterService = {
     return [value, handleChangeNumberRange];
   },
 
-  useDateRangeFilter<T1Filter extends ModelFilter, T2Filter extends Filter>(
+  useDateRangeFilter<T1Filter extends ModelFilter>(
     modelFilter: T1Filter,
-    dispatch: (action: AdvanceFilterAction<T1Filter, T2Filter>) => void,
+    dispatch: (action: AdvanceFilterAction<T1Filter>) => void,
     fieldName: keyof T1Filter,
   ): [[Moment, Moment], (dateRange: [Moment, Moment]) => void] {
     const valueFrom =

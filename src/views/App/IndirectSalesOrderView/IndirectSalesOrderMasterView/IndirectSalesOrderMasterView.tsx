@@ -80,7 +80,7 @@ function IndirectSalesOrderMasterView() {
   const [
     valueDateRange,
     setValueDateRange,
-  ] = advanceFilterService.useDateRangeFilter<DemoFilter, DateFilter>(
+  ] = advanceFilterService.useDateRangeFilter<DemoFilter>(
     filter,
     dispatch,
     "dateRange",
