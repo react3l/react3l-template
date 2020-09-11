@@ -5,7 +5,7 @@ import {
 } from "./route-consts";
 import { INDIRECT_SALES_ORDER_ROUTE_PREFIX } from "config/route-consts";
 import { RouteConfig } from "react-router-config";
-import { translate } from "react3l/helpers";
+import { translate } from "@react3l/react3l/helpers";
 
 export const menu: RouteConfig[] = [
   {

@@ -1,7 +1,7 @@
-import React, { Reducer } from "react";
-import { Model } from "react3l/core";
+import React, { Reducer, useCallback } from "react";
+import { Model, ErrorMap } from "@react3l/react3l/core";
 import { Observable, Subscription } from "rxjs";
-import { useCallback } from "reactn";
+import { ValidateStatus } from "components/Utility/FormItem/FormItem";
 
 export const FORM_DETAIL_SET_STATE_ACTION: string =
   "FORM_DETAIL_SET_STATE_ACTION";
@@ -60,6 +60,11 @@ export const formService = {
       fieldName: keyof T,
     ) => (fieldIdValue: number, fieldValue?: T[keyof T]) => void,
     (data: T) => void,
+    (
+      fieldName: string,
+      callback?: (id: number) => void,
+    ) => (list: T[keyof T][]) => void,
+    React.Dispatch<FormDetailAction<T>>,
   ] {
     const [model, dispatch] = React.useReducer<Reducer<T, FormDetailAction<T>>>(
       formDetailReducer,
@@ -119,6 +124,25 @@ export const formService = {
       [],
     );
 
+    const handleChangeTreeObjectField = React.useCallback(
+      <P extends keyof T>(
+        fieldName: P,
+        callback?: (item: T[keyof T]) => void,
+      ) => {
+        return (list: T[keyof T][]) => {
+          dispatch({
+            type: FORM_DETAIL_CHANGE_OBJECT_FIELD_ACTION,
+            fieldName,
+            fieldValue: list[0],
+          });
+          if (typeof callback === "function") {
+            callback(list[0]);
+          }
+        };
+      },
+      [],
+    );
+
     // allow external update model from hook's scope
     const handleUpdateNewModel = useCallback((data: T) => {
       dispatch({ type: FORM_DETAIL_SET_STATE_ACTION, data });
@@ -129,6 +153,8 @@ export const formService = {
       handleChangeSimpleField,
       handleChangeObjectField,
       handleUpdateNewModel,
+      handleChangeTreeObjectField,
+      dispatch,
     ];
   },
 
@@ -154,59 +180,56 @@ export const formService = {
     return React.useCallback(handleChangeField(index, fieldName), []);
   },
 
-  useContentField<T extends Model, TContent extends Model>(
+  useContentField<TContent extends Model>(
     ContentClass: new () => TContent,
-    model: T,
-    field: keyof T,
-    handleChangeSimpleField: (
-      fieldName: keyof T,
-    ) => (fieldValue: T[keyof T]) => void,
+    contentList: TContent[],
+    setContentList: (t: TContent[]) => void,
   ): [
     TContent[],
     (
-      index: number,
+      key: string,
       field: keyof TContent,
     ) => (value: TContent[keyof TContent]) => void,
-    (index: number) => (content: TContent) => void,
+    (key: string) => (content: TContent) => void,
     () => void,
     (index: number) => () => void,
   ] {
-    const contentList: TContent[] = React.useMemo(() => {
-      return model[field] ?? [];
-    }, [field, model]);
-
-    const handleChangeContentList: (
-      contentList: TContent[],
-    ) => void = React.useCallback(handleChangeSimpleField(field), []);
-
+    /* change one rows */
     const handleChangeContent = React.useCallback(
-      (index: number) => (content: TContent) => {
+      (key: string) => (content: TContent) => {
+        const index = contentList.findIndex((item) => item.key === key);
         contentList[index] = content;
-        handleChangeContentList(contentList);
+        setContentList(contentList);
       },
-      [contentList, handleChangeContentList],
+      [contentList, setContentList],
     );
 
+    /* change one cell */
     const handleChangeContentField = React.useCallback(
-      (index: number, field: keyof TContent) => (
+      (key: string, field: keyof TContent) => (
         value: TContent[keyof TContent],
       ) => {
-        contentList[index][field] = value;
-        handleChangeContentList(contentList);
+        const index = contentList.findIndex((item) => item.key === key);
+        if (index > 0) {
+          contentList[index][field] = value;
+        }
+        setContentList(contentList);
       },
-      [contentList, handleChangeContentList],
+      [contentList, setContentList],
     );
 
+    /* add one row */
     const handleAddContent = React.useCallback(() => {
-      handleChangeContentList([...contentList, new ContentClass()]);
-    }, [ContentClass, contentList, handleChangeContentList]);
+      setContentList([...contentList, new ContentClass()]);
+    }, [ContentClass, contentList, setContentList]);
 
+    /* remove */
     const handleRemoveContent = React.useCallback(
       (index: number) => () => {
         contentList.splice(index, 1);
-        handleChangeContentList([...contentList]);
+        setContentList([...contentList]);
       },
-      [contentList, handleChangeContentList],
+      [contentList, setContentList],
     );
 
     return [
@@ -216,5 +239,16 @@ export const formService = {
       handleAddContent,
       handleRemoveContent,
     ];
+  },
+
+  getValidationStatus<T extends Model>(errors: ErrorMap<T>, field: string) {
+    if (typeof errors === "object" && errors !== null) {
+      if (errors.hasOwnProperty("field")) {
+        if (typeof errors[field] === "string" && errors[field] !== "") {
+          return ValidateStatus.error;
+        }
+      }
+    }
+    return null;
   },
 };

@@ -1,23 +1,22 @@
-import {Model, RegisteredModel} from 'react3l/core';
-import { Moment } from 'moment';
-import { Province } from './Province';
-
+import { Model, RegisteredModel } from "@react3l/react3l/core";
+import { Moment } from "moment";
+import { Province } from "./Province";
 
 @RegisteredModel()
 export class Payment extends Model {
-    public id?: number;
+  public id?: number;
 
-    public name?: string;
+  public name?: string;
 
-    public code?: string;
+  public code?: string;
 
-    public date?: Moment;
+  public date?: Moment;
 
-    public province?: Province;
+  public province?: Province;
 
-    public provinceId?: number;
+  public provinceId?: number;
 
-    public paymentDate?: Moment;
+  public paymentDate?: Moment;
 
-    public paymentNumber: number;
+  public paymentNumber?: number;
 }

@@ -4,8 +4,8 @@ import {
   TableRowSelection,
 } from "antd/lib/table/interface";
 import React, { Dispatch, SetStateAction } from "react";
-import { Model, ModelFilter, OrderType } from "react3l/core";
-import { kebabCase } from "react3l/helpers";
+import { Model, ModelFilter, OrderType } from "@react3l/react3l/core";
+import { kebabCase } from "@react3l/react3l/helpers";
 import { forkJoin, Observable, Subscription } from "rxjs";
 import { finalize } from "rxjs/operators";
 

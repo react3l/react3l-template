@@ -26,7 +26,12 @@ export class RouterService {
 
   public useMasterNavigation(
     baseRoute: string,
-  ): [() => void, (id: any) => () => void, (node: any) => () => void] {
+  ): [
+    () => void,
+    (id: any) => () => void,
+    (node: any) => () => void,
+    () => void,
+  ] {
     const history = useHistory();
 
     const handleGoCreate = React.useCallback(() => {
@@ -53,12 +58,11 @@ export class RouterService {
       [baseRoute, history],
     );
 
-    return [
-      handleGoCreate,
-      handleGoDetail,
-      handleGoCreateTree,
-      //  handleCancel,
-    ];
+    const handleGoBase = React.useCallback(() => {
+      history.replace(baseRoute);
+    }, [baseRoute, history]);
+
+    return [handleGoCreate, handleGoDetail, handleGoCreateTree, handleGoBase];
   }
 }
 

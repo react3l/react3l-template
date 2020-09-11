@@ -8,7 +8,7 @@ import Select from "components/Utility/Select/Select";
 import { formatNumber } from "helpers/number";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ModelFilter } from "react3l/core";
+import { ModelFilter } from "@react3l/react3l/core";
 import FormItem from "components/Utility/FormItem/FormItem";
 
 const { TabPane } = Tabs;
@@ -50,11 +50,11 @@ function PaymentRequestDetailView() {
                       <Col lg={6} className='pr-3'>
                         <FormItem label={"Người nhận"}>
                           <InputText
-                              isMaterial={true}
-                              value={null}
-                              placeHolder={"Chọn người nhận hàng"}
-                              className={"tio-user_switch"}
-                            />
+                            isMaterial={true}
+                            value={null}
+                            placeHolder={"Chọn người nhận hàng"}
+                            className={"tio-user_switch"}
+                          />
                         </FormItem>
                       </Col>
                       <Col lg={6} className='pr-3'>
@@ -243,7 +243,7 @@ function PaymentRequestDetailView() {
                           placeHolder={"Nhập diễn giải chi tiết"}
                           className={"tio-files_labeled_outlined"}
                         />
-                        </FormItem>
+                      </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
                       <FormItem label={"Thành tiền"}>

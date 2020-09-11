@@ -1,44 +1,27 @@
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { ModelFilter } from "@react3l/react3l/core";
+import { Col, Row, Tooltip } from "antd";
 import Card from "antd/lib/card";
 import Table, { ColumnProps } from "antd/lib/table";
-import { Payment } from "models/Payment";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { tableService } from "services/TableService";
-import nameof from "ts-nameof.macro";
 import classNames from "classnames";
-import "./PaymentRequestMasterView.scss";
-import { Row, Col, Tooltip } from "antd";
-import InputSearch from "components/Utility/InputSearch/InputSearch";
-import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceDateRangeFilter from "components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter";
+import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
-import Pagination from "components/Utility/Pagination/Pagination";
+import InputSearch from "components/Utility/InputSearch/InputSearch";
 import { PAYMENT_REQUEST_DETAIL_ROUTE } from "config/route-consts";
-import { routerService } from "services/RouterService";
-import { ModelFilter, Model } from "react3l/core";
-import { queryStringService } from "services/QueryStringService";
 import { PaymentFilter } from "models/PaymenFilter";
-import { paymentRepository } from "repositories/payment-repository";
+import { Payment } from "models/Payment";
 import { Province } from "models/Province";
 import { Moment } from "moment";
-import { Observable } from "rxjs/internal/Observable";
-import { IdFilter } from "react3l-advanced-filters/IdFilter";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
-
-const demoObservable = new Observable<Model[]>((observer) => {
-  setTimeout(() => {
-    observer.next([
-      { id: 1, name: "Hà Nội", code: "HN" },
-      { id: 2, name: "Hồ Chí Minh", code: "HCM" },
-      { id: 3, name: "Đà Nẵng", code: "DN" },
-      { id: 4, name: "Nha Trang", code: "CR" },
-    ]);
-  }, 1000);
-});
-
-const demoSearchFunc = (TModelFilter: ModelFilter) => {
-  return demoObservable;
-};
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { paymentRepository } from "repositories/payment-repository";
+import { queryStringService } from "services/QueryStringService";
+import { routerService } from "services/RouterService";
+import { tableService } from "services/TableService";
+import nameof from "ts-nameof.macro";
+import "./PaymentRequestMasterView.scss";
 
 export class DemoListFilter extends ModelFilter {
   id: IdFilter = new IdFilter();
@@ -48,17 +31,11 @@ export class DemoListFilter extends ModelFilter {
 
 function PaymentMasterView() {
   const [translate] = useTranslation();
-  const [
-    filter,
-    ,
-    ,
-    handleChangeFilter,
-    handleChangeOrder,
-    handlePagination,
-    handleResetFilter,
-  ] = queryStringService.useQueryString<Payment, PaymentFilter>(PaymentFilter);
+  const [filter] = queryStringService.useQueryString<PaymentFilter>(
+    PaymentFilter,
+  );
 
-  const [list, , total, loading, ,] = tableService.useMasterTable<
+  const [list, , , loading, ,] = tableService.useMasterTable<
     Payment,
     PaymentFilter
   >(filter, paymentRepository.list, paymentRepository.count);
@@ -176,7 +153,7 @@ function PaymentMasterView() {
         key: nameof("general.actions.action"),
         dataIndex: nameof(list[0].id),
         align: "center",
-        fixed: 'right',
+        fixed: "right",
         width: 200,
         render() {
           return (
@@ -234,7 +211,7 @@ function PaymentMasterView() {
                 </div>
               </Col>
               <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
+                {/* <div className='mt__1'>
                   <label className='label'>Phòng ban</label>
                   <AdvanceIdFilter
                     classFilter={DemoListFilter}
@@ -243,7 +220,7 @@ function PaymentMasterView() {
                     getList={demoSearchFunc}
                     placeHolder={"Tất cả"}
                   />
-                </div>
+                </div> */}
               </Col>
               <Col lg={4} className='pr-4'>
                 <div className='mt__1'>
@@ -270,7 +247,7 @@ function PaymentMasterView() {
                   <div className='d-flex justify-content-between'>
                     <button
                       className='btn component__btn-outline-primary'
-                      onClick={handleResetFilter}
+                      // onClick={handleResetFilter}
                     >
                       ResetFilter
                     </button>
@@ -356,7 +333,7 @@ function PaymentMasterView() {
               dataSource={list}
               loading={loading}
               pagination={false}
-              onChange={handleChangeOrder}
+              // onChange={handleChangeOrder}
               rowSelection={rowSelection}
               title={() => (
                 <>
@@ -388,13 +365,13 @@ function PaymentMasterView() {
                           <i className='tio-download_to' />
                         </button>
                       </Tooltip>
-                      <Pagination
+                      {/* <Pagination
                         skip={filter.skip}
                         take={filter.take}
                         total={total}
                         onChange={handlePagination}
                         style={{ margin: "10px" }}
-                      />
+                      /> */}
                     </div>
                   </div>
                 </>
