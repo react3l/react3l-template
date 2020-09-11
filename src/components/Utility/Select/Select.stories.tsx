@@ -2,9 +2,9 @@ import { storiesOf } from "@storybook/react";
 import { Radio } from "antd";
 import { RadioChangeEvent } from "antd/lib/radio";
 import React from "react";
-import { IdFilter } from "react3l-advanced-filters/IdFilter";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
-import { Model, ModelFilter } from "react3l/core";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Observable } from "rxjs";
 import nameof from "ts-nameof.macro";
 import Select from "./Select";
@@ -68,10 +68,12 @@ function Default() {
       />
 
       <div style={{ margin: "10px", width: "300px" }}>
-        <FormItem validateStatus={ValidateStatus.error}
-                label={'Select field:'}
-                message={'Field required!'}
-                hasIcon={!isMaterial}>
+        <FormItem
+          validateStatus={ValidateStatus.error}
+          label={"Select field:"}
+          message={"Field required!"}
+          hasIcon={!isMaterial}
+        >
           <Select
             placeHolder={"Select Organization"}
             model={selectModel}

@@ -1,15 +1,15 @@
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { DEBOUNCE_TIME_300 } from "@react3l/react3l/config";
+import { Model, ModelFilter } from "@react3l/react3l/core";
+import { debounce } from "@react3l/react3l/helpers";
+import { commonService } from "@react3l/react3l/services/common-service";
 import classNames from "classnames";
-import React, { RefObject } from "react";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
-import { DEBOUNCE_TIME_300 } from "react3l/config";
-import { Model, ModelFilter } from "react3l/core";
-import { debounce } from "react3l/helpers";
-import { commonService } from "react3l/services/common-service";
 import { ErrorObserver, Observable } from "rxjs";
 import { commonWebService } from "services/CommonWebService";
 import nameof from "ts-nameof.macro";
 import InputSelect from "../Input/InputSelect/InputSelect";
 import "./Select.scss";
+import React, { RefObject } from "react";
 
 export interface SelectProps<
   T extends Model,

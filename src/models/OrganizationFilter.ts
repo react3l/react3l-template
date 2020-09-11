@@ -1,5 +1,9 @@
-import { IdFilter, NumberFilter, StringFilter } from "react3l-advanced-filters";
-import { ModelFilter } from "react3l/core";
+import {
+  IdFilter,
+  NumberFilter,
+  StringFilter,
+} from "@react3l/advanced-filters";
+import { ModelFilter } from "@react3l/react3l/core";
 
 export class OrganizationFilter extends ModelFilter {
   public id?: IdFilter = new IdFilter();

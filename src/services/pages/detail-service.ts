@@ -1,9 +1,15 @@
+import { commonService } from "@react3l/react3l/services";
+import { AxiosError } from "axios";
+import { PRICE_LIST_ROUTE_PREFIX } from "config/route-consts";
 import Model from "core/models/Model";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Observable } from "rxjs";
+import { finalize } from "rxjs/operators";
 import { formService } from "services/FormService";
+import { routerService } from "services/RouterService";
 import { v4 as uuidv4 } from "uuid";
+import appMessageService from "services/AppMessageService";
 
 export class DetailService {
   /**
@@ -17,13 +23,19 @@ export class DetailService {
    * */
   useContentList<T extends Model, TContent extends Model>(
     model: T,
-    setModel: (data: T) => void,
+    setModel: (model: T) => void,
     contentField: string,
   ) {
     const content: TContent[] = useMemo(() => {
-      if (model[contentField]?.length > 0) {
-        model[contentField].map((item) => ({ ...item, key: uuidv4() })); // assign key for each content item
-        return model[contentField];
+      if (model) {
+        if (model[contentField]?.length > 0) {
+          return model[contentField].map((item) => {
+            if (item.hasOwnProperty("key")) {
+              return { ...item };
+            }
+            return { ...item, key: uuidv4() }; // assign key for each content item
+          });
+        }
       }
       return [];
     }, [contentField, model]);
@@ -32,7 +44,7 @@ export class DetailService {
       (v: TContent[]) => {
         setModel({ ...model, [contentField]: v });
       },
-      [contentField, model, setModel],
+      [contentField, setModel, model],
     );
 
     return { content, setContent };
@@ -49,21 +61,77 @@ export class DetailService {
   useDetail<T extends Model>(
     ModelClass: new () => T,
     getDetail: (id: number) => Observable<T>,
+    saveModel: (t: T) => Observable<T>,
   ) {
     // get id from url
     const { id } = useParams();
+    // navigating master when update or create successfully
+    const [, , , handleGoBase] = routerService.useMasterNavigation(
+      PRICE_LIST_ROUTE_PREFIX, // master route
+    );
+    // message service
+    const {
+      notifyUpdateItemSuccess,
+      notifyUpdateItemError,
+    } = appMessageService.useCRUDMessage();
+    // subscription service for clearing subscription
+    const [subscription] = commonService.useSubscription();
 
     const isDetail = useMemo(
       () => (typeof id.toString().match(/^[0-9]+$/) ? true : false), // check if id is number
       [id],
     );
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const [
       model,
       handleChangeSimpleField,
       handleChangeObjectField,
       handleUpdateNewModel, // alternate for setModel
+      handleChangeTreeObjectField,
+      dispatch,
     ] = formService.useDetailForm<T>(ModelClass, parseInt(id), getDetail);
+
+    const handleSave = useCallback(
+      (onSaveSuccess?: (item: T) => void, onSaveError?: (item: T) => void) => {
+        return () => {
+          setLoading(true);
+          subscription.add(
+            saveModel(model)
+              .pipe(finalize(() => setLoading(false)))
+              .subscribe(
+                (item: T) => {
+                  handleUpdateNewModel(item); // setModel
+                  handleGoBase(); // go master
+                  notifyUpdateItemSuccess(); // global message service go here
+                  if (typeof onSaveSuccess === "function") {
+                    onSaveSuccess(item); // trigger custom effect when updating success
+                  }
+                },
+                (error: AxiosError<T>) => {
+                  if (error.response && error.response.status === 400) {
+                    handleUpdateNewModel(error.response?.data); // setModel for catching error
+                  }
+                  notifyUpdateItemError(); // global message service go here
+                  if (typeof onSaveError === "function") {
+                    onSaveError(error.response?.data); // trigger custom effect when updating success
+                  }
+                },
+              ),
+          );
+        };
+      },
+      [
+        handleGoBase,
+        handleUpdateNewModel,
+        model,
+        notifyUpdateItemError,
+        notifyUpdateItemSuccess,
+        saveModel,
+        subscription,
+      ],
+    );
 
     return {
       model,
@@ -71,6 +139,10 @@ export class DetailService {
       handleChangeSimpleField,
       handleChangeObjectField,
       handleUpdateNewModel,
+      handleChangeTreeObjectField,
+      loading,
+      handleSave,
+      dispatch,
     };
   }
 }

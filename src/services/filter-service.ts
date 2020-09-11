@@ -2,8 +2,11 @@ import moment from "moment";
 import queryString from "query-string";
 import { useMemo, useCallback } from "react";
 import { useHistory, useLocation } from "react-router";
-import { DEFAULT_TAKE, STANDARD_DATE_TIME_FORMAT } from "react3l/config";
-import { ModelFilter } from "react3l/core";
+import {
+  DEFAULT_TAKE,
+  STANDARD_DATE_TIME_FORMAT,
+} from "@react3l/react3l/config";
+import { ModelFilter } from "@react3l/react3l/core";
 import { isDateTimeValue } from "helpers/date-time";
 import { unflatten, flatten } from "helpers/json";
 

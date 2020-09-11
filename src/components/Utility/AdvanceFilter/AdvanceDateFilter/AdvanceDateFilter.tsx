@@ -1,15 +1,17 @@
-import React from 'react';
-import './AdvanceDateFilter.scss';
-import { DatePicker } from 'antd';
-import { DatePickerProps } from 'antd/lib/date-picker';
-import { Model } from 'react3l/core';
-import { Moment } from 'moment';
-import { commonWebService } from 'services/CommonWebService';
+import React from "react";
+import "./AdvanceDateFilter.scss";
+import { DatePicker } from "antd";
+import { DatePickerProps } from "antd/lib/date-picker";
+import { Model } from "@react3l/react3l/core";
+import { Moment } from "moment";
+import { commonWebService } from "services/CommonWebService";
 
-function SuffixDateIcon () {
-  return <span className="advance-filter-date__icon">
-    <i className="tio-calendar"></i>
-  </span>;
+function SuffixDateIcon() {
+  return (
+    <span className='advance-filter-date__icon'>
+      <i className='tio-calendar'></i>
+    </span>
+  );
 }
 
 interface AdvanceFilterDateProps<T extends Model> {
@@ -18,45 +20,53 @@ interface AdvanceFilterDateProps<T extends Model> {
   onChange?: (value: Moment | [Moment, Moment], dateString?: string) => void;
 }
 
-function AdvanceFilterDate(props: AdvanceFilterDateProps<Model> & DatePickerProps) { 
-  const {
-    value,
-    dateFormat,
-    onChange,
-  } = props;
+function AdvanceFilterDate(
+  props: AdvanceFilterDateProps<Model> & DatePickerProps,
+) {
+  const { value, dateFormat, onChange } = props;
 
   const dateRef = React.useRef<any>();
 
   const internalValue = React.useMemo(() => {
-    return typeof value === 'string' ? commonWebService.toMomentDate(value) : value;
+    return typeof value === "string"
+      ? commonWebService.toMomentDate(value)
+      : value;
   }, [value]);
 
-  const handleClearDate = React.useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    event.stopPropagation();
-    onChange(null);
-  }, [onChange]);
+  const handleClearDate = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      event.stopPropagation();
+      onChange(null);
+    },
+    [onChange],
+  );
 
   return (
-    <div className="advance-filter-date__container">
-      <DatePicker {...props}
+    <div className='advance-filter-date__container'>
+      <DatePicker
+        {...props}
         value={internalValue}
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
         ref={dateRef}
         allowClear={false}
         format={dateFormat}
-        suffixIcon={<SuffixDateIcon />}/>
-        { value &&
-          <span className="advance-filter-date__icon-wrapper">
-              <i className="advance-filter-date__icon-clear tio-clear" onClick={handleClearDate}></i>
-          </span> 
-        }
+        suffixIcon={<SuffixDateIcon />}
+      />
+      {value && (
+        <span className='advance-filter-date__icon-wrapper'>
+          <i
+            className='advance-filter-date__icon-clear tio-clear'
+            onClick={handleClearDate}
+          ></i>
+        </span>
+      )}
     </div>
   );
 }
 
 AdvanceFilterDate.defaultProps = {
   isMaterial: false,
-  dateFormat: ['DD/MM/YYYY', 'YYYY/MM/DD'],
+  dateFormat: ["DD/MM/YYYY", "YYYY/MM/DD"],
 };
 
 export default AdvanceFilterDate;

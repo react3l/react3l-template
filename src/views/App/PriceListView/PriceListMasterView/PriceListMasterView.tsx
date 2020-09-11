@@ -1,66 +1,48 @@
+import React, { useMemo } from "react";
+import { Moment } from "moment";
 import { Col, Row, Tooltip } from "antd";
 import Card from "antd/lib/card";
 import Table, { ColumnProps } from "antd/lib/table";
+import classNames from "classnames";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 import InputSearch from "components/Utility/InputSearch/InputSearch";
 import Pagination from "components/Utility/Pagination/Pagination";
-import { PRICE_LIST_ROUTE_PREFIX } from "config/route-consts";
 import { renderMasterIndex } from "helpers/table";
 import { PriceList, PriceListFilter } from "models/PriceList";
 import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
-import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
-import { queryStringService } from "services/QueryStringService";
-import { routerService } from "services/RouterService";
-import tableService from "services/tbl-service";
-import classNames from "classnames";
+import masterService from "services/pages/master-service";
 import nameof from "ts-nameof.macro";
+import { IdFilter, StringFilter } from "@react3l/advanced-filters";
+import { formatDateTime } from "helpers/date-time";
 
 function PriceListMasterView() {
   const [translate] = useTranslation();
-
-  // start master service
-  const [handleGoCreate, handleGoDetail] = routerService.useMasterNavigation(
-    PRICE_LIST_ROUTE_PREFIX,
-  );
-
-  const [toggle, setToggle] = React.useState<boolean>(false);
-
-  const handleToggleSearch = React.useCallback(() => {
-    const toggleTmp = !toggle;
-    setToggle(toggleTmp);
-  }, [toggle, setToggle]);
-
-  const [
-    filter,
-    setFilter,
-    ,
-    handleChangeFilter,
-    ,
-    handlePagination,
-    handleResetFilter,
-  ] = queryStringService.useQueryString<PriceList, PriceListFilter>(
-    PriceListFilter,
-  );
-  // end master service
-
-  // const { filter, setFilter } = filterService.useUrlQuery(PriceListFilter);
 
   const {
     list,
     total,
     loadingList,
-    pagination,
-    handleChange,
-    handleServerDelete,
-    // handleServerBulkDelete,
-    rowSelection,
-  } = tableService.useTable<PriceList, PriceListFilter>(
     filter,
-    setFilter,
+    toggle,
+    handleChangeFilter,
+    handleResetFilter,
+    handleGoCreate,
+    handleGoDetail,
+    handleToggleSearch,
+    handleTableChange,
+    handlePagination,
+    handleServerDelete,
+    handleServerBulkDelete,
+    rowSelection,
+    canBulkDelete,
+    handleSearch, // pass as argument of any handleFilter method
+    pagination, // optional using
+  } = masterService.useMaster<PriceList, PriceListFilter>(
+    PriceListFilter,
     priceListRepository.list,
     priceListRepository.count,
     priceListRepository.delete,
@@ -70,23 +52,49 @@ function PriceListMasterView() {
   const columns: ColumnProps<PriceList>[] = useMemo(
     () => [
       {
-        title: "STT",
+        title: translate("general.columns.index"),
         key: "index",
         width: 100,
         render: renderMasterIndex<PriceList>(pagination),
       },
       {
-        title: "code",
-        key: "code",
-        dataIndex: "code",
-        render(...[code]) {
-          return <div className='display-code'>{code}</div>;
+        title: translate("priceList.code"),
+        key: nameof(list[0].code),
+        dataIndex: nameof(list[0].code),
+      },
+      {
+        title: translate("priceList.name"),
+        key: nameof(list[0].name),
+        dataIndex: nameof(list[0].name),
+      },
+      {
+        title: (
+          <div className='text-center'>{translate("priceList.updatedAt")}</div>
+        ),
+        key: nameof(list[0].updatedAt),
+        dataIndex: nameof(list[0].updatedAt),
+        render(...params: [Moment, PriceList, number]) {
+          return <div className='text-center'>{formatDateTime(params[0])}</div>;
         },
       },
       {
-        title: "action",
+        title: (
+          <div className='text-center'>{translate("priceList.status")}</div>
+        ),
+        key: nameof(list[0].statusId),
+        dataIndex: nameof(list[0].statusId),
+        render(...params: [number, PriceList, number]) {
+          return (
+            <div className={params[0] === 1 ? "active" : ""}>
+              <i className='tio-checkmark_circle d-flex justify-content-center'></i>
+            </div>
+          );
+        },
+      },
+      {
+        title: translate("general.actions.label"),
         key: "action",
-        dataIndex: "id",
+        dataIndex: nameof(list[0].id),
         width: 200,
         align: "center",
         render(id: number, priceList: PriceList) {
@@ -121,7 +129,7 @@ function PriceListMasterView() {
       },
     ],
 
-    [handleGoDetail, handleServerDelete, pagination, translate],
+    [handleGoDetail, handleServerDelete, list, pagination, translate],
   );
 
   return (
@@ -157,9 +165,14 @@ function PriceListMasterView() {
                   {translate("general.priceList.code")}
                 </label>
                 <AdvanceStringFilter
-                  value={filter["code"]["startWith"]}
-                  onChange={handleChangeFilter("code", "startWith")}
-                  placeHolder={translate("general.filter.idFilter")} // -> tat ca
+                  value={filter[nameof(list[0].code)]["contain"]}
+                  onChange={handleChangeFilter(
+                    nameof(list[0].code),
+                    "contain" as any,
+                    StringFilter,
+                    handleSearch,
+                  )}
+                  placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
               </div>
             </Col>
@@ -169,9 +182,14 @@ function PriceListMasterView() {
                   {translate("general.priceList.name")}
                 </label>
                 <AdvanceStringFilter
-                  value={filter["name"]["startWith"]}
-                  onChange={handleChangeFilter("name", "startWith")}
-                  placeHolder={translate("general.filter.idFilter")} // -> tat ca
+                  value={filter[nameof(list[0].name)]["contain"]}
+                  onChange={handleChangeFilter(
+                    nameof(list[0].name),
+                    "contain" as any,
+                    StringFilter,
+                    handleSearch,
+                  )}
+                  placeHolder={translate("priceList.filter.name")} // -> tat ca
                 />
               </div>
             </Col>
@@ -189,7 +207,10 @@ function PriceListMasterView() {
                   <div className='tio-down_ui' />
                 </button>
                 <div className='d-flex justify-content-between'>
-                  <button className='btn btn-info' onClick={handleResetFilter}>
+                  <button
+                    className='btn btn-info'
+                    onClick={handleResetFilter(handleSearch)}
+                  >
                     ResetFilter
                   </button>
                 </div>
@@ -207,9 +228,16 @@ function PriceListMasterView() {
                     {translate("priceList.status")}
                   </label>
                   <AdvanceIdFilter
+                    value={filter[nameof(list[0].statusId)]["equal"]}
+                    onChange={handleChangeFilter(
+                      nameof(list[0].statusId),
+                      "equal" as any,
+                      IdFilter,
+                      handleSearch,
+                    )}
                     classFilter={PriceListStatusFilter}
                     getList={priceListRepository.filterListStatus}
-                    placeHolder={"Tất cả"}
+                    placeHolder={translate("general.filter.idFilter")}
                   />
                 </Col>
                 <Col lg={4} className='pr-4'>
@@ -217,9 +245,16 @@ function PriceListMasterView() {
                     {translate("priceList.saleOrderType")}
                   </label>
                   <AdvanceIdFilter
+                    value={filter[nameof(list[0].salesOrderTypeId)]["equal"]}
+                    onChange={handleChangeFilter(
+                      nameof(list[0].salesOrderTypeId),
+                      "equal" as any,
+                      IdFilter,
+                      handleSearch,
+                    )}
                     classFilter={SalesOrderTypeFilter}
                     getList={priceListRepository.filterListSalesOrderType}
-                    placeHolder={"Tất cả"}
+                    placeHolder={translate("general.filter.idFilter")}
                   />
                 </Col>
               </Row>
@@ -238,34 +273,40 @@ function PriceListMasterView() {
             pagination={false}
             dataSource={list}
             loading={loadingList}
-            onChange={handleChange}
+            onChange={handleTableChange}
             rowSelection={rowSelection}
             title={() => (
               <>
                 <div className='d-flex justify-content-between'>
                   <div className='flex-shrink-1 d-flex align-items-center'>
                     <div className='table-title ml-2'>
-                      {translate("province.table.title")}
+                      {translate("priceLists.table.title")}
                     </div>
                   </div>
 
                   <div className='flex-shrink-1 d-flex align-items-center'>
-                    <Tooltip title={translate("Xóa tất cả")}>
-                      <button className='btn component__btn-delete'>
+                    <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
+                      <button
+                        className='btn component__btn-delete'
+                        onClick={handleServerBulkDelete} // local bulk Delete onChange
+                        disabled={!canBulkDelete} // disabled when selectedList length === 0
+                      >
                         <i className='tio-delete' />
                       </button>
                     </Tooltip>
-                    <Tooltip title={translate("Nhập excel")}>
+                    <Tooltip title={translate("general.actions.importExcel")}>
                       <button className='btn gradient-btn-icon'>
                         <i className='tio-file_add_outlined ' />
                       </button>
                     </Tooltip>
-                    <Tooltip title={translate("Xuất excel")}>
+                    <Tooltip title={translate("general.actions.exportExcel")}>
                       <button className='btn gradient-btn-icon'>
                         <i className='tio-file_outlined' />
                       </button>
                     </Tooltip>
-                    <Tooltip title={translate("Tải file mẫu")}>
+                    <Tooltip
+                      title={translate("general.actions.downloadTemplate")}
+                    >
                       <button className='btn gradient-btn-icon'>
                         <i className='tio-download_to' />
                       </button>

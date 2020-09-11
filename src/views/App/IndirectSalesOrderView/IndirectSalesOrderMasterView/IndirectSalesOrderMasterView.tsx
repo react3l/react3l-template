@@ -1,19 +1,18 @@
-import React from "react";
-import { ModelFilter, Model } from "react3l/core";
-import { StringFilter } from "react3l-advanced-filters/StringFilter";
-import { NumberFilter } from "react3l-advanced-filters/NumberFilter";
-import { queryStringService } from "services/QueryStringService";
-import { advanceFilterService } from "services/AdvanceFilterService";
-import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
-import AdvanceNumberFilter from "components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter";
-import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
+import { DateFilter } from "@react3l/advanced-filters/DateFilter";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
+import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import AdvanceDateFilter from "components/Utility/AdvanceFilter/AdvanceDateFilter/AdvanceDateFilter";
-import { Observable } from "rxjs";
-import { IdFilter } from "react3l-advanced-filters/IdFilter";
-import { DateFilter } from "react3l-advanced-filters/DateFilter";
 import AdvanceDateRangeFilter from "components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter";
+import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
+import AdvanceNumberFilter from "components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter";
 import AdvanceNumberRangeFilter from "components/Utility/AdvanceFilter/AdvanceNumberRangeFilter/AdvanceNumberRangeFilter";
-import Pagination from "components/Utility/Pagination/Pagination";
+import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
+import React from "react";
+import { Observable } from "rxjs";
+import { advanceFilterService } from "services/AdvanceFilterService";
+import { queryStringService } from "services/QueryStringService";
 
 class DemoFilter extends ModelFilter {
   id: IdFilter = new IdFilter();
@@ -48,40 +47,32 @@ const demoSearchFunc = (TModelFilter: ModelFilter) => {
 };
 
 function IndirectSalesOrderMasterView() {
-  const [
+  const [filter, dispatch] = queryStringService.useQueryString<DemoFilter>(
+    DemoFilter,
+  );
+
+  const [, , , , ,] = advanceFilterService.useFilter<DemoFilter>(
     filter,
-    ,
     dispatch,
-    handleChangeFilter,
-    ,
-    handlePagination,
-    handleResetFilter,
-  ] = queryStringService.useQueryString<Model, DemoFilter>(DemoFilter);
+    DemoFilter,
+  );
 
-  const [
-    ,
-    ,
-    ,
-    ,
-    ,
-  ] = advanceFilterService.useFilter<DemoFilter>(filter, dispatch, DemoFilter);
-
-  const [valueString, setValueString] = advanceFilterService.useAdvaceFilter<
+  const [valueString, setValueString] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     StringFilter
   >(filter, dispatch, "name", "startWith", StringFilter);
 
-  const [valueNumber, setValueNumber] = advanceFilterService.useAdvaceFilter<
+  const [valueNumber, setValueNumber] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     NumberFilter
   >(filter, dispatch, "number", "equal", NumberFilter);
 
-  const [valueId, setValueId] = advanceFilterService.useAdvaceFilter<
+  const [valueId, setValueId] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     IdFilter
   >(filter, dispatch, "id", "equal", IdFilter);
 
-  const [valueDate, setValueDate] = advanceFilterService.useAdvaceFilter<
+  const [valueDate, setValueDate] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     DateFilter
   >(filter, dispatch, "date", "equal", DateFilter);
@@ -114,13 +105,13 @@ function IndirectSalesOrderMasterView() {
         />
       </div>
 
-      <div style={{ marginTop: "10px", width: "220px" }}>
+      {/* <div style={{ marginTop: "10px", width: "220px" }}>
         <AdvanceStringFilter
           value={filter["name"]["startWith"]}
           onChange={handleChangeFilter("name", "startWith")}
           placeHolder={"Enter text..."}
         />
-      </div>
+      </div> */}
 
       <div style={{ marginTop: "10px", width: "220px" }}>
         <AdvanceNumberFilter
@@ -161,18 +152,16 @@ function IndirectSalesOrderMasterView() {
         />
       </div>
 
-      <div style={{ marginTop: "10px" }}>
+      {/* <div style={{ marginTop: "10px" }}>
         <Pagination
           skip={filter.skip}
           take={filter.take}
           onChange={handlePagination}
         />
-      </div>
+      </div> */}
 
       <div style={{ marginTop: "10px" }}>
-        <button className='btn btn-info' onClick={handleResetFilter}>
-          ResetFilter
-        </button>
+        <button className='btn btn-info'>ResetFilter</button>
       </div>
     </>
   );

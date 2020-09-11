@@ -1,16 +1,19 @@
 import React from "react";
-import { Col, Row, Switch, Tabs, Card } from "antd";
-import { useTranslation } from "react-i18next";
-import { priceListRepository } from "repositories/price-list-repository";
-import { PriceList } from "models/PriceList";
-import detailService from "services/pages/detail-service";
+import { Card, Col, Row, Switch, Tabs } from "antd";
+import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
+import FormItem from "components/Utility/FormItem/FormItem";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
+import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import { OrganizationFilter } from "models/OrganizationFilter";
-import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
+import { PriceList } from "models/PriceList";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
+import { useTranslation } from "react-i18next";
+import { priceListRepository } from "repositories/price-list-repository";
+import { formService } from "services/FormService";
+import detailService from "services/pages/detail-service";
 import nameof from "ts-nameof.macro";
-import FormItem from "components/Utility/FormItem/FormItem";
+import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable";
 
 const { TabPane } = Tabs;
 
@@ -18,10 +21,27 @@ function PriceListDetailView() {
   const [translate] = useTranslation();
   const {
     model,
+    handleUpdateNewModel, // expose dispatch to update model
     isDetail,
     handleChangeSimpleField,
+    handleChangeTreeObjectField,
     handleChangeObjectField,
-  } = detailService.useDetail<PriceList>(PriceList, priceListRepository.get);
+    handleSave,
+  } = detailService.useDetail<PriceList>(
+    PriceList,
+    priceListRepository.get,
+    priceListRepository.save,
+  );
+
+  const {
+    content: storeMappingContents,
+    setContent: setStoreMappingContents,
+  } = detailService.useContentList(
+    model,
+    handleUpdateNewModel, // update content has sideEffect update model
+    nameof(model.priceListStoreMappings),
+  );
+
   return (
     <div className='page page__detail'>
       {/* start detail header */}
@@ -59,7 +79,14 @@ function PriceListDetailView() {
                       </FormItem>
                     </Col>
                     <Col lg={6} className='pr-3'>
-                      <FormItem label={translate("priceList.name")}>
+                      <FormItem
+                        label={translate("priceList.name")}
+                        validateStatus={formService.getValidationStatus(
+                          model?.errors,
+                          "name",
+                        )}
+                        message={model?.errors?.name}
+                      >
                         <InputText
                           isMaterial={true}
                           value={model.name}
@@ -71,15 +98,20 @@ function PriceListDetailView() {
                     </Col>
                     <Col lg={6} className='pr-3'>
                       <FormItem label={translate("priceList.organzation")}>
-                        <Select
-                          classFilter={OrganizationFilter}
-                          placeHolder={translate(
-                            "priceList.placeholder.organzation",
-                          )}
-                          onChange={handleChangeObjectField(
-                            nameof(model.organzation),
-                          )}
+                        <TreeSelect
                           isMaterial={true}
+                          placeHolder={"Select Organization"}
+                          selectable={true}
+                          classFilter={OrganizationFilter}
+                          onChange={handleChangeTreeObjectField(
+                            nameof(model.organization),
+                          )} // handleChange Tree
+                          checkStrictly={true}
+                          getTreeData={
+                            priceListRepository.singleListOrganization
+                          }
+                          item={model.organization}
+                          // listItem={listItem}
                         />
                       </FormItem>
                     </Col>
@@ -90,6 +122,11 @@ function PriceListDetailView() {
                           placeHolder={translate(
                             "priceList.placeholder.saleOrderType",
                           )}
+                          getList={priceListRepository.singleListSalesOrderType}
+                          onChange={handleChangeObjectField(
+                            nameof(model.saleOrderType),
+                          )} // handleChange Object Field
+                          model={model.saleOrderType}
                           isMaterial={true}
                         />
                       </FormItem>
@@ -100,6 +137,9 @@ function PriceListDetailView() {
                       <FormItem label={translate("priceList.startDate")}>
                         <DatePicker
                           value={model.startDate}
+                          onChange={handleChangeSimpleField(
+                            nameof(model.startDate),
+                          )} // handleChange Date
                           isMaterial={true}
                           placeholder={translate(
                             "priceList.placeholder.startDate",
@@ -108,17 +148,29 @@ function PriceListDetailView() {
                       </FormItem>
                     </Col>
                     <Col lg={6}>
-                      <FormItem label={translate("priceList.endDate")}>
+                      <FormItem
+                        label={translate("priceList.endDate")}
+                        validateStatus={formService.getValidationStatus(
+                          model?.errors,
+                          nameof(model.endDate),
+                        )}
+                      >
                         <DatePicker
                           value={model.endDate}
+                          onChange={handleChangeSimpleField(
+                            nameof(model.endDate),
+                          )} // handleChange Date
                           isMaterial={true}
-                          placeholder={translate("priceList.placeholder.endDate")}
+                          placeholder={translate(
+                            "priceList.placeholder.endDate",
+                          )}
                         />
                       </FormItem>
                     </Col>
                     <Col lg={6}>
+                      {/*  */}
                       <label className='label-detail input-select__title'>
-                        {translate("priceList.organzation")}
+                        {translate("priceList.status")}
                       </label>
                       <Switch
                         size='small'
@@ -136,8 +188,80 @@ function PriceListDetailView() {
         </Row>
       </div>
       {/* end general information */}
+      {/* start dependent lists*/}
+      <div className='w-100 mt-3 page__detail-tabs'>
+        <Row className='d-flex'>
+          <Col lg={18}>
+            <Card className='mr-3'>
+              <Tabs defaultActiveKey='1'>
+                <TabPane
+                  tab={translate("priceList.priceListStoreMappings")}
+                  key='1'
+                >
+                  <Row>
+                    <PriceListStoreMappingsTable
+                      model={model}
+                      content={storeMappingContents}
+                      setContent={setStoreMappingContents}
+                      mapperField={nameof(
+                        model.priceListStoreMappings[0].store,
+                      )}
+                    />
+                  </Row>
+                </TabPane>
+                <TabPane
+                  tab={translate("priceList.priceListItemMappings")}
+                  key='2'
+                >
+                  <Row></Row>
+                </TabPane>
+              </Tabs>
+            </Card>
+          </Col>
+        </Row>
+        {/* end dependent lists */}
+        {/* start save action */}
+        <Row className='mt-3 mb-5'>
+          <button
+            className='btn component__btn-primary pr-4 mb-5'
+            onClick={handleSave()}
+          >
+            {translate("priceList.actions.saveModel")}
+          </button>
+        </Row>
+        {/* end save action */}
+      </div>
     </div>
   );
 }
 
 export default PriceListDetailView;
+
+// const priceListStoreMappingsColumnData: ColumnData[] = useMemo(
+//   () => [
+//     {
+//       title: translate("general.columns.index"),
+//       children: [
+//         {
+//           title: "",
+//           key: "index",
+//         },
+//       ],
+//     },
+//     {
+//       title: translate("priceLists.store.code"),
+//       children: [
+//         {
+//           renderTitle: advanceFilterFactory.renderStringFilter(
+//             filter["storeCode"]["contain"],
+//             handleFilter("storeCode", "contain"),
+//             translate("priceLists.store.code"),
+//           ),
+//           key: "name",
+//           dataIndex: "store",
+//         },
+//       ],
+//     },
+//   ],
+//   [filter, handleFilter, translate],
+// );

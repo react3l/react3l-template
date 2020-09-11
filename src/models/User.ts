@@ -1,7 +1,7 @@
-import {District} from 'models/District';
-import {Province} from 'models/Province';
-import {Moment} from 'moment';
-import {Model, RegisteredModel} from 'react3l/core';
+import { District } from "models/District";
+import { Province } from "models/Province";
+import { Moment } from "moment";
+import { Model, RegisteredModel } from "@react3l/react3l/core";
 
 @RegisteredModel()
 export class User extends Model {

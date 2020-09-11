@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 import React from "react";
-import { Model } from "react3l/core";
+import { Model } from "@react3l/react3l/core";
 import { TreeNode } from "models/TreeNode";
 import { Moment } from "moment";
 import moment from "moment";

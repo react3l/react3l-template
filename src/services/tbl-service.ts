@@ -1,14 +1,122 @@
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Modal } from "antd";
 import { PaginationProps } from "antd/lib/pagination";
-import { RowSelectionType, SortOrder } from "antd/lib/table/interface";
-import { DEFAULT_TAKE } from "react3l/config";
-import Model from "core/models/Model";
-import listService from "services/list-service";
-import { useCallback, useMemo, useState, Dispatch } from "react";
-import { ModelFilter } from "react3l/core";
+import {
+  RowSelectionType,
+  SortOrder,
+  TableRowSelection,
+} from "antd/lib/table/interface";
+import {
+  Reducer,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import { Observable } from "rxjs";
+import listService from "services/list-service";
 
 type KeyType = string | number;
+
+export interface ModalState {
+  visible?: boolean;
+  loadControl?: boolean;
+}
+
+export interface ModalAction {
+  type: ModalActionEnum;
+}
+
+export interface ContentTableState<
+  TMapping extends Model,
+  TMapper extends Model = any
+> {
+  mappingList?: TMapping[]; // for content table
+  mapperList?: TMapper[]; // for content modal table
+}
+
+export interface ContentTableAction<
+  TMapping extends Model,
+  TMapper extends Model = any
+> {
+  type: ContentTableActionEnum;
+  listName?: string;
+  mappingList?: TMapping[];
+  mapperList?: TMapper[];
+  data?: any[];
+}
+
+export enum ModalActionEnum {
+  OPEN_MODAL,
+  CLOSE_MODAL,
+  END_LOAD_CONTROL,
+  INIT_SEARCH,
+}
+
+export enum ContentTableActionEnum {
+  SET_LIST_SELECTION,
+  SINGLE_DELETE,
+  BULK_DELETE,
+}
+
+function modalTableReducer(state: ModalState, action: ModalAction) {
+  switch (action.type) {
+    case ModalActionEnum.OPEN_MODAL: {
+      return {
+        ...state,
+        visible: true,
+        loadControl: true,
+      };
+    }
+    case ModalActionEnum.CLOSE_MODAL: {
+      return {
+        ...state,
+        visible: false,
+        loadControl: false,
+      };
+    }
+    case ModalActionEnum.END_LOAD_CONTROL: {
+      return {
+        ...state,
+        loadControl: false,
+      };
+    }
+    case ModalActionEnum.INIT_SEARCH: {
+      return {
+        ...state,
+        loadControl: true,
+      };
+    }
+  }
+}
+
+function contentTableReducer<TMapping extends Model, TMapper extends Model>(
+  state: ContentTableState<TMapping, TMapper>,
+  action: ContentTableAction<TMapping, TMapper>,
+) {
+  switch (action.type) {
+    case ContentTableActionEnum.SINGLE_DELETE: {
+      return {
+        ...state,
+        mappingList: action.mappingList,
+      };
+    }
+    case ContentTableActionEnum.BULK_DELETE: {
+      return {
+        ...state,
+        mappingList: [],
+      };
+    }
+    case ContentTableActionEnum.SET_LIST_SELECTION: {
+      return {
+        ...state,
+        [action.listName]: action.data,
+      };
+    }
+  }
+}
 
 /* services to CRUD, import, export data in table */
 export class TableService {
@@ -24,8 +132,12 @@ export class TableService {
     derivedRowKeys?: KeyType[], // default rowKeys
   ) {
     const [selectedRowKeys, setSelectedRowKeys] = useState<KeyType[]>(
-      derivedRowKeys,
+      derivedRowKeys ?? [],
     );
+
+    const canBulkDelete = useMemo(() => selectedRowKeys.length > 0, [
+      selectedRowKeys.length,
+    ]); // decide when we can enable bulkDelete
 
     return {
       rowSelection: useMemo(
@@ -40,8 +152,93 @@ export class TableService {
       ),
       selectedRowKeys,
       setSelectedRowKeys,
+      canBulkDelete,
     };
   }
+  /**
+   *
+   * return rowSelection of contentList, contentModal
+   * @param: selectedList, setSelectedList, isDisable
+   * @return: { rowSelection, selectedRowKeys, setSelectedRowKeys }
+   *
+   * */
+  useContentRowSelection<T extends Model>(
+    selectedList: T[],
+    setSelectedList: (t: T[]) => void,
+    disabled: boolean = false,
+    selectionType: RowSelectionType = "checkbox",
+  ): {
+    rowSelection: TableRowSelection<T>;
+    canBulkDelete: boolean;
+  } {
+    const selectedRowKeys: KeyType[] = useMemo(
+      () => selectedList.map((t: T) => (t.id ? t.id : t.key)),
+      [selectedList],
+    ); // selectedRowKeys accept both string and number for local and server table
+
+    const canBulkDelete = useMemo(() => selectedRowKeys.length > 0, [
+      selectedRowKeys.length,
+    ]); // decide when we can enable bulkDelete
+
+    return {
+      rowSelection: useMemo(
+        () => ({
+          onSelect: (record: T, selected: boolean) => {
+            if (selected) {
+              selectedList.push(record);
+              setSelectedList([...selectedList]);
+            } else {
+              setSelectedList(
+                selectedList.filter((t: T) => {
+                  return t.id ? t.id !== record.id : t.key !== record.key;
+                }),
+              );
+            }
+          }, // single selection
+          onChange: (...[selectedRowKeys, selectedRows]) => {
+            // if list empty, add all selectedRows to list
+            if (selectedList?.length === 0) {
+              setSelectedList([...selectedRows]);
+              return;
+            }
+            // create mapper from filter
+            const mapper: Record<any, number> = {};
+            selectedRowKeys.forEach((key: string | number, index: number) => {
+              mapper[key] = index;
+            });
+            // filter List which contained in mapper
+            const mergeList = [...selectedList, ...selectedRows]; // merge old list with new selectedRows
+            const filterList = mergeList
+              .filter(
+                (item, index) =>
+                  mergeList
+                    .map((i) => (i.id ? i.id : i.key))
+                    .indexOf(item.id ? item.id : item.key) === index,
+              ) // remove duplicates item
+              .filter((item) => {
+                const key = typeof item.id !== "undefined" ? item.id : item.key;
+                return mapper.hasOwnProperty(key);
+              }); // filter item which its key contained in selectedRowKeys
+            setSelectedList([...filterList]);
+          }, // multi selection
+          getCheckboxProps: () => ({
+            disabled,
+          }), // pass external control for disabling selection
+          type: selectionType, // selection type
+          selectedRowKeys, // selectedRowKey
+        }),
+        [
+          disabled,
+          selectedList,
+          selectedRowKeys,
+          selectionType,
+          setSelectedList,
+        ],
+      ),
+      canBulkDelete,
+    };
+  }
+
   /**
    *
    * return pagination
@@ -73,8 +270,9 @@ export class TableService {
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
     pagination: PaginationProps,
+    handleSearch?: () => void,
   ) {
-    return useCallback(
+    const handleTableChange = useCallback(
       (...[newPagination, , sorter]) => {
         // check pagination change or not
         if (
@@ -91,91 +289,34 @@ export class TableService {
         // check sortOrder and sortDirection
         if (
           sorter.field !== filter.orderBy ||
-          sorter.order !== this.getAntOrderType(filter, sorter.field)
+          sorter.order !== getAntOrderType(filter, sorter.field)
         ) {
           setFilter({
             ...filter,
             orderBy: sorter.field,
-            orderType: this.getOrderType(sorter.order),
+            orderType: getOrderType(sorter.order),
           });
         }
-      },
-      [filter, pagination, setFilter],
-    );
-  }
-  /**
-   *
-   * return handleLocalDelete, handleLocalBulkDelete
-   * @param:
-   * @return: {handleLocalDelete, handleLocalBulkDelete}
-   *
-   * */
-  useDelete<T extends Model, TFilter extends ModelFilter>(
-    filter: TFilter,
-    setFilter: (filter: TFilter) => void,
-    selectedRowKeys: KeyType[],
-    setSelectedRowKeys: Dispatch<React.SetStateAction<KeyType[]>>,
-    source?: T[],
-    setSource?: (source: T[]) => void,
-  ) {
-    // handleDelete, filter one item by its key and update source
-    const handleLocalDelete = useCallback(
-      (key: KeyType) => {
-        // delete local item
-        if (source?.length > 0) {
-          if (typeof setSource === "function") {
-            setSource(source.filter((item) => item.key !== key)); // remove one item in source by key and update source
-          }
-          setSelectedRowKeys(
-            (selectedRowKeys as string[]).filter((item) => item !== key), // filter selectedRowKeys
-          );
-          setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE });
-          return;
+        if (typeof handleSearch === "function") {
+          handleSearch();
         }
       },
-      [
-        source,
-        setSource,
-        setSelectedRowKeys,
-        selectedRowKeys,
-        setFilter,
-        filter,
-      ],
+      [filter, pagination, setFilter, handleSearch],
     );
 
-    // delete local by key
-    const handleLocalBulkDelete = useCallback(() => {
-      // delete local list
-      if (source?.length > 0) {
-        Modal.confirm({
-          title: "ban co chac muon xoa thao tac",
-          content: "thao tac khong the khoi phuc",
-          okType: "danger",
-          onOk() {
-            if (typeof setSource === "function") {
-              setSource(
-                source.filter(
-                  (item) => !(selectedRowKeys as string[]).includes(item.key), // rowSelection serve either server table or local table, so we should cast selectedRowKeys as string[]
-                ),
-              ); // remove many items in source by key and update source
-            }
-            setSelectedRowKeys([]); // empty selectedRowKeys for disabling button
-            setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE });
-            return;
-          },
-        });
-      }
-    }, [
-      source,
-      setFilter,
-      filter,
-      setSource,
-      setSelectedRowKeys,
-      selectedRowKeys,
-    ]);
+    const handlePagination = useCallback(
+      (skip: number, take: number) => {
+        setFilter({ ...filter, skip, take });
+        if (typeof handleSearch === "function") {
+          handleSearch();
+        }
+      },
+      [filter, setFilter, handleSearch],
+    );
 
-    return { handleLocalDelete, handleLocalBulkDelete };
+    return { handleTableChange, handlePagination };
   }
+
   /**
    *
    * expose data and event handler for master table service
@@ -201,7 +342,8 @@ export class TableService {
     bulkDeleteItems?: (t: KeyType[]) => Observable<void>,
     onUpdateListSuccess?: (item?: T) => void,
     checkBoxType?: RowSelectionType,
-    isLoadControl?: boolean, // optional control for modal preLoading
+    isLoadControl?: boolean | undefined, // optional control for modal preLoading
+    endLoadControl?: () => void, // end external control
     derivedRowKeys?: KeyType[],
   ) {
     // selectedRowKeys
@@ -209,6 +351,7 @@ export class TableService {
       rowSelection,
       selectedRowKeys,
       setSelectedRowKeys,
+      canBulkDelete,
     } = this.useRowSelection(checkBoxType, derivedRowKeys);
 
     // from filter and source we calculate dataSource, total and loadingList
@@ -218,6 +361,7 @@ export class TableService {
       loadingList,
       handleDelete: handleServerDelete,
       handleBulkDelete: onServerBulkDelete,
+      handleSearch,
     } = listService.useList(
       filter,
       setFilter,
@@ -229,6 +373,7 @@ export class TableService {
       setSelectedRowKeys,
       onUpdateListSuccess,
       isLoadControl,
+      endLoadControl,
     );
 
     // calculate pagination
@@ -238,11 +383,9 @@ export class TableService {
     );
 
     // handleChange page or sorter
-    const handleChange = this.useTableChange<TFilter>(
-      filter,
-      setFilter,
-      pagination,
-    );
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination, handleSearch);
 
     // add confirmation
     const handleServerBulkDelete = useCallback(() => {
@@ -261,10 +404,113 @@ export class TableService {
       total,
       loadingList,
       pagination,
-      handleChange,
+      handleTableChange,
+      handlePagination,
       handleServerDelete,
       handleServerBulkDelete,
       rowSelection,
+      handleSearch,
+      canBulkDelete,
+    };
+  }
+
+  /**
+   *
+   * expose data and event handler for master table service
+   * @param: filter: TFilter
+   * @param: setFilter: (filter: TFilter) => void
+   * @param: getList: (filter: TFilter) => Observable<T[]>
+   * @param: getTotal: (filter: TFilter) => Observable<number>
+   * @param: deleteItem?: (t: T) => Observable<T>
+   * @param: bulkDeleteItems?: (t: number[] | string[]) => Observable<void>,
+   * @param: onUpdateListSuccess?: (item?: T) => void,
+   * @param: checkBoxType?: RowSelectionType,
+   * @param: isLoadControl?: boolean,
+   * @param: derivedRowKeys?: KeyType[],
+   * @return: { list, total, loadingList, pagination, handleChange, handleServerDelete, handleServerBulkDelete, rowSelection }
+   *
+   * */
+  useModalTable<T extends Model, TFilter extends ModelFilter>(
+    filter: TFilter,
+    setFilter: (filter: TFilter) => void, // from TFilter to TFilter
+    getList: (filter: TFilter) => Observable<T[]>,
+    getTotal: (filter: TFilter) => Observable<number>,
+    isLoadControl: boolean | undefined, // optional control for modal preLoading
+    endLoadControl: () => void, // end external control
+    handleSearch: () => void, // trigger loadList
+    mapperList?: T[],
+  ) {
+    // mappingList, mapperList reducer
+    const [{ mapperList: selectedList }, dispatch] = useReducer<
+      Reducer<ContentTableState<T>, ContentTableAction<T>>
+    >(contentTableReducer, {
+      mapperList: mapperList ?? [],
+    });
+    const setSelectedList = useCallback((list: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mapperList",
+        data: list,
+      });
+    }, []);
+
+    // selectedRowKeys
+    const { rowSelection } = this.useContentRowSelection(
+      selectedList,
+      setSelectedList,
+    );
+
+    // define setMapperList alternater for setSelectedList
+    const setMapperList = useCallback((mapperList: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mapperList",
+        data: mapperList, // update mappingList.Eg: selectedContent[]
+      });
+    }, []);
+
+    // update mapperList when source changed
+    useEffect(() => {
+      if (mapperList?.length > 0) {
+        setMapperList(mapperList);
+      }
+    }, [mapperList, setMapperList]);
+
+    // from filter and source we calculate dataSource, total and loadingList
+    const { list, total, loadingList } = listService.useList(
+      filter,
+      setFilter,
+      getList,
+      getTotal,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      isLoadControl,
+      endLoadControl,
+    );
+
+    // calculate pagination
+    const pagination: PaginationProps = this.usePagination<TFilter>(
+      filter,
+      total,
+    );
+
+    // handleChange page or sorter
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination, handleSearch);
+
+    return {
+      list,
+      total,
+      loadingList,
+      pagination,
+      handleTableChange,
+      handlePagination,
+      rowSelection,
+      mapperList,
     };
   }
 
@@ -276,25 +522,42 @@ export class TableService {
    * @return: { list, total, loadingList, pagination, handleChange, handleLocalDelete, handleLocalBulkDelete, rowSelection }
    *
    * */
-  useLocalTable<T extends Model, TFilter extends ModelFilter>(
+  useLocalTable<T extends Model, T2 extends Model, TFilter extends ModelFilter>(
+    total: number,
+    handleSearch: () => void,
     filter: TFilter,
-    // dispatchFilter: Dispatch<AdvanceFilterAction<TFilter, TFilter>>, // from TFilter to TFilter
     setFilter: (filter: TFilter) => void,
     source: T[],
     setSource: (source: T[]) => void,
+    mapperField: string,
   ) {
-    // from filter and source we calculate dataSource, total and loadingList
-    const { list, total, loadingList } = listService.useLocalList(
-      filter,
-      source,
+    // mappingList, mapperList reducer
+    const [{ mappingList }, dispatch] = useReducer<
+      Reducer<ContentTableState<T, T2>, ContentTableAction<T, T2>>
+    >(contentTableReducer, {
+      mappingList: [], // selectedContent
+    });
+
+    // calculate selectedList from updated source
+    const selectedList = useMemo(
+      () => (source.length > 0 ? source.map(mappingToMapper(mapperField)) : []),
+      [mapperField, source],
     );
+
+    // define setMappingList alternater for setSelectedContent
+    const setMappingList = useCallback((mappingList: T[]) => {
+      dispatch({
+        type: ContentTableActionEnum.SET_LIST_SELECTION,
+        listName: "mappingList",
+        data: mappingList, // update mappingList.Eg: selectedContent[]
+      });
+    }, []);
 
     // selectedRowKeys
     const {
       rowSelection,
-      selectedRowKeys,
-      setSelectedRowKeys,
-    } = this.useRowSelection();
+      canBulkDelete, // for UI
+    } = this.useContentRowSelection(mappingList, setMappingList);
 
     // calculate pagination
     const pagination: PaginationProps = this.usePagination<TFilter>(
@@ -303,67 +566,167 @@ export class TableService {
     );
 
     // handleChange page or sorter
-    const handleChange = this.useTableChange<TFilter>(
-      filter,
-      setFilter,
-      pagination,
+    const { handleTableChange, handlePagination } = this.useTableChange<
+      TFilter
+    >(filter, setFilter, pagination, handleSearch);
+
+    // handle single delete
+    const handleLocalDelete = useCallback(
+      (content: T) => {
+        setSource(source.filter(filterContent(content))); // remove one item in source by key and update source
+        dispatch({
+          type: ContentTableActionEnum.SINGLE_DELETE,
+          mappingList: mappingList.filter(filterContent(content)), // for content table
+        });
+        setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
+        handleSearch(); // trigger reLoad list
+      },
+      [filter, handleSearch, mappingList, setFilter, setSource, source],
     );
 
-    const { handleLocalDelete, handleLocalBulkDelete } = this.useDelete<
-      T,
-      TFilter
-    >(
+    //  handle bulk delete
+    const handleLocalBulkDelete = useCallback(() => {
+      Modal.confirm({
+        title: "ban co chac muon xoa thao tac",
+        content: "thao tac khong the khoi phuc",
+        okType: "danger",
+        onOk() {
+          setSource(
+            source.filter(
+              filterContentNotInList(
+                getIdsFromContent(mappingList, `${mapperField}Id`),
+                `${mapperField}Id`,
+              ),
+            ),
+          ); // update source
+          dispatch({
+            type: ContentTableActionEnum.BULK_DELETE,
+          });
+          setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
+          handleSearch(); // trigger reLoad list
+        },
+      });
+    }, [
       filter,
+      handleSearch,
+      mapperField,
+      mappingList,
       setFilter,
-      selectedRowKeys as string[],
-      setSelectedRowKeys,
-      source,
       setSource,
-    );
+      source,
+    ]);
 
     return {
-      list,
-      total,
-      loadingList,
       pagination,
-      handleChange,
+      handleTableChange,
+      handlePagination,
       handleLocalDelete,
       handleLocalBulkDelete,
       rowSelection,
+      canBulkDelete,
+      selectedContent: mappingList,
+      selectedList,
     };
   }
 
-  getAntOrderType<T extends Model, TFilter extends ModelFilter>(
-    tFilter: TFilter,
-    columnName: keyof T,
-  ): SortOrder {
-    if (tFilter.orderBy === columnName) {
-      switch (tFilter.orderType) {
-        case "asc":
-          return "ascend";
+  /**
+   *
+   * control content modal business from open, close, save data from modal
+   * @param:
+   * @return: { visible, loadControl, handleEndControl, handleOpenModal, handleCloseModal }
+   *
+   * */
+  useContenModal() {
+    const [{ visible, loadControl }, dispatch] = useReducer<
+      Reducer<ModalState, ModalAction>
+    >(modalTableReducer, {
+      visible: false,
+      loadControl: false,
+    });
 
-        case "desc":
-          return "descend";
+    const handleOpenModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.OPEN_MODAL });
+    }, []);
 
-        default:
-          return null;
-      }
-    }
-    return null;
+    const handleCloseModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.CLOSE_MODAL });
+    }, []);
+
+    const handleEndControl = useCallback(() => {
+      dispatch({ type: ModalActionEnum.END_LOAD_CONTROL });
+    }, []);
+
+    const handleSearchModal = useCallback(() => {
+      dispatch({ type: ModalActionEnum.INIT_SEARCH });
+    }, []);
+
+    return {
+      visible,
+      loadControl,
+      handleEndControl,
+      handleOpenModal,
+      handleCloseModal,
+      handleSearchModal,
+    };
   }
+}
 
-  getOrderType(sortOrder?: SortOrder) {
-    switch (sortOrder) {
-      case "ascend":
-        return "asc";
+export function getAntOrderType<T extends Model, TFilter extends ModelFilter>(
+  tFilter: TFilter,
+  columnName: keyof T,
+): SortOrder {
+  if (tFilter.orderBy === columnName) {
+    switch (tFilter.orderType) {
+      case "ASC":
+        return "ascend";
 
-      case "descend":
-        return "desc";
+      case "DESC":
+        return "descend";
 
       default:
         return null;
     }
   }
+  return null;
+}
+
+export function getOrderType(sortOrder?: SortOrder) {
+  switch (sortOrder) {
+    case "ascend":
+      return "ASC";
+
+    case "descend":
+      return "DESC";
+
+    default:
+      return null;
+  }
+}
+
+export function filterContent<T extends Model>(content: T) {
+  return (item: T) => item.key !== content.key;
+}
+
+export function getIdsFromContent<T extends Model>(list: T[], fieldId: string) {
+  return list.map((item) => item[fieldId]);
+}
+
+export function filterContentNotInList<T extends Model>(
+  list: any[],
+  fieldId: string,
+) {
+  return (item: T) => !list.includes(item[fieldId]);
+}
+
+export function filterContentInList<T extends Model>(
+  list: any[],
+  fieldId: string,
+) {
+  return (item: T) => list.includes(item[fieldId]);
+}
+
+export function mappingToMapper<T extends Model>(mapperField: string) {
+  return (item: T) => item[mapperField];
 }
 
 export default new TableService();

@@ -1,38 +1,35 @@
+import { Card, Row } from 'antd';
+import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
+import Modal from 'antd/lib/modal/Modal';
+import classNames from 'classnames';
 import AppAside from 'components/AppAside/AppAside';
+import AppAsideCollapse from 'components/AppAsideCollapse/AppAsideCollapse';
 import AppFooter from 'components/AppFooter/AppFooter';
 import AppHeader from 'components/AppHeader/AppHeader';
 import { menu } from 'config/menu';
 import { routes } from 'config/routes';
-import React from 'react';
-import { Switch, withRouter, useLocation } from 'react-router';
+import React, { useMemo } from 'react';
+import { Animated } from "react-animated-css";
+import { Switch, withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
+import { AppDispatchContext, AppMessageContext } from 'views/AppContext';
+import useApp from 'views/AppHook';
 import './App.scss';
-import { useGlobal, setGlobal } from 'reactn';
-import { GlobalState } from 'config/global-state';
-import classNames from 'classnames';
-import AppAsideCollapse from 'components/AppAsideCollapse/AppAsideCollapse';
-import {Animated} from "react-animated-css";
-
 function App() {
+  const {
+    errorMessage,
+    isErrorModalVisible,
+    toggleMenu,
+    displayFooter,
+    displayOverlay,
+    handleCloseErrorModal,
+    dispatch, // app dispatch
+    appMessageService, // service instance
+  } = useApp();
 
-  const [display] = useGlobal<GlobalState>('display');
-  const [toggleMenu] = useGlobal<GlobalState>('toggle');
-  const [displayFooter, setDisplayFooter] = React.useState<boolean>(false);
-
-  const { pathname } = useLocation();
-
-  React.useEffect(() => {
-    if (pathname.includes('detail')) {
-      setDisplayFooter(true);
-    }
-    if (pathname.includes('master')) {
-      setDisplayFooter(false);
-    }
-  }, [pathname]);
-
-  return (
-    <>
-      <div className="app d-flex">
+  const renderLayout = useMemo(
+    () => (
+        <div className="app d-flex">
         {
           !toggleMenu ? 
           <Animated animationIn="slideInLeft" 
@@ -55,16 +52,16 @@ function App() {
           </Animated>
         }
         <div className="right-side column">
-          <div className={classNames("header-wrapper", { "header-wrapper__block": display },
+          <div className={classNames("header-wrapper", { "header-wrapper__block": displayOverlay },
             )}>
               <AppHeader />
           </div>
-          <main className="body">
+          <main className='body'>
             <Switch>{renderRoutes(routes)}</Switch>
           </main>
           <div
             className={classNames(
-              { "header__overlay header__display-block": display },
+              { "header__overlay header__display-block": displayOverlay },
             )}>
           </div>
         </div>
@@ -72,8 +69,61 @@ function App() {
           displayFooter === true ? <AppFooter /> : null
         }
       </div>
-    </>
+    ),
+    [displayFooter, displayOverlay, toggleMenu],
+  );
 
+  const modalFooter = useMemo(
+    () => (
+      <div className='d-flex justify-content-end'>
+        <button
+          className='btn btn-sm component__btn-cancel'
+          onClick={handleCloseErrorModal}
+        >
+          <i className='tio-clear' /> Hủy
+        </button>
+      </div>
+    ),
+    [handleCloseErrorModal],
+  );
+
+  const renderErrorModal = useMemo(
+    () => (
+      <Modal
+        visible={isErrorModalVisible}
+        onCancel={handleCloseErrorModal}
+        closable={false}
+        width={600}
+        footer={modalFooter}
+      >
+        <Card>
+          <Row>
+            <div className='div-scroll'>
+              {typeof errorMessage !== "undefined" &&
+                errorMessage.split("\n")?.map((err) => (
+                  <div className='mt-3 mb-3 pl-2 text-danger' key={err}>
+                    {err}
+                  </div>
+                ))}
+            </div>
+          </Row>
+        </Card>
+      </Modal>
+    ),
+    [errorMessage, handleCloseErrorModal, isErrorModalVisible, modalFooter],
+  );
+
+  return (
+    <>
+      <ErrorBoundary>
+        <AppMessageContext.Provider value={appMessageService}>
+          <AppDispatchContext.Provider value={dispatch}>
+            {renderLayout}
+            {renderErrorModal}
+          </AppDispatchContext.Provider>
+        </AppMessageContext.Provider>
+      </ErrorBoundary>
+    </>
   );
 }
 
