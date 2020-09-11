@@ -66,7 +66,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case AppActionEnum.SET_FOOTER: {
       return {
         ...state,
-        loading: action.displayFooter,
+        displayFooter: action.displayFooter,
       };
     }
     case AppActionEnum.SET_OVERLAY: {

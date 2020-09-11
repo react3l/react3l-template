@@ -9,23 +9,23 @@ export default function useApp() {
   const { pathname } = useLocation();
   const [subscription] = commonService.useSubscription();
   // reducer
-  const [
-    state,
-    dispatch,
-  ] = useReducer<Reducer<AppState, AppAction>>(appReducer, {
-    isLoggedIn: false,
-    isSuccess: false,
-    successMessage: false,
-    isError: false,
-    errorMessage: "",
-    loading: false,
-    isErrorModalVisible: false,
-    toggleMenu: false,
-    displayFooter: false,
-    displayOverlay: false,
-  });
+  const [state, dispatch] = useReducer<Reducer<AppState, AppAction>>(
+    appReducer,
+    {
+      isLoggedIn: false,
+      isSuccess: false,
+      successMessage: false,
+      isError: false,
+      errorMessage: "",
+      loading: false,
+      isErrorModalVisible: false,
+      toggleMenu: false,
+      displayFooter: false,
+      displayOverlay: false,
+    },
+  );
 
-  const {      
+  const {
     isLoggedIn,
     isSuccess,
     successMessage,
@@ -35,7 +35,8 @@ export default function useApp() {
     isErrorModalVisible,
     toggleMenu,
     displayFooter,
-    displayOverlay} = state;
+    displayOverlay,
+  } = state;
 
   // subcribe appMessageService
   useEffect(() => {
@@ -65,7 +66,10 @@ export default function useApp() {
 
   // handle turn off overlay
   const handleToggleOverlay = useCallback(() => {
-    dispatch({ type: AppActionEnum.SET_OVERLAY, displayOverlay: !displayOverlay });
+    dispatch({
+      type: AppActionEnum.SET_OVERLAY,
+      displayOverlay: !displayOverlay,
+    });
   }, [displayOverlay]);
 
   // handle close error modal

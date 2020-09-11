@@ -510,7 +510,7 @@ export class TableService {
       handleTableChange,
       handlePagination,
       rowSelection,
-      mapperList,
+      selectedList,
     };
   }
 

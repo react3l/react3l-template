@@ -65,7 +65,7 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
     handlePagination,
     handleTableChange,
     rowSelection,
-    mapperList,
+    selectedList: mapperList,
   } = tableService.useModalTable<Store, StoreFilter>(
     filter,
     handleUpdateNewFilter,

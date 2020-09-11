@@ -109,6 +109,16 @@ function PriceListDetailView() {
     ],
   );
 
+  // const columnDisplayOrder = CreateDisplayOrder(
+  //   CreateIndex().AddChild(), // if normal column has its child, you may need to add child for index column
+  //   CreateStringFilterTitle()
+  //     .Sorter()
+  //     .SortOrder()
+  //     .Ellipsis()
+  //     .Width()
+  //     .AddChild(), // stringFilterTitle default has no render
+  // );
+
   return (
     <div className='page page__detail'>
       {/* start detail header */}

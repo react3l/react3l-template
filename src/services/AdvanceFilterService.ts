@@ -5,7 +5,7 @@ import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import { ModelFilter, OrderType } from "@react3l/react3l/core";
 import { Moment } from "moment";
-import React from "react";
+import React, { useMemo } from "react";
 import nameof from "ts-nameof.macro";
 
 export enum ActionFilterEnum {
@@ -169,7 +169,11 @@ export const advanceFilterService = {
     fieldType: keyof T2Filter,
     ClassFilter: new (partial?: any) => T2Filter,
   ): [any, (value: any) => void] {
-    const value = modelFilter[fieldName][fieldType];
+    const value = useMemo(() => modelFilter[fieldName][fieldType], [
+      fieldName,
+      fieldType,
+      modelFilter,
+    ]);
     const handleChangeFilter = React.useCallback(
       (value: any) => {
         dispatch({

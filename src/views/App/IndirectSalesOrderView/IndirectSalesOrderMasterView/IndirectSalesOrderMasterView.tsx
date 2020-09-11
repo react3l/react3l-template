@@ -51,12 +51,6 @@ function IndirectSalesOrderMasterView() {
     DemoFilter,
   );
 
-  const [, , , , ,] = advanceFilterService.useFilter<DemoFilter>(
-    filter,
-    dispatch,
-    DemoFilter,
-  );
-
   const [valueString, setValueString] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     StringFilter

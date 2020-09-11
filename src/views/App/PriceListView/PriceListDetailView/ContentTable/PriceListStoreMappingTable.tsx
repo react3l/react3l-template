@@ -291,16 +291,18 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
             ),
           );
           setContent([...newContent]);
+          handleSearch(); // recalculate dataSource
           return;
         }
         const newContents = list.map((item: Store) => mapper(item));
         setContent([...newContents]);
+        handleSearch(); // recalculate dataSource
         return;
       }
-      // if list empty, setContent to []
-      setContent([]);
+      setContent([]); // if list empty, setContent to []
+      handleSearch(); // recalculate dataSource
     },
-    [content, mapperField, setContent],
+    [content, mapperField, setContent, handleSearch],
   ); // callback for save modal
 
   return (
