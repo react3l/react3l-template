@@ -39,6 +39,7 @@ export enum AppActionEnum {
   SET_FOOTER,
   SET_OVERLAY,
   CLOSE_ERROR_MODAL,
+  SET_MENU,
 }
 
 export function appReducer(state: AppState, action: AppAction): AppState {
@@ -71,7 +72,13 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case AppActionEnum.SET_OVERLAY: {
       return {
         ...state,
-        loading: action.displayOverlay,
+        displayOverlay: action.displayOverlay,
+      };
+    }
+    case AppActionEnum.SET_MENU: {
+      return {
+        ...state,
+        toggleMenu: action.toggleMenu,
       };
     }
     case AppActionEnum.CLOSE_ERROR_MODAL: {

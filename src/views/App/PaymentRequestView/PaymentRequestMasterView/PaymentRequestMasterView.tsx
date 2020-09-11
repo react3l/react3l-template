@@ -211,16 +211,13 @@ function PaymentMasterView() {
                 </div>
               </Col>
               <Col lg={4} className='pr-4'>
-                {/* <div className='mt__1'>
+                <div className='mt__1'>
                   <label className='label'>Phòng ban</label>
                   <AdvanceIdFilter
                     classFilter={DemoListFilter}
-                    value={filter["proviceId"]["equal"]}
-                    onChange={handleChangeFilter("proviceId", "equal")}
-                    getList={demoSearchFunc}
                     placeHolder={"Tất cả"}
                   />
-                </div> */}
+                </div>
               </Col>
               <Col lg={4} className='pr-4'>
                 <div className='mt__1'>

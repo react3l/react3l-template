@@ -10,18 +10,7 @@ export default function useApp() {
   const [subscription] = commonService.useSubscription();
   // reducer
   const [
-    {
-      isLoggedIn,
-      isSuccess,
-      successMessage,
-      isError,
-      errorMessage,
-      loading,
-      isErrorModalVisible,
-      toggleMenu,
-      displayFooter,
-      displayOverlay,
-    },
+    state,
     dispatch,
   ] = useReducer<Reducer<AppState, AppAction>>(appReducer, {
     isLoggedIn: false,
@@ -35,6 +24,18 @@ export default function useApp() {
     displayFooter: false,
     displayOverlay: false,
   });
+
+  const {      
+    isLoggedIn,
+    isSuccess,
+    successMessage,
+    isError,
+    errorMessage,
+    loading,
+    isErrorModalVisible,
+    toggleMenu,
+    displayFooter,
+    displayOverlay} = state;
 
   // subcribe appMessageService
   useEffect(() => {
@@ -63,9 +64,9 @@ export default function useApp() {
   }, [pathname]);
 
   // handle turn off overlay
-  const handleOffOverlay = useCallback(() => {
-    dispatch({ type: AppActionEnum.SET_OVERLAY, displayOverlay: false });
-  }, []);
+  const handleToggleOverlay = useCallback(() => {
+    dispatch({ type: AppActionEnum.SET_OVERLAY, displayOverlay: !displayOverlay });
+  }, [displayOverlay]);
 
   // handle close error modal
   const handleCloseErrorModal = useCallback(() => {
@@ -83,9 +84,10 @@ export default function useApp() {
     toggleMenu,
     displayFooter,
     displayOverlay,
-    handleOffOverlay,
+    handleToggleOverlay,
     handleCloseErrorModal,
     dispatch,
     appMessageService, // service instance
+    state,
   };
 }

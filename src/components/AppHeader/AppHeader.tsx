@@ -1,39 +1,31 @@
-import React, { RefObject } from "react";
-import "./AppHeader.scss";
+import React, { Dispatch, RefObject, useContext } from "react";
 import Avatar, { ConfigProvider } from "react-avatar";
-import { GlobalState } from "config/global-state";
-import { setGlobal, useGlobal } from 'reactn';
 import { commonWebService } from "services/CommonWebService";
+import { AppStoreContext } from "views/AppContext";
+import { AppAction, AppActionEnum, AppState } from "views/AppStore";
+import "./AppHeader.scss";
 function AppHeader() {
-  const [display, setDisplay] = React.useState<boolean>(false);
-
-  const [displayHeader] = useGlobal<GlobalState>('display');
-
-  const [toggleMenu, setToggleMenu] = React.useState<boolean>(false);
+  const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(AppStoreContext);
 
   const buttonRef: RefObject<HTMLButtonElement> = React.useRef<HTMLButtonElement>(
     null,
   );
 
-  const handleClick = React.useCallback(() => {
-    setGlobal<GlobalState>({ display: true });
-    setDisplay(true);
-  }, [setDisplay]);
+  const handleClickOutSide = React.useCallback(() => {
+    if (state.displayOverlay) {
+      dispatch({type: AppActionEnum.SET_OVERLAY, displayOverlay: false});
+    }
+  }, [state, dispatch]);
+
+  const handleToggleOverLay = React.useCallback(() => {
+    dispatch({type: AppActionEnum.SET_OVERLAY, displayOverlay: !state.displayOverlay});
+  }, [dispatch, state]);
 
   const handleToggleMenu = React.useCallback(() => {
-    const toggle = !toggleMenu;
-    setToggleMenu(toggle);
-    setGlobal<GlobalState>({ toggle });
-  }, [
-    setToggleMenu,
-    toggleMenu,
-  ]);
+    dispatch({type: AppActionEnum.SET_MENU, toggleMenu: !state.toggleMenu});
+  }, [dispatch, state]);
 
-  const handleOffOverlay = React.useCallback(() => {
-    setGlobal<GlobalState>({ display: false });
-  }, []);
-
-  commonWebService.useClickOutside(buttonRef, handleOffOverlay);
+  commonWebService.useClickOutside(buttonRef, handleClickOutSide);
 
   const menus = [
     {
@@ -79,11 +71,11 @@ function AppHeader() {
             <button
               style={{position: 'relative'}}
               className="btn btn-sm component__btn-primary mr-3"
-              onClick={handleClick}
+              onClick={handleToggleOverLay}
               ref={buttonRef}
             >
               <i className="tio-add d-flex justify-content-center" />
-              {(display === true && displayHeader === true) && (
+              {state.displayOverlay && (
                 <div className=" header__list">
                   {menus &&
                     menus.length > 0 &&
