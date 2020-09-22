@@ -39,7 +39,6 @@ function PriceListMasterView() {
     handleServerBulkDelete,
     rowSelection,
     canBulkDelete,
-    handleSearch, // pass as argument of any handleFilter method
     pagination, // optional using
   } = masterService.useMaster<PriceList, PriceListFilter>(
     PriceListFilter,
@@ -166,11 +165,10 @@ function PriceListMasterView() {
                 </label>
                 <AdvanceStringFilter
                   value={filter[nameof(list[0].code)]["contain"]}
-                  onChange={handleChangeFilter(
+                  onBlur={handleChangeFilter(
                     nameof(list[0].code),
                     "contain" as any,
                     StringFilter,
-                    handleSearch,
                   )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
@@ -187,7 +185,6 @@ function PriceListMasterView() {
                     nameof(list[0].name),
                     "contain" as any,
                     StringFilter,
-                    handleSearch,
                   )}
                   placeHolder={translate("priceList.filter.name")} // -> tat ca
                 />
@@ -209,7 +206,7 @@ function PriceListMasterView() {
                 <div className='d-flex justify-content-between'>
                   <button
                     className='btn btn-info'
-                    onClick={handleResetFilter(handleSearch)}
+                    onClick={handleResetFilter()}
                   >
                     ResetFilter
                   </button>
@@ -233,7 +230,6 @@ function PriceListMasterView() {
                       nameof(list[0].statusId),
                       "equal" as any,
                       IdFilter,
-                      handleSearch,
                     )}
                     classFilter={PriceListStatusFilter}
                     getList={priceListRepository.filterListStatus}
@@ -250,7 +246,6 @@ function PriceListMasterView() {
                       nameof(list[0].salesOrderTypeId),
                       "equal" as any,
                       IdFilter,
-                      handleSearch,
                     )}
                     classFilter={SalesOrderTypeFilter}
                     getList={priceListRepository.filterListSalesOrderType}

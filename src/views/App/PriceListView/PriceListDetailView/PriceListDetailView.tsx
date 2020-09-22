@@ -52,7 +52,6 @@ function PriceListDetailView() {
   const {
     filter, // filter for local table
     handleChangeFilter, // normally used in advanceFilter component
-    handleSearch,
   } = useContentTable<
     PriceListStoreMappings,
     Store,
@@ -92,7 +91,6 @@ function PriceListDetailView() {
                       nameof(storeMappingContents[0].storeTypeId),
                       "equal" as any,
                       IdFilter,
-                      handleSearch,
                     )}
                     classFilter={StoreTypeFilter}
                     getList={priceListRepository.filterListStoreType}
@@ -103,7 +101,7 @@ function PriceListDetailView() {
               .DataIndex(nameof(storeMappingContents[0].storeType)),
           ), // dataIndex
       ),
-    [filter, handleChangeFilter, handleSearch, storeMappingContents, translate],
+    [filter, handleChangeFilter, storeMappingContents, translate],
   );
 
   // const columnDisplayOrder = CreateDisplayOrder(

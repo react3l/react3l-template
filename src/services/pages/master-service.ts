@@ -40,10 +40,13 @@ export class MasterService {
     );
 
     const {
+      loadList,
+      setLoadList,
+      handleSearch,
       handleChangeFilter,
       handleUpdateNewFilter,
       handleResetFilter,
-    } = advanceFilterService.useFilter<TFilter>(
+    } = advanceFilterService.useChangeAdvanceFilter<TFilter>(
       filter,
       dispatch,
       modelFilterClass,
@@ -59,11 +62,13 @@ export class MasterService {
       handleServerDelete,
       handleServerBulkDelete,
       rowSelection,
-      handleSearch, // expose search control
       canBulkDelete,
     } = tableService.useTable<T, TFilter>(
       filter,
       handleUpdateNewFilter,
+      loadList,
+      setLoadList,
+      handleSearch,
       getList,
       getTotal,
       deleteItem,

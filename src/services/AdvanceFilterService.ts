@@ -5,7 +5,8 @@ import { NumberFilter } from "@react3l/advanced-filters/NumberFilter";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import { ModelFilter, OrderType } from "@react3l/react3l/core";
 import { Moment } from "moment";
-import React, { useMemo } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useCallback } from "reactn";
 import nameof from "ts-nameof.macro";
 
 export enum ActionFilterEnum {
@@ -156,6 +157,109 @@ export const advanceFilterService = {
     );
 
     return {
+      handleChangeFilter,
+      handleResetFilter,
+      handleUpdateNewFilter,
+    };
+  }, // deprecate
+
+  useChangeAdvanceFilter<TFilter extends ModelFilter>(
+    modelFilter: TFilter,
+    dispatch: (
+      action: AdvanceFilterAction<
+        TFilter,
+        StringFilter | NumberFilter | DateFilter | IdFilter
+      >,
+    ) => void,
+    ClassFilter: new () => TFilter,
+    defaultValue?: boolean,
+  ): {
+    loadList: boolean;
+    setLoadList: Dispatch<SetStateAction<boolean>>;
+    handleSearch: () => void;
+    handleChangeFilter: (
+      fieldName: keyof TFilter,
+      fieldType:
+        | keyof (StringFilter | NumberFilter | DateFilter | IdFilter)
+        | (keyof StringFilter | NumberFilter | DateFilter | IdFilter)[],
+      ClassSubFilter: new () =>
+        | StringFilter
+        | NumberFilter
+        | DateFilter
+        | IdFilter,
+    ) => (value: any) => void;
+    handleResetFilter: () => () => void;
+    handleUpdateNewFilter: (filter: TFilter) => void;
+  } {
+    const [loadList, setLoadList] = useState<boolean>(
+      typeof defaultValue === "undefined" ? true : defaultValue,
+    ); // default true when using in master or local
+
+    const handleSearch = useCallback(() => {
+      setLoadList(true);
+    }, []);
+
+    const handleChangeFilter = React.useCallback(
+      (
+        fieldName: string,
+        fieldType: keyof Filter | (keyof Filter)[],
+        ClassSubFilter: new (partial?: any) =>
+          | StringFilter
+          | NumberFilter
+          | DateFilter
+          | IdFilter,
+      ) => (value: any) => {
+        if (fieldType instanceof Array) {
+          dispatch({
+            type: ActionFilterEnum.ChangeAllField,
+            data: {
+              ...modelFilter,
+              [fieldName]: new ClassSubFilter({
+                [nameof("greater")]: value[0],
+                [nameof("less")]: value[1],
+              }),
+            },
+          });
+        } else {
+          dispatch({
+            type: ActionFilterEnum.ChangeOneField,
+            fieldName: fieldName,
+            fieldType: fieldType,
+            fieldValue: value,
+            classFilter: ClassSubFilter,
+          });
+        }
+        handleSearch();
+      },
+      [dispatch, modelFilter, handleSearch],
+    );
+
+    const handleResetFilter = React.useCallback(() => {
+      return () => {
+        const newFilter = new ClassFilter();
+        newFilter.skip = 0;
+        newFilter.take = 10;
+
+        dispatch({
+          type: ActionFilterEnum.ChangeAllField,
+          data: newFilter,
+        });
+        handleSearch();
+      };
+    }, [dispatch, ClassFilter, handleSearch]);
+
+    const handleUpdateNewFilter = React.useCallback(
+      (data: TFilter) => {
+        dispatch({ type: ActionFilterEnum.ChangeAllField, data });
+        handleSearch();
+      },
+      [dispatch, handleSearch],
+    );
+
+    return {
+      loadList,
+      setLoadList,
+      handleSearch,
       handleChangeFilter,
       handleResetFilter,
       handleUpdateNewFilter,

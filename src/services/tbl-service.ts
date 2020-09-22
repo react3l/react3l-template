@@ -8,7 +8,9 @@ import {
   TableRowSelection,
 } from "antd/lib/table/interface";
 import {
+  Dispatch,
   Reducer,
+  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
@@ -336,14 +338,15 @@ export class TableService {
   useTable<T extends Model, TFilter extends ModelFilter>(
     filter: TFilter,
     setFilter: (filter: TFilter) => void, // from TFilter to TFilter
+    loadList, // control external loadList
+    setLoadList, // setControl ...
+    handleSearch, // trigger search
     getList: (filter: TFilter) => Observable<T[]>,
     getTotal: (filter: TFilter) => Observable<number>,
     deleteItem?: (t: T) => Observable<T>,
     bulkDeleteItems?: (t: KeyType[]) => Observable<void>,
     onUpdateListSuccess?: (item?: T) => void,
     checkBoxType?: RowSelectionType,
-    isLoadControl?: boolean | undefined, // optional control for modal preLoading
-    endLoadControl?: () => void, // end external control
     derivedRowKeys?: KeyType[],
   ) {
     // selectedRowKeys
@@ -361,10 +364,12 @@ export class TableService {
       loadingList,
       handleDelete: handleServerDelete,
       handleBulkDelete: onServerBulkDelete,
-      handleSearch,
     } = listService.useList(
       filter,
       setFilter,
+      loadList,
+      setLoadList,
+      handleSearch,
       getList,
       getTotal,
       deleteItem,
@@ -372,8 +377,6 @@ export class TableService {
       selectedRowKeys as number[],
       setSelectedRowKeys,
       onUpdateListSuccess,
-      isLoadControl,
-      endLoadControl,
     );
 
     // calculate pagination
@@ -433,11 +436,11 @@ export class TableService {
   useModalTable<T extends Model, TFilter extends ModelFilter>(
     filter: TFilter,
     setFilter: (filter: TFilter) => void, // from TFilter to TFilter
+    loadList: boolean,
+    setLoadList: Dispatch<SetStateAction<boolean>>,
+    handleSearch: () => void,
     getList: (filter: TFilter) => Observable<T[]>,
     getTotal: (filter: TFilter) => Observable<number>,
-    isLoadControl: boolean | undefined, // optional control for modal preLoading
-    endLoadControl: () => void, // end external control
-    handleSearch: () => void, // trigger loadList
     mapperList?: T[],
   ) {
     // mappingList, mapperList reducer
@@ -480,6 +483,9 @@ export class TableService {
     const { list, total, loadingList } = listService.useList(
       filter,
       setFilter,
+      loadList,
+      setLoadList,
+      handleSearch,
       getList,
       getTotal,
       undefined,
@@ -487,8 +493,6 @@ export class TableService {
       undefined,
       undefined,
       undefined,
-      isLoadControl,
-      endLoadControl,
     );
 
     // calculate pagination
@@ -525,6 +529,9 @@ export class TableService {
   useLocalTable<T extends Model, T2 extends Model, TFilter extends ModelFilter>(
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
+    loadList: boolean,
+    setLoadList: Dispatch<SetStateAction<boolean>>,
+    handleSearch: () => void,
     source: T[],
     setSource: (source: T[]) => void,
     contentMapper: (model: T | T2) => T,
@@ -537,9 +544,11 @@ export class TableService {
       mappingList: [], // selectedContent
     }); // mappingList, mapperList reducer
 
-    const { list, total, loadingList, handleSearch } = listService.useLocalList(
+    const { list, total, loadingList } = listService.useLocalList(
       filter,
       typeof contentMapper === "function" ? source.map(contentMapper) : source,
+      loadList,
+      setLoadList,
     ); // list service
 
     const selectedList = useMemo(

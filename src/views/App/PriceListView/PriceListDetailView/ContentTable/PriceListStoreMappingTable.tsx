@@ -47,9 +47,12 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
   ); // filter factory
 
   const {
+    loadList,
+    setLoadList,
+    handleSearch,
     handleChangeFilter,
     handleUpdateNewFilter,
-  } = advanceFilterService.useFilter<PriceListStoreMappingsFilter>(
+  } = advanceFilterService.useChangeAdvanceFilter<PriceListStoreMappingsFilter>(
     filter,
     dispatch,
     PriceListStoreMappingsFilter,
@@ -59,7 +62,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     list,
     total,
     loadingList,
-    handleSearch,
     handleTableChange,
     handlePagination,
     rowSelection,
@@ -75,6 +77,9 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
   >(
     filter,
     handleUpdateNewFilter,
+    loadList,
+    setLoadList,
+    handleSearch,
     content,
     setContent,
     mapper,
@@ -136,11 +141,10 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
               <>
                 <AdvanceStringFilter
                   value={filter["storeCode"]["contain"]}
-                  onChange={handleChangeFilter(
+                  onBlur={handleChangeFilter(
                     nameof(content[0].storeCode),
                     "contain" as any,
                     StringFilter,
-                    handleSearch,
                   )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
@@ -156,7 +160,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                   value={storeCode}
                   placeHolder={translate("priceList.placeholder.storeCode")}
                   className={"tio-account_square_outlined"}
-                  onChange={handleChangeContentField(
+                  onBlur={handleChangeContentField(
                     record.key,
                     nameof(content[0].storeCode),
                   )}
@@ -189,7 +193,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                     nameof(content[0].storeTypeId),
                     "equal" as any,
                     IdFilter,
-                    handleSearch,
                   )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}
@@ -242,7 +245,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       filter,
       translate,
       handleChangeFilter,
-      handleSearch,
       handleChangeContentField,
       handleLocalDelete,
     ],

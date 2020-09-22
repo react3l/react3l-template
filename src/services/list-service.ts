@@ -148,6 +148,9 @@ class ListService {
   useList<T extends Model, TFilter extends ModelFilter>(
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
+    loadList: boolean,
+    setLoadList: Dispatch<SetStateAction<boolean>>,
+    handleSearch: () => void,
     getList: (filter: TFilter) => Observable<T[]>,
     getTotal: (filter: TFilter) => Observable<number>,
     deleteItem?: (t: T) => Observable<T>,
@@ -155,8 +158,6 @@ class ListService {
     selectedKeys?: KeyType[],
     setSelectedRowKeys?: Dispatch<SetStateAction<KeyType[]>>,
     onUpdateListSuccess?: (item?: T) => void,
-    isLoadControl?: boolean | undefined, // optional control for modal preLoading
-    endLoadControl?: () => void, // end external control
   ): {
     list: T[];
     total: number;
@@ -169,19 +170,13 @@ class ListService {
     //  auto complete subscription until isCancelled == true (unMounted component)
     // const { isCancelled, cancelSubcription } = subcriptionCancellation();
     const [subscription] = commonService.useSubscription();
-    const [{ list, total, loadingList, isLoadList }, dispatch] = useReducer<
+    const [{ list, total, loadingList }, dispatch] = useReducer<
       Reducer<StateOfList<T>, ActionOfList<T>>
     >(listReducer, {
       list: [],
       total: 0,
       loadingList: false,
-      isLoadList: true,
     });
-
-    const shouldLoad = useMemo(
-      () => (typeof isLoadControl !== "undefined" ? isLoadControl : isLoadList), // decide list is self-controlled or controlled loading
-      [isLoadControl, isLoadList],
-    );
 
     const defaultFilter = this.useListFilter(filter);
 
@@ -283,18 +278,12 @@ class ListService {
     );
 
     useEffect(() => {
-      if (shouldLoad) {
+      if (loadList) {
         handleLoadList(); // trigger loadList only isLoadList == true
         dispatch({ type: END_LOAD }); // end loading internally
-        if (typeof endLoadControl === "function") {
-          endLoadControl(); // end loading externally
-        }
+        setLoadList(false);
       }
-    }, [handleLoadList, shouldLoad, endLoadControl]);
-
-    const handleSearch = useCallback(() => {
-      dispatch({ type: INIT_SEARCH });
-    }, []);
+    }, [handleLoadList, loadList, setLoadList]);
 
     return {
       list,
@@ -318,17 +307,18 @@ class ListService {
   useLocalList<T extends Model, TFilter extends ModelFilter>(
     modelFilter: TFilter,
     source: T[], // source item always content key
+    loadList: boolean,
+    setLoadList: Dispatch<SetStateAction<boolean>>,
   ) {
     //  auto complete subscription until isCancelled == true (unMounted component)
     const [subscription] = commonService.useSubscription();
     // const { isCancelled, cancelSubcription } = subcriptionCancellation();
-    const [{ list, total, loadingList, isLoadList }, dispatch] = useReducer<
+    const [{ list, total, loadingList }, dispatch] = useReducer<
       Reducer<StateOfList<T>, ActionOfList<T>>
     >(listReducer, {
       list: source,
       total: source?.length ? source?.length : 0,
       loadingList: false,
-      isLoadList: true,
     });
 
     const { handleFetchInit, handleFetchEnd } = this.useFetchEffect(dispatch);
@@ -356,12 +346,8 @@ class ListService {
       [modelFilter, sortData],
     );
 
-    const handleSearch = useCallback(() => {
-      dispatch({ type: INIT_SEARCH });
-    }, []);
-
     useEffect(() => {
-      if (isLoadList && source?.length > 0) {
+      if (loadList && source?.length > 0) {
         subscription.add(
           of(source)
             .pipe(
@@ -379,10 +365,9 @@ class ListService {
               });
             }),
         );
-        dispatch({ type: END_LOAD }); // endLoad control
+        setLoadList(false); // endLoad control
       }
     }, [
-      isLoadList,
       doFilter,
       handleFetchEnd,
       handleFetchInit,
@@ -391,9 +376,11 @@ class ListService {
       sortData,
       source,
       subscription,
+      loadList,
+      setLoadList,
     ]);
 
-    return { list, total, loadingList, handleSearch };
+    return { list, total, loadingList };
   }
 }
 

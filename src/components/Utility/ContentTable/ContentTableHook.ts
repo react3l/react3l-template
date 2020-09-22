@@ -25,10 +25,13 @@ export function useContentTable<
   >(advanceFilterReducer, new contentFilterClass()); // filter factory
 
   const {
+    loadList,
+    setLoadList,
+    handleSearch,
     handleChangeFilter,
     handleUpdateNewFilter,
     handleResetFilter,
-  } = advanceFilterService.useFilter<TContentFilter>(
+  } = advanceFilterService.useChangeAdvanceFilter<TContentFilter>(
     filter,
     dispatch,
     contentFilterClass,
@@ -38,7 +41,6 @@ export function useContentTable<
     list,
     loadingList,
     total,
-    handleSearch,
     handleTableChange,
     handlePagination,
     rowSelection,
@@ -53,6 +55,9 @@ export function useContentTable<
   } = tableService.useLocalTable<TContent, TMapper, TContentFilter>(
     filter,
     handleUpdateNewFilter,
+    loadList,
+    setLoadList,
+    handleSearch,
     content,
     setContent,
     contentMapper,
