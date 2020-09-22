@@ -165,7 +165,7 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
               <Col lg={6} className='pr-3'>
                 <AdvanceStringFilter
                   value={filter["code"]["contain"]}
-                  onChange={handleChangeFilter(
+                  onBlur={handleChangeFilter(
                     nameof(list[0].code),
                     "contain" as any,
                     StringFilter,

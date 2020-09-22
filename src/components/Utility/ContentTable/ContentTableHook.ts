@@ -1,8 +1,7 @@
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Reducer, useReducer } from "react";
+import { Dispatch } from "react";
 import {
   AdvanceFilterAction,
-  advanceFilterReducer,
   advanceFilterService,
 } from "services/AdvanceFilterService";
 import { importExportDataService } from "services/import-export-data-service";
@@ -18,12 +17,10 @@ export function useContentTable<
   contentMapper: (model: TContent | TMapper) => TContent,
   contentClass: new () => TContent,
   contentFilterClass: new () => TContentFilter,
+  filter: TContentFilter,
+  dispatch: Dispatch<AdvanceFilterAction<TContentFilter>>,
   mapperField: string,
 ) {
-  const [filter, dispatch] = useReducer<
-    Reducer<TContentFilter, AdvanceFilterAction<TContentFilter>>
-  >(advanceFilterReducer, new contentFilterClass()); // filter factory
-
   const {
     loadList,
     setLoadList,
@@ -77,8 +74,6 @@ export function useContentTable<
   } = importExportDataService.useExport(); // export data service
 
   return {
-    filter, // filter for local table
-    dispatch, // dispatch for filter local table
     handleChangeFilter, // normally used in advanceFilter component
     handleUpdateNewFilter, // used in table handleChange
     handleResetFilter, // used in some action reset filter to default

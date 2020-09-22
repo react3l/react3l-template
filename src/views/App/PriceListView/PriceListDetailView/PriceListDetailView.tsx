@@ -1,27 +1,22 @@
-import React, { useMemo } from "react";
 import { Card, Col, Row, Switch, Tabs } from "antd";
-import nameof from "ts-nameof.macro";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
+import ContentTable from "components/Utility/ContentTable/ContentTable";
 import FormItem from "components/Utility/FormItem/FormItem";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import { OrganizationFilter } from "models/OrganizationFilter";
 import { PriceList, PriceListStoreMappings, Store } from "models/PriceList";
+import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import { formService } from "services/FormService";
 import detailService from "services/pages/detail-service";
-import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable";
-import ContentTable from "components/Utility/ContentTable/ContentTable";
-import { useContentTable } from "components/Utility/ContentTable/ContentTableHook";
-import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
-import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
-import { masterTableIndex } from "helpers/table";
-import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
-import { IdFilter } from "@react3l/advanced-filters";
-import { StoreTypeFilter } from "models/StoreTypeFilter";
+import nameof from "ts-nameof.macro";
+import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable"; // view for content table
+import { usePriceListStoreMappingsTable } from "./PriceListStoreMappings/PriceListStoreMappingsHook"; // hook for content table
 const { TabPane } = Tabs;
 
 function PriceListDetailView() {
@@ -41,78 +36,12 @@ function PriceListDetailView() {
   );
 
   const {
-    content: storeMappingContents,
-    setContent: setStoreMappingContents,
-  } = detailService.useContentList(
-    model,
-    handleUpdateNewModel, // update content has sideEffect update model
-    nameof(model.priceListStoreMappings),
-  );
-
-  const {
-    filter, // filter for local table
-    handleChangeFilter, // normally used in advanceFilter component
-  } = useContentTable<
-    PriceListStoreMappings,
-    Store,
-    PriceListStoreMappingsFilter
-  >(
+    priceListStoreMappingsFilter,
+    dispatchPriceListStoreMappingsFilter,
     storeMappingContents,
     setStoreMappingContents,
-    mapper,
-    PriceListStoreMappings,
-    PriceListStoreMappingsFilter,
-    nameof(storeMappingContents[0].store),
-  );
-
-  const priceListStoreMappingsContentColumns = useMemo(
-    () =>
-      CreateTableColumns(
-        CreateColumn()
-          .Title(() => <>{translate("general.columns.index")}</>)
-          .Key("index") // key
-          .Render(
-            masterTableIndex<
-              PriceListStoreMappings,
-              PriceListStoreMappingsFilter
-            >(filter),
-          ), // render
-        CreateColumn()
-          .Title(() => <>{translate("priceLists.store.code")}</>)
-          .Key(nameof(storeMappingContents[0].storeCode)) //Key
-          .DataIndex(nameof(storeMappingContents[0].storeCode))
-          .AddChild(
-            CreateColumn()
-              .Title(() => (
-                <>
-                  <AdvanceIdFilter
-                    value={filter["storeTypeId"]["equal"]}
-                    onChange={handleChangeFilter(
-                      nameof(storeMappingContents[0].storeTypeId),
-                      "equal" as any,
-                      IdFilter,
-                    )}
-                    classFilter={StoreTypeFilter}
-                    getList={priceListRepository.filterListStoreType}
-                    placeHolder={translate("general.filter.idFilter")} // -> tat ca
-                  />
-                </>
-              ))
-              .DataIndex(nameof(storeMappingContents[0].storeType)),
-          ), // dataIndex
-      ),
-    [filter, handleChangeFilter, storeMappingContents, translate],
-  );
-
-  // const columnDisplayOrder = CreateDisplayOrder(
-  //   CreateIndex().AddChild(), // if normal column has its child, you may need to add child for index column
-  //   CreateStringFilterTitle()
-  //     .Sorter()
-  //     .SortOrder()
-  //     .Ellipsis()
-  //     .Width()
-  //     .AddChild(), // stringFilterTitle default has no render
-  // );
+    priceListStoreMappingsContentColumns,
+  } = usePriceListStoreMappingsTable(model, handleUpdateNewModel); // hook for priceListStoreMappings table
 
   return (
     <div className='page page__detail'>
@@ -281,6 +210,7 @@ function PriceListDetailView() {
                     />
                     <ContentTable
                       model={model}
+                      contentMapper={mapper}
                       content={storeMappingContents}
                       setContent={setStoreMappingContents}
                       mapperField={nameof(
@@ -288,7 +218,8 @@ function PriceListDetailView() {
                       )}
                       contentClass={PriceListStoreMappings}
                       contentFilterClass={PriceListStoreMappingsFilter}
-                      contentMapper={mapper}
+                      filter={priceListStoreMappingsFilter}
+                      dispatch={dispatchPriceListStoreMappingsFilter}
                       columns={priceListStoreMappingsContentColumns}
                     />
                   </Row>

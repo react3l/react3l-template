@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch } from "react";
 import nameof from "ts-nameof.macro";
 import { Table, Tooltip } from "antd";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { useContentTable } from "./ContentTableHook";
 import Pagination from "components/Utility/Pagination/Pagination";
 import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
+import { AdvanceFilterAction } from "services/AdvanceFilterService";
 export interface ContentTableProps<
   T extends Model, // Eg: PriceList
   TContent extends Model, // Eg: PriceListStoreMappings
@@ -20,6 +21,8 @@ export interface ContentTableProps<
   mapperField: string; // mapperField.Eg: Store
   contentClass: new () => TContent;
   contentFilterClass: new () => TContentFilter;
+  filter: TContentFilter;
+  dispatch: Dispatch<AdvanceFilterAction<TContentFilter>>;
   columns: TableColumn[];
   contentMapper?: (model: TContent | TMapper) => TContent;
   handleOpenModal?: () => void;
@@ -49,6 +52,8 @@ export default function ContentTable<
     mapperField,
     contentClass,
     contentFilterClass,
+    filter,
+    dispatch,
     contentMapper,
     columns,
     handleOpenModal,
@@ -58,7 +63,6 @@ export default function ContentTable<
   } = props;
 
   const {
-    filter, // filter for local table
     list, // list for dataSource
     loadingList, // loading for await data filtering
     total,
@@ -79,6 +83,8 @@ export default function ContentTable<
     contentMapper,
     contentClass,
     contentFilterClass,
+    filter,
+    dispatch,
     mapperField,
   );
 
