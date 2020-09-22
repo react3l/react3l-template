@@ -24,10 +24,10 @@ export function InputTextStories() {
     Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, StringFilter>>
   >(advanceFilterReducer, new DemoFilter());
 
-  const [value, setValue] = advanceFilterService.useStringFilter<
+  const [value, setValue] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     StringFilter
-  >(modelFilter, dispatch, "name", "startWith");
+  >(modelFilter, dispatch, "name", "startWith", StringFilter);
 
   const handleChangeStyle = React.useCallback((event: RadioChangeEvent) => {
     setIsMaterial(event.target.value);

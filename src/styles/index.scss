@@ -452,6 +452,10 @@ body {
   .error-text {
     color: $error-color !important;
   }
+
+  .error-background {
+    background-color: $error-color !important;
+  }
 }
 
 @media screen and (max-width: 1440px) {
