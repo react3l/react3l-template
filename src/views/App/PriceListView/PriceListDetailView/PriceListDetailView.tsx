@@ -18,7 +18,7 @@ import ContentTable from "components/Utility/ContentTable/ContentTable";
 import { useContentTable } from "components/Utility/ContentTable/ContentTableHook";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
-import { renderMasterIndex } from "helpers/table";
+import { masterTableIndex } from "helpers/table";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import { IdFilter } from "@react3l/advanced-filters";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
@@ -53,7 +53,6 @@ function PriceListDetailView() {
     filter, // filter for local table
     handleChangeFilter, // normally used in advanceFilter component
     handleSearch,
-    pagination, // calculted for ant table pagination, for calculating table index
   } = useContentTable<
     PriceListStoreMappings,
     Store,
@@ -73,7 +72,12 @@ function PriceListDetailView() {
         CreateColumn()
           .Title(() => <>{translate("general.columns.index")}</>)
           .Key("index") // key
-          .Render(renderMasterIndex<PriceListStoreMappings>(pagination)), // render
+          .Render(
+            masterTableIndex<
+              PriceListStoreMappings,
+              PriceListStoreMappingsFilter
+            >(filter),
+          ), // render
         CreateColumn()
           .Title(() => <>{translate("priceLists.store.code")}</>)
           .Key(nameof(storeMappingContents[0].storeCode)) //Key
@@ -99,14 +103,7 @@ function PriceListDetailView() {
               .DataIndex(nameof(storeMappingContents[0].storeType)),
           ), // dataIndex
       ),
-    [
-      filter,
-      handleChangeFilter,
-      handleSearch,
-      pagination,
-      storeMappingContents,
-      translate,
-    ],
+    [filter, handleChangeFilter, handleSearch, storeMappingContents, translate],
   );
 
   // const columnDisplayOrder = CreateDisplayOrder(

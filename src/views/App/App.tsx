@@ -24,7 +24,6 @@ function App() {
     errorMessage,
     isErrorModalVisible,
     toggleMenu,
-    displayFooter,
     displayOverlay,
     handleCloseErrorModal,
     dispatch, // app dispatch
