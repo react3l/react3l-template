@@ -3,11 +3,11 @@ import { commonService } from '@react3l/react3l/services/common-service';
 import { Dropdown } from 'antd';
 import Menu from 'antd/lib/menu';
 import classNames from 'classnames';
-import React from 'react';
+import moment from 'moment';
+import React, { RefObject } from 'react';
 import InfiniteScroll from "react-infinite-scroll-component";
-import Reducer from 'reactn/types/reducer';
 import { ErrorObserver, forkJoin, Observable } from 'rxjs';
-import { Creator, Message } from './ChatBox.model';
+import { Creator, FileModel, Message } from './ChatBox.model';
 import './ChatBox.scss';
 
 export interface ChatBoxProps <TFilter extends ModelFilter> {
@@ -18,7 +18,8 @@ export interface ChatBoxProps <TFilter extends ModelFilter> {
     countMessages?: (TModelFilter?: TFilter) => Observable<number>;
     postMessage?: (Message: Message) => Observable<Message>;
     deleteMessage?: (Message: Message) => Observable<boolean>;
-    attachFile?: (File: File) => Observable<File>;
+    suggestList?: (value: string) => Observable<Model[]>;
+    attachFile?: (File: File) => Observable<FileModel>;
 }
 
 export interface filterAction {
@@ -64,7 +65,7 @@ function initFilter (initialValue: any) {
     };
 }
 
-function updateFilter(state: ModelFilter, filterAction): ModelFilter{
+function updateFilter (state: ModelFilter, filterAction: filterAction): ModelFilter{
     switch (filterAction.action) {
         case "RESET":
             return {
@@ -90,7 +91,7 @@ function updateFilter(state: ModelFilter, filterAction): ModelFilter{
     }
 };
 
-function updateList(state: Message[], listAction: listAction) {
+function updateList (state: Message[], listAction: listAction) {
     switch (listAction.action) {
         case 'UPDATE':
             return [...listAction.data];
@@ -102,7 +103,7 @@ function updateList(state: Message[], listAction: listAction) {
             ];
             return combined;
         case 'ADD_SINGLE':
-            return [...state, listAction.message];
+            return [listAction.message, ...state];
     }
 }
 
@@ -115,9 +116,13 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         countMessages,
         postMessage,
         deleteMessage,
+        attachFile,
+        suggestList,
     } = props;
 
     const [sortType, setSortType] = React.useState<any>({type: 'latest', title: 'Mới nhất'});
+
+    const [showSuggestList, setShowSuggestList] = React.useState<boolean>(false);
 
     const [filter, dispatchFilter] = React.useReducer(updateFilter, {discussionId, order: 'lastest', classFilter: ClassFilter}, initFilter);
 
@@ -128,6 +133,10 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
     const [hasMore, setHasMore] = React.useState<boolean>(true);
 
     const [subscription] = commonService.useSubscription();
+
+    const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>();
+
+    const contentEditableRef: React.LegacyRef<HTMLDivElement> = React.useRef<HTMLDivElement>();
 
     const handleMouseLeave = React.useCallback(() => {
         if (list && list.length > 0) {
@@ -159,29 +168,32 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
     }, [userInfo]);
 
     const getListMessages = React.useCallback(() => {
-        return forkJoin([
-            getMessages(filter),
-            countMessages(filter),
-          ])
-            .subscribe(
-                ([list, total]: [Message[], number]) => {
-                    if (list && total) {
-                        const listMessage = filterOwner(list);
-                        if(filter.skip > 0) {
-                            dispatchList({
-                                action: 'CONCAT',
-                                data: listMessage,
-                            });
-                        } else {
-                            dispatchList({
-                                action: 'UPDATE',
-                                data: listMessage,
-                            });
+        if (getMessages && countMessages) {
+            return forkJoin([
+                getMessages(filter),
+                countMessages(filter),
+              ])
+                .subscribe(
+                    ([list, total]: [Message[], number]) => {
+                        if (list && total) {
+                            const listMessage = filterOwner(list);
+                            if(filter.skip > 0) {
+                                dispatchList({
+                                    action: 'CONCAT',
+                                    data: listMessage.reverse(),
+                                });
+                            } else {
+                                dispatchList({
+                                    action: 'UPDATE',
+                                    data: listMessage.reverse(),
+                                });
+                            }
+                            setCountMessage(total);
                         }
-                        setCountMessage(total);
-                    }
-                },
-            );
+                    },
+                );
+        }
+        return;
     }, [filterOwner, getMessages, countMessages, filter]);
 
     const handleMenuClick = React.useCallback((e: any) => {
@@ -196,9 +208,10 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
     const handleSend = React.useCallback(() => {
         const message = new Message({
             discussionId: discussionId,
-            content: '',
+            content: contentEditableRef.current.innerHTML,
             creatorId: userInfo.id,
             creator: userInfo,
+            createdAt: moment(),
         });
 
         postMessage(message).subscribe(
@@ -207,6 +220,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                     action: 'ADD_SINGLE',
                     message: res,
                 });
+                contentEditableRef.current.innerHTML = '';
             },
             (err: ErrorObserver<Error>) => {},
         );
@@ -265,6 +279,47 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             setHasMore(false);
         }
     }, [countMessage, list, filter]);
+
+    const handleAttachFile = React.useCallback((selectorFiles: FileList) => {
+        if (attachFile && typeof attachFile === 'function') {
+            const fileValue = selectorFiles[0];
+            inputRef.current.value = null;
+            const fileSubcription = attachFile(fileValue).subscribe(
+                (res: FileModel) => {
+                    if (res) {
+                        var hrefItem;
+                        const fileType = fileValue.type.split('/')[0];
+                        if (fileType === "image") {
+                            hrefItem = `<image src="${res.path}" alt="IMG">`;
+                            hrefItem = `<image src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg" alt="IMG">`;
+                        } else {
+                            hrefItem = `<a href="${res.path}">${res.name}</a>`;
+                        }
+                        contentEditableRef.current.innerHTML += hrefItem;
+                    }
+                },
+                (err) => {
+    
+                },
+            );
+            subscription.add(fileSubcription);
+        }
+    }, [attachFile, subscription]);
+
+    const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+        // if (event.key === '@') {
+        //     const wrapperTag = `<span class="tag-value"></span>`;
+        //     contentEditableRef.current.innerHTML += wrapperTag;
+        //     setShowSuggestList(true);
+        //     return;
+        // }
+        // if (contentEditableRef.current.innerHTML.includes('<span class="tag-value">')) {
+        //     const splitString = contentEditableRef.current.innerHTML.split('<span class="tag-value">');
+        //     const beginString = splitString[0];
+        //     const valueText = splitString[1].split('</span>')[0] + event.key; 
+        //     contentEditableRef.current.innerHTML = beginString + '<span class="tag-value">' + valueText + '</span>';
+        // }
+    }, []);
 
     React.useEffect(() => {
         const subcription = getListMessages();
@@ -334,14 +389,29 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             </InfiniteScroll>
         </div>
         <div className="chat-box__footer">
-            <div className="chat-box__comment">
-                <div contentEditable={true} placeholder="Enter text here..."></div>
+            <div className="chat-box__comment"
+                ref={contentEditableRef}
+                onKeyPress={handleKeyPress}
+                contentEditable={true} 
+                placeholder="Enter text here...">
             </div>
             <div className="chat-box__action">
-                <i className="tio-attachment_diagonal"></i>
+                <input type="file" ref={inputRef} style={{display: 'none'}} onChange={(e) => handleAttachFile(e.target.files)}/>
+                <i className="tio-attachment_diagonal" onClick={() => {inputRef.current.click();}}></i>
                 <button className="btn btn-sm component__btn-primary" onClick={handleSend}>Send</button>
             </div>
         </div>
+        {   showSuggestList && 
+            <div className="chat-box__suggest-list">
+                    <ul className="list-group">
+                        <li className="list-group-item">Cras justo odio</li>
+                        <li className="list-group-item">Dapibus ac facilisis in</li>
+                        <li className="list-group-item">Morbi leo risus</li>
+                        <li className="list-group-item">Porta ac consectetur ac</li>
+                        <li className="list-group-item">Vestibulum at eros</li>
+                    </ul>
+            </div>
+        }
     </div>;
 }
 

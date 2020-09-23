@@ -3,8 +3,9 @@ import { storiesOf } from "@storybook/react";
 import nameof from "ts-nameof.macro";
 import ChatBox from "./ChatBox";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import moment from "moment";
+import { FileModel, Message } from "./ChatBox.model";
 
 const listMessageDemo = [
     {   id: 1, 
@@ -21,7 +22,7 @@ const listMessageDemo = [
     },
     {   id: 2, 
         discussionId: '930cd7ca-b3b0-4105-8c82-6e45d2f64ef7', 
-        content: '<a>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a>', 
+        content: '<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" alt="IMG"/>', 
         creatorId: 11, 
         createdAt: moment(), 
         creator: {
@@ -103,10 +104,25 @@ const demoCountFunc = (TModelFilter: ModelFilter) => {
     return countObservable;
 };
 
+const demoPostFunc = (Message: Message) => {
+    return of(Message);
+};
+
+const demoAttachFunc = (file: File) => {
+    const fileValue: FileModel = {
+        id: 1,
+        name: file.name,
+        path: '/testpath',
+    };
+    return of(fileValue);
+};
+
 function Default() {
     return <div style={{width: '350px', height: '450px', margin: 'auto'}}>
         <ChatBox getMessages={demoSearchFunc}
             countMessages={demoCountFunc}
+            postMessage={demoPostFunc}
+            attachFile = {demoAttachFunc}
             discussionId={'cb042dd9-03bf-4218-a126-9cd7444c68e4'}
             userInfo={{
                 id: 10, 

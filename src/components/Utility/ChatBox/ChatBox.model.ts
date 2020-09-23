@@ -17,7 +17,7 @@ export class Message extends Model {
         super();
         if (message) {
             this.discussionId = message.discussionId ? message.discussionId : null;
-            this.content = message.discussionId ? message.discussionId : null;
+            this.content = message.content ? message.content : null;
             this.mobileContent = message.mobileContent ? message.mobileContent : null;
             this.createdAt = message.createdAt ? message.createdAt : null;
             this.updatedAt = message.updatedAt ? message.updatedAt : null;;
@@ -30,18 +30,18 @@ export class Message extends Model {
 
 export class Creator extends Model {
     id: number;
-    userName: string;
-    displayName: string;
-    avatar: string;
+    userName?: string;
+    displayName?: string;
+    avatar?: string;
 }
 
-export class File extends Model {
+export class FileModel extends Model {
     id: number;
-    key: string;
-    name: string;
-    content: string;
-    mimetype: string;
-    isFile: boolean;
-    path: string;
-    level: number;
+    key?: string;
+    name?: string;
+    content?: string;
+    mimetype?: string;
+    isFile?: boolean;
+    path?: string;
+    level?: number;
 }

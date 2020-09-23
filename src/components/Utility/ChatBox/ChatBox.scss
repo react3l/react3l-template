@@ -8,6 +8,7 @@
     overflow: hidden;
     background-color: #ffffff;
     border-radius: 7px;
+    position: relative;
 
     div[contentEditable=true] {
         outline: none;
@@ -56,6 +57,7 @@
 
     .chat-box__body {
         display: flex;
+        position: relative;
         overflow-y: auto;
         flex-direction: column-reverse;
         height: 90%;
@@ -111,6 +113,11 @@
                     bottom: -15px;
                     color: #8181A5;
                     font-size: 10px;
+                    white-space: nowrap;
+                }
+
+                img {
+                    height: 50px;
                 }
             }
     
@@ -171,6 +178,7 @@
                 margin-left: 5px;              
             }
         }
+        
     }
 
     .chat-box__footer {
@@ -181,12 +189,24 @@
 
         .chat-box__comment {
             flex-grow: 1;
+            word-wrap: break-word;
+            width: auto;
+            overflow: auto;
+            max-height: 50px;
+            a {
+                text-decoration: underline !important;
+            }
+
+            img {
+                height: 40px;
+            }
         }
 
         .chat-box__action {
             i {
                 font-size: 18px;
                 margin-right: 5px;
+                cursor: pointer;
             }
         }
     }
@@ -198,6 +218,19 @@
         img {
             height: 30px;
             width: 50px;
+        }
+    }
+
+    .chat-box__suggest-list {
+        position: absolute;
+        bottom: 55px;
+        width: 80%;
+        ul {
+            max-height: 250px;
+            overflow-y: auto;
+            li {
+                cursor: pointer;
+            }
         }
     }
 }
