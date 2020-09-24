@@ -374,14 +374,13 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                                     <span className="msg-time">{currentItem.createdAt.format('ll')}</span>
                                 </div>
                                 <div className="msg-icon">
-                                    <i className="error-text tio-remove_from_trash" onClick={popupConfirm(currentItem)}></i>
-                                    {currentItem.isPopup && <div className={classNames('confirm-box__container', (currentItem.isOwner ? 'confirm-box__container--left' : 'confirm-box__container--right'))}>
-                                        <div className="confirm-box__title">Bạn có chắc muốn xóa ?</div>
-                                        <div className="confirm-box__popover">
-                                            <button className="btn btn-sm error-background" onClick={handleOk(currentItem)}>Xóa</button>
-                                            <button className="btn btn-sm cancel-background" onClick={handleCancel(currentItem)}>Hủy</button>
-                                        </div>
-                                    </div>}
+                                    {currentItem.isPopup ? 
+                                        <div className="confirm-box">
+                                            <span className="confirm-box__delete-button" onClick={handleOk(currentItem)}>Xóa</span>
+                                            <span className="confirm-box__cancel-button" onClick={handleCancel(currentItem)}>Hủy</span>
+                                        </div> :
+                                        <i className="error-text tio-remove_from_trash" onClick={popupConfirm(currentItem)}></i>
+                                    }
                                 </div>
                             </div>;
                         })

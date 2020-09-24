@@ -17,11 +17,19 @@ import { Moment } from "moment";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { paymentRepository } from "repositories/payment-repository";
+import { of } from "rxjs";
 import { queryStringService } from "services/QueryStringService";
 import { routerService } from "services/RouterService";
 import { tableService } from "services/TableService";
 import nameof from "ts-nameof.macro";
 import "./PaymentRequestMasterView.scss";
+import { Animate } from "react-show";
+
+const LoadingIndicator = () => {
+  return <div style={{position: 'absolute', top: '50%', left: '50%', margin: '-10px'}}>
+    <img className="img-loading" src="/assets/svg/spinner.svg"  alt=''/>
+  </div>;
+};
 
 export class DemoListFilter extends ModelFilter {
   id: IdFilter = new IdFilter();
@@ -214,6 +222,7 @@ function PaymentMasterView() {
                 <div className='mt__1'>
                   <label className='label'>Phòng ban</label>
                   <AdvanceIdFilter
+                    getList={() => of([])}
                     classFilter={DemoListFilter}
                     placeHolder={"Tất cả"}
                   />
@@ -253,7 +262,21 @@ function PaymentMasterView() {
               </Col>
               {/* end toggle and reset filter */}
             </Row>
-            {toggle && (
+            <Animate
+              show={toggle}
+              duration={300}
+              style={{
+                height: "auto",
+              }}
+              transitionOnMount={true} 
+              start={{
+                height: 0,
+              }}
+              leave={{ 
+                opacity: 0,
+                height: 0,
+              }}
+            >
               <>
                 <Row className='mt-4'>
                   <Col lg={4} className='pr-4'>
@@ -318,7 +341,7 @@ function PaymentMasterView() {
                   </Col>
                 </Row>
               </>
-            )}
+            </Animate>
           </Card>
         </div>
         <div className='page__master-table'>
@@ -328,8 +351,8 @@ function PaymentMasterView() {
               rowKey={nameof(list[0].id)}
               columns={columns}
               dataSource={list}
-              loading={loading}
               pagination={false}
+              loading={{spinning: loading, indicator: <LoadingIndicator />}}
               // onChange={handleChangeOrder}
               rowSelection={rowSelection}
               title={() => (

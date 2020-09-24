@@ -33,6 +33,15 @@ body {
     height: 100%;
   }
 
+  .img-loading {
+    max-height: 50px;
+    max-width: 50px;
+  }
+
+  .img-emty {
+    width: inherit;
+  }
+
   .input-icon {
     @include input-icon;
   }
@@ -242,11 +251,11 @@ body {
         color: #8181a5;
         margin-bottom: 2px;
       }
-      // .page__detail-tabs {
-      //   .ant-tabs {
-      //     overflow: unset;
-      //   }
-      // }
+      .page__detail-tabs {
+        .ant-tabs {
+          overflow: unset !important;
+        }
+      }
       .page__detail-invoice {
         .page__detail-invoice-header {
           background: #fafafc;
@@ -303,7 +312,7 @@ body {
         border-radius: 15px;
       }
       .ant-card-body {
-        padding: 0 !important;
+        padding: 0px 10px !important;
         .ant-table-wrapper {
           .ant-table {
             .ant-table-title {

@@ -19,6 +19,9 @@ import {
 } from "views/AppContext";
 import useApp from "views/AppHook";
 import "./App.scss";
+import { Animate } from "react-show";
+
+
 function App() {
   const {
     errorMessage,

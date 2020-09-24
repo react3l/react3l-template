@@ -117,11 +117,16 @@ const demoAttachFunc = (file: File) => {
     return of(fileValue);
 };
 
+const demoDeleteFunc = (message: any) => {
+    return of(true);
+};
+
 function Default() {
     return <div style={{width: '350px', height: '450px', margin: 'auto'}}>
         <ChatBox getMessages={demoSearchFunc}
             countMessages={demoCountFunc}
             postMessage={demoPostFunc}
+            deleteMessage={demoDeleteFunc}
             attachFile = {demoAttachFunc}
             discussionId={'cb042dd9-03bf-4218-a126-9cd7444c68e4'}
             userInfo={{
