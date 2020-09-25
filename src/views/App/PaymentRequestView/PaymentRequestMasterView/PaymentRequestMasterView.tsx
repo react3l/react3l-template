@@ -212,56 +212,30 @@ function PaymentMasterView() {
         </div>
         <div className='page__search'>
           <Card title={translate("general.search.title")}>
-            <Row className='d-flex align-items-center'>
-              <Col lg={12}>
-                <div className='pr-4'>
+            <div className='d-flex align-items-center'>
+              <div className='pr-4 flex-grow-1'>
                   <InputSearch />
-                </div>
-              </Col>
-              <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
-                  <label className='label'>Phòng ban</label>
-                  <AdvanceIdFilter
-                    getList={() => of([])}
-                    classFilter={DemoListFilter}
-                    placeHolder={"Tất cả"}
-                  />
-                </div>
-              </Col>
-              <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
-                  <label className='label'>Trạng thái</label>
-                  <AdvanceIdFilter
-                    classFilter={ModelFilter}
-                    placeHolder={"Tất cả"}
-                  />
-                </div>
-              </Col>
+              </div>
               {/* start toggle and reset filter */}
-              <Col lg={4}>
-                <div className='d-flex justify-content-end'>
-                  <button
-                    className={classNames(
+              <div className='d-flex justify-content-around'>
+                <button className={classNames(
                       "btn component__btn-toggle mr-4",
-                      toggle === true ? "component__btn-toggle-active" : "",
-                    )}
-                    onClick={handleToggleSearch}
-                  >
-                    <div className='tio-down_ui' />
-                    <div className='tio-down_ui' />
-                  </button>
-                  <div className='d-flex justify-content-between'>
-                    <button
-                      className='btn component__btn-outline-primary'
-                      // onClick={handleResetFilter}
-                    >
-                      ResetFilter
-                    </button>
-                  </div>
-                </div>
-              </Col>
+                      toggle === true ? "component__btn-toggle-active" : "")}
+                  onClick={handleToggleSearch}>
+                  <i className="tio-tune_horizontal"></i>
+                  <span className="component_btn-text">
+                    Nâng cao
+                  </span>
+                </button>
+                <button className="btn component__btn-toggle">
+                  <i className="tio-restore"></i>
+                  <span className="component_btn-text">
+                    Bỏ lọc
+                  </span>
+                </button>
+              </div>
               {/* end toggle and reset filter */}
-            </Row>
+            </div>
             <Animate
               show={toggle}
               duration={300}

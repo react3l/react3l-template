@@ -22,6 +22,11 @@ export interface ChatBoxProps <TFilter extends ModelFilter> {
     attachFile?: (File: File) => Observable<FileModel>;
 }
 
+export interface contentAction {
+    action: string;
+    data: string;
+}
+
 export interface filterAction {
     action: string;
     order?: string;
@@ -107,6 +112,15 @@ function updateList (state: Message[], listAction: listAction) {
     }
 }
 
+function updateContent (state: string, contentAction: contentAction) {
+    switch (contentAction.action) {
+        case 'UPDATE':
+            return state + contentAction.data;
+        default:
+            return state;
+    }
+}
+
 function ChatBox (props: ChatBoxProps<ModelFilter>) {
     const {
         userInfo,
@@ -122,11 +136,15 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
 
     const [sortType, setSortType] = React.useState<any>({type: 'latest', title: 'Mới nhất'});
 
+    const [userList, setUserList] = React.useState([]);
+
     const [showSuggestList, setShowSuggestList] = React.useState<boolean>(false);
 
     const [filter, dispatchFilter] = React.useReducer(updateFilter, {discussionId, order: 'lastest', classFilter: ClassFilter}, initFilter);
 
     const [list, dispatchList] = React.useReducer(updateList, []);
+
+    const [contentEditable, dispatchContentEditable] = React.useReducer(updateContent, '');
 
     const [countMessage, setCountMessage] = React.useState<number>();
 
@@ -308,17 +326,26 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
 
     const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
         // if (event.key === '@') {
-        //     const wrapperTag = `<span class="tag-value"></span>`;
-        //     contentEditableRef.current.innerHTML += wrapperTag;
         //     setShowSuggestList(true);
         //     return;
         // }
-        // if (contentEditableRef.current.innerHTML.includes('<span class="tag-value">')) {
-        //     const splitString = contentEditableRef.current.innerHTML.split('<span class="tag-value">');
-        //     const beginString = splitString[0];
-        //     const valueText = splitString[1].split('</span>')[0] + event.key; 
-        //     contentEditableRef.current.innerHTML = beginString + '<span class="tag-value">' + valueText + '</span>';
+        // if (contentEditableRef.current.innerText.includes('@')) {
+        //     dispatchContentEditable({
+        //         action: 'UPDATE',
+        //         data: event.key,
+        //     });
         // }
+    }, []);
+
+    const handlePaste = React.useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const text = event.clipboardData.getData('text/plain');
+        document.execCommand('insertHTML', false, text);
+    }, []);
+
+    const selectUser = React.useCallback(
+        (currentUser) => (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+
     }, []);
 
     React.useEffect(() => {
@@ -327,6 +354,19 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             subcription.unsubscribe();
         };
     }, [getListMessages]);
+
+
+    React.useEffect(() => {
+        const subcription = suggestList(contentEditable).subscribe(
+            (res) => {
+                if (res) {
+                    setUserList(res);
+                }
+            });
+        return () => {
+            subcription.unsubscribe();
+        };
+    }, [contentEditable, suggestList]);
 
     const menuSort = React.useMemo(() => {
         return <Menu onClick={handleMenuClick} selectedKeys={[sortType.type]}>
@@ -391,6 +431,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             <div className="chat-box__comment"
                 ref={contentEditableRef}
                 onKeyPress={handleKeyPress}
+                onPaste={handlePaste}
                 contentEditable={true} 
                 placeholder="Enter text here...">
             </div>
@@ -403,11 +444,9 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         {   showSuggestList && 
             <div className="chat-box__suggest-list">
                     <ul className="list-group">
-                        <li className="list-group-item">Cras justo odio</li>
-                        <li className="list-group-item">Dapibus ac facilisis in</li>
-                        <li className="list-group-item">Morbi leo risus</li>
-                        <li className="list-group-item">Porta ac consectetur ac</li>
-                        <li className="list-group-item">Vestibulum at eros</li>
+                        { userList.map((currentUser, index) => {
+                            return <li className="list-group-item" onClick={selectUser(currentUser)}>{currentUser?.displayName}</li>;
+                        })}
                     </ul>
             </div>
         }
