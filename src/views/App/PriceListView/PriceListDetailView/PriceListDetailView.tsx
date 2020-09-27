@@ -1,6 +1,7 @@
 import { Card, Col, Row, Switch, Tabs } from "antd";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
-import ContentTable from "components/Utility/ContentTable/ContentTable";
+import ContentTable from "components/Utility/ContentTable/ContentTable"; // view for content table
+import ContentModal from "components/Utility/ContentModal_V1/ContentModal"; // view for content modal
 import FormItem from "components/Utility/FormItem/FormItem";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
@@ -16,7 +17,10 @@ import { formService } from "services/FormService";
 import detailService from "services/pages/detail-service";
 import nameof from "ts-nameof.macro";
 import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable"; // view for content table
-import { usePriceListStoreMappingsTable } from "./PriceListStoreMappings/PriceListStoreMappingsHook"; // hook for content table
+import {
+  usePriceListStoreMappingsTable,
+  usePriceListStoreMappingsModal,
+} from "./PriceListStoreMappings/PriceListStoreMappingsHook"; // hook for content table, content modal
 const { TabPane } = Tabs;
 
 function PriceListDetailView() {
@@ -42,6 +46,23 @@ function PriceListDetailView() {
     setStoreMappingContents,
     priceListStoreMappingsContentColumns,
   } = usePriceListStoreMappingsTable(model, handleUpdateNewModel); // hook for priceListStoreMappings table
+
+  const {
+    visibleStore,
+    storeFilter,
+    handleUpdateNewStoreFilter,
+    handleSearchStore,
+    handleResetStoreFilter,
+    loadStoreList,
+    setLoadStoreList,
+    storeModalFilters,
+    handleOpenStoreModal,
+    handleCloseStoreModal,
+    handleSaveStoreModal,
+    selectedStoreList,
+    storeColumns,
+    storeContentMapper,
+  } = usePriceListStoreMappingsModal(storeMappingContents); // hook for priceListStoreMappings modal
 
   return (
     <div className='page page__detail'>
@@ -213,14 +234,37 @@ function PriceListDetailView() {
                       contentMapper={mapper}
                       content={storeMappingContents}
                       setContent={setStoreMappingContents}
-                      mapperField={nameof(
-                        model.priceListStoreMappings[0].store,
-                      )}
                       contentClass={PriceListStoreMappings}
                       contentFilterClass={PriceListStoreMappingsFilter}
                       filter={priceListStoreMappingsFilter}
                       dispatch={dispatchPriceListStoreMappingsFilter}
                       columns={priceListStoreMappingsContentColumns}
+                      onOpenModal={handleOpenStoreModal} // handleOpen below modal component
+                      mapperField={nameof(
+                        model.priceListStoreMappings[0].store,
+                      )}
+                    />
+                    <ContentModal
+                      content={storeMappingContents}
+                      setContent={setStoreMappingContents}
+                      visible={visibleStore}
+                      filter={storeFilter}
+                      onUpdateNewFilter={handleUpdateNewStoreFilter}
+                      onResetFilter={handleResetStoreFilter}
+                      onSearch={handleSearchStore}
+                      getList={priceListRepository.listStore}
+                      getTotal={priceListRepository.countStore}
+                      loadList={loadStoreList}
+                      setLoadList={setLoadStoreList}
+                      selectedList={selectedStoreList}
+                      columns={storeColumns}
+                      filterList={storeModalFilters}
+                      mapperField={nameof(
+                        model.priceListStoreMappings[0].store,
+                      )}
+                      mapper={storeContentMapper}
+                      onClose={handleCloseStoreModal} // optional
+                      onSave={handleSaveStoreModal} // optional
                     />
                   </Row>
                 </TabPane>

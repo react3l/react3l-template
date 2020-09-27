@@ -25,7 +25,7 @@ export interface ContentTableProps<
   dispatch: Dispatch<AdvanceFilterAction<TContentFilter>>;
   columns: TableColumn[];
   contentMapper?: (model: TContent | TMapper) => TContent;
-  handleOpenModal?: () => void;
+  onOpenModal?: () => void;
   onExportContent?: (model?: T) => Observable<AxiosResponse<any>>;
   onExportContentTemp?: (id: React.ReactText) => Observable<AxiosResponse<any>>;
   onImportContent?: (file: File, priceListId: number) => Observable<TContent[]>;
@@ -56,7 +56,7 @@ export default function ContentTable<
     dispatch,
     contentMapper,
     columns,
-    handleOpenModal,
+    onOpenModal,
     onExportContent,
     onExportContentTemp,
     onImportContent,
@@ -119,7 +119,7 @@ export default function ContentTable<
                 <Tooltip title={translate("Thêm nhiều dòng")} key='openModal'>
                   <button
                     className='btn gradient-btn-icon text-center'
-                    onClick={handleOpenModal}
+                    onClick={onOpenModal}
                   >
                     <i className='tio-add ' />
                   </button>

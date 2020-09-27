@@ -10,7 +10,7 @@ import {
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
 import { useTranslation } from "react-i18next";
-import { IdFilter } from "@react3l/advanced-filters";
+import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { masterTableIndex } from "helpers/table";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
@@ -19,6 +19,7 @@ import { StoreFilter } from "models/StoreFilter";
 import { Store } from "antd/lib/form/interface";
 import { mappingToMapper } from "services/tbl-service";
 import tableService from "services/tbl-service";
+import { advanceFilterFactory } from "services/component-factory/component-factory-service";
 export function usePriceListStoreMappingsTable(
   model: PriceList,
   setModel: (data: PriceList) => void,
@@ -111,9 +112,16 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
   >(advanceFilterReducer, new StoreFilter()); // filter factory
 
   const {
+    renderStringFilter,
+    // renderIdFilter,
+    // renderDateFilter,
+  } = advanceFilterFactory;
+
+  const {
     loadList,
     setLoadList,
     handleSearch,
+    handleChangeFilter,
     handleUpdateNewFilter,
     handleResetFilter,
   } = advanceFilterService.useChangeAdvanceFilter<StoreFilter>(
@@ -123,10 +131,21 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
     false, // default loadList
   );
 
-  const selectedList = React.useMemo(
+  const selectedStoreList = React.useMemo(
     () => (source.length > 0 ? source.map(mappingToMapper("store")) : []),
     [source],
   ); // calculate selectedList from updated source
+
+  const storeModalFilters = React.useMemo(
+    () => [
+      renderStringFilter(
+        storeFilter["code"]["contain"],
+        handleChangeFilter("code", "contain" as any, StringFilter),
+        translate("priceList.filter.name"),
+      ),
+    ],
+    [handleChangeFilter, renderStringFilter, storeFilter, translate],
+  );
 
   const storeColumns = React.useMemo(
     () =>
@@ -149,7 +168,8 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
     handleEndControl,
     handleOpenModal,
     handleCloseModal,
-  } = tableService.useContenModal(); // state for modal
+    handleSaveModal,
+  } = tableService.useContenModal(handleSearch); // state for modal
 
   React.useEffect(() => {
     if (loadControl) {
@@ -158,11 +178,36 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
     }
   }, [handleSearch, loadControl, handleEndControl]); // subscribe event emitter
 
+  const storeContentMapper = (
+    model: PriceListStoreMappings | Store,
+  ): PriceListStoreMappings => {
+    if (model.hasOwnProperty("store")) {
+      const { store } = model;
+      return {
+        ...model,
+        storeId: store?.id,
+        storeCode: store?.code,
+        storeName: store?.name,
+        storeTypeId: store?.storeTypeId,
+        provinceId: store?.provinceId,
+        storeGroupingId: store?.storeGroupingId,
+        storeType: store?.storeType,
+        province: store?.province,
+      };
+    } // if typeof item is content
+    return storeContentMapper({
+      ...new PriceListStoreMappings(),
+      store: model,
+    }); // if typeof item is mapper
+  };
+
   return {
+    storeModalFilters,
     visibleStore: visible, // state for modal visibility
     handleOpenStoreModal: handleOpenModal,
     handleCloseStoreModal: handleCloseModal, // close modal as onClose props in modal
-    selectedStoreList: selectedList, // for default selectedRowKeys
+    handleSaveStoreModal: handleSaveModal, // save modal as onSave props in modal
+    selectedStoreList, // for default selectedRowKeys
     storeFilter,
     dispatchStoreFilter,
     storeColumns, // columns for modal table
@@ -171,5 +216,6 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
     handleSearchStore: handleSearch,
     handleUpdateNewStoreFilter: handleUpdateNewFilter,
     handleResetStoreFilter: handleResetFilter,
+    storeContentMapper,
   };
 }

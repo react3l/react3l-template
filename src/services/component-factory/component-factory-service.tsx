@@ -16,7 +16,7 @@ export const advanceFilterFactory = {
     placeholder: string,
     title?: string,
   ) {
-    return () => (
+    return (
       <AdvanceStringFilter
         value={value}
         onChange={onChange}
