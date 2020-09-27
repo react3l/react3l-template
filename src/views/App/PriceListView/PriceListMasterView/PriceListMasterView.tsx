@@ -204,10 +204,7 @@ function PriceListMasterView() {
                   <div className='tio-down_ui' />
                 </button>
                 <div className='d-flex justify-content-between'>
-                  <button
-                    className='btn btn-info'
-                    onClick={handleResetFilter()}
-                  >
+                  <button className='btn btn-info' onClick={handleResetFilter}>
                     ResetFilter
                   </button>
                 </div>

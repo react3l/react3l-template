@@ -188,7 +188,7 @@ export const advanceFilterService = {
         | DateFilter
         | IdFilter,
     ) => (value: any) => void;
-    handleResetFilter: () => () => void;
+    handleResetFilter: () => void;
     handleUpdateNewFilter: (filter: TFilter) => void;
   } {
     const [loadList, setLoadList] = useState<boolean>(
@@ -235,17 +235,15 @@ export const advanceFilterService = {
     );
 
     const handleResetFilter = React.useCallback(() => {
-      return () => {
-        const newFilter = new ClassFilter();
-        newFilter.skip = 0;
-        newFilter.take = 10;
+      const newFilter = new ClassFilter();
+      newFilter.skip = 0;
+      newFilter.take = 10;
 
-        dispatch({
-          type: ActionFilterEnum.ChangeAllField,
-          data: newFilter,
-        });
-        handleSearch();
-      };
+      dispatch({
+        type: ActionFilterEnum.ChangeAllField,
+        data: newFilter,
+      });
+      handleSearch();
     }, [dispatch, ClassFilter, handleSearch]);
 
     const handleUpdateNewFilter = React.useCallback(

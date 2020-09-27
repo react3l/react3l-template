@@ -1,3 +1,4 @@
+import React, { useCallback, useMemo, useReducer, useEffect } from "react";
 import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { Card, Col, Modal, Row } from "antd";
 import { Store } from "antd/lib/form/interface";
@@ -8,9 +9,7 @@ import Pagination from "components/Utility/Pagination/Pagination";
 import { renderMasterIndex } from "helpers/table";
 import { StoreFilter } from "models/StoreFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
-import React, { useCallback, useMemo, useReducer } from "react";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "reactn";
 import { priceListRepository } from "repositories/price-list-repository";
 import {
   advanceFilterReducer,
@@ -45,7 +44,7 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const [filter, dispatch] = useReducer(
     advanceFilterReducer,
     new StoreFilter(),
-  );
+  ); // deprecated
 
   const {
     loadList,
@@ -92,7 +91,7 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const handleCloseModal = useCallback(() => {
     handleResetFilter(); // resetFilter to default
     if (typeof onClose === "function") {
-      return onClose();
+      onClose();
     }
   }, [handleResetFilter, onClose]);
 

@@ -601,8 +601,8 @@ export class TableService {
           setSource(
             source.filter(
               filterContentNotInList(
-                getIdsFromContent(mappingList, `${mapperField}Id`),
-                `${mapperField}Id`,
+                getIdsFromContent(mappingList, `key`),
+                `key`,
               ),
             ),
           ); // update source
@@ -612,7 +612,7 @@ export class TableService {
           resetTableFilter();
         },
       });
-    }, [mapperField, mappingList, resetTableFilter, setSource, source]); //  handle bulk delete
+    }, [mappingList, resetTableFilter, setSource, source]); //  handle bulk delete by keys
 
     const handleChangeOneCell = useCallback(
       (key: string, field: keyof T) => (value: T[keyof T]) => {

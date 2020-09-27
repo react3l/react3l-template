@@ -15,7 +15,10 @@ import { masterTableIndex } from "helpers/table";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
 import { priceListRepository } from "repositories/price-list-repository";
-
+import { StoreFilter } from "models/StoreFilter";
+import { Store } from "antd/lib/form/interface";
+import { mappingToMapper } from "services/tbl-service";
+import tableService from "services/tbl-service";
 export function usePriceListStoreMappingsTable(
   model: PriceList,
   setModel: (data: PriceList) => void,
@@ -101,6 +104,72 @@ export function usePriceListStoreMappingsTable(
   };
 }
 
-export function usePriceListStoreMappingsModal() {
-  return {};
+export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
+  const [translate] = useTranslation();
+  const [storeFilter, dispatchStoreFilter] = React.useReducer<
+    React.Reducer<StoreFilter, AdvanceFilterAction<StoreFilter>>
+  >(advanceFilterReducer, new StoreFilter()); // filter factory
+
+  const {
+    loadList,
+    setLoadList,
+    handleSearch,
+    handleUpdateNewFilter,
+    handleResetFilter,
+  } = advanceFilterService.useChangeAdvanceFilter<StoreFilter>(
+    storeFilter,
+    dispatchStoreFilter,
+    StoreFilter,
+    false, // default loadList
+  );
+
+  const selectedList = React.useMemo(
+    () => (source.length > 0 ? source.map(mappingToMapper("store")) : []),
+    [source],
+  ); // calculate selectedList from updated source
+
+  const storeColumns = React.useMemo(
+    () =>
+      CreateTableColumns(
+        CreateColumn()
+          .Title(translate("general.columns.index"))
+          .Key("index") // key
+          .Render(masterTableIndex<Store, StoreFilter>(storeFilter)), // render
+        CreateColumn()
+          .Title(translate("priceLists.store.code"))
+          .Key("code") // key
+          .DataIndex("code"),
+      ),
+    [storeFilter, translate],
+  );
+
+  const {
+    visible,
+    loadControl,
+    handleEndControl,
+    handleOpenModal,
+    handleCloseModal,
+  } = tableService.useContenModal(); // state for modal
+
+  React.useEffect(() => {
+    if (loadControl) {
+      handleSearch();
+      handleEndControl();
+    }
+  }, [handleSearch, loadControl, handleEndControl]); // subscribe event emitter
+
+  return {
+    visibleStore: visible, // state for modal visibility
+    handleOpenStoreModal: handleOpenModal,
+    handleCloseStoreModal: handleCloseModal, // close modal as onClose props in modal
+    selectedStoreList: selectedList, // for default selectedRowKeys
+    storeFilter,
+    dispatchStoreFilter,
+    storeColumns, // columns for modal table
+    loadStoreList: loadList,
+    setLoadStoreList: setLoadList,
+    handleSearchStore: handleSearch,
+    handleUpdateNewStoreFilter: handleUpdateNewFilter,
+    handleResetStoreFilter: handleResetFilter,
+  };
 }
