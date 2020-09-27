@@ -12,12 +12,11 @@ import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
 import { useTranslation } from "react-i18next";
 import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { masterTableIndex } from "helpers/table";
-import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
 import { priceListRepository } from "repositories/price-list-repository";
 import { StoreFilter } from "models/StoreFilter";
 import { Store } from "antd/lib/form/interface";
-import { mappingToMapper } from "services/tbl-service";
+import { mappingToMapper, getAntOrderType } from "services/tbl-service";
 import tableService from "services/tbl-service";
 import { advanceFilterFactory } from "services/component-factory/component-factory-service";
 export function usePriceListStoreMappingsTable(
@@ -34,6 +33,12 @@ export function usePriceListStoreMappingsTable(
     nameof(model.priceListStoreMappings),
   );
 
+  const {
+    renderStringFilter,
+    renderIdFilter,
+    // renderDateFilter,
+  } = advanceFilterFactory;
+
   const [
     priceListStoreMappingsFilter,
     dispatchPriceListStoreMappingsFilter,
@@ -44,9 +49,14 @@ export function usePriceListStoreMappingsTable(
     >
   >(advanceFilterReducer, new PriceListStoreMappingsFilter()); // filter factory
 
-  const { handleChangeFilter } = advanceFilterService.useChangeAdvanceFilter<
-    PriceListStoreMappingsFilter
-  >(
+  const {
+    loadList,
+    setLoadList,
+    handleSearch,
+    handleChangeFilter,
+    handleResetFilter,
+    handleUpdateNewFilter,
+  } = advanceFilterService.useChangeAdvanceFilter<PriceListStoreMappingsFilter>(
     priceListStoreMappingsFilter,
     dispatchPriceListStoreMappingsFilter,
     PriceListStoreMappingsFilter,
@@ -68,35 +78,94 @@ export function usePriceListStoreMappingsTable(
           .Title(() => <>{translate("priceLists.store.code")}</>)
           .Key(nameof(storeMappingContents[0].storeCode)) //Key
           .DataIndex(nameof(storeMappingContents[0].storeCode))
+          .Sorter(true) // if setSorter === true ...
+          .SortOrder(
+            getAntOrderType<
+              PriceListStoreMappings,
+              PriceListStoreMappingsFilter
+            >(
+              priceListStoreMappingsFilter,
+              nameof(storeMappingContents[0].storeCode),
+            ),
+          ) // ... so, you need to have setSortOder
           .AddChild(
             CreateColumn()
-              .Title(() => (
-                <>
-                  <AdvanceIdFilter
-                    value={priceListStoreMappingsFilter["storeTypeId"]["equal"]}
-                    onChange={handleChangeFilter(
-                      nameof(storeMappingContents[0].storeTypeId),
-                      "equal" as any,
-                      IdFilter,
-                    )}
-                    classFilter={StoreTypeFilter}
-                    getList={priceListRepository.filterListStoreType}
-                    placeHolder={translate("general.filter.idFilter")} // -> tat ca
-                  />
-                </>
-              ))
-              .DataIndex(nameof(storeMappingContents[0].storeType)),
-          ), // dataIndex
+              .Title(
+                renderStringFilter(
+                  priceListStoreMappingsFilter["storeCode"]["contain"],
+                  handleChangeFilter(
+                    "storeCode",
+                    "contain" as any,
+                    StringFilter,
+                  ),
+                  translate("priceList.filter.storeCode"),
+                ),
+              )
+              .DataIndex(nameof(storeMappingContents[0].storeCode)), // dataIndex for render storeType value
+          ),
+        CreateColumn()
+          .Title(() => <>{translate("priceLists.store.name")}</>)
+          .Key(nameof(storeMappingContents[0].storeName)) //Key
+          .DataIndex(nameof(storeMappingContents[0].storeName))
+          .AddChild(
+            CreateColumn()
+              .Title(
+                renderStringFilter(
+                  priceListStoreMappingsFilter["storeName"]["contain"],
+                  handleChangeFilter(
+                    "storeName",
+                    "contain" as any,
+                    StringFilter,
+                  ),
+                  translate("priceList.filter.storeName"),
+                ),
+              )
+              .DataIndex(nameof(storeMappingContents[0].storeName)), // dataIndex for render storeType value
+          ),
+        CreateColumn()
+          .Title(() => <>{translate("priceLists.store.storeType")}</>)
+          .Key(nameof(storeMappingContents[0].storeType)) //Key
+          .DataIndex(nameof(storeMappingContents[0].storeTypeId))
+          .Sorter(true) // if setSorter === true ...
+          .SortOrder(
+            getAntOrderType<
+              PriceListStoreMappings,
+              PriceListStoreMappingsFilter
+            >(
+              priceListStoreMappingsFilter,
+              nameof(storeMappingContents[0].storeTypeId),
+            ),
+          ) // ... so, you need to have setSortOder
+          .AddChild(
+            CreateColumn()
+              .Title(
+                renderIdFilter(
+                  priceListStoreMappingsFilter["storeTypeId"]["equal"],
+                  handleChangeFilter("storeTypeId", "equal" as any, IdFilter),
+                  StoreTypeFilter,
+                  priceListRepository.filterListStoreType,
+                ),
+              )
+              .Key(nameof(storeMappingContents[0].storeType)) //Key
+              .DataIndex(nameof(storeMappingContents[0].storeType)), // dataIndex for render storeType value
+          ),
       ),
     [
       priceListStoreMappingsFilter,
-      handleChangeFilter,
       storeMappingContents,
+      renderStringFilter,
+      handleChangeFilter,
       translate,
+      renderIdFilter,
     ],
   );
 
   return {
+    loadPriceListStoreMappingsList: loadList,
+    setLoadPriceListStoreMappingsList: setLoadList,
+    handleSearchPriceListStoreMappings: handleSearch,
+    handleUpdateNewPriceListStoreMappingsFilter: handleUpdateNewFilter,
+    handleResetPriceListStoreMappingsFilter: handleResetFilter,
     priceListStoreMappingsFilter,
     dispatchPriceListStoreMappingsFilter,
     storeMappingContents,
@@ -158,6 +227,10 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
           .Title(translate("priceLists.store.code"))
           .Key("code") // key
           .DataIndex("code"),
+        CreateColumn()
+          .Title(translate("priceLists.store.name"))
+          .Key("name") // key
+          .DataIndex("name"),
       ),
     [storeFilter, translate],
   );
@@ -178,29 +251,6 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
     }
   }, [handleSearch, loadControl, handleEndControl]); // subscribe event emitter
 
-  const storeContentMapper = (
-    model: PriceListStoreMappings | Store,
-  ): PriceListStoreMappings => {
-    if (model.hasOwnProperty("store")) {
-      const { store } = model;
-      return {
-        ...model,
-        storeId: store?.id,
-        storeCode: store?.code,
-        storeName: store?.name,
-        storeTypeId: store?.storeTypeId,
-        provinceId: store?.provinceId,
-        storeGroupingId: store?.storeGroupingId,
-        storeType: store?.storeType,
-        province: store?.province,
-      };
-    } // if typeof item is content
-    return storeContentMapper({
-      ...new PriceListStoreMappings(),
-      store: model,
-    }); // if typeof item is mapper
-  };
-
   return {
     storeModalFilters,
     visibleStore: visible, // state for modal visibility
@@ -216,6 +266,28 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
     handleSearchStore: handleSearch,
     handleUpdateNewStoreFilter: handleUpdateNewFilter,
     handleResetStoreFilter: handleResetFilter,
-    storeContentMapper,
   };
 }
+
+export const storeContentMapper = (
+  model: PriceListStoreMappings | Store,
+): PriceListStoreMappings => {
+  if (model.hasOwnProperty("store")) {
+    const { store } = model;
+    return {
+      ...model,
+      storeId: store?.id,
+      storeCode: store?.code,
+      storeName: store?.name,
+      storeTypeId: store?.storeTypeId,
+      provinceId: store?.provinceId,
+      storeGroupingId: store?.storeGroupingId,
+      storeType: store?.storeType,
+      province: store?.province,
+    };
+  } // if typeof item is content
+  return storeContentMapper({
+    ...new PriceListStoreMappings(),
+    store: model,
+  }); // if typeof item is mapper
+};

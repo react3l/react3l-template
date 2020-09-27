@@ -8,6 +8,7 @@ import AdvanceDateRangeFilter from "components/Utility/AdvanceFilter/AdvanceDate
 import AdvanceDateFilter from "components/Utility/AdvanceFilter/AdvanceDateFilter/AdvanceDateFilter";
 import AdvanceNumberRangeFilter from "components/Utility/AdvanceFilter/AdvanceNumberRangeFilter/AdvanceNumberRangeFilter";
 import AdvanceNumberFilter from "components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter";
+import { translate } from "@react3l/react3l/helpers";
 
 export const advanceFilterFactory = {
   renderStringFilter(
@@ -19,7 +20,7 @@ export const advanceFilterFactory = {
     return (
       <AdvanceStringFilter
         value={value}
-        onChange={onChange}
+        onBlur={onChange}
         placeHolder={placeholder}
         title={title}
       />
@@ -28,17 +29,19 @@ export const advanceFilterFactory = {
 
   renderIdFilter<TFilter extends ModelFilter>(
     value: string | number,
-    classFilter: new () => TFilter,
     onChange: (t: number) => void,
-    placeholder: string,
+    classFilter: new () => TFilter,
     getList: (filter: any) => Observable<any>,
+    placeholder?: string,
   ) {
     return () => (
       <AdvanceIdFilter
         value={+value}
         onChange={onChange}
         classFilter={classFilter}
-        placeHolder={placeholder}
+        placeHolder={
+          placeholder ? placeholder : translate("genera.placeholder.idfilter") // default is selected All
+        }
         getList={getList}
       />
     );

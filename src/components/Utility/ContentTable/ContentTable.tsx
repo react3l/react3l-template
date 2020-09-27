@@ -1,14 +1,13 @@
-import React, { Dispatch } from "react";
-import nameof from "ts-nameof.macro";
-import { Table, Tooltip } from "antd";
-import { useTranslation } from "react-i18next";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { TableColumn } from "core/models/TableColumn";
-import { useContentTable } from "./ContentTableHook";
-import Pagination from "components/Utility/Pagination/Pagination";
-import { Observable } from "rxjs";
+import { Table, Tooltip } from "antd";
 import { AxiosResponse } from "axios";
-import { AdvanceFilterAction } from "services/AdvanceFilterService";
+import Pagination from "components/Utility/Pagination/Pagination";
+import { TableColumn } from "core/models/TableColumn";
+import React, { Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
+import { Observable } from "rxjs";
+import nameof from "ts-nameof.macro";
+import { useContentTable } from "./ContentTableHook";
 export interface ContentTableProps<
   T extends Model, // Eg: PriceList
   TContent extends Model, // Eg: PriceListStoreMappings
@@ -20,9 +19,11 @@ export interface ContentTableProps<
   setContent: (content: TContent[]) => void; // setSource
   mapperField: string; // mapperField.Eg: Store
   contentClass: new () => TContent;
-  contentFilterClass: new () => TContentFilter;
   filter: TContentFilter;
-  dispatch: Dispatch<AdvanceFilterAction<TContentFilter>>;
+  onUpdateNewFilter: (filter: TContentFilter) => void;
+  onSearch: () => void;
+  loadList: boolean;
+  setLoadList: Dispatch<SetStateAction<boolean>>;
   columns: TableColumn[];
   contentMapper?: (model: TContent | TMapper) => TContent;
   onOpenModal?: () => void;
@@ -51,9 +52,11 @@ export default function ContentTable<
     setContent,
     mapperField,
     contentClass,
-    contentFilterClass,
     filter,
-    dispatch,
+    onUpdateNewFilter,
+    onSearch,
+    loadList,
+    setLoadList,
     contentMapper,
     columns,
     onOpenModal,
@@ -82,9 +85,11 @@ export default function ContentTable<
     setContent,
     contentMapper,
     contentClass,
-    contentFilterClass,
     filter,
-    dispatch,
+    onUpdateNewFilter,
+    onSearch,
+    loadList,
+    setLoadList,
     mapperField,
   );
 

@@ -1,14 +1,14 @@
 import { Card, Col, Row, Switch, Tabs } from "antd";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
-import ContentTable from "components/Utility/ContentTable/ContentTable"; // view for content table
+/* start import bundle for one pair of content table and content modal */
 import ContentModal from "components/Utility/ContentModal_V1/ContentModal"; // view for content modal
+import ContentTable from "components/Utility/ContentTable/ContentTable"; // view for content table
 import FormItem from "components/Utility/FormItem/FormItem";
 import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import { OrganizationFilter } from "models/OrganizationFilter";
-import { PriceList, PriceListStoreMappings, Store } from "models/PriceList";
-import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
+import { PriceList, PriceListStoreMappings } from "models/PriceList";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -18,9 +18,13 @@ import detailService from "services/pages/detail-service";
 import nameof from "ts-nameof.macro";
 import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable"; // view for content table
 import {
-  usePriceListStoreMappingsTable,
+  storeContentMapper,
   usePriceListStoreMappingsModal,
-} from "./PriceListStoreMappings/PriceListStoreMappingsHook"; // hook for content table, content modal
+  usePriceListStoreMappingsTable,
+} from "./PriceListStoreMappings/PriceListStoreMappingsHook"; // hook for content table, content modal and mapper
+
+/* end import bundle for one pair of content table and content modal */
+
 const { TabPane } = Tabs;
 
 function PriceListDetailView() {
@@ -41,7 +45,10 @@ function PriceListDetailView() {
 
   const {
     priceListStoreMappingsFilter,
-    dispatchPriceListStoreMappingsFilter,
+    loadPriceListStoreMappingsList,
+    setLoadPriceListStoreMappingsList,
+    handleSearchPriceListStoreMappings,
+    handleUpdateNewPriceListStoreMappingsFilter,
     storeMappingContents,
     setStoreMappingContents,
     priceListStoreMappingsContentColumns,
@@ -61,7 +68,6 @@ function PriceListDetailView() {
     handleSaveStoreModal,
     selectedStoreList,
     storeColumns,
-    storeContentMapper,
   } = usePriceListStoreMappingsModal(storeMappingContents); // hook for priceListStoreMappings modal
 
   return (
@@ -230,19 +236,23 @@ function PriceListDetailView() {
                       )}
                     />
                     <ContentTable
-                      model={model}
-                      contentMapper={mapper}
+                      model={model} // input for import, export
+                      contentMapper={storeContentMapper} // from here, input for all business in localTable ...
                       content={storeMappingContents}
                       setContent={setStoreMappingContents}
                       contentClass={PriceListStoreMappings}
-                      contentFilterClass={PriceListStoreMappingsFilter}
                       filter={priceListStoreMappingsFilter}
-                      dispatch={dispatchPriceListStoreMappingsFilter}
+                      onUpdateNewFilter={
+                        handleUpdateNewPriceListStoreMappingsFilter
+                      }
+                      onSearch={handleSearchPriceListStoreMappings}
+                      loadList={loadPriceListStoreMappingsList}
+                      setLoadList={setLoadPriceListStoreMappingsList}
                       columns={priceListStoreMappingsContentColumns}
-                      onOpenModal={handleOpenStoreModal} // handleOpen below modal component
                       mapperField={nameof(
                         model.priceListStoreMappings[0].store,
-                      )}
+                      )} // ... to here, input for all business in localTable
+                      onOpenModal={handleOpenStoreModal} // handleOpen below modal component
                     />
                     <ContentModal
                       content={storeMappingContents}
@@ -263,8 +273,8 @@ function PriceListDetailView() {
                         model.priceListStoreMappings[0].store,
                       )}
                       mapper={storeContentMapper}
-                      onClose={handleCloseStoreModal} // optional
-                      onSave={handleSaveStoreModal} // optional
+                      onClose={handleCloseStoreModal}
+                      onSave={handleSaveStoreModal}
                     />
                   </Row>
                 </TabPane>
@@ -295,21 +305,3 @@ function PriceListDetailView() {
 }
 
 export default PriceListDetailView;
-
-function mapper(model: PriceListStoreMappings | Store): PriceListStoreMappings {
-  if (model.hasOwnProperty("store")) {
-    const { store } = model;
-    return {
-      ...model,
-      storeId: store?.id,
-      storeCode: store?.code,
-      storeName: store?.name,
-      storeTypeId: store?.storeTypeId,
-      provinceId: store?.provinceId,
-      storeGroupingId: store?.storeGroupingId,
-      storeType: store?.storeType,
-      province: store?.province,
-    };
-  }
-  return mapper({ ...new PriceListStoreMappings(), store: model });
-}

@@ -1,9 +1,6 @@
+import React from "react";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Dispatch } from "react";
-import {
-  AdvanceFilterAction,
-  advanceFilterService,
-} from "services/AdvanceFilterService";
+import { Dispatch, SetStateAction } from "react";
 import { importExportDataService } from "services/import-export-data-service";
 import tableService from "services/tbl-service";
 
@@ -16,23 +13,16 @@ export function useContentTable<
   setContent: (content: TContent[]) => void,
   contentMapper: (model: TContent | TMapper) => TContent,
   contentClass: new () => TContent,
-  contentFilterClass: new () => TContentFilter,
   filter: TContentFilter,
-  dispatch: Dispatch<AdvanceFilterAction<TContentFilter>>,
+  handleUpdateNewFilter: (filter: TContentFilter) => void,
+  handleSearch: () => void,
+  loadList: boolean,
+  setLoadList: Dispatch<SetStateAction<boolean>>,
   mapperField: string,
 ) {
-  const {
-    loadList,
-    setLoadList,
-    handleSearch,
-    handleChangeFilter,
-    handleUpdateNewFilter,
-    handleResetFilter,
-  } = advanceFilterService.useChangeAdvanceFilter<TContentFilter>(
-    filter,
-    dispatch,
-    contentFilterClass,
-  ); // filter service
+  React.useEffect(() => {
+    console.log(`filter: `, filter);
+  }, [filter]);
 
   const {
     list,
@@ -74,9 +64,7 @@ export function useContentTable<
   } = importExportDataService.useExport(); // export data service
 
   return {
-    handleChangeFilter, // normally used in advanceFilter component
     handleUpdateNewFilter, // used in table handleChange
-    handleResetFilter, // used in some action reset filter to default
     list, // list for dataSource
     loadingList, // loading for await data filtering
     total,
