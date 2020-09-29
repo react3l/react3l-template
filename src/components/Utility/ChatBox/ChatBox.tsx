@@ -115,7 +115,7 @@ function updateList (state: Message[], listAction: listAction) {
 function updateContent (state: string, contentAction: contentAction) {
     switch (contentAction.action) {
         case 'UPDATE':
-            return state + contentAction.data;
+            return contentAction.data;
         default:
             return state;
     }
@@ -298,6 +298,19 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         }
     }, [countMessage, list, filter]);
 
+    const setEndContentEditable = React.useCallback(() => {
+        var range,selection;
+        if(document.createRange)
+        {
+            range = document.createRange();
+            range.setStart(contentEditableRef.current, contentEditableRef.current.childNodes.length);
+            range.collapse(true);
+            selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    }, []);
+
     const handleAttachFile = React.useCallback((selectorFiles: FileList) => {
         if (attachFile && typeof attachFile === 'function') {
             const fileValue = selectorFiles[0];
@@ -309,11 +322,11 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                         const fileType = fileValue.type.split('/')[0];
                         if (fileType === "image") {
                             hrefItem = `<image src="${res.path}" alt="IMG">`;
-                            hrefItem = `<image src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg" alt="IMG">`;
                         } else {
                             hrefItem = `<a href="${res.path}">${res.name}</a>`;
                         }
                         contentEditableRef.current.innerHTML += hrefItem;
+                        setEndContentEditable();
                     }
                 },
                 (err) => {
@@ -322,20 +335,47 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             );
             subscription.add(fileSubcription);
         }
-    }, [attachFile, subscription]);
+    }, [attachFile, subscription, setEndContentEditable]);
 
-    const handleKeyPress = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
-        // if (event.key === '@') {
-        //     setShowSuggestList(true);
-        //     return;
-        // }
-        // if (contentEditableRef.current.innerText.includes('@')) {
-        //     dispatchContentEditable({
-        //         action: 'UPDATE',
-        //         data: event.key,
-        //     });
-        // }
-    }, []);
+    const handleKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Backspace') {
+            var s = window.getSelection();
+            var r = s.getRangeAt(0);
+            var el = r.startContainer.parentElement;
+            if (el.classList.contains('hightlight__text')) {
+                if (r.startOffset === r.endOffset && r.endOffset === el.textContent.length) {
+                    event.preventDefault();
+                    el.remove();
+                }
+            }
+        
+            if(contentEditableRef.current.innerHTML.includes('<span class="mention-tag">@</span>')) {
+                var lastChild = contentEditableRef.current.lastElementChild;
+                contentEditableRef.current.removeChild(lastChild);
+                setShowSuggestList(false);
+                setEndContentEditable();
+            }
+
+            return;
+        }
+
+        if (event.key === '@') {
+            contentEditableRef.current.innerHTML += '<span class="mention-tag">@</span>';
+            setShowSuggestList(true);
+            event.preventDefault();
+            setEndContentEditable();
+            return;
+        }
+
+        if (event.key === ' ' && showSuggestList) {
+            var lastElementChild = contentEditableRef.current.lastElementChild;
+            var contentText = lastElementChild.textContent;
+            contentEditableRef.current.removeChild(lastElementChild);
+            contentEditableRef.current.innerHTML += contentText;
+            setEndContentEditable();
+            setShowSuggestList(false);
+        }
+    }, [showSuggestList, setEndContentEditable]);
 
     const handlePaste = React.useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -343,10 +383,24 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         document.execCommand('insertHTML', false, text);
     }, []);
 
+    const handleInput = React.useCallback((event: React.FormEvent<HTMLDivElement>): void => {
+        if (contentEditableRef.current.innerText.includes('@') && showSuggestList) {
+            const stringValue =  contentEditableRef.current.innerText.split('@')[1];
+            dispatchContentEditable({
+                action: 'UPDATE',
+                data: stringValue,
+            });
+            return;
+        }
+    }, [showSuggestList]);
+
     const selectUser = React.useCallback(
         (currentUser) => (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-
-    }, []);
+            setShowSuggestList(false);
+            const contentValue = contentEditableRef.current.innerHTML.split('<span class="mention-tag">');
+            contentEditableRef.current.innerHTML =  contentValue[0] + '<span class="hightlight__text">' + currentUser.displayName + '</span> ';
+            setEndContentEditable();
+    }, [setEndContentEditable]);
 
     React.useEffect(() => {
         const subcription = getListMessages();
@@ -357,15 +411,18 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
 
 
     React.useEffect(() => {
-        const subcription = suggestList(contentEditable).subscribe(
-            (res) => {
-                if (res) {
-                    setUserList(res);
-                }
-            });
-        return () => {
-            subcription.unsubscribe();
-        };
+        if (contentEditable && typeof suggestList === 'function') {
+            const subcription = suggestList(contentEditable).subscribe(
+                (res) => {
+                    if (res) {
+                        setUserList(res);
+                    }
+                });
+
+            return () => {
+                subcription.unsubscribe();
+            };
+        }
     }, [contentEditable, suggestList]);
 
     const menuSort = React.useMemo(() => {
@@ -429,8 +486,10 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         </div>
         <div className="chat-box__footer">
             <div className="chat-box__comment"
+                id="test"
                 ref={contentEditableRef}
-                onKeyPress={handleKeyPress}
+                onInput={handleInput}
+                onKeyDown={handleKeyDown}
                 onPaste={handlePaste}
                 contentEditable={true} 
                 placeholder="Enter text here...">
@@ -445,7 +504,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             <div className="chat-box__suggest-list">
                     <ul className="list-group">
                         { userList.map((currentUser, index) => {
-                            return <li className="list-group-item" onClick={selectUser(currentUser)}>{currentUser?.displayName}</li>;
+                            return <li key={index} className="list-group-item" onClick={selectUser(currentUser)}>{currentUser?.displayName}</li>;
                         })}
                     </ul>
             </div>

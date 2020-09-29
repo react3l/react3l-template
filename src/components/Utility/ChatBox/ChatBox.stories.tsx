@@ -121,6 +121,16 @@ const demoDeleteFunc = (message: any) => {
     return of(true);
 };
 
+const userList = [
+    {id: 1, name: 'Le Duc Thang', displayName: 'thangld19@fpt.com.vn'},
+    {id: 2, name: 'Dang Tuan Vu', displayName: 'vudt19@fpt.com.vn'},
+    {id: 1, name: 'Bui Quang Huy', displayName: 'huybq11@fpt.com.vn'},
+];
+
+const demoGetList = (value: string) => {
+    return of(userList);
+};
+
 function Default() {
     return <div style={{width: '350px', height: '450px', margin: 'auto'}}>
         <ChatBox getMessages={demoSearchFunc}
@@ -128,6 +138,7 @@ function Default() {
             postMessage={demoPostFunc}
             deleteMessage={demoDeleteFunc}
             attachFile = {demoAttachFunc}
+            suggestList = {demoGetList}
             discussionId={'cb042dd9-03bf-4218-a126-9cd7444c68e4'}
             userInfo={{
                 id: 10, 
