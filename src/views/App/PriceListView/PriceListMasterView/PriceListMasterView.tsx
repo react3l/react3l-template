@@ -18,6 +18,7 @@ import masterService from "services/pages/master-service";
 import nameof from "ts-nameof.macro";
 import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { formatDateTime } from "helpers/date-time";
+import { Animate } from "react-show";
 
 function PriceListMasterView() {
   const [translate] = useTranslation();
@@ -132,90 +133,101 @@ function PriceListMasterView() {
   );
 
   return (
-    <div className='page page__master'>
-      {/* start master header */}
-      <div className='page__header d-flex align-items-center justify-content-between'>
-        <div className='page__title'>
-          {translate("paymentRequest.master.title")}
+    <>
+      <div className='page page__master'>
+        <div className='page__header d-flex align-items-center justify-content-between'>
+          <div className='page__title'>
+            {translate("paymentRequest.master.title")}
+          </div>
+          <div className='page__actions d-flex align-items-center'>
+            <button
+              className='btn btn-sm component__btn-primary ml-3'
+              onClick={handleGoCreate}
+            >
+              {translate("general.actions.create")}
+            </button>
+          </div>
         </div>
-        <div className='page__actions d-flex align-items-center'>
-          <button
-            className='btn btn-sm component__btn-primary ml-3'
-            onClick={handleGoCreate}
-          >
-            {translate("general.actions.create")}
-          </button>
-        </div>
-      </div>
-      {/* end master header */}
-      {/* start search master */}
-      {/* start basic search, normally search like code, name, date, etc. */}
-      <div className='page__search'>
-        <Card title={translate("general.search.title")}>
-          <Row className='d-flex align-items-center'>
-            <Col lg={12}>
-              <div className='pr-4'>
-                <InputSearch />
-              </div>
-            </Col>
-            <Col lg={4} className='pr-4'>
-              <div className='mt__1'>
-                <label className='label'>
-                  {translate("general.priceList.code")}
-                </label>
-                <AdvanceStringFilter
-                  value={filter[nameof(list[0].code)]["contain"]}
-                  onBlur={handleChangeFilter(
-                    nameof(list[0].code),
-                    "contain" as any,
-                    StringFilter,
-                  )}
-                  placeHolder={translate("priceList.filter.code")} // -> tat ca
-                />
-              </div>
-            </Col>
-            <Col lg={4} className='pr-4'>
-              <div className='mt__1'>
-                <label className='label'>
-                  {translate("general.priceList.name")}
-                </label>
-                <AdvanceStringFilter
-                  value={filter[nameof(list[0].name)]["contain"]}
-                  onChange={handleChangeFilter(
-                    nameof(list[0].name),
-                    "contain" as any,
-                    StringFilter,
-                  )}
-                  placeHolder={translate("priceList.filter.name")} // -> tat ca
-                />
-              </div>
-            </Col>
-            {/* start toggle and reset filter */}
-            <Col lg={4}>
-              <div className='d-flex justify-content-end'>
-                <button
-                  className={classNames(
-                    "btn component__btn-toggle mr-4",
-                    toggle === true ? "component__btn-toggle-active" : "",
-                  )}
-                  onClick={handleToggleSearch}
-                >
-                  <div className='tio-down_ui' />
-                  <div className='tio-down_ui' />
-                </button>
-                <div className='d-flex justify-content-between'>
-                  <button className='btn btn-info' onClick={handleResetFilter}>
-                    ResetFilter
-                  </button>
+        <div className='page__search'>
+          <Card title={translate("general.search.title")}>
+            <Row className='d-flex align-items-center'>
+              <Col lg={12}>
+                <div className='pr-4'>
+                  <InputSearch />
                 </div>
-              </div>
-            </Col>
-            {/* end toggle and reset filter */}
-          </Row>
-          {/* end basic search */}
-          {/* start advanced search */}
-          {toggle && (
-            <>
+              </Col>
+              <Col lg={4} className='pr-4'>
+                <div className='mt__1'>
+                  <label className='label'>
+                    {translate("general.priceList.code")}
+                  </label>
+                  <AdvanceStringFilter
+                    value={filter[nameof(list[0].code)]["contain"]}
+                    onChange={handleChangeFilter(
+                      nameof(list[0].code),
+                      "contain" as any,
+                      StringFilter,
+                    )}
+                    placeHolder={translate("priceList.filter.code")} // -> tat ca
+                  />
+                </div>
+              </Col>
+              <Col lg={4} className='pr-4'>
+                <div className='mt__1'>
+                  <label className='label'>
+                    {translate("general.priceList.name")}
+                  </label>
+                  <AdvanceStringFilter
+                    value={filter[nameof(list[0].name)]["contain"]}
+                    onChange={handleChangeFilter(
+                      nameof(list[0].name),
+                      "contain" as any,
+                      StringFilter,
+                    )}
+                    placeHolder={translate("priceList.filter.name")} // -> tat ca
+                  />
+                </div>
+              </Col>
+              {/* start toggle and reset filter */}
+              <Col lg={4}>
+                <div className='d-flex justify-content-end'>
+                  <button
+                    className={classNames(
+                      "btn component__btn-toggle mr-4",
+                      toggle === true ? "component__btn-toggle-active" : "",
+                    )}
+                    onClick={handleToggleSearch}
+                  >
+                    <div className='tio-down_ui' />
+                    <div className='tio-down_ui' />
+                  </button>
+                  <div className='d-flex justify-content-between'>
+                    <button
+                      className='btn component__btn-outline-primary'
+                      onClick={handleResetFilter}
+                    >
+                      ResetFilter
+                    </button>
+                  </div>
+                </div>
+              </Col>
+              {/* end toggle and reset filter */}
+            </Row>
+            <Animate
+              show={toggle}
+              duration={500}
+              style={{
+                height: "auto",
+              }}
+              transitionOnMount={true}
+              start={{
+                height: 0,
+              }}
+              leave={{
+                opacity: 0,
+                height: 0,
+              }}
+            >
               <Row className='mt-4'>
                 <Col lg={4} className='pr-4'>
                   <label className='label'>
@@ -250,74 +262,73 @@ function PriceListMasterView() {
                   />
                 </Col>
               </Row>
-            </>
-          )}
-        </Card>
-      </div>
-      {/* end search master */}
-      <div className='page__master-table'>
-        <Card>
-          <Table
-            tableLayout='fixed'
-            bordered={true}
-            rowKey={nameof(list[0].id)}
-            columns={columns}
-            pagination={false}
-            dataSource={list}
-            loading={loadingList}
-            onChange={handleTableChange}
-            rowSelection={rowSelection}
-            title={() => (
-              <>
-                <div className='d-flex justify-content-between'>
-                  <div className='flex-shrink-1 d-flex align-items-center'>
-                    <div className='table-title ml-2'>
-                      {translate("priceLists.table.title")}
+            </Animate>
+          </Card>
+        </div>
+        <div className='page__master-table'>
+          <Card>
+            <Table
+              tableLayout='fixed'
+              rowKey={nameof(list[0].id)}
+              columns={columns}
+              pagination={false}
+              dataSource={list}
+              loading={loadingList}
+              onChange={handleTableChange}
+              rowSelection={rowSelection}
+              title={() => (
+                <>
+                  <div className='d-flex justify-content-between'>
+                    <div className='flex-shrink-1 d-flex align-items-center'>
+                      <div className='table-title ml-2'>
+                        {translate("priceLists.table.title")}
+                      </div>
+                    </div>
+
+                    <div className='flex-shrink-1 d-flex align-items-center'>
+                      <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
+                        <button
+                          className='btn border-less component__btn-delete'
+                          style={{ border: "none", backgroundColor: "unset" }}
+                          onClick={handleServerBulkDelete} // local bulk Delete onChange
+                          disabled={!canBulkDelete} // disabled when selectedList length === 0
+                        >
+                          <i className='tio-delete' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title={translate("general.actions.importExcel")}>
+                        <button className='btn border-less gradient-btn-icon'>
+                          <i className='tio-file_add_outlined ' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title={translate("general.actions.exportExcel")}>
+                        <button className='btn border-less gradient-btn-icon'>
+                          <i className='tio-file_outlined' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip
+                        title={translate("general.actions.downloadTemplate")}
+                      >
+                        <button className='btn border-less gradient-btn-icon'>
+                          <i className='tio-download_to' />
+                        </button>
+                      </Tooltip>
+                      <Pagination
+                        skip={filter.skip}
+                        take={filter.take}
+                        total={total}
+                        onChange={handlePagination}
+                        style={{ margin: "10px" }}
+                      />
                     </div>
                   </div>
-
-                  <div className='flex-shrink-1 d-flex align-items-center'>
-                    <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
-                      <button
-                        className='btn component__btn-delete'
-                        onClick={handleServerBulkDelete} // local bulk Delete onChange
-                        disabled={!canBulkDelete} // disabled when selectedList length === 0
-                      >
-                        <i className='tio-delete' />
-                      </button>
-                    </Tooltip>
-                    <Tooltip title={translate("general.actions.importExcel")}>
-                      <button className='btn gradient-btn-icon'>
-                        <i className='tio-file_add_outlined ' />
-                      </button>
-                    </Tooltip>
-                    <Tooltip title={translate("general.actions.exportExcel")}>
-                      <button className='btn gradient-btn-icon'>
-                        <i className='tio-file_outlined' />
-                      </button>
-                    </Tooltip>
-                    <Tooltip
-                      title={translate("general.actions.downloadTemplate")}
-                    >
-                      <button className='btn gradient-btn-icon'>
-                        <i className='tio-download_to' />
-                      </button>
-                    </Tooltip>
-                    <Pagination
-                      skip={filter.skip}
-                      take={filter.take}
-                      total={total}
-                      onChange={handlePagination}
-                      style={{ margin: "10px" }}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-          />
-        </Card>
+                </>
+              )}
+            />
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

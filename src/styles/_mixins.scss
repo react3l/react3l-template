@@ -42,6 +42,14 @@
   -webkit-text-fill-color: transparent;
 }
 
+@mixin white-text {
+  background: $white;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @mixin background-active-color {
   background: -webkit-linear-gradient(
       0deg,

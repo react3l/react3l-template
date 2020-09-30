@@ -22,6 +22,17 @@ import { routerService } from "services/RouterService";
 import { tableService } from "services/TableService";
 import nameof from "ts-nameof.macro";
 import "./PaymentRequestMasterView.scss";
+import { Animate } from "react-show";
+
+const LoadingIndicator = () => {
+  return (
+    <div
+      style={{ position: "absolute", top: "50%", left: "50%", margin: "-10px" }}
+    >
+      <img className='img-loading' src='/assets/svg/spinner.svg' alt='' />
+    </div>
+  );
+};
 
 export class DemoListFilter extends ModelFilter {
   id: IdFilter = new IdFilter();
@@ -204,56 +215,44 @@ function PaymentMasterView() {
         </div>
         <div className='page__search'>
           <Card title={translate("general.search.title")}>
-            <Row className='d-flex align-items-center'>
-              <Col lg={12}>
-                <div className='pr-4'>
-                  <InputSearch />
-                </div>
-              </Col>
-              <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
-                  <label className='label'>Phòng ban</label>
-                  <AdvanceIdFilter
-                    classFilter={DemoListFilter}
-                    placeHolder={"Tất cả"}
-                  />
-                </div>
-              </Col>
-              <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
-                  <label className='label'>Trạng thái</label>
-                  <AdvanceIdFilter
-                    classFilter={ModelFilter}
-                    placeHolder={"Tất cả"}
-                  />
-                </div>
-              </Col>
+            <div className='d-flex align-items-center'>
+              <div className='pr-4 flex-grow-1'>
+                <InputSearch />
+              </div>
               {/* start toggle and reset filter */}
-              <Col lg={4}>
-                <div className='d-flex justify-content-end'>
-                  <button
-                    className={classNames(
-                      "btn component__btn-toggle mr-4",
-                      toggle === true ? "component__btn-toggle-active" : "",
-                    )}
-                    onClick={handleToggleSearch}
-                  >
-                    <div className='tio-down_ui' />
-                    <div className='tio-down_ui' />
-                  </button>
-                  <div className='d-flex justify-content-between'>
-                    <button
-                      className='btn component__btn-outline-primary'
-                      // onClick={handleResetFilter}
-                    >
-                      ResetFilter
-                    </button>
-                  </div>
-                </div>
-              </Col>
+              <div className='d-flex justify-content-around'>
+                <button
+                  className={classNames(
+                    "btn component__btn-toggle mr-4",
+                    toggle === true ? "component__btn-toggle-active" : "",
+                  )}
+                  onClick={handleToggleSearch}
+                >
+                  <i className='tio-tune_horizontal'></i>
+                  <span className='component_btn-text'>Nâng cao</span>
+                </button>
+                <button className='btn component__btn-toggle'>
+                  <i className='tio-restore'></i>
+                  <span className='component_btn-text'>Bỏ lọc</span>
+                </button>
+              </div>
               {/* end toggle and reset filter */}
-            </Row>
-            {toggle && (
+            </div>
+            <Animate
+              show={toggle}
+              duration={300}
+              style={{
+                height: "auto",
+              }}
+              transitionOnMount={true}
+              start={{
+                height: 0,
+              }}
+              leave={{
+                opacity: 0,
+                height: 0,
+              }}
+            >
               <>
                 <Row className='mt-4'>
                   <Col lg={4} className='pr-4'>
@@ -318,7 +317,7 @@ function PaymentMasterView() {
                   </Col>
                 </Row>
               </>
-            )}
+            </Animate>
           </Card>
         </div>
         <div className='page__master-table'>
@@ -328,8 +327,8 @@ function PaymentMasterView() {
               rowKey={nameof(list[0].id)}
               columns={columns}
               dataSource={list}
-              loading={loading}
               pagination={false}
+              loading={{ spinning: loading, indicator: <LoadingIndicator /> }}
               // onChange={handleChangeOrder}
               rowSelection={rowSelection}
               title={() => (
@@ -373,7 +372,7 @@ function PaymentMasterView() {
                   </div>
                 </>
               )}
-              scroll={{ x: 'max-content' }}
+              scroll={{ x: "max-content" }}
             />
           </Card>
         </div>
