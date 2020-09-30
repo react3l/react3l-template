@@ -40,7 +40,6 @@ function PriceListMasterView() {
     handleServerBulkDelete,
     rowSelection,
     canBulkDelete,
-    handleSearch, // pass as argument of any handleFilter method
     pagination, // optional using
   } = masterService.useMaster<PriceList, PriceListFilter>(
     PriceListFilter,
@@ -168,7 +167,6 @@ function PriceListMasterView() {
                       nameof(list[0].code),
                       "contain" as any,
                       StringFilter,
-                      handleSearch,
                     )}
                     placeHolder={translate("priceList.filter.code")} // -> tat ca
                   />
@@ -185,7 +183,6 @@ function PriceListMasterView() {
                       nameof(list[0].name),
                       "contain" as any,
                       StringFilter,
-                      handleSearch,
                     )}
                     placeHolder={translate("priceList.filter.name")} // -> tat ca
                   />
@@ -207,7 +204,7 @@ function PriceListMasterView() {
                   <div className='d-flex justify-content-between'>
                     <button
                       className='btn component__btn-outline-primary'
-                      onClick={handleResetFilter(() => {})}
+                      onClick={handleResetFilter}
                     >
                       ResetFilter
                     </button>
@@ -222,11 +219,11 @@ function PriceListMasterView() {
               style={{
                 height: "auto",
               }}
-              transitionOnMount={true} 
+              transitionOnMount={true}
               start={{
                 height: 0,
               }}
-              leave={{ 
+              leave={{
                 opacity: 0,
                 height: 0,
               }}
@@ -242,7 +239,6 @@ function PriceListMasterView() {
                       nameof(list[0].statusId),
                       "equal" as any,
                       IdFilter,
-                      handleSearch,
                     )}
                     classFilter={PriceListStatusFilter}
                     getList={priceListRepository.filterListStatus}
@@ -259,7 +255,6 @@ function PriceListMasterView() {
                       nameof(list[0].salesOrderTypeId),
                       "equal" as any,
                       IdFilter,
-                      handleSearch,
                     )}
                     classFilter={SalesOrderTypeFilter}
                     getList={priceListRepository.filterListSalesOrderType}
@@ -273,63 +268,63 @@ function PriceListMasterView() {
         <div className='page__master-table'>
           <Card>
             <Table
-                tableLayout='fixed'
-                rowKey={nameof(list[0].id)}
-                columns={columns}
-                pagination={false}
-                dataSource={list}
-                loading={loadingList}
-                onChange={handleTableChange}
-                rowSelection={rowSelection}
-                title={() => (
-                  <>
-                    <div className='d-flex justify-content-between'>
-                      <div className='flex-shrink-1 d-flex align-items-center'>
-                        <div className='table-title ml-2'>
-                          {translate("priceLists.table.title")}
-                        </div>
-                      </div>
-
-                      <div className='flex-shrink-1 d-flex align-items-center'>
-                        <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
-                          <button
-                            className='btn border-less component__btn-delete'
-                            style={{border: 'none', backgroundColor: 'unset'}}
-                            onClick={handleServerBulkDelete} // local bulk Delete onChange
-                            disabled={!canBulkDelete} // disabled when selectedList length === 0
-                          >
-                            <i className='tio-delete' />
-                          </button>
-                        </Tooltip>
-                        <Tooltip title={translate("general.actions.importExcel")}>
-                          <button className='btn border-less gradient-btn-icon'>
-                            <i className='tio-file_add_outlined ' />
-                          </button>
-                        </Tooltip>
-                        <Tooltip title={translate("general.actions.exportExcel")}>
-                          <button className='btn border-less gradient-btn-icon'>
-                            <i className='tio-file_outlined' />
-                          </button>
-                        </Tooltip>
-                        <Tooltip
-                          title={translate("general.actions.downloadTemplate")}
-                        >
-                          <button className='btn border-less gradient-btn-icon'>
-                            <i className='tio-download_to' />
-                          </button>
-                        </Tooltip>
-                        <Pagination
-                          skip={filter.skip}
-                          take={filter.take}
-                          total={total}
-                          onChange={handlePagination}
-                          style={{ margin: "10px" }}
-                        />
+              tableLayout='fixed'
+              rowKey={nameof(list[0].id)}
+              columns={columns}
+              pagination={false}
+              dataSource={list}
+              loading={loadingList}
+              onChange={handleTableChange}
+              rowSelection={rowSelection}
+              title={() => (
+                <>
+                  <div className='d-flex justify-content-between'>
+                    <div className='flex-shrink-1 d-flex align-items-center'>
+                      <div className='table-title ml-2'>
+                        {translate("priceLists.table.title")}
                       </div>
                     </div>
-                  </>
-                )}
-              />
+
+                    <div className='flex-shrink-1 d-flex align-items-center'>
+                      <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
+                        <button
+                          className='btn border-less component__btn-delete'
+                          style={{ border: "none", backgroundColor: "unset" }}
+                          onClick={handleServerBulkDelete} // local bulk Delete onChange
+                          disabled={!canBulkDelete} // disabled when selectedList length === 0
+                        >
+                          <i className='tio-delete' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title={translate("general.actions.importExcel")}>
+                        <button className='btn border-less gradient-btn-icon'>
+                          <i className='tio-file_add_outlined ' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title={translate("general.actions.exportExcel")}>
+                        <button className='btn border-less gradient-btn-icon'>
+                          <i className='tio-file_outlined' />
+                        </button>
+                      </Tooltip>
+                      <Tooltip
+                        title={translate("general.actions.downloadTemplate")}
+                      >
+                        <button className='btn border-less gradient-btn-icon'>
+                          <i className='tio-download_to' />
+                        </button>
+                      </Tooltip>
+                      <Pagination
+                        skip={filter.skip}
+                        take={filter.take}
+                        total={total}
+                        onChange={handlePagination}
+                        style={{ margin: "10px" }}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            />
           </Card>
         </div>
       </div>

@@ -21,13 +21,15 @@ export function InputTextStories() {
   const [iconName, setIconName] = React.useState("");
 
   const [modelFilter, dispatch] = React.useReducer<
-    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, StringFilter>>
+    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter>>
   >(advanceFilterReducer, new DemoFilter());
 
-  const [value, setValue] = advanceFilterService.useAdvanceFilter<
-    DemoFilter,
-    StringFilter
-  >(modelFilter, dispatch, "name", "startWith", StringFilter);
+  const [value, setValue] = advanceFilterService.useStringFilter<DemoFilter>(
+    modelFilter,
+    dispatch,
+    "name",
+    "startWith",
+  );
 
   const handleChangeStyle = React.useCallback((event: RadioChangeEvent) => {
     setIsMaterial(event.target.value);

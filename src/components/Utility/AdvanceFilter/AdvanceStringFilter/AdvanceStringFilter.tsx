@@ -26,32 +26,35 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
   const handleChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setInternalValue(event.target.value);
+      if (typeof onChange === "function") {
+        onChange(event.target.value);
+      }
     },
-    [],
+    [onChange],
   );
 
   const handleClearInput = React.useCallback(
     (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       setInternalValue("");
-      if (typeof onChange === "function") {
-        onChange(null);
+      if (typeof onBlur === "function") {
+        onBlur(null);
       }
       inputRef.current.focus();
     },
-    [onChange],
+    [onBlur],
   );
 
   const handleKeyPress = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (
         event.keyCode === 13 &&
-        event.currentTarget.value &&
-        typeof onChange === "function"
+        // event.currentTarget.value &&
+        typeof onBlur === "function"
       ) {
-        onChange(event.currentTarget.value);
+        onBlur(event.currentTarget.value);
       }
     },
-    [onChange],
+    [onBlur],
   );
 
   const handleBlur = React.useCallback(

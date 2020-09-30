@@ -17,7 +17,6 @@ import { Moment } from "moment";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { paymentRepository } from "repositories/payment-repository";
-import { of } from "rxjs";
 import { queryStringService } from "services/QueryStringService";
 import { routerService } from "services/RouterService";
 import { tableService } from "services/TableService";
@@ -26,9 +25,13 @@ import "./PaymentRequestMasterView.scss";
 import { Animate } from "react-show";
 
 const LoadingIndicator = () => {
-  return <div style={{position: 'absolute', top: '50%', left: '50%', margin: '-10px'}}>
-    <img className="img-loading" src="/assets/svg/spinner.svg"  alt=''/>
-  </div>;
+  return (
+    <div
+      style={{ position: "absolute", top: "50%", left: "50%", margin: "-10px" }}
+    >
+      <img className='img-loading' src='/assets/svg/spinner.svg' alt='' />
+    </div>
+  );
 };
 
 export class DemoListFilter extends ModelFilter {
@@ -214,24 +217,23 @@ function PaymentMasterView() {
           <Card title={translate("general.search.title")}>
             <div className='d-flex align-items-center'>
               <div className='pr-4 flex-grow-1'>
-                  <InputSearch />
+                <InputSearch />
               </div>
               {/* start toggle and reset filter */}
               <div className='d-flex justify-content-around'>
-                <button className={classNames(
-                      "btn component__btn-toggle mr-4",
-                      toggle === true ? "component__btn-toggle-active" : "")}
-                  onClick={handleToggleSearch}>
-                  <i className="tio-tune_horizontal"></i>
-                  <span className="component_btn-text">
-                    Nâng cao
-                  </span>
+                <button
+                  className={classNames(
+                    "btn component__btn-toggle mr-4",
+                    toggle === true ? "component__btn-toggle-active" : "",
+                  )}
+                  onClick={handleToggleSearch}
+                >
+                  <i className='tio-tune_horizontal'></i>
+                  <span className='component_btn-text'>Nâng cao</span>
                 </button>
-                <button className="btn component__btn-toggle">
-                  <i className="tio-restore"></i>
-                  <span className="component_btn-text">
-                    Bỏ lọc
-                  </span>
+                <button className='btn component__btn-toggle'>
+                  <i className='tio-restore'></i>
+                  <span className='component_btn-text'>Bỏ lọc</span>
                 </button>
               </div>
               {/* end toggle and reset filter */}
@@ -242,11 +244,11 @@ function PaymentMasterView() {
               style={{
                 height: "auto",
               }}
-              transitionOnMount={true} 
+              transitionOnMount={true}
               start={{
                 height: 0,
               }}
-              leave={{ 
+              leave={{
                 opacity: 0,
                 height: 0,
               }}
@@ -326,7 +328,7 @@ function PaymentMasterView() {
               columns={columns}
               dataSource={list}
               pagination={false}
-              loading={{spinning: loading, indicator: <LoadingIndicator />}}
+              loading={{ spinning: loading, indicator: <LoadingIndicator /> }}
               // onChange={handleChangeOrder}
               rowSelection={rowSelection}
               title={() => (
@@ -370,7 +372,7 @@ function PaymentMasterView() {
                   </div>
                 </>
               )}
-              scroll={{ x: 'max-content' }}
+              scroll={{ x: "max-content" }}
             />
           </Card>
         </div>

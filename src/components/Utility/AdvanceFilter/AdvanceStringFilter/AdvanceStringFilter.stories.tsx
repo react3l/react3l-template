@@ -20,13 +20,15 @@ export function AdvanceStringFilterStories() {
   const [title, setTitle] = React.useState("");
 
   const [modelFilter, dispatch] = React.useReducer<
-    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, StringFilter>>
+    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter>>
   >(advanceFilterReducer, new DemoFilter());
 
-  const [value, setValue] = advanceFilterService.useAdvanceFilter<
-    DemoFilter,
-    StringFilter
-  >(modelFilter, dispatch, "name", "startWith", StringFilter);
+  const [value, setValue] = advanceFilterService.useStringFilter<DemoFilter>(
+    modelFilter,
+    dispatch,
+    "name",
+    "startWith" as any,
+  );
 
   const handleChangeTitle = React.useCallback((event: RadioChangeEvent) => {
     setIsTitle(event.target.value);

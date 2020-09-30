@@ -1,3 +1,4 @@
+import React, { useCallback, useMemo, useReducer, useEffect } from "react";
 import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { Card, Col, Modal, Row } from "antd";
 import { Store } from "antd/lib/form/interface";
@@ -8,7 +9,6 @@ import Pagination from "components/Utility/Pagination/Pagination";
 import { renderMasterIndex } from "helpers/table";
 import { StoreFilter } from "models/StoreFilter";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
-import React, { useCallback, useMemo, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
 import {
@@ -33,29 +33,39 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const [translate] = useTranslation();
   const {
     visible,
-    onSearch,
     onSave,
     width,
     onClose,
+    selectedList,
     loadControl,
     endLoadControl,
-    selectedList,
   } = props;
 
   const [filter, dispatch] = useReducer(
     advanceFilterReducer,
     new StoreFilter(),
-  );
+  ); // deprecated
 
   const {
+    loadList,
+    setLoadList,
+    handleSearch,
     handleChangeFilter,
     handleUpdateNewFilter,
     handleResetFilter,
-  } = advanceFilterService.useFilter<StoreFilter>(
+  } = advanceFilterService.useChangeAdvanceFilter<StoreFilter>(
     filter,
     dispatch,
     StoreFilter,
+    false, // default loadList
   );
+
+  useEffect(() => {
+    if (loadControl) {
+      handleSearch();
+      endLoadControl();
+    }
+  }, [handleSearch, loadControl, endLoadControl]); // subscribe event emitter
 
   const {
     list,
@@ -65,15 +75,15 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
     handlePagination,
     handleTableChange,
     rowSelection,
-    mapperList,
+    selectedList: mapperList,
   } = tableService.useModalTable<Store, StoreFilter>(
     filter,
     handleUpdateNewFilter,
+    loadList,
+    setLoadList,
+    handleSearch,
     priceListRepository.listStore,
     priceListRepository.countStore,
-    loadControl,
-    endLoadControl,
-    onSearch,
     selectedList,
   );
 
@@ -81,7 +91,7 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
   const handleCloseModal = useCallback(() => {
     handleResetFilter(); // resetFilter to default
     if (typeof onClose === "function") {
-      return onClose();
+      onClose();
     }
   }, [handleResetFilter, onClose]);
 
@@ -154,11 +164,10 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
               <Col lg={6} className='pr-3'>
                 <AdvanceStringFilter
                   value={filter["code"]["contain"]}
-                  onChange={handleChangeFilter(
+                  onBlur={handleChangeFilter(
                     nameof(list[0].code),
                     "contain" as any,
                     StringFilter,
-                    onSearch,
                   )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
@@ -170,7 +179,6 @@ function PriceListStoreMappingsModal(props: PriceListStoreMappingsModalProps) {
                     nameof(list[0].statusId),
                     "equal" as any,
                     IdFilter,
-                    onSearch,
                   )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}

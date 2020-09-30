@@ -30,7 +30,7 @@ export class DetailService {
       if (model) {
         if (model[contentField]?.length > 0) {
           return model[contentField].map((item) => {
-            if (item.hasOwnProperty("key")) {
+            if (typeof item.key !== "undefined") {
               return { ...item };
             }
             return { ...item, key: uuidv4() }; // assign key for each content item

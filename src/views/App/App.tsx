@@ -19,15 +19,12 @@ import {
 } from "views/AppContext";
 import useApp from "views/AppHook";
 import "./App.scss";
-import { Animate } from "react-show";
-
 
 function App() {
   const {
     errorMessage,
     isErrorModalVisible,
     toggleMenu,
-    displayFooter,
     displayOverlay,
     handleCloseErrorModal,
     dispatch, // app dispatch
@@ -37,33 +34,33 @@ function App() {
 
   const renderLayout = useMemo(
     () => (
-      <div className="app d-flex">
+      <div className='app d-flex'>
         {!toggleMenu ? (
           <Animated
-            animationIn="slideInLeft"
-            animationOut="slideOutLeft"
+            animationIn='slideInLeft'
+            animationOut='slideOutLeft'
             animationInDuration={800}
             animationOutDuration={400}
             isVisible={!toggleMenu as boolean}
           >
-            <div className="left-side column">
+            <div className='left-side column'>
               <AppAside routes={menu} />
             </div>
           </Animated>
         ) : (
           <Animated
-            animationIn="slideInLeft"
-            animationOut="slideOutLeft"
+            animationIn='slideInLeft'
+            animationOut='slideOutLeft'
             animationInDuration={800}
             animationOutDuration={400}
             isVisible={toggleMenu as boolean}
           >
-            <div className="left-side column">
+            <div className='left-side column'>
               <AppAsideCollapse routes={menu} />
             </div>
           </Animated>
         )}
-        <div className="right-side column">
+        <div className='right-side column'>
           <div
             className={classNames("header-wrapper", {
               "header-wrapper__block": displayOverlay,
@@ -71,7 +68,7 @@ function App() {
           >
             <AppHeader />
           </div>
-          <main className="body">
+          <main className='body'>
             <Switch>{renderRoutes(routes)}</Switch>
           </main>
           <div
@@ -80,20 +77,20 @@ function App() {
             })}
           ></div>
         </div>
-        {displayFooter === true ? <AppFooter /> : null}
+        {true && <AppFooter />}
       </div>
     ),
-    [displayFooter, displayOverlay, toggleMenu],
+    [displayOverlay, toggleMenu],
   );
 
   const modalFooter = useMemo(
     () => (
-      <div className="d-flex justify-content-end">
+      <div className='d-flex justify-content-end'>
         <button
-          className="btn btn-sm component__btn-cancel"
+          className='btn btn-sm component__btn-cancel'
           onClick={handleCloseErrorModal}
         >
-          <i className="tio-clear" /> Hủy
+          <i className='tio-clear' /> Hủy
         </button>
       </div>
     ),
@@ -111,10 +108,10 @@ function App() {
       >
         <Card>
           <Row>
-            <div className="div-scroll">
+            <div className='div-scroll'>
               {typeof errorMessage !== "undefined" &&
                 errorMessage.split("\n")?.map((err) => (
-                  <div className="mt-3 mb-3 pl-2 text-danger" key={err}>
+                  <div className='mt-3 mb-3 pl-2 text-danger' key={err}>
                     {err}
                   </div>
                 ))}
@@ -131,12 +128,7 @@ function App() {
       <ErrorBoundary>
         <AppMessageContext.Provider value={appMessageService}>
           <AppDispatchContext.Provider value={dispatch}>
-            <AppStoreContext.Provider
-              value={[
-                state,
-                dispatch,
-              ]}
-            >
+            <AppStoreContext.Provider value={[state, dispatch]}>
               {renderLayout}
               {renderErrorModal}
             </AppStoreContext.Provider>

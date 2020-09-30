@@ -12,6 +12,7 @@ import {
   PAYMENT_REQUEST_ROOT_ROUTE,
   PAYMENT_REQUEST_DETAIL_ROUTE,
   PAYMENT_REQUEST_ROUTE,
+  PRICE_LIST_DETAIL_ROUTE_PREFIX,
 } from "config/route-consts";
 import ProvinceMasterView from "views/App/ProvinceView/ProvinceMasterView/ProvinceMasterView";
 import ProvinceDetailView from "views/App/ProvinceView/ProvinceDetailView/ProvinceDetailView";
@@ -100,7 +101,7 @@ export const routes: RouteConfig[] = [
             exact: true,
           },
           {
-            path: path.join(PRICE_LIST_ROUTE_PREFIX, ":id"),
+            path: path.join(PRICE_LIST_DETAIL_ROUTE_PREFIX, ":id"),
             component: PriceListDetailView,
           },
         ],

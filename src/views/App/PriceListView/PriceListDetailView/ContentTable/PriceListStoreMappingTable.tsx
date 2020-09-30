@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo } from "react";
+import { IdFilter } from "@react3l/advanced-filters/IdFilter";
+import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import { Popconfirm, Table, Tooltip } from "antd";
 import { Store } from "antd/lib/form/interface";
-import { StringFilter } from "@react3l/advanced-filters/StringFilter";
-import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 import InputText from "components/Utility/Input/InputText/InputText";
@@ -12,25 +11,24 @@ import { PriceList, PriceListStoreMappings } from "models/PriceList";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { StoreType } from "models/StoreType";
 import { StoreTypeFilter } from "models/StoreTypeFilter";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { priceListRepository } from "repositories/price-list-repository";
-import { formService } from "services/FormService";
-import listService from "services/list-service";
-import tableService, {
-  getAntOrderType,
-  filterContentNotInList,
-  filterContentInList,
-  getIdsFromContent,
-} from "services/tbl-service";
-import nameof from "ts-nameof.macro";
-import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 import { useReducer } from "reactn";
+import { priceListRepository } from "repositories/price-list-repository";
 import {
   advanceFilterReducer,
   advanceFilterService,
 } from "services/AdvanceFilterService";
+import { formService } from "services/FormService";
 import { importExportDataService } from "services/import-export-data-service";
-import { CreateTableColumns, CreateColumn } from "core/models/TableColumn";
+import tableService, {
+  filterContentInList,
+  filterContentNotInList,
+  getAntOrderType,
+  getIdsFromContent,
+} from "services/tbl-service";
+import nameof from "ts-nameof.macro";
+import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 
 export interface ContentTableProps {
   model: PriceList;
@@ -49,20 +47,21 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
   ); // filter factory
 
   const {
+    loadList,
+    setLoadList,
+    handleSearch,
     handleChangeFilter,
     handleUpdateNewFilter,
-  } = advanceFilterService.useFilter<PriceListStoreMappingsFilter>(
+  } = advanceFilterService.useChangeAdvanceFilter<PriceListStoreMappingsFilter>(
     filter,
     dispatch,
     PriceListStoreMappingsFilter,
   ); // filter service
 
-  const { list, total, loadingList, handleSearch } = listService.useLocalList(
-    filter,
-    content.map(mapper),
-  ); // list service
-
   const {
+    list,
+    total,
+    loadingList,
     handleTableChange,
     handlePagination,
     rowSelection,
@@ -76,17 +75,19 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
     Store,
     PriceListStoreMappingsFilter
   >(
-    total,
-    handleSearch,
     filter,
     handleUpdateNewFilter,
+    loadList,
+    setLoadList,
+    handleSearch,
     content,
     setContent,
+    mapper,
     mapperField,
+    PriceListStoreMappings,
   ); // table service
 
   const [
-    ,
     handleChangeContentField,
     ,
     handleAddContent,
@@ -140,11 +141,10 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
               <>
                 <AdvanceStringFilter
                   value={filter["storeCode"]["contain"]}
-                  onChange={handleChangeFilter(
+                  onBlur={handleChangeFilter(
                     nameof(content[0].storeCode),
                     "contain" as any,
                     StringFilter,
-                    handleSearch,
                   )}
                   placeHolder={translate("priceList.filter.code")} // -> tat ca
                 />
@@ -160,7 +160,7 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                   value={storeCode}
                   placeHolder={translate("priceList.placeholder.storeCode")}
                   className={"tio-account_square_outlined"}
-                  onChange={handleChangeContentField(
+                  onBlur={handleChangeContentField(
                     record.key,
                     nameof(content[0].storeCode),
                   )}
@@ -193,7 +193,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
                     nameof(content[0].storeTypeId),
                     "equal" as any,
                     IdFilter,
-                    handleSearch,
                   )}
                   classFilter={StoreTypeFilter}
                   getList={priceListRepository.filterListStoreType}
@@ -246,11 +245,21 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       filter,
       translate,
       handleChangeFilter,
-      handleSearch,
       handleChangeContentField,
       handleLocalDelete,
     ],
   ); // columns
+
+  const {
+    ref,
+    handleClick,
+    handleImportContentList,
+  } = importExportDataService.useImport(); // import data service
+
+  const {
+    handleContentExport,
+    handleContentExportTemplate,
+  } = importExportDataService.useExport(); // export data service
 
   const {
     visible,
@@ -284,63 +293,19 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
             ),
           );
           setContent([...newContent]);
+          handleSearch(); // recalculate dataSource
           return;
         }
         const newContents = list.map((item: Store) => mapper(item));
         setContent([...newContents]);
+        handleSearch(); // recalculate dataSource
         return;
       }
-      // if list empty, setContent to []
-      setContent([]);
+      setContent([]); // if list empty, setContent to []
+      handleSearch(); // recalculate dataSource
     },
-    [content, mapperField, setContent],
+    [content, mapperField, setContent, handleSearch],
   ); // callback for save modal
-
-  const {
-    ref,
-    handleClick,
-    handleImportContentList,
-  } = importExportDataService.useImport(); // import data service
-
-  const {
-    handleContentExport,
-    handleContentExportTemplate,
-  } = importExportDataService.useExport(); // export data service
-
-  const priceListStoreMappingsTable = useMemo(
-    () =>
-      CreateTableColumns(
-        CreateColumn()
-          .Title(() => <>{translate("general.columns.index")}</>)
-          .Key("index") // key
-          .Render(renderMasterIndex<PriceListStoreMappings>(pagination)), // render
-        CreateColumn()
-          .Title(() => <>{translate("priceLists.store.code")}</>)
-          .Key(nameof(content[0].storeCode)) //Key
-          .DataIndex(nameof(content[0].storeCode))
-          .AddChild(
-            CreateColumn()
-              .Title(() => (
-                <>
-                  <AdvanceIdFilter
-                    value={filter["storeTypeId"]["equal"]}
-                    onChange={handleChangeFilter(
-                      nameof(content[0].storeTypeId),
-                      "equal" as any,
-                      IdFilter,
-                      handleSearch,
-                    )}
-                    classFilter={StoreTypeFilter}
-                    getList={priceListRepository.filterListStoreType}
-                    placeHolder={translate("general.filter.idFilter")} // -> tat ca
-                  />
-                </>
-              ))
-              .DataIndex(nameof(content[0].storeType)),
-          ), // dataIndex
-      ),
-    [content, filter, handleChangeFilter, handleSearch, pagination, translate],
-  ); // test columns factory
 
   return (
     <>
@@ -443,18 +408,6 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
             </Tooltip>
           </div>
         )}
-      />
-      {/* test table */}
-      <Table
-        tableLayout='fixed'
-        bordered={true}
-        rowKey={nameof(list[0].key)}
-        columns={priceListStoreMappingsTable}
-        pagination={false}
-        dataSource={list}
-        loading={loadingList}
-        onChange={handleTableChange}
-        rowSelection={rowSelection}
       />
       {/* end test table */}
       <ContentModal

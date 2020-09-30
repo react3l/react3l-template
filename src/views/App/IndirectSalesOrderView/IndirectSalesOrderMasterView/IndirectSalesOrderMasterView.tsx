@@ -51,12 +51,6 @@ function IndirectSalesOrderMasterView() {
     DemoFilter,
   );
 
-  const [, , , , ,] = advanceFilterService.useFilter<DemoFilter>(
-    filter,
-    dispatch,
-    DemoFilter,
-  );
-
   const [valueString, setValueString] = advanceFilterService.useAdvanceFilter<
     DemoFilter,
     StringFilter
@@ -80,7 +74,7 @@ function IndirectSalesOrderMasterView() {
   const [
     valueDateRange,
     setValueDateRange,
-  ] = advanceFilterService.useDateRangeFilter<DemoFilter, DateFilter>(
+  ] = advanceFilterService.useDateRangeFilter<DemoFilter>(
     filter,
     dispatch,
     "dateRange",

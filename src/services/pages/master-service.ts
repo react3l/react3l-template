@@ -1,11 +1,11 @@
-import { useState, useCallback } from "react";
-import { routerService } from "services/RouterService";
-import { PRICE_LIST_ROUTE_PREFIX } from "config/route-consts";
-import { queryStringService } from "services/QueryStringService";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import tableService from "services/tbl-service";
+import { PRICE_LIST_DETAIL_ROUTE_PREFIX } from "config/route-consts";
+import { useCallback, useState } from "react";
 import { Observable } from "rxjs";
 import { advanceFilterService } from "services/AdvanceFilterService";
+import { queryStringService } from "services/QueryStringService";
+import { routerService } from "services/RouterService";
+import tableService from "services/tbl-service";
 
 export class MasterService {
   /**
@@ -24,7 +24,7 @@ export class MasterService {
   ) {
     //   service to navigating create or detail
     const [handleGoCreate, handleGoDetail] = routerService.useMasterNavigation(
-      PRICE_LIST_ROUTE_PREFIX, // should replace to pricelist detail route base on rbac
+      PRICE_LIST_DETAIL_ROUTE_PREFIX, // should replace to pricelist detail route base on rbac
     );
     // toggle search state
     const [toggle, setToggle] = useState<boolean>(false);
@@ -40,10 +40,13 @@ export class MasterService {
     );
 
     const {
+      loadList,
+      setLoadList,
+      handleSearch,
       handleChangeFilter,
       handleUpdateNewFilter,
       handleResetFilter,
-    } = advanceFilterService.useFilter<TFilter>(
+    } = advanceFilterService.useChangeAdvanceFilter<TFilter>(
       filter,
       dispatch,
       modelFilterClass,
@@ -59,11 +62,13 @@ export class MasterService {
       handleServerDelete,
       handleServerBulkDelete,
       rowSelection,
-      handleSearch, // expose search control
       canBulkDelete,
     } = tableService.useTable<T, TFilter>(
       filter,
       handleUpdateNewFilter,
+      loadList,
+      setLoadList,
+      handleSearch,
       getList,
       getTotal,
       deleteItem,

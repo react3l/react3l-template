@@ -30,10 +30,12 @@ export function AdvanceNumberFilterStories() {
     Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, Filter>>
   >(advanceFilterReducer, new DemoFilter());
 
-  const [value, setValue] = advanceFilterService.useNumberFilter<
-    DemoFilter,
-    NumberFilter
-  >(filter, dispatch, "number", "equal");
+  const [value, setValue] = advanceFilterService.useNumberFilter<DemoFilter>(
+    filter,
+    dispatch,
+    "number",
+    "equal",
+  );
 
   const handleChangeTitle = React.useCallback((event: RadioChangeEvent) => {
     setIsTitle(event.target.value);

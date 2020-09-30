@@ -2,7 +2,7 @@ import { SortOrder } from "antd/lib/table/interface";
 import { tableColumnFactory } from "services/component-factory/table-column-service";
 
 export class TableColumn {
-  title: () => JSX.Element | JSX.Element;
+  title: (() => JSX.Element) | JSX.Element;
   key: string;
   dataIndex: string;
   render: (...params: [any, any, number]) => JSX.Element | string | number;
@@ -13,7 +13,7 @@ export class TableColumn {
   children?: TableColumn[] = null;
 
   constructor(
-    title?: () => JSX.Element | JSX.Element,
+    title?: (() => JSX.Element) | JSX.Element,
     key?: string,
     dataIndex?: string,
     render?: (...params: [any, any, number]) => JSX.Element | string | number,
@@ -34,7 +34,7 @@ export class TableColumn {
     this.children = children;
   }
 
-  Title(title: () => JSX.Element | JSX.Element) {
+  Title(title: (() => JSX.Element) | JSX.Element) {
     this.title = title;
     return this;
   }
@@ -49,7 +49,7 @@ export class TableColumn {
     return this;
   }
 
-  Sorter(isSort: boolean) {
+  Sorter(isSort: boolean = false) {
     this.sorter = isSort;
     return this;
   }

@@ -41,10 +41,10 @@ export function AdvanceIdFilterStories() {
   );
 
   const [filter, dispatch] = React.useReducer<
-    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter, IdFilter>>
+    Reducer<DemoFilter, AdvanceFilterAction<DemoFilter>>
   >(advanceFilterReducer, filterValue);
 
-  const [id, setValue] = advanceFilterService.useIdFilter<DemoFilter, IdFilter>(
+  const [id, setValue] = advanceFilterService.useIdFilter<DemoFilter>(
     filter,
     dispatch,
     "id",
