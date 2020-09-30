@@ -9,6 +9,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { ErrorObserver, forkJoin, Observable } from 'rxjs';
 import { Creator, FileModel, Message } from './ChatBox.model';
 import './ChatBox.scss';
+import ContentEditable from './ContentEditable/ContentEditable';
 
 export interface ChatBoxProps <TFilter extends ModelFilter> {
     userInfo: Creator;
@@ -20,11 +21,6 @@ export interface ChatBoxProps <TFilter extends ModelFilter> {
     deleteMessage?: (Message: Message) => Observable<boolean>;
     suggestList?: (value: string) => Observable<Model[]>;
     attachFile?: (File: File) => Observable<FileModel>;
-}
-
-export interface contentAction {
-    action: string;
-    data: string;
 }
 
 export interface filterAction {
@@ -112,15 +108,6 @@ function updateList (state: Message[], listAction: listAction) {
     }
 }
 
-function updateContent (state: string, contentAction: contentAction) {
-    switch (contentAction.action) {
-        case 'UPDATE':
-            return contentAction.data;
-        default:
-            return state;
-    }
-}
-
 function ChatBox (props: ChatBoxProps<ModelFilter>) {
     const {
         userInfo,
@@ -136,15 +123,9 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
 
     const [sortType, setSortType] = React.useState<any>({type: 'latest', title: 'Mới nhất'});
 
-    const [userList, setUserList] = React.useState([]);
-
-    const [showSuggestList, setShowSuggestList] = React.useState<boolean>(false);
-
     const [filter, dispatchFilter] = React.useReducer(updateFilter, {discussionId, order: 'lastest', classFilter: ClassFilter}, initFilter);
 
     const [list, dispatchList] = React.useReducer(updateList, []);
-
-    const [contentEditable, dispatchContentEditable] = React.useReducer(updateContent, '');
 
     const [countMessage, setCountMessage] = React.useState<number>();
 
@@ -337,93 +318,12 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         }
     }, [attachFile, subscription, setEndContentEditable]);
 
-    const handleKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === 'Backspace') {
-            var s = window.getSelection();
-            var r = s.getRangeAt(0);
-            var el = r.startContainer.parentElement;
-            if (el.classList.contains('hightlight__text')) {
-                if (r.startOffset === r.endOffset && r.endOffset === el.textContent.length) {
-                    event.preventDefault();
-                    el.remove();
-                }
-            }
-        
-            if(contentEditableRef.current.innerHTML.includes('<span class="mention-tag">@</span>')) {
-                var lastChild = contentEditableRef.current.lastElementChild;
-                contentEditableRef.current.removeChild(lastChild);
-                setShowSuggestList(false);
-                setEndContentEditable();
-            }
-
-            return;
-        }
-
-        if (event.key === '@') {
-            contentEditableRef.current.innerHTML += '<span class="mention-tag">@</span>';
-            setShowSuggestList(true);
-            event.preventDefault();
-            setEndContentEditable();
-            return;
-        }
-
-        if (event.key === ' ' && showSuggestList) {
-            var lastElementChild = contentEditableRef.current.lastElementChild;
-            var contentText = lastElementChild.textContent;
-            contentEditableRef.current.removeChild(lastElementChild);
-            contentEditableRef.current.innerHTML += contentText;
-            setEndContentEditable();
-            setShowSuggestList(false);
-        }
-    }, [showSuggestList, setEndContentEditable]);
-
-    const handlePaste = React.useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
-        event.preventDefault();
-        const text = event.clipboardData.getData('text/plain');
-        document.execCommand('insertHTML', false, text);
-    }, []);
-
-    const handleInput = React.useCallback((event: React.FormEvent<HTMLDivElement>): void => {
-        if (contentEditableRef.current.innerText.includes('@') && showSuggestList) {
-            const stringValue =  contentEditableRef.current.innerText.split('@')[1];
-            dispatchContentEditable({
-                action: 'UPDATE',
-                data: stringValue,
-            });
-            return;
-        }
-    }, [showSuggestList]);
-
-    const selectUser = React.useCallback(
-        (currentUser) => (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-            setShowSuggestList(false);
-            const contentValue = contentEditableRef.current.innerHTML.split('<span class="mention-tag">');
-            contentEditableRef.current.innerHTML =  contentValue[0] + '<span class="hightlight__text">' + currentUser.displayName + '</span> ';
-            setEndContentEditable();
-    }, [setEndContentEditable]);
-
     React.useEffect(() => {
         const subcription = getListMessages();
         return () => {
             subcription.unsubscribe();
         };
     }, [getListMessages]);
-
-
-    React.useEffect(() => {
-        if (contentEditable && typeof suggestList === 'function') {
-            const subcription = suggestList(contentEditable).subscribe(
-                (res) => {
-                    if (res) {
-                        setUserList(res);
-                    }
-                });
-
-            return () => {
-                subcription.unsubscribe();
-            };
-        }
-    }, [contentEditable, suggestList]);
 
     const menuSort = React.useMemo(() => {
         return <Menu onClick={handleMenuClick} selectedKeys={[sortType.type]}>
@@ -485,30 +385,15 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             </InfiniteScroll>
         </div>
         <div className="chat-box__footer">
-            <div className="chat-box__comment"
-                id="test"
-                ref={contentEditableRef}
-                onInput={handleInput}
-                onKeyDown={handleKeyDown}
-                onPaste={handlePaste}
-                contentEditable={true} 
-                placeholder="Enter text here...">
-            </div>
+            <ContentEditable ref={contentEditableRef} 
+                suggestList={suggestList}
+                sendValue={handleSend}/>
             <div className="chat-box__action">
                 <input type="file" ref={inputRef} style={{display: 'none'}} onChange={(e) => handleAttachFile(e.target.files)}/>
                 <i className="tio-attachment_diagonal" onClick={() => {inputRef.current.click();}}></i>
                 <button className="btn btn-sm component__btn-primary" onClick={handleSend}>Send</button>
             </div>
         </div>
-        {   showSuggestList && 
-            <div className="chat-box__suggest-list">
-                    <ul className="list-group">
-                        { userList.map((currentUser, index) => {
-                            return <li key={index} className="list-group-item" onClick={selectUser(currentUser)}>{currentUser?.displayName}</li>;
-                        })}
-                    </ul>
-            </div>
-        }
     </div>;
 }
 
