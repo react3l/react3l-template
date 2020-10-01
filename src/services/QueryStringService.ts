@@ -8,7 +8,7 @@ import {
   AdvanceFilterAction,
   advanceFilterReducer,
 } from "./advance-filter-service";
-import { commonWebService } from "./CommonWebService";
+import { commonWebService } from "./common-web-service";
 
 const qs = require("qs");
 
