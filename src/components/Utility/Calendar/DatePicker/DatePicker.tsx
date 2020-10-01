@@ -6,7 +6,7 @@ import { Moment } from "moment";
 
 import classNames from "classnames";
 import { DatePickerProps as AntdDatePickerProps } from "antd/lib/date-picker";
-import { commonWebService } from "services/CommonWebService";
+import { commonWebService } from "services/common-web-service";
 
 function SuffixDateIcon() {
   return (

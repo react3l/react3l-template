@@ -6,7 +6,7 @@ import { Tree as TreeAntd } from "antd";
 import { TreeProps as AntdTreeProps, EventDataNode } from "antd/lib/tree";
 import { Observable, ErrorObserver } from "rxjs";
 import { commonService } from "@react3l/react3l/services/common-service";
-import { commonWebService } from "services/CommonWebService";
+import { commonWebService } from "services/common-web-service";
 
 function SwitcherIcon() {
   return (
@@ -164,13 +164,14 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
 
   return (
     <>
-      <div className="tree-container">
-        { loading ? 
-          <div className="tree__loading">
-              <img className="img-loading" src="/assets/svg/spinner.svg"  alt=''/>
-          </div> :
+      <div className='tree-container'>
+        {loading ? (
+          <div className='tree__loading'>
+            <img className='img-loading' src='/assets/svg/spinner.svg' alt='' />
+          </div>
+        ) : (
           <>
-            {internalTreeData.length > 0 ? 
+            {internalTreeData.length > 0 ? (
               <TreeAntd
                 {...props}
                 virtual
@@ -184,11 +185,12 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
                 onExpand={handleExpandKey}
                 onCheck={handleCheck}
                 onSelect={handleSelect}
-              ></TreeAntd> :
-              <img className="img-emty" src="/assets/img/no-data.png"  alt=''/>
-            }
+              ></TreeAntd>
+            ) : (
+              <img className='img-emty' src='/assets/img/no-data.png' alt='' />
+            )}
           </>
-        }
+        )}
       </div>
     </>
   );

@@ -14,8 +14,8 @@ import { priceListRepository } from "repositories/price-list-repository";
 import {
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
-import tableService from "services/tbl-service";
+} from "services/advance-filter-service";
+import tableService from "services/table-service";
 import nameof from "ts-nameof.macro";
 
 export interface PriceListStoreMappingsModalProps {

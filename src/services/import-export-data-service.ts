@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
 import { saveAs } from "file-saver";
 import { AppAction, AppActionEnum } from "views/AppStore";
 import { AppMessageContext, AppDispatchContext } from "views/AppContext";
-import { AppMessageService } from "services/AppMessageService";
+import { AppMessageService } from "services/app-message-service";
 export const importExportDataService = {
   /**
    *

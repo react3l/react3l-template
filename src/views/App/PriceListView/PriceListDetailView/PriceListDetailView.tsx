@@ -13,7 +13,7 @@ import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { priceListRepository } from "repositories/price-list-repository";
-import { formService } from "services/FormService";
+import { formService } from "services/form-service";
 import detailService from "services/pages/detail-service";
 import nameof from "ts-nameof.macro";
 import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable"; // view for content table

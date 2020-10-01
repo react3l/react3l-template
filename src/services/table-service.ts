@@ -271,39 +271,27 @@ export class TableService {
   useTableChange<TFilter extends ModelFilter>(
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
-    pagination: PaginationProps,
     handleSearch?: () => void,
   ) {
     const handleTableChange = useCallback(
-      (...[newPagination, , sorter]) => {
-        // check pagination change or not
-        if (
-          pagination.current !== newPagination.current ||
-          pagination.pageSize !== newPagination.pageSize
-        ) {
-          const skip: number = Math.ceil(
-            ((newPagination?.current ?? 0) - 1) *
-              (newPagination?.pageSize ?? DEFAULT_TAKE),
-          );
-          const take: number = newPagination.pageSize;
-          setFilter({ ...filter, skip, take });
-        }
-        // check sortOrder and sortDirection
+      (...[, , sorter]) => {
+        let newFilter = { ...filter }; // dont check pagination change because of we customize it
         if (
           sorter.field !== filter.orderBy ||
           sorter.order !== getAntOrderType(filter, sorter.field)
         ) {
-          setFilter({
-            ...filter,
+          newFilter = {
+            ...newFilter,
             orderBy: sorter.field,
             orderType: getOrderType(sorter.order),
-          });
-        }
+          };
+        } // check sortOrder and sortDirection
+        setFilter({ ...newFilter }); // setFilter
         if (typeof handleSearch === "function") {
           handleSearch();
-        }
+        } // handleSearch
       },
-      [filter, pagination, setFilter, handleSearch],
+      [filter, setFilter, handleSearch],
     );
 
     const handlePagination = useCallback(
@@ -388,7 +376,7 @@ export class TableService {
     // handleChange page or sorter
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
-    >(filter, setFilter, pagination, handleSearch);
+    >(filter, setFilter, handleSearch);
 
     // add confirmation
     const handleServerBulkDelete = useCallback(() => {
@@ -504,7 +492,7 @@ export class TableService {
     // handleChange page or sorter
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
-    >(filter, setFilter, pagination, handleSearch);
+    >(filter, setFilter, handleSearch);
 
     return {
       list,
@@ -575,7 +563,7 @@ export class TableService {
 
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
-    >(filter, setFilter, pagination, handleSearch); // handleChange page or sorter
+    >(filter, setFilter, handleSearch); // handleChange page or sorter
     const resetTableFilter = useCallback(() => {
       setFilter({ ...filter, skip: 0, take: DEFAULT_TAKE }); // set default skip. take for filter
       handleSearch(); // trigger reLoad list

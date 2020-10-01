@@ -5,7 +5,7 @@ import { Moment } from "moment";
 import { DatePicker } from "antd";
 import classNames from "classnames";
 import { RangePickerProps } from "antd/lib/date-picker";
-import { commonWebService } from "services/CommonWebService";
+import { commonWebService } from "services/common-web-service";
 
 const { RangePicker } = DatePicker;
 
