@@ -1,8 +1,9 @@
+import { Model } from "@react3l/react3l/core";
 import { SortOrder } from "antd/lib/table/interface";
 import { tableColumnFactory } from "services/component-factory/table-column-service";
 
 export class TableColumn {
-  title: (() => JSX.Element) | JSX.Element;
+  title: (() => JSX.Element) | JSX.Element | string;
   key: string;
   dataIndex: string;
   render: (...params: [any, any, number]) => JSX.Element | string | number;
@@ -13,7 +14,7 @@ export class TableColumn {
   children?: TableColumn[] = null;
 
   constructor(
-    title?: (() => JSX.Element) | JSX.Element,
+    title?: (() => JSX.Element) | JSX.Element | string,
     key?: string,
     dataIndex?: string,
     render?: (...params: [any, any, number]) => JSX.Element | string | number,
@@ -34,7 +35,7 @@ export class TableColumn {
     this.children = children;
   }
 
-  Title(title: (() => JSX.Element) | JSX.Element) {
+  Title(title: (() => JSX.Element) | JSX.Element | string) {
     this.title = title;
     return this;
   }
@@ -93,4 +94,36 @@ export function CreateColumn() {
 
 export function CreateTableColumns(...args: TableColumn[]) {
   return args;
+}
+
+export class TableAction<T extends Model> {
+  title?: string;
+  action?: (item: T) => void;
+  item?: T;
+  icon?: string;
+  hasConfirm?: boolean = false;
+
+  Title = (title: string) => {
+    this.title = title;
+    return this;
+  };
+
+  Action = (action: (item: T) => void) => {
+    this.action = action;
+    return this;
+  };
+
+  Icon = (icon: string) => {
+    this.icon = icon;
+    return this;
+  };
+
+  HasConfirm = (hasConfirm: boolean) => {
+    this.hasConfirm = hasConfirm;
+    return this;
+  };
+}
+
+export function CreateTableAction() {
+  return new TableAction();
 }
