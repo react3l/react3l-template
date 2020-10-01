@@ -143,7 +143,7 @@ function PriceListMasterView() {
           </div>
           <div className='page__actions d-flex align-items-center'>
             <button
-              className='btn btn-sm component__btn-primary ml-3'
+              className='btn btn-sm component__btn-primary ml-3 grow-animate-1'
               onClick={handleGoCreate}
             >
               {translate("general.actions.create")}
@@ -160,7 +160,7 @@ function PriceListMasterView() {
               <div className='d-flex justify-content-around'>
                 <button
                   className={classNames(
-                    "btn component__btn-toggle mr-4",
+                    "btn component__btn-toggle mr-4 grow-animate-1",
                     toggle === true ? "component__btn-toggle-active" : "",
                   )}
                   onClick={handleToggleSearch}
@@ -168,7 +168,7 @@ function PriceListMasterView() {
                   <i className='tio-tune_horizontal'></i>
                   <span className='component_btn-text'>Nâng cao</span>
                 </button>
-                <button className='btn component__btn-toggle' 
+                <button className='btn component__btn-toggle grow-animate-1' 
                   onClick={handleResetFilter}>
                   <i className='tio-restore'></i>
                   <span className='component_btn-text'>Bỏ lọc</span>
@@ -279,7 +279,7 @@ function PriceListMasterView() {
                     <div className='flex-shrink-1 d-flex align-items-center'>
                       <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
                         <button
-                          className='btn border-less component__btn-delete grow-animate'
+                          className='btn border-less component__btn-delete grow-animate-2'
                           style={{ border: "none", backgroundColor: "unset" }}
                           onClick={handleServerBulkDelete} // local bulk Delete onChange
                           disabled={!canBulkDelete} // disabled when selectedList length === 0
@@ -296,14 +296,14 @@ function PriceListMasterView() {
                             id="master-import"
                             onChange={handleImportList(priceListRepository.import)}
                           />
-                          <button className='btn border-less gradient-btn-icon grow-animate'
+                          <button className='btn border-less gradient-btn-icon grow-animate-2'
                             onClick={() => {importButtonRef.current.click();}}>
                             <i className='tio-file_add_outlined' />
                           </button>
                         </>
                       </Tooltip>
                       <Tooltip title={translate("general.actions.exportExcel")}>
-                        <button className='btn border-less gradient-btn-icon grow-animate'
+                        <button className='btn border-less gradient-btn-icon grow-animate-2'
                             onClick={handleListExport(filter, priceListRepository.export)}>
                             <i className='tio-file_outlined' />
                           </button>
@@ -312,7 +312,7 @@ function PriceListMasterView() {
                         title={translate("general.actions.downloadTemplate")}
 
                       >
-                        <button className='btn border-less gradient-btn-icon grow-animate'
+                        <button className='btn border-less gradient-btn-icon grow-animate-2'
                           onClick={handleExportTemplateList(priceListRepository.exportTemplate)}>
                           <i className='tio-download_to' />
                         </button>
