@@ -12,7 +12,7 @@ import { PAYMENT_REQUEST_DETAIL_ROUTE } from "config/route-consts";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Animate } from "react-show";
-import { routerService } from "services/RouterService";
+import { routerService } from "services/route-service";
 import "./PaymentRequestMasterView.scss";
 
 // const LoadingIndicator = () => {

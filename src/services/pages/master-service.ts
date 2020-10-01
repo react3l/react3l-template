@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { Observable } from "rxjs";
 import { advanceFilterService } from "services/advance-filter-service";
 import { queryStringService } from "services/query-string-service";
-import { routerService } from "services/RouterService";
+import { routerService } from "services/route-service";
 import tableService from "services/table-service";
 
 export class MasterService {
