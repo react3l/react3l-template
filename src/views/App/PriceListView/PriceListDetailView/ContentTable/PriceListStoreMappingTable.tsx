@@ -26,7 +26,7 @@ import tableService, {
   filterContentNotInList,
   getAntOrderType,
   getIdsFromContent,
-} from "services/tbl-service";
+} from "services/table-service";
 import nameof from "ts-nameof.macro";
 import ContentModal from "../ContentModal/PriceListStoreMappingsModal";
 

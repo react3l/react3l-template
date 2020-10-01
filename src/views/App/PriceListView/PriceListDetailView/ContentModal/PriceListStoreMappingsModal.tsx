@@ -15,7 +15,7 @@ import {
   advanceFilterReducer,
   advanceFilterService,
 } from "services/AdvanceFilterService";
-import tableService from "services/tbl-service";
+import tableService from "services/table-service";
 import nameof from "ts-nameof.macro";
 
 export interface PriceListStoreMappingsModalProps {

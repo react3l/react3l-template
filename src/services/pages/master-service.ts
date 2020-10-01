@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import { advanceFilterService } from "services/AdvanceFilterService";
 import { queryStringService } from "services/QueryStringService";
 import { routerService } from "services/RouterService";
-import tableService from "services/tbl-service";
+import tableService from "services/table-service";
 
 export class MasterService {
   /**

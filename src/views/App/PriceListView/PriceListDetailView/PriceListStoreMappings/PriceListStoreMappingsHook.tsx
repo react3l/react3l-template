@@ -16,8 +16,10 @@ import { StoreTypeFilter } from "models/StoreTypeFilter";
 import { priceListRepository } from "repositories/price-list-repository";
 import { StoreFilter } from "models/StoreFilter";
 import { Store } from "antd/lib/form/interface";
-import { mappingToMapper, getAntOrderType } from "services/tbl-service";
-import tableService from "services/tbl-service";
+import tableService, {
+  mappingToMapper,
+  getAntOrderType,
+} from "services/table-service";
 import { advanceFilterFactory } from "services/component-factory/component-factory-service";
 export function usePriceListStoreMappingsTable(
   model: PriceList,

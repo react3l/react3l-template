@@ -5,7 +5,7 @@ import tableService, {
   filterContentInList,
   filterContentNotInList,
   getIdsFromContent,
-} from "services/tbl-service";
+} from "services/table-service";
 import { Observable } from "rxjs";
 
 export function useContentModal<
