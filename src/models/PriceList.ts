@@ -42,6 +42,7 @@ export class PriceListStoreMappings extends Model {
   store?: Store;
   storeCode?: string;
   storeName?: string;
+  storeTypeName?: string;
   storeTypeId?: number;
   storeType?: StoreType;
   storeGroupingId?: number;

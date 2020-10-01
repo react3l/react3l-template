@@ -109,6 +109,16 @@ export function usePriceListStoreMappingsTable(
           .Title(() => <>{translate("priceLists.store.name")}</>)
           .Key(nameof(storeMappingContents[0].storeName)) //Key
           .DataIndex(nameof(storeMappingContents[0].storeName))
+          .Sorter(true) // if setSorter === true ...
+          .SortOrder(
+            getAntOrderType<
+              PriceListStoreMappings,
+              PriceListStoreMappingsFilter
+            >(
+              priceListStoreMappingsFilter,
+              nameof(storeMappingContents[0].storeName),
+            ),
+          ) // ... so, you need to have setSortOder
           .AddChild(
             CreateColumn()
               .Title(
@@ -126,7 +136,7 @@ export function usePriceListStoreMappingsTable(
           ),
         CreateColumn()
           .Title(() => <>{translate("priceLists.store.storeType")}</>)
-          .Key(nameof(storeMappingContents[0].storeType)) //Key
+          .Key(nameof(storeMappingContents[0].storeTypeName)) //Key
           .DataIndex(nameof(storeMappingContents[0].storeTypeName))
           .Sorter(true) // if setSorter === true ...
           .SortOrder(
