@@ -3,7 +3,7 @@ import { Reducer, useCallback, useEffect, useReducer } from "react";
 import { useLocation } from "react-router";
 import { Subscription } from "rxjs";
 import { AppAction, AppActionEnum, appReducer, AppState } from "./AppStore";
-import appMessageService, { messageType } from "services/AppMessageService";
+import appMessageService, { messageType } from "services/app-message-service";
 
 export default function useApp() {
   const { pathname } = useLocation();
