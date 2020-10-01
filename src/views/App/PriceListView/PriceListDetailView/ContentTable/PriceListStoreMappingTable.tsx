@@ -177,12 +177,12 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
           </>
         ),
         key: nameof(content[0].storeType), // must be the same with getAntOrderType param[1]
-        dataIndex: nameof(content[0].storeTypeId),
+        dataIndex: nameof(content[0].storeTypeName),
         sorter: true,
         sortOrder: getAntOrderType<
           PriceListStoreMappings,
           PriceListStoreMappingsFilter
-        >(filter, nameof(content[0].storeTypeId)), // and the same here
+        >(filter, nameof(content[0].storeTypeName)), // and the same here
         children: [
           {
             title: () => (
@@ -450,6 +450,7 @@ function mapper(model: PriceListStoreMappings | Store): PriceListStoreMappings {
       storeCode: store?.code,
       storeName: store?.name,
       storeTypeId: store?.storeTypeId,
+      storeTypeName: store?.storeType?.name,
       provinceId: store?.provinceId,
       storeGroupingId: store?.storeGroupingId,
       storeType: store?.storeType,

@@ -1,38 +1,29 @@
 import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import { ModelFilter } from "@react3l/react3l/core";
-import { Col, Row, Tooltip } from "antd";
+import { Col, Row } from "antd";
 import Card from "antd/lib/card";
-import Table, { ColumnProps } from "antd/lib/table";
 import classNames from "classnames";
 import AdvanceDateRangeFilter from "components/Utility/AdvanceFilter/AdvanceDateRangeFilter/AdvanceDateRangeFilter";
 import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 import InputSearch from "components/Utility/InputSearch/InputSearch";
 import { PAYMENT_REQUEST_DETAIL_ROUTE } from "config/route-consts";
-import { PaymentFilter } from "models/PaymenFilter";
-import { Payment } from "models/Payment";
-import { Province } from "models/Province";
-import { Moment } from "moment";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { paymentRepository } from "repositories/payment-repository";
-import { queryStringService } from "services/QueryStringService";
-import { routerService } from "services/RouterService";
-import { tableService } from "services/TableService";
-import nameof from "ts-nameof.macro";
-import "./PaymentRequestMasterView.scss";
 import { Animate } from "react-show";
+import { routerService } from "services/RouterService";
+import "./PaymentRequestMasterView.scss";
 
-const LoadingIndicator = () => {
-  return (
-    <div
-      style={{ position: "absolute", top: "50%", left: "50%", margin: "-10px" }}
-    >
-      <img className='img-loading' src='/assets/svg/spinner.svg' alt='' />
-    </div>
-  );
-};
+// const LoadingIndicator = () => {
+//   return (
+//     <div
+//       style={{ position: "absolute", top: "50%", left: "50%", margin: "-10px" }}
+//     >
+//       <img className='img-loading' src='/assets/svg/spinner.svg' alt='' />
+//     </div>
+//   );
+// };
 
 export class DemoListFilter extends ModelFilter {
   id: IdFilter = new IdFilter();
@@ -42,16 +33,16 @@ export class DemoListFilter extends ModelFilter {
 
 function PaymentMasterView() {
   const [translate] = useTranslation();
-  const [filter] = queryStringService.useQueryString<PaymentFilter>(
-    PaymentFilter,
-  );
+  // const [filter] = queryStringService.useQueryString<PaymentFilter>(
+  //   PaymentFilter,
+  // );
 
-  const [list, , , loading, ,] = tableService.useMasterTable<
-    Payment,
-    PaymentFilter
-  >(filter, paymentRepository.list, paymentRepository.count);
+  // const [list, , , loading, ,] = tableService.useMasterTable<
+  //   Payment,
+  //   PaymentFilter
+  // >(filter, paymentRepository.list, paymentRepository.count);
 
-  const [rowSelection] = tableService.useRowSelection<Payment>();
+  // const [rowSelection] = tableService.useRowSelection<Payment>();
 
   const [handleGoCreate] = routerService.useMasterNavigation(
     PAYMENT_REQUEST_DETAIL_ROUTE,
@@ -59,138 +50,138 @@ function PaymentMasterView() {
 
   const [toggle, setToggle] = React.useState<boolean>(false);
 
-  const columns: ColumnProps<Payment>[] = React.useMemo(
-    () => [
-      {
-        title: translate("paymentRequest.id"),
-        key: nameof(list[0].id),
-        dataIndex: nameof(list[0].id),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].id)),
-        render(id: number) {
-          return id;
-        },
-      },
-      {
-        title: translate("paymentRequest.name"),
-        key: nameof(list[0].name),
-        dataIndex: nameof(list[0].name),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].name)),
-        render(id: number) {
-          return id;
-        },
-      },
-      {
-        title: () => (
-          <div>
-            <div>{translate("paymentRequest.code")}</div>
-          </div>
-        ),
-        key: nameof(list[0].code),
-        dataIndex: nameof(list[0].code),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].code)),
-        render(id: number) {
-          return id;
-        },
-      },
-      {
-        title: translate("paymentRequest.province"),
-        key: nameof(list[0].province),
-        dataIndex: nameof(list[0].province),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(
-          filter,
-          nameof(list[0].province),
-        ),
-        render(province: Province) {
-          return province.name;
-        },
-      },
-      {
-        title: translate("paymentRequest.status"),
-        key: nameof(list[0].status),
-        dataIndex: nameof(list[0].status),
-        align: "center",
-        render(status) {
-          return (
-            <div className='d-flex justify-content-center'>
-              {status?.id === 1 && <div className='shipped'>Shipped</div>}
-              {status?.id === 2 && <div className='processing'>Processing</div>}
-              {status?.id === 3 && <div className='cancelled'>Cancelled</div>}
-            </div>
-          );
-        },
-      },
-      {
-        title: translate("paymentRequest.date"),
-        key: nameof(list[0].date),
-        dataIndex: nameof(list[0].date),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(filter, nameof(list[0].date)),
-        render(date: Moment) {
-          return date.format("DD/MM/YYYY");
-        },
-      },
-      {
-        title: translate("paymentRequest.paymentNumber"),
-        key: nameof(list[0].paymentNumber),
-        dataIndex: nameof(list[0].paymentNumber),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(
-          filter,
-          nameof(list[0].paymentNumber),
-        ),
-        render(id: number) {
-          return id;
-        },
-      },
-      {
-        title: translate("paymentRequest.paymentDate"),
-        key: nameof(list[0].paymentDate),
-        dataIndex: nameof(list[0].paymentDate),
-        sorter: true,
-        sortOrder: tableService.getAntOrderType(
-          filter,
-          nameof(list[0].paymentDate),
-        ),
-        render(paymentDate: Moment) {
-          return paymentDate.format("DD/MM/YYYY");
-        },
-      },
-      {
-        title: translate("general.actions.action"),
-        key: nameof("general.actions.action"),
-        dataIndex: nameof(list[0].id),
-        align: "center",
-        fixed: "right",
-        width: 200,
-        render() {
-          return (
-            <div className='d-flex justify-content-center button-action-table'>
-              <Tooltip title={translate("general.actions.view")}>
-                <button className='btn gradient-btn-icon'>
-                  <i className='tio-visible' />
-                </button>
-              </Tooltip>
-              <Tooltip title={translate("general.actions.edit")}>
-                <button className='btn gradient-btn-icon'>
-                  <i className='tio-edit' />
-                </button>
-              </Tooltip>
-              <Tooltip title={translate("general.actions.delete")}>
-                <button className='btn btn-sm component__btn-delete'>
-                  <i className='tio-delete' />
-                </button>
-              </Tooltip>
-            </div>
-          );
-        },
-      },
-    ],
-    [list, filter, translate],
-  );
+  // const columns: ColumnProps<Payment>[] = React.useMemo(
+  //   () => [
+  //     {
+  //       title: translate("paymentRequest.id"),
+  //       key: nameof(list[0].id),
+  //       dataIndex: nameof(list[0].id),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(filter, nameof(list[0].id)),
+  //       render(id: number) {
+  //         return id;
+  //       },
+  //     },
+  //     {
+  //       title: translate("paymentRequest.name"),
+  //       key: nameof(list[0].name),
+  //       dataIndex: nameof(list[0].name),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(filter, nameof(list[0].name)),
+  //       render(id: number) {
+  //         return id;
+  //       },
+  //     },
+  //     {
+  //       title: () => (
+  //         <div>
+  //           <div>{translate("paymentRequest.code")}</div>
+  //         </div>
+  //       ),
+  //       key: nameof(list[0].code),
+  //       dataIndex: nameof(list[0].code),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(filter, nameof(list[0].code)),
+  //       render(id: number) {
+  //         return id;
+  //       },
+  //     },
+  //     {
+  //       title: translate("paymentRequest.province"),
+  //       key: nameof(list[0].province),
+  //       dataIndex: nameof(list[0].province),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(
+  //         filter,
+  //         nameof(list[0].province),
+  //       ),
+  //       render(province: Province) {
+  //         return province.name;
+  //       },
+  //     },
+  //     {
+  //       title: translate("paymentRequest.status"),
+  //       key: nameof(list[0].status),
+  //       dataIndex: nameof(list[0].status),
+  //       align: "center",
+  //       render(status) {
+  //         return (
+  //           <div className='d-flex justify-content-center'>
+  //             {status?.id === 1 && <div className='shipped'>Shipped</div>}
+  //             {status?.id === 2 && <div className='processing'>Processing</div>}
+  //             {status?.id === 3 && <div className='cancelled'>Cancelled</div>}
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //     {
+  //       title: translate("paymentRequest.date"),
+  //       key: nameof(list[0].date),
+  //       dataIndex: nameof(list[0].date),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(filter, nameof(list[0].date)),
+  //       render(date: Moment) {
+  //         return date.format("DD/MM/YYYY");
+  //       },
+  //     },
+  //     {
+  //       title: translate("paymentRequest.paymentNumber"),
+  //       key: nameof(list[0].paymentNumber),
+  //       dataIndex: nameof(list[0].paymentNumber),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(
+  //         filter,
+  //         nameof(list[0].paymentNumber),
+  //       ),
+  //       render(id: number) {
+  //         return id;
+  //       },
+  //     },
+  //     {
+  //       title: translate("paymentRequest.paymentDate"),
+  //       key: nameof(list[0].paymentDate),
+  //       dataIndex: nameof(list[0].paymentDate),
+  //       sorter: true,
+  //       sortOrder: tableService.getAntOrderType(
+  //         filter,
+  //         nameof(list[0].paymentDate),
+  //       ),
+  //       render(paymentDate: Moment) {
+  //         return paymentDate.format("DD/MM/YYYY");
+  //       },
+  //     },
+  //     {
+  //       title: translate("general.actions.action"),
+  //       key: nameof("general.actions.action"),
+  //       dataIndex: nameof(list[0].id),
+  //       align: "center",
+  //       fixed: "right",
+  //       width: 200,
+  //       render() {
+  //         return (
+  //           <div className='d-flex justify-content-center button-action-table'>
+  //             <Tooltip title={translate("general.actions.view")}>
+  //               <button className='btn gradient-btn-icon'>
+  //                 <i className='tio-visible' />
+  //               </button>
+  //             </Tooltip>
+  //             <Tooltip title={translate("general.actions.edit")}>
+  //               <button className='btn gradient-btn-icon'>
+  //                 <i className='tio-edit' />
+  //               </button>
+  //             </Tooltip>
+  //             <Tooltip title={translate("general.actions.delete")}>
+  //               <button className='btn btn-sm component__btn-delete'>
+  //                 <i className='tio-delete' />
+  //               </button>
+  //             </Tooltip>
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //   ],
+  //   [list, filter, translate],
+  // );
 
   const handleToggleSearch = React.useCallback(() => {
     const toggleTmp = !toggle;
@@ -322,7 +313,7 @@ function PaymentMasterView() {
         </div>
         <div className='page__master-table'>
           <Card>
-            <Table
+            {/* <Table
               // tableLayout='fixed'
               rowKey={nameof(list[0].id)}
               columns={columns}
@@ -361,19 +352,12 @@ function PaymentMasterView() {
                           <i className='tio-download_to' />
                         </button>
                       </Tooltip>
-                      {/* <Pagination
-                        skip={filter.skip}
-                        take={filter.take}
-                        total={total}
-                        onChange={handlePagination}
-                        style={{ margin: "10px" }}
-                      /> */}
                     </div>
                   </div>
                 </>
               )}
               scroll={{ x: "max-content" }}
-            />
+            /> */}
           </Card>
         </div>
       </div>
