@@ -46,6 +46,13 @@ body {
     @include input-icon;
   }
 
+  .grow-animate {
+    transition: all .2s ease-in-out;
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
   .component__title {
     @include input-title;
   }

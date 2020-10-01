@@ -141,7 +141,7 @@ export const importExportDataService = {
     const handleListExport = useCallback(
       <TFilter extends ModelFilter>(
         filter: TFilter,
-        onExport: (filter: TFilter) => Observable<AxiosResponse<any>>,
+        onExport: (filter: ModelFilter) => Observable<AxiosResponse<any>>,
       ) => {
         return () => {
           if (typeof onExport === "function") {
@@ -155,6 +155,19 @@ export const importExportDataService = {
       },
       [subscription],
     );
+
+    const handleExportTemplateList = useCallback(
+      (onExport: () => Observable<AxiosResponse<any>>) => {
+        return () => {
+          if (typeof onExport === "function") {
+            subscription.add(
+              onExport().subscribe(
+                handleExportSuccess, // onSuccess
+              ),
+            );
+          }
+        };
+    }, [subscription]);
 
     // handleExport contentList from server
     const handleContentExport = useCallback(
@@ -196,6 +209,7 @@ export const importExportDataService = {
 
     return {
       handleListExport,
+      handleExportTemplateList,
       handleContentExport,
       handleContentExportTemplate,
     };

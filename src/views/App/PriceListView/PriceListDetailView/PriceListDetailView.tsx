@@ -16,7 +16,6 @@ import { priceListRepository } from "repositories/price-list-repository";
 import { formService } from "services/FormService";
 import detailService from "services/pages/detail-service";
 import nameof from "ts-nameof.macro";
-import PriceListStoreMappingsTable from "../PriceListDetailView/ContentTable/PriceListStoreMappingTable"; // view for content table
 import {
   storeContentMapper,
   usePriceListStoreMappingsModal,
@@ -227,14 +226,6 @@ function PriceListDetailView() {
                   key='1'
                 >
                   <Row>
-                    <PriceListStoreMappingsTable
-                      model={model}
-                      content={storeMappingContents}
-                      setContent={setStoreMappingContents}
-                      mapperField={nameof(
-                        model.priceListStoreMappings[0].store,
-                      )}
-                    />
                     <ContentTable
                       model={model} // input for import, export
                       contentMapper={storeContentMapper} // from here, input for all business in localTable ...

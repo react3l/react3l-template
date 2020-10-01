@@ -4,7 +4,6 @@ import Modal from "antd/lib/modal/Modal";
 import classNames from "classnames";
 import AppAside from "components/AppAside/AppAside";
 import AppAsideCollapse from "components/AppAsideCollapse/AppAsideCollapse";
-import AppFooter from "components/AppFooter/AppFooter";
 import AppHeader from "components/AppHeader/AppHeader";
 import { menu } from "config/menu";
 import { routes } from "config/routes";
@@ -77,7 +76,6 @@ function App() {
             })}
           ></div>
         </div>
-        {true && <AppFooter />}
       </div>
     ),
     [displayOverlay, toggleMenu],

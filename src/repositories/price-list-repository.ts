@@ -182,6 +182,33 @@ export class PriceListRepository extends Repository {
       },
     );
   };
+
+  public import = (file: File): Observable<void> => {
+    const formData: FormData = new FormData();
+    formData.append(nameof(file), file);
+    return this.httpObservable
+      .post<void>(kebabCase(nameof(this.import)), formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .pipe(map((response: AxiosResponse<void>) => response.data));
+  };
+
+  public export = (
+    filter: any,
+  ): Observable<AxiosResponse<any>> => {
+    return this.httpObservable.post('export', filter, {
+      responseType: 'arraybuffer',
+    });
+  };
+
+  public exportTemplate = (
+  ): Observable<AxiosResponse<any>> => {
+    return this.httpObservable.post('export-template', {}, {
+      responseType: 'arraybuffer',
+    });
+  };
 }
 
 export const priceListRepository: PriceListRepository = new PriceListRepository();

@@ -1,8 +1,9 @@
 import { Model, ModelFilter } from "@react3l/react3l/core";
 import { PRICE_LIST_DETAIL_ROUTE_PREFIX } from "config/route-consts";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Observable } from "rxjs";
 import { advanceFilterService } from "services/AdvanceFilterService";
+import { importExportDataService } from "services/import-export-data-service";
 import { queryStringService } from "services/QueryStringService";
 import { routerService } from "services/RouterService";
 import tableService from "services/tbl-service";
@@ -21,6 +22,7 @@ export class MasterService {
     deleteItem?: (t: T) => Observable<T>,
     bulkDeleteItems?: (t: KeyType[]) => Observable<void>,
     onUpdateListSuccess?: (item?: T) => void,
+    onImportSuccess?: (list: T[]) => void,
   ) {
     //   service to navigating create or detail
     const [handleGoCreate, handleGoDetail] = routerService.useMasterNavigation(
@@ -76,6 +78,17 @@ export class MasterService {
       onUpdateListSuccess,
     );
 
+    const {
+      handleImportList,
+    } = importExportDataService.useImport(onImportSuccess);
+    
+    const {
+      handleListExport,
+      handleExportTemplateList,
+    } = importExportDataService.useExport();
+
+    const importButtonRef: React.LegacyRef<HTMLInputElement> = useRef<HTMLInputElement>();
+
     return {
       list,
       total,
@@ -92,9 +105,13 @@ export class MasterService {
       handlePagination,
       handleServerDelete,
       handleServerBulkDelete,
+      handleSearch,
+      handleImportList,
+      handleListExport,
+      handleExportTemplateList,
+      importButtonRef,
       rowSelection,
       canBulkDelete,
-      handleSearch,
       pagination, // optional using
     };
   }

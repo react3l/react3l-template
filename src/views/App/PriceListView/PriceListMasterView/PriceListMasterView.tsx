@@ -1,5 +1,4 @@
-import React, { useMemo } from "react";
-import { Moment } from "moment";
+import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { Col, Row, Tooltip } from "antd";
 import Card from "antd/lib/card";
 import Table, { ColumnProps } from "antd/lib/table";
@@ -8,17 +7,18 @@ import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/Ad
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 import InputSearch from "components/Utility/InputSearch/InputSearch";
 import Pagination from "components/Utility/Pagination/Pagination";
+import { formatDateTime } from "helpers/date-time";
 import { renderMasterIndex } from "helpers/table";
 import { PriceList, PriceListFilter } from "models/PriceList";
 import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
+import { Moment } from "moment";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { Animate } from "react-show";
 import { priceListRepository } from "repositories/price-list-repository";
 import masterService from "services/pages/master-service";
 import nameof from "ts-nameof.macro";
-import { IdFilter, StringFilter } from "@react3l/advanced-filters";
-import { formatDateTime } from "helpers/date-time";
-import { Animate } from "react-show";
 
 function PriceListMasterView() {
   const [translate] = useTranslation();
@@ -38,6 +38,10 @@ function PriceListMasterView() {
     handlePagination,
     handleServerDelete,
     handleServerBulkDelete,
+    handleImportList,
+    handleListExport,
+    handleExportTemplateList,
+    importButtonRef,
     rowSelection,
     canBulkDelete,
     pagination, // optional using
@@ -113,7 +117,6 @@ function PriceListMasterView() {
                   <i className='tio-edit' />
                 </button>
               </Tooltip>
-              {/* {!product.used && validAction('delete') && ( */}
               <Tooltip title={"delete"}>
                 <button
                   className='btn btn-sm component__btn-delete'
@@ -122,7 +125,6 @@ function PriceListMasterView() {
                   <i className='tio-delete' />
                 </button>
               </Tooltip>
-              {/* )} */}
             </div>
           );
         },
@@ -150,69 +152,30 @@ function PriceListMasterView() {
         </div>
         <div className='page__search'>
           <Card title={translate("general.search.title")}>
-            <Row className='d-flex align-items-center'>
-              <Col lg={12}>
-                <div className='pr-4'>
-                  <InputSearch />
-                </div>
-              </Col>
-              <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
-                  <label className='label'>
-                    {translate("general.priceList.code")}
-                  </label>
-                  <AdvanceStringFilter
-                    value={filter[nameof(list[0].code)]["contain"]}
-                    onChange={handleChangeFilter(
-                      nameof(list[0].code),
-                      "contain" as any,
-                      StringFilter,
-                    )}
-                    placeHolder={translate("priceList.filter.code")} // -> tat ca
-                  />
-                </div>
-              </Col>
-              <Col lg={4} className='pr-4'>
-                <div className='mt__1'>
-                  <label className='label'>
-                    {translate("general.priceList.name")}
-                  </label>
-                  <AdvanceStringFilter
-                    value={filter[nameof(list[0].name)]["contain"]}
-                    onChange={handleChangeFilter(
-                      nameof(list[0].name),
-                      "contain" as any,
-                      StringFilter,
-                    )}
-                    placeHolder={translate("priceList.filter.name")} // -> tat ca
-                  />
-                </div>
-              </Col>
+            <div className='d-flex align-items-center'>
+              <div className='pr-4 flex-grow-1'>
+                <InputSearch />
+              </div>
               {/* start toggle and reset filter */}
-              <Col lg={4}>
-                <div className='d-flex justify-content-end'>
-                  <button
-                    className={classNames(
-                      "btn component__btn-toggle mr-4",
-                      toggle === true ? "component__btn-toggle-active" : "",
-                    )}
-                    onClick={handleToggleSearch}
-                  >
-                    <div className='tio-down_ui' />
-                    <div className='tio-down_ui' />
-                  </button>
-                  <div className='d-flex justify-content-between'>
-                    <button
-                      className='btn component__btn-outline-primary'
-                      onClick={handleResetFilter}
-                    >
-                      ResetFilter
-                    </button>
-                  </div>
-                </div>
-              </Col>
+              <div className='d-flex justify-content-around'>
+                <button
+                  className={classNames(
+                    "btn component__btn-toggle mr-4",
+                    toggle === true ? "component__btn-toggle-active" : "",
+                  )}
+                  onClick={handleToggleSearch}
+                >
+                  <i className='tio-tune_horizontal'></i>
+                  <span className='component_btn-text'>Nâng cao</span>
+                </button>
+                <button className='btn component__btn-toggle' 
+                  onClick={handleResetFilter}>
+                  <i className='tio-restore'></i>
+                  <span className='component_btn-text'>Bỏ lọc</span>
+                </button>
+              </div>
               {/* end toggle and reset filter */}
-            </Row>
+            </div>
             <Animate
               show={toggle}
               duration={500}
@@ -229,6 +192,34 @@ function PriceListMasterView() {
               }}
             >
               <Row className='mt-4'>
+                <Col lg={4} className='pr-4'>
+                  <label className='label'>
+                    {translate("general.priceList.code")}
+                  </label>
+                  <AdvanceStringFilter
+                    value={filter[nameof(list[0].code)]["contain"]}
+                    onChange={handleChangeFilter(
+                      nameof(list[0].code),
+                      "contain" as any,
+                      StringFilter,
+                    )}
+                    placeHolder={translate("priceList.filter.code")} // -> tat ca
+                  />
+                </Col>
+                <Col lg={4} className='pr-4'>
+                  <label className='label'>
+                    {translate("general.priceList.name")}
+                  </label>
+                  <AdvanceStringFilter
+                    value={filter[nameof(list[0].name)]["contain"]}
+                    onChange={handleChangeFilter(
+                      nameof(list[0].name),
+                      "contain" as any,
+                      StringFilter,
+                    )}
+                    placeHolder={translate("priceList.filter.name")} // -> tat ca
+                  />
+                </Col>
                 <Col lg={4} className='pr-4'>
                   <label className='label'>
                     {translate("priceList.status")}
@@ -288,7 +279,7 @@ function PriceListMasterView() {
                     <div className='flex-shrink-1 d-flex align-items-center'>
                       <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
                         <button
-                          className='btn border-less component__btn-delete'
+                          className='btn border-less component__btn-delete grow-animate'
                           style={{ border: "none", backgroundColor: "unset" }}
                           onClick={handleServerBulkDelete} // local bulk Delete onChange
                           disabled={!canBulkDelete} // disabled when selectedList length === 0
@@ -297,19 +288,32 @@ function PriceListMasterView() {
                         </button>
                       </Tooltip>
                       <Tooltip title={translate("general.actions.importExcel")}>
-                        <button className='btn border-less gradient-btn-icon'>
-                          <i className='tio-file_add_outlined ' />
-                        </button>
+                        <>
+                          <input
+                            ref={importButtonRef}
+                            type="file"
+                            style={{display: 'none'}}
+                            id="master-import"
+                            onChange={handleImportList(priceListRepository.import)}
+                          />
+                          <button className='btn border-less gradient-btn-icon grow-animate'
+                            onClick={() => {importButtonRef.current.click();}}>
+                            <i className='tio-file_add_outlined' />
+                          </button>
+                        </>
                       </Tooltip>
                       <Tooltip title={translate("general.actions.exportExcel")}>
-                        <button className='btn border-less gradient-btn-icon'>
-                          <i className='tio-file_outlined' />
-                        </button>
+                        <button className='btn border-less gradient-btn-icon grow-animate'
+                            onClick={handleListExport(filter, priceListRepository.export)}>
+                            <i className='tio-file_outlined' />
+                          </button>
                       </Tooltip>
                       <Tooltip
                         title={translate("general.actions.downloadTemplate")}
+
                       >
-                        <button className='btn border-less gradient-btn-icon'>
+                        <button className='btn border-less gradient-btn-icon grow-animate'
+                          onClick={handleExportTemplateList(priceListRepository.exportTemplate)}>
                           <i className='tio-download_to' />
                         </button>
                       </Tooltip>
