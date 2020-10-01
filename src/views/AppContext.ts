@@ -1,4 +1,4 @@
-import { SignalRService } from "services/SignalRService";
+import { SignalRService } from "services/signalr-service";
 import { createContext, Dispatch } from "react";
 import { RouteConfig } from "react-router-config";
 import { AppMessageService } from "services/app-message-service";
