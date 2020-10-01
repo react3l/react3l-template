@@ -4,7 +4,7 @@ import { DatePicker } from "antd";
 import { DatePickerProps } from "antd/lib/date-picker";
 import { Model } from "@react3l/react3l/core";
 import { Moment } from "moment";
-import { commonWebService } from "services/CommonWebService";
+import { commonWebService } from "services/common-web-service";
 
 function SuffixDateIcon() {
   return (

@@ -6,7 +6,7 @@ import {
   AdvanceFilterAction,
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import AdvanceNumberRangeFilter from "./AdvanceNumberRangeFilter";
 
 class DemoFilter extends ModelFilter {

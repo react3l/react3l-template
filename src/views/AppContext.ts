@@ -1,7 +1,7 @@
-import { SignalRService } from "services/SignalRService";
+import { SignalRService } from "services/signalr-service";
 import { createContext, Dispatch } from "react";
 import { RouteConfig } from "react-router-config";
-import { AppMessageService } from "services/AppMessageService";
+import { AppMessageService } from "services/app-message-service";
 import { AppAction, AppState } from "./AppStore";
 export const SignalRContext = createContext<SignalRService>(null);
 export const PermissionContext = createContext<string[]>([]);
@@ -12,4 +12,7 @@ export const AppMessageContext = createContext<AppMessageService>(null);
 export const AppDispatchContext = createContext<Dispatch<AppAction>>(null);
 export const AppStateContext = createContext<AppState>(null);
 
-export const AppStoreContext = createContext<[AppState, Dispatch<AppAction>]>([null, null]);
+export const AppStoreContext = createContext<[AppState, Dispatch<AppAction>]>([
+  null,
+  null,
+]);

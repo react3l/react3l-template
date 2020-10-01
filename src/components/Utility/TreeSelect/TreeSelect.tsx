@@ -7,7 +7,7 @@ import { debounce } from "@react3l/react3l/helpers";
 import { DEBOUNCE_TIME_300 } from "@react3l/react3l/config";
 import { Observable } from "rxjs";
 import nameof from "ts-nameof.macro";
-import { commonWebService } from "services/CommonWebService";
+import { commonWebService } from "services/common-web-service";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import InputTag from "../Input/InputTag/InputTag";
 import InputSelect from "../Input/InputSelect/InputSelect";

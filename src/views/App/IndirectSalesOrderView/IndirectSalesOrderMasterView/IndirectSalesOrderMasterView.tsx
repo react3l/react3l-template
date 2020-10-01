@@ -11,8 +11,8 @@ import AdvanceNumberRangeFilter from "components/Utility/AdvanceFilter/AdvanceNu
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 import React from "react";
 import { Observable } from "rxjs";
-import { advanceFilterService } from "services/AdvanceFilterService";
-import { queryStringService } from "services/QueryStringService";
+import { advanceFilterService } from "services/advance-filter-service";
+import { queryStringService } from "services/query-string-service";
 
 class DemoFilter extends ModelFilter {
   id: IdFilter = new IdFilter();

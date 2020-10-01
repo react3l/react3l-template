@@ -7,8 +7,8 @@ import nameof from "ts-nameof.macro";
 import {
   AdvanceFilterAction,
   advanceFilterReducer,
-} from "./AdvanceFilterService";
-import { commonWebService } from "./CommonWebService";
+} from "./advance-filter-service";
+import { commonWebService } from "./common-web-service";
 
 const qs = require("qs");
 

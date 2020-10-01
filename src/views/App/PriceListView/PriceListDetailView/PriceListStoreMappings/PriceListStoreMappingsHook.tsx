@@ -6,7 +6,7 @@ import {
   AdvanceFilterAction,
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
 import { useTranslation } from "react-i18next";
@@ -16,8 +16,10 @@ import { StoreTypeFilter } from "models/StoreTypeFilter";
 import { priceListRepository } from "repositories/price-list-repository";
 import { StoreFilter } from "models/StoreFilter";
 import { Store } from "antd/lib/form/interface";
-import { mappingToMapper, getAntOrderType } from "services/tbl-service";
-import tableService from "services/tbl-service";
+import tableService, {
+  mappingToMapper,
+  getAntOrderType,
+} from "services/table-service";
 import { advanceFilterFactory } from "services/component-factory/component-factory-service";
 export function usePriceListStoreMappingsTable(
   model: PriceList,
@@ -125,7 +127,7 @@ export function usePriceListStoreMappingsTable(
         CreateColumn()
           .Title(() => <>{translate("priceLists.store.storeType")}</>)
           .Key(nameof(storeMappingContents[0].storeType)) //Key
-          .DataIndex(nameof(storeMappingContents[0].storeTypeId))
+          .DataIndex(nameof(storeMappingContents[0].storeTypeName))
           .Sorter(true) // if setSorter === true ...
           .SortOrder(
             getAntOrderType<
@@ -133,7 +135,7 @@ export function usePriceListStoreMappingsTable(
               PriceListStoreMappingsFilter
             >(
               priceListStoreMappingsFilter,
-              nameof(storeMappingContents[0].storeTypeId),
+              nameof(storeMappingContents[0].storeTypeName),
             ),
           ) // ... so, you need to have setSortOder
           .AddChild(
@@ -280,6 +282,7 @@ export const storeContentMapper = (
       storeCode: store?.code,
       storeName: store?.name,
       storeTypeId: store?.storeTypeId,
+      storeTypeName: store?.storeType?.name,
       provinceId: store?.provinceId,
       storeGroupingId: store?.storeGroupingId,
       storeType: store?.storeType,

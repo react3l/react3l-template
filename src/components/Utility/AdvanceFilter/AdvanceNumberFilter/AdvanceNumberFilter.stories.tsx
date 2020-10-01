@@ -8,7 +8,7 @@ import {
   AdvanceFilterAction,
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import { Filter } from "@react3l/advanced-filters/Filter";
 
 class DemoFilter extends ModelFilter {

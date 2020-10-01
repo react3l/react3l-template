@@ -5,7 +5,7 @@ import {
   advanceFilterService,
   advanceFilterReducer,
   AdvanceFilterAction,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import { ModelFilter } from "@react3l/react3l/core";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 import FormItem, { ValidateStatus } from "components/Utility/FormItem/FormItem";
