@@ -14,7 +14,7 @@ import { priceListRepository } from "repositories/price-list-repository";
 import {
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import tableService from "services/table-service";
 import nameof from "ts-nameof.macro";
 

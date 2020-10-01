@@ -6,7 +6,7 @@ import {
   AdvanceFilterAction,
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
 import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
 import { useTranslation } from "react-i18next";

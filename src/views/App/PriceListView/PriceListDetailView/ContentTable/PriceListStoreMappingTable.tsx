@@ -18,7 +18,7 @@ import { priceListRepository } from "repositories/price-list-repository";
 import {
   advanceFilterReducer,
   advanceFilterService,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import { formService } from "services/FormService";
 import { importExportDataService } from "services/import-export-data-service";
 import tableService, {

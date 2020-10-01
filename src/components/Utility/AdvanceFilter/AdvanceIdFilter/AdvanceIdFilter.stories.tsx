@@ -7,7 +7,7 @@ import {
   advanceFilterService,
   advanceFilterReducer,
   AdvanceFilterAction,
-} from "services/AdvanceFilterService";
+} from "services/advance-filter-service";
 import { IdFilter } from "@react3l/advanced-filters/IdFilter";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
 
