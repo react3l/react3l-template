@@ -12,7 +12,7 @@ import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringF
 import React from "react";
 import { Observable } from "rxjs";
 import { advanceFilterService } from "services/advance-filter-service";
-import { queryStringService } from "services/QueryStringService";
+import { queryStringService } from "services/query-string-service";
 
 class DemoFilter extends ModelFilter {
   id: IdFilter = new IdFilter();

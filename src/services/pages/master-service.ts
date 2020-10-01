@@ -3,7 +3,7 @@ import { PRICE_LIST_DETAIL_ROUTE_PREFIX } from "config/route-consts";
 import { useCallback, useState } from "react";
 import { Observable } from "rxjs";
 import { advanceFilterService } from "services/advance-filter-service";
-import { queryStringService } from "services/QueryStringService";
+import { queryStringService } from "services/query-string-service";
 import { routerService } from "services/RouterService";
 import tableService from "services/table-service";
 
