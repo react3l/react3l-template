@@ -19,7 +19,7 @@ import {
   advanceFilterReducer,
   advanceFilterService,
 } from "services/advance-filter-service";
-import { formService } from "services/FormService";
+import { formService } from "services/form-service";
 import { importExportDataService } from "services/import-export-data-service";
 import tableService, {
   filterContentInList,

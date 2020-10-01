@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
-import { formService } from "services/FormService";
+import { formService } from "services/form-service";
 import { routerService } from "services/RouterService";
 import { v4 as uuidv4 } from "uuid";
 import appMessageService from "services/app-message-service";
