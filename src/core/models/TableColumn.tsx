@@ -28,8 +28,8 @@ export class TableColumn {
     this.key = key;
     this.dataIndex = dataIndex;
     this.render = render || tableColumnFactory.renderSimpleValue;
-    this.sorter = sorter || false;
-    this.sortOrder = sortOrder || "ascend";
+    this.sorter = sorter;
+    this.sortOrder = sortOrder;
     this.ellipsis = ellipsis || false;
     this.width = width ? width : 120;
     this.children = children;

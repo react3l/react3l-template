@@ -101,7 +101,7 @@ export function usePriceListStoreMappingsTable(
     loadList,
     setLoadList,
     nameof(storeMappingContents[0].store),
-  );
+  ); // content table service
 
   const priceListStoreMappingsContentColumns = React.useMemo(
     () =>
@@ -212,6 +212,7 @@ export function usePriceListStoreMappingsTable(
               .Title("")
               .Key("actions") // key
               .Width(120)
+              .DataIndex(nameof(storeMappingContents[0].key))
               .Render(
                 RenderActionColumn(
                   CreateTableAction()
@@ -231,7 +232,14 @@ export function usePriceListStoreMappingsTable(
       translate,
       RenderActionColumn,
     ],
-  );
+  ); // content table columns
+
+  React.useEffect(() => {
+    console.log(
+      `priceListStoreMappingsContentColumns: `,
+      priceListStoreMappingsContentColumns,
+    );
+  }, [priceListStoreMappingsContentColumns]);
 
   return {
     priceListStoreMappingsFilter,
