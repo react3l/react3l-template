@@ -25,6 +25,8 @@ import tableService, {
   getAntOrderType,
 } from "services/table-service";
 import { componentFactoryService } from "services/component-factory/component-factory-service";
+import { useContentTable } from "components/Utility/ContentTable/ContentTableHook";
+
 export function usePriceListStoreMappingsTable(
   model: PriceList,
   setModel: (data: PriceList) => void,
@@ -68,6 +70,38 @@ export function usePriceListStoreMappingsTable(
     dispatchPriceListStoreMappingsFilter,
     PriceListStoreMappingsFilter,
   ); // filter service
+
+  const {
+    list, // list for dataSource
+    loadingList, // loading for await data filtering
+    total,
+    handleAddContent, // add one content in local table
+    handleTableChange, // handle table change action for ant table, sorter, pager, etc.
+    handlePagination, // handle custom pagination, not for ant table
+    rowSelection, // row selection for table
+    canBulkDelete, // decide whether we enable bulk delete button
+    handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
+    ref, // import input ref
+    handleClick, // clear value of ref
+    handleImportContentList, // handleChange import file
+    handleContentExport, // content export
+    handleContentExportTemplate, // content export template
+  } = useContentTable<
+    PriceListStoreMappings,
+    Store,
+    PriceListStoreMappingsFilter
+  >(
+    storeMappingContents,
+    setStoreMappingContents,
+    storeContentMapper,
+    PriceListStoreMappings,
+    priceListStoreMappingsFilter,
+    handleUpdateNewFilter,
+    handleSearch,
+    loadList,
+    setLoadList,
+    nameof(storeMappingContents[0].store),
+  );
 
   const priceListStoreMappingsContentColumns = React.useMemo(
     () =>
@@ -200,13 +234,22 @@ export function usePriceListStoreMappingsTable(
   );
 
   return {
-    loadPriceListStoreMappingsList: loadList,
-    setLoadPriceListStoreMappingsList: setLoadList,
-    handleSearchPriceListStoreMappings: handleSearch,
-    handleUpdateNewPriceListStoreMappingsFilter: handleUpdateNewFilter,
-    handleResetPriceListStoreMappingsFilter: handleResetFilter,
     priceListStoreMappingsFilter,
-    dispatchPriceListStoreMappingsFilter,
+    priceListStoreMappingsList: list,
+    loadPriceListStoreMappingsList: loadingList,
+    priceListStoreMappingsTotal: total,
+    handleAddPriceListStoreMappings: handleAddContent,
+    handlePriceListStoreMappingsTableChange: handleTableChange,
+    handlePriceListStoreMappingsPagination: handlePagination,
+    priceListStoreMappingsRowSelection: rowSelection,
+    canBulkDeletePriceListStoreMappings: canBulkDelete,
+    handleResetPriceListStoreMappingsFilter: handleResetFilter,
+    handleLocalBulkDeletePriceListStoreMappings: handleLocalBulkDelete,
+    priceListStoreMappingsRef: ref,
+    handleClickPriceListStoreMappings: handleClick,
+    handleImportPriceListStoreMappings: handleImportContentList,
+    handleExportPriceListStoreMappings: handleContentExport,
+    handleExportTemplatePriceListStoreMappings: handleContentExportTemplate,
     storeMappingContents,
     setStoreMappingContents,
     priceListStoreMappingsContentColumns,
