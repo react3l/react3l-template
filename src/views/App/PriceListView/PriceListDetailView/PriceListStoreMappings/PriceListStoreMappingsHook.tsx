@@ -218,7 +218,7 @@ export function usePriceListStoreMappingsTable(
                   CreateTableAction()
                     .Title(translate("general.delete.content"))
                     .Icon("tio-delete_outlined text-danger")
-                    .HasConfirm(true),
+                    .HasConfirm(true), // create delete content action
                 ),
               ), // render
           ), // actions column
@@ -233,13 +233,6 @@ export function usePriceListStoreMappingsTable(
       RenderActionColumn,
     ],
   ); // content table columns
-
-  React.useEffect(() => {
-    console.log(
-      `priceListStoreMappingsContentColumns: `,
-      priceListStoreMappingsContentColumns,
-    );
-  }, [priceListStoreMappingsContentColumns]);
 
   return {
     priceListStoreMappingsFilter,
