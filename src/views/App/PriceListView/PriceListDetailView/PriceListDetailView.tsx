@@ -1,7 +1,7 @@
 import { Card, Col, Row, Switch, Tabs } from "antd";
 import DatePicker from "components/Utility/Calendar/DatePicker/DatePicker";
 /* start import bundle for one pair of content table and content modal */
-import ContentModal from "components/Utility/ContentModal_V1/ContentModal"; // view for content modal
+import ContentModal from "components/Utility/ContentModal/ContentModal"; // view for content modal
 import ContentTable from "components/Utility/ContentTable/ContentTable"; // view for content table
 import FormItem from "components/Utility/FormItem/FormItem";
 import InputText from "components/Utility/Input/InputText/InputText";

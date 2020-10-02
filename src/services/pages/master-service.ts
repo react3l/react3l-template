@@ -7,6 +7,8 @@ import { queryStringService } from "services/query-string-service";
 import { routerService } from "services/route-service";
 import tableService from "services/table-service";
 import { importExportDataService } from "services/import-export-data-service";
+import { finalize } from "rxjs/operators";
+import React from "react";
 
 export class MasterService {
   /**
@@ -15,6 +17,45 @@ export class MasterService {
    * @return: { content, setContent }
    *
    * */
+  usePreview<T extends Model> (
+    modelClass: new () => T,
+    getDetail: (id: number) => Observable<T>,
+  ) {
+    const [isOpenPreview, setIsOpenPreview] = React.useState<boolean>(false);
+    const [isLoadingPreview, setIsLoadingPreview] = React.useState<boolean>(false);
+    const [previewModel, setPreviewModel] = React.useState<T>(new modelClass());
+
+    const handleOpenPreview = React.useCallback(
+      (id: number) => {
+        return () => {
+          setPreviewModel(new modelClass());
+          setIsLoadingPreview(true);
+          setIsOpenPreview(true);
+          getDetail(id)
+            .pipe(
+              finalize(() => setIsLoadingPreview(false)),
+            )
+            .subscribe((tDetail: T) => {
+              setPreviewModel(tDetail);
+            });
+        };
+      },
+      [getDetail, modelClass],
+    );
+
+    const handleClosePreview = React.useCallback(() => {
+      setIsOpenPreview(false);
+    }, []);
+
+    return {
+      isOpenPreview,
+      isLoadingPreview,
+      previewModel,
+      handleOpenPreview,
+      handleClosePreview,
+    };
+  };
+
   useMaster<T extends Model, TFilter extends ModelFilter>(
     modelFilterClass: new () => TFilter,
     getList: (filter: TFilter) => Observable<T[]>,

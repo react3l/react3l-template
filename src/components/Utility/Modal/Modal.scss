@@ -1,0 +1,110 @@
+@import './../../../styles/mixins';
+
+/* Style for ContentModal.tsx */
+.modal__container {
+    .modal__table {
+        margin-top: 15px;
+    }
+    
+    .ant-modal-body {
+        padding: 10px 0 0 0 !important;
+    }
+
+    .modal_content {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: auto;
+
+        .loading-block {
+            display: flex; 
+            justify-content: center;
+            width: auto;
+            img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        .preview__containter {
+            display: flex;
+            margin-top: 15px;
+
+            .preview__left-side {
+                width: 65%;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+
+                .preview__header {
+                    display: flex;
+
+                    .preview__vertical-bar {
+                        width: 5px;
+                        height: 50px;
+                        @include background-color();
+                    }
+
+                    .preview__header-info {
+                        margin-left: 15px;
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+
+                        .preview__header-text {
+                            display: flex;
+                            flex-direction: column;
+
+                            .preview__header-title {
+                                font-weight: bold;
+                                font-size: 20px;
+                                line-height: 27px;
+                                @include gradient-text();
+                            }
+
+                            .preview__header-date {
+                                font-weight: normal;
+                                font-size: 14px;
+                                line-height: 21px;          
+                                color: #8181A5;
+                            }
+                        }
+                    }
+                }
+
+                .preview__body {
+                    flex-grow: 1;
+                    overflow-y: auto;
+                    margin: 10px 15px 10px 15px;
+
+                    .preview__content {
+                        border-top: 1px solid #EEEEEE;
+                        .gradient-text {
+                            @include gradient-text();
+                        }
+                        &.no-data {
+                            background: url('/assets/img/no-data.png') no-repeat center center;
+                            height: auto;
+                            width: auto;
+                        }
+                    }
+                }
+
+                .preview__footer {
+                    padding-left: 20px;
+                }
+            }
+
+            .preview__right-side {
+                width: 35%;
+                height: auto;
+            }
+        }
+    }
+
+    .ant-modal-footer {
+        .component__btn-primary {
+            float: left;
+        }
+    }
+}
