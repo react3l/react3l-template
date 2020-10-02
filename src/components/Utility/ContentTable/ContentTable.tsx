@@ -47,7 +47,7 @@ export interface ContentTableProps<
   onExportContent?: (model?: T) => Observable<AxiosResponse<any>>;
   onExportContentTemp?: (id: React.ReactText) => Observable<AxiosResponse<any>>;
   onImportContent?: (file: File, priceListId: number) => Observable<TContent[]>;
-  hasAddContentInTable?: boolean; // able to add content from footer
+  hasAddContentInline?: boolean; // able to add content from footer
   hasMapContentFromModal?: boolean; // able to map content from header
   hasImport?: boolean; // able to import content
   hasExport?: boolean; // able to export content
@@ -87,6 +87,8 @@ export const ContentTable = React.forwardRef(
       handleExportTemplateContent,
       handlePagination,
       handleAddContent,
+      hasAddContentInline,
+      hasWriteContentPermission,
       handleClick,
       handleImportContentList,
     } = props;
@@ -119,14 +121,19 @@ export const ContentTable = React.forwardRef(
                   className='flex-shrink-1 d-flex align-items-center'
                   key='actions'
                 >
-                  <Tooltip title={translate("Thêm nhiều dòng")} key='openModal'>
-                    <button
-                      className='btn gradient-btn-icon text-center'
-                      onClick={onOpenModal}
+                  {!hasAddContentInline && hasWriteContentPermission && (
+                    <Tooltip
+                      title={translate("Thêm nhiều dòng")}
+                      key='openModal'
                     >
-                      <i className='tio-add ' />
-                    </button>
-                  </Tooltip>
+                      <button
+                        className='btn gradient-btn-icon text-center'
+                        onClick={onOpenModal}
+                      >
+                        <i className='tio-add ' />
+                      </button>
+                    </Tooltip>
+                  )}
                   <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
                     <button
                       className='btn component__btn-delete'
@@ -179,14 +186,16 @@ export const ContentTable = React.forwardRef(
           )}
           footer={() => (
             <div className='d-flex justify-content-end'>
-              <Tooltip title={translate("Thêm một dòng")} key='addRow'>
-                <button
-                  className='btn btn-sm gradient-btn-icon text-center'
-                  onClick={handleAddContent}
-                >
-                  <i className='tio-add mr-2' />
-                </button>
-              </Tooltip>
+              {hasAddContentInline && hasWriteContentPermission && (
+                <Tooltip title={translate("Thêm một dòng")} key='addRow'>
+                  <button
+                    className='btn btn-sm gradient-btn-icon text-center'
+                    onClick={handleAddContent}
+                  >
+                    <i className='tio-add mr-2' />
+                  </button>
+                </Tooltip>
+              )}
             </div>
           )}
         />
@@ -205,7 +214,7 @@ export const ContentTable = React.forwardRef(
 );
 
 ContentTable.defaultProps = {
-  hasAddContentInTable: true,
+  hasAddContentInline: false,
   hasMapContentFromModal: true,
   hasImport: true,
   hasExport: true,
