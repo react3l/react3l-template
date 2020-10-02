@@ -110,7 +110,6 @@ export function usePriceListStoreMappingsTable(
           .Title(() => <>{translate("general.columns.index")}</>)
           .AddChild(
             CreateColumn()
-              .Title("")
               .Key("index") // key
               .Width(120)
               .Render(
@@ -209,7 +208,6 @@ export function usePriceListStoreMappingsTable(
           .Title(() => <>{translate("general.actions.index")}</>)
           .AddChild(
             CreateColumn()
-              .Title("")
               .Key("actions") // key
               .Width(120)
               .DataIndex(nameof(storeMappingContents[0].key))
