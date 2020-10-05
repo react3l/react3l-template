@@ -1,4 +1,4 @@
-import { Model } from "@react3l/react3l/core";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Moment } from "moment";
 
 export class Message extends Model {
@@ -26,6 +26,10 @@ export class Message extends Model {
             this.creator = {...message.creator};
         }
     }   
+}
+
+export class MessageFilter extends ModelFilter {
+    
 }
 
 export class Creator extends Model {

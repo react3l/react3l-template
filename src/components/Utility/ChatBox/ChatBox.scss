@@ -49,6 +49,7 @@
         overflow-y: auto;
         flex-direction: column-reverse;
         height: 90%;
+        max-height: 600px;
 
         .reverse-row {
             flex-direction: row-reverse;

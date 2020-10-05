@@ -19,7 +19,7 @@ export interface ChatBoxProps <TFilter extends ModelFilter> {
     countMessages?: (TModelFilter?: TFilter) => Observable<number>;
     postMessage?: (Message: Message) => Observable<Message>;
     deleteMessage?: (Message: Message) => Observable<boolean>;
-    suggestList?: (value: string) => Observable<Model[]>;
+    suggestList?: (filter: TFilter) => Observable<Model[]>;
     attachFile?: (File: File) => Observable<FileModel>;
 }
 
@@ -58,7 +58,6 @@ function initFilter (initialValue: any) {
     } = initialValue;
 
     const filter = classFilter ? new classFilter() : new ModelFilter();
-
     return {
         ...filter,
         discussionId,
@@ -304,7 +303,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                         if (fileType === "image") {
                             hrefItem = `<image src="${res.path}" alt="IMG">`;
                         } else {
-                            hrefItem = `<a href="${res.path}">${res.name}</a>`;
+                            hrefItem = `<a href="${res.path}" target="_blank">${res.name}</a>`;
                         }
                         contentEditableRef.current.innerHTML += hrefItem;
                         setEndContentEditable();

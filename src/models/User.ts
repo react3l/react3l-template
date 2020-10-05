@@ -22,4 +22,8 @@ export class User extends Model {
   public districtId?: number;
 
   public district?: District;
+
+  public avatar?: string;
+
+  public displayName?: string;
 }

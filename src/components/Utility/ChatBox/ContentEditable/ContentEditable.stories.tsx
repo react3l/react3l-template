@@ -10,7 +10,7 @@ const userList = [
     {id: 1, name: 'Bui Quang Huy', displayName: 'huybq11@fpt.com.vn'},
 ];
 
-const demoGetList = (value: string) => {
+const demoGetList = (value: any) => {
     return of(userList);
 };
 

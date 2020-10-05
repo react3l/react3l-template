@@ -1,154 +1,29 @@
-import { IdFilter, StringFilter } from "@react3l/advanced-filters";
-import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Col, Descriptions, Row, Tooltip } from "antd";
+import React, { useMemo } from "react";
+import { Col, Row, Tooltip } from "antd";
 import Card from "antd/lib/card";
 import Table, { ColumnProps } from "antd/lib/table";
 import classNames from "classnames";
-import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
-import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
-import ChatBox from "components/Utility/ChatBox/ChatBox";
-import { FileModel } from "components/Utility/ChatBox/ChatBox.model";
 import InputSearch from "components/Utility/InputSearch/InputSearch";
-import Modal from "components/Utility/Modal/Modal";
 import Pagination from "components/Utility/Pagination/Pagination";
 import { formatDateTime } from "helpers/date-time";
 import { renderMasterIndex } from "helpers/table";
-import { PriceList, PriceListFilter } from "models/PriceList";
-import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
-import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
-import moment from "moment";
 import { Moment } from "moment";
-import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Animate } from "react-show";
-import { priceListRepository } from "repositories/price-list-repository";
-import { Observable, of } from "rxjs";
 import masterService from "services/pages/master-service";
 import nameof from "ts-nameof.macro";
 
-const listMessageDemo = [
-  {   id: 1, 
-      discussionId: '9b1a5cc1-ed96-4c4f-b44f-dc8491a5b136',  
-      content: '<a>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a>', 
-      creatorId: 10, 
-      createdAt: moment(), 
-      creator: {
-          id: 10, 
-          userName: 'Le Duc Thang', 
-          displayName: 'thangld19', 
-          avatar: 'https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg',
-      },
-  },
-  {   id: 2, 
-      discussionId: '930cd7ca-b3b0-4105-8c82-6e45d2f64ef7', 
-      content: '<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" alt="IMG"/>', 
-      creatorId: 11, 
-      createdAt: moment(), 
-      creator: {
-          id: 11, 
-          userName: 'Le Duc Thang',
-          displayName: 'thangld19', 
-          avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-      },
-  },
-  {   id: 3, 
-      discussionId: '930cd7ca-b3b0-4105-8c82-6e45d2f64ef7', 
-      content: '<a>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a>', 
-      creatorId: 11, 
-      createdAt: moment(), 
-      creator: {
-          id: 11, 
-          userName: 'Le Duc Thang',
-          displayName: 'thangld19', 
-          avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-      },
-  },
-  {   id: 4, 
-      discussionId: '930cd7ca-b3b0-4105-8c82-6e45d2f64ef7', 
-      content: 'Lorem Ipsum is simply', 
-      creatorId: 11, 
-      createdAt: moment(), 
-      creator: {
-          id: 11, 
-          userName: 'Le Duc Thang',
-          displayName: 'thangld19', 
-          avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-      },
-  },
-  {   id: 5, 
-      discussionId: '930cd7ca-b3b0-4105-8c82-6e45d2f64ef7', 
-      content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry', 
-      creatorId: 10, 
-      createdAt: moment(), 
-      creator: {
-          id: 10, 
-          userName: 'Le Duc Thang',
-          displayName: 'thangld19', 
-          avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-      },
-  },
-  {   id: 6, 
-      discussionId: '930cd7ca-b3b0-4105-8c82-6e45d2f64ef7', 
-      content: 'Lorem Ipsum is simply dummy text', 
-      creatorId: 10, 
-      createdAt: moment(), 
-      creator: {
-          id: 10, 
-          userName: 'Le Duc Thang',
-          displayName: 'thangld19', 
-          avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-      },
-  },
-];
+import { IdFilter, StringFilter } from "@react3l/advanced-filters";
+import AdvanceIdFilter from "components/Utility/AdvanceFilter/AdvanceIdFilter/AdvanceIdFilter";
+import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
 
-const demoObservable = new Observable<Model[]>((observer) => {
-  setTimeout(() => {
-    observer.next(listMessageDemo);
-    observer.complete();
-  }, 1000);
-});
-
-const countObservable = new Observable<number>((observer) => {
-  setTimeout(() => {
-    observer.next(50);
-    observer.complete();
-  }, 1000);
-});
-
-const demoSearchFunc = (TModelFilter: ModelFilter) => {
-  return demoObservable;
-};
-
-const demoCountFunc = (TModelFilter: ModelFilter) => {
-  return countObservable;
-};
-
-const demoPostFunc = (Message: any) => {
-  return of(Message);
-};
-
-const demoAttachFunc = (file: File) => {
-  const fileValue: FileModel = {
-      id: 1,
-      name: file.name,
-      path: '/testpath',
-  };
-  return of(fileValue);
-};
-
-const demoDeleteFunc = (message: any) => {
-  return of(true);
-};
-
-const userList = [
-  {id: 1, name: 'Le Duc Thang', displayName: 'thangld19@fpt.com.vn'},
-  {id: 2, name: 'Dang Tuan Vu', displayName: 'vudt19@fpt.com.vn'},
-  {id: 1, name: 'Bui Quang Huy', displayName: 'huybq11@fpt.com.vn'},
-];
-
-const demoGetList = (value: string) => {
-  return of(userList);
-};
+import { priceListRepository } from "repositories/price-list-repository";
+import PriceListPreview from "./PriceListPreview";
+import { PriceList, PriceListFilter, PriceListStoreMappings } from "models/PriceList";
+import { PriceListStatusFilter } from "models/PriceList/PriceListStatusFilter";
+import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
+import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
+import { getAntOrderType } from "services/table-service";
 
 function PriceListMasterView() {
   const [translate] = useTranslation();
@@ -203,6 +78,14 @@ function PriceListMasterView() {
         title: translate("priceList.code"),
         key: nameof(list[0].code),
         dataIndex: nameof(list[0].code),
+        sorter: true,
+        sortOrder: getAntOrderType<
+          PriceList,
+          PriceListFilter
+      >(
+        filter,
+        nameof(list[0].code),
+      ),
       },
       {
         title: translate("priceList.name"),
@@ -269,7 +152,7 @@ function PriceListMasterView() {
       },
     ],
 
-    [handleGoDetail, handleServerDelete, translate, handleOpenPreview, list, pagination],
+    [handleGoDetail, handleServerDelete, translate, handleOpenPreview, list, pagination, filter],
   );
 
   return (
@@ -470,84 +353,13 @@ function PriceListMasterView() {
           </Card>
         </div>
       </div>
-      <Modal title={''}
-        visible={isOpenPreview}
-        handleCancel={handleClosePreview}
-        width={1000}
-        visibleFooter={false}
-        >
-          { isLoadingPreview ? 
-            <div className="loading-block">
-              <img src="/assets/svg/spinner.svg"  alt='Loading...'/>
-            </div> :
-            <div className="preview__containter">
-              <div className="preview__left-side">
-                <div className="preview__header">
-                  <div className="preview__vertical-bar"></div>
-                  <div className="preview__header-info">
-                    <div className="preview__header-text">
-                      <span className="preview__header-title">Đại lí Huề Hòa</span>
-                      <span className="preview__header-date">Ngày tạo { previewModel.startDate ? moment(previewModel.startDate).format('DD/MM/YYYY') : null }</span>
-                    </div>
-                    <button className="btn gradient-btn-icon ant-tooltip-open">
-                      <i className="tio-edit"></i>
-                    </button>
-                  </div>
-                </div>
-                <div className="preview__body">
-                  <div className="preview__content">
-                    <Descriptions title={previewModel.name} column={2}>
-                      <Descriptions.Item label={translate('priceList.name')}>
-                        <span className="gradient-text">{ previewModel.name }</span>
-                      </Descriptions.Item>
-                      <Descriptions.Item label={translate('priceList.code')}>
-                        <span className="gradient-text">{ previewModel.code }</span>
-                      </Descriptions.Item>
-                      <Descriptions.Item label={translate('priceList.startDate')}>
-                        <span className="gradient-text">
-                          { previewModel.startDate ? moment(previewModel.startDate).format('DD/MM/YYYY') : null }
-                        </span>
-                      </Descriptions.Item>
-                      <Descriptions.Item label={translate('priceList.endDate')}>
-                        <span className="gradient-text">
-                          { previewModel.endDate ? moment(previewModel.endDate).format('DD/MM/YYYY') : null }
-                        </span>
-                      </Descriptions.Item>
-                    </Descriptions>
-                  </div>
-                  <div className="preview__content no-data">
-                    {/* <Table
-                      tableLayout='fixed'
-                      rowKey={nameof(previewModel.priceListStoreMappings[0].id)}
-                      columns={[
-                        { title: translate('priceListStoreMappings.storeName'), dataIndex: 'storeName', key: 'storeName'},
-                        { title: translate('priceListStoreMappings.storeCode'), dataIndex: 'storeCode', key: 'storeCode'},
-                      ]}
-                      pagination={false}
-                      dataSource={previewModel.priceListStoreMappings}
-                    /> */}
-                  </div>
-                </div>
-                <div className="preview__footer"></div>
-              </div>
-              <div className="preview__right-side">
-              <ChatBox getMessages={demoSearchFunc}
-                countMessages={demoCountFunc}
-                postMessage={demoPostFunc}
-                deleteMessage={demoDeleteFunc}
-                attachFile = {demoAttachFunc}
-                suggestList = {demoGetList}
-                discussionId={'cb042dd9-03bf-4218-a126-9cd7444c68e4'}
-                userInfo={{
-                    id: 10, 
-                    userName: 'Le Duc Thang',
-                    displayName: 'thangld19', 
-                    avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-                    }}/>
-              </div>
-            </div>
-          }
-      </Modal>
+      <PriceListPreview id={null}
+        previewModel={previewModel}
+        isOpenPreview={isOpenPreview}
+        isLoadingPreview={isLoadingPreview}
+        handleClosePreview={handleClosePreview}
+        translate={translate}
+      />
     </>
   );
 }

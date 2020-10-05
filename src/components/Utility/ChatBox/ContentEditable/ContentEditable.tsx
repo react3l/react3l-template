@@ -1,3 +1,5 @@
+import { StringFilter } from '@react3l/advanced-filters';
+import { ModelFilter } from '@react3l/react3l/core';
 import { Model } from '@react3l/react3l/core/model';
 import React, { forwardRef, MutableRefObject } from 'react';
 import { Observable } from 'rxjs';
@@ -17,12 +19,12 @@ function updateContent (state: string, contentAction: contentAction) {
     }
 }
 
-export interface ContentEditableProps {
-    suggestList?: (value: string) => Observable<Model[]>;
+export interface ContentEditableProps<TFilter extends ModelFilter> {
+    suggestList?: (filter: TFilter) => Observable<Model[]>;
     sendValue?: () => void;
 }
 
-const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>((props: ContentEditableProps, contentEditableRef: MutableRefObject<HTMLDivElement | null>) => {
+const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps<ModelFilter>>((props: ContentEditableProps<ModelFilter>, contentEditableRef: MutableRefObject<HTMLDivElement | null>) => {
     const {
         suggestList,
         sendValue,
@@ -141,7 +143,9 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>((props:
 
     React.useEffect(() => {
         if (contentEditable && typeof suggestList === 'function') {
-            const subcription = suggestList(contentEditable).subscribe(
+            const filter = new ModelFilter();
+            filter.name = new StringFilter({contain: contentEditable});
+            const subcription = suggestList(filter).subscribe(
                 (res) => {
                     if (res) {
                         setUserList(res);
