@@ -24,6 +24,7 @@ export class Message extends Model {
             this.deletedAt = message.deletedAt ? message.deletedAt : null;;
             this.creatorId = message.creator.id;
             this.creator = {...message.creator};
+            this.isOwner = message.isOwner;
         }
     }   
 }

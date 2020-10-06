@@ -9,6 +9,7 @@ import { Province } from "./Province";
 
 export class PriceList extends Model {
   id?: number;
+  rowId?: string;
   code?: string;
   name?: string;
   startDate?: Moment;

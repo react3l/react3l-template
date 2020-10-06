@@ -353,11 +353,12 @@ function PriceListMasterView() {
           </Card>
         </div>
       </div>
-      <PriceListPreview id={null}
+      <PriceListPreview
         previewModel={previewModel}
         isOpenPreview={isOpenPreview}
         isLoadingPreview={isLoadingPreview}
         handleClosePreview={handleClosePreview}
+        handleGoDetail={handleGoDetail}
         translate={translate}
       />
     </>

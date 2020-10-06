@@ -210,8 +210,8 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             creatorId: userInfo.id,
             creator: userInfo,
             createdAt: moment(),
+            isOwner: true,
         });
-
         postMessage(message).subscribe(
             (res: Message) => {
                 dispatchList({

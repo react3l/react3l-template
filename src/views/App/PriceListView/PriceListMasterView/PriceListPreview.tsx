@@ -1,34 +1,34 @@
+import React from 'react';
 import { Model } from '@react3l/react3l/core/model';
 import { Descriptions } from 'antd';
 import ChatBox from 'components/Utility/ChatBox/ChatBox';
 import Modal from 'components/Utility/Modal/Modal';
 import { TFunction } from 'i18next';
-import { PriceList } from 'models/PriceList';
-import React from 'react';
-import {disscusionRepository} from 'repositories/disscusion-repository';
-import { userRepository } from 'repositories/user-repository';
 import Table from "antd/lib/table";
 import moment from "moment";
 import nameof from "ts-nameof.macro";
 import { useGlobal } from 'reactn';
 import { User } from 'models/User';
+import {disscusionRepository} from 'repositories/disscusion-repository';
+import { userRepository } from 'repositories/user-repository';
+import { PriceList } from 'models/PriceList';
 
 interface PriceListPreviewProps<T extends Model> {
-    id: string;
     previewModel?: T;
     isOpenPreview?: boolean;
     isLoadingPreview?: boolean;
     handleClosePreview?: () => void;
+    handleGoDetail?: (id: number) => () => void;
     translate?: TFunction;
 };
 
 function PriceListPreview(props: PriceListPreviewProps<PriceList>) {
     const {
-        id,
         previewModel,
         isOpenPreview,
         isLoadingPreview,
         handleClosePreview,
+        handleGoDetail,
         translate,
     } = props;
 
@@ -44,8 +44,8 @@ function PriceListPreview(props: PriceListPreviewProps<PriceList>) {
             { isLoadingPreview ? 
                 <div className="loading-block">
                     <img src="/assets/svg/spinner.svg"  alt='Loading...'/>
-                    </div> :
-                    <div className="preview__containter">
+                </div> :
+                <div className="preview__containter">
                     <div className="preview__left-side">
                         <div className="preview__header">
                             <div className="preview__vertical-bar"></div>
@@ -54,7 +54,7 @@ function PriceListPreview(props: PriceListPreviewProps<PriceList>) {
                                 <span className="preview__header-title">{previewModel.name}</span>
                                 <span className="preview__header-date">Ngày tạo { previewModel.startDate ? moment(previewModel.startDate).format('DD/MM/YYYY') : null }</span>
                                 </div>
-                                <button className="btn gradient-btn-icon ant-tooltip-open">
+                                <button className="btn gradient-btn-icon ant-tooltip-open" onClick={handleGoDetail(previewModel.id)}>
                                     <i className="tio-edit"></i>
                                 </button>
                             </div>
@@ -91,10 +91,10 @@ function PriceListPreview(props: PriceListPreviewProps<PriceList>) {
                                     dataSource={previewModel.priceListStoreMappings}
                                 />
                             </div>
-                            {/* <div className="preview__content">
+                            <div className="preview__content">
                                 <img src="/assets/img/img.png" alt="no-data" />
                                 <span className="gradient-text transform-text">Have a nice day!</span>
-                            </div> */}
+                            </div>
                         </div>
                         <div className="preview__footer"></div>
                     </div>
@@ -105,7 +105,7 @@ function PriceListPreview(props: PriceListPreviewProps<PriceList>) {
                             deleteMessage={disscusionRepository.delete}
                             attachFile = {disscusionRepository.import}
                             suggestList = {userRepository.list}
-                            discussionId={id}
+                            discussionId={previewModel.rowId}
                             userInfo={userInfo}/>
                     </div>
                 </div>
