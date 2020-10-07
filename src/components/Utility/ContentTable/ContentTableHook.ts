@@ -1,4 +1,3 @@
-import React from "react";
 import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Dispatch, SetStateAction } from "react";
 import { importExportDataService } from "services/import-export-data-service";
@@ -20,10 +19,6 @@ export function useContentTable<
   setLoadList: Dispatch<SetStateAction<boolean>>,
   mapperField: string,
 ) {
-  React.useEffect(() => {
-    console.log(`filter: `, filter);
-  }, [filter]);
-
   const {
     list,
     loadingList,

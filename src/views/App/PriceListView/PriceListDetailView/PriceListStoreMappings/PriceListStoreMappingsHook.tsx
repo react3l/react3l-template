@@ -8,7 +8,11 @@ import {
   advanceFilterService,
 } from "services/advance-filter-service";
 import { PriceListStoreMappingsFilter } from "models/PriceList/PriceListStoreMappingsFilter";
-import { CreateColumn, CreateTableColumns } from "core/models/TableColumn";
+import {
+  CreateColumn,
+  CreateTableAction,
+  CreateTableColumns,
+} from "core/models/TableColumn";
 import { useTranslation } from "react-i18next";
 import { IdFilter, StringFilter } from "@react3l/advanced-filters";
 import { masterTableIndex } from "helpers/table";
@@ -20,7 +24,9 @@ import tableService, {
   mappingToMapper,
   getAntOrderType,
 } from "services/table-service";
-import { advanceFilterFactory } from "services/component-factory/component-factory-service";
+import { componentFactoryService } from "services/component-factory/component-factory-service";
+import { useContentTable } from "components/Utility/ContentTable/ContentTableHook";
+
 export function usePriceListStoreMappingsTable(
   model: PriceList,
   setModel: (data: PriceList) => void,
@@ -36,10 +42,11 @@ export function usePriceListStoreMappingsTable(
   );
 
   const {
-    renderStringFilter,
-    renderIdFilter,
+    RenderStringFilter,
+    RenderIdFilter,
     // renderDateFilter,
-  } = advanceFilterFactory;
+    RenderActionColumn,
+  } = componentFactoryService;
 
   const [
     priceListStoreMappingsFilter,
@@ -64,18 +71,54 @@ export function usePriceListStoreMappingsTable(
     PriceListStoreMappingsFilter,
   ); // filter service
 
+  const {
+    list, // list for dataSource
+    loadingList, // loading for await data filtering
+    total,
+    handleAddContent, // add one content in local table
+    handleTableChange, // handle table change action for ant table, sorter, pager, etc.
+    handlePagination, // handle custom pagination, not for ant table
+    rowSelection, // row selection for table
+    canBulkDelete, // decide whether we enable bulk delete button
+    handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
+    ref, // import input ref
+    handleClick, // clear value of ref
+    handleImportContentList, // handleChange import file
+    handleContentExport, // content export
+    handleContentExportTemplate, // content export template
+  } = useContentTable<
+    PriceListStoreMappings,
+    Store,
+    PriceListStoreMappingsFilter
+  >(
+    storeMappingContents,
+    setStoreMappingContents,
+    storeContentMapper,
+    PriceListStoreMappings,
+    priceListStoreMappingsFilter,
+    handleUpdateNewFilter,
+    handleSearch,
+    loadList,
+    setLoadList,
+    nameof(storeMappingContents[0].store),
+  ); // content table service
+
   const priceListStoreMappingsContentColumns = React.useMemo(
     () =>
       CreateTableColumns(
         CreateColumn()
           .Title(() => <>{translate("general.columns.index")}</>)
-          .Key("index") // key
-          .Render(
-            masterTableIndex<
-              PriceListStoreMappings,
-              PriceListStoreMappingsFilter
-            >(priceListStoreMappingsFilter),
-          ), // render
+          .AddChild(
+            CreateColumn()
+              .Key("index") // key
+              .Width(120)
+              .Render(
+                masterTableIndex<
+                  PriceListStoreMappings,
+                  PriceListStoreMappingsFilter
+                >(priceListStoreMappingsFilter),
+              ), // render
+          ), // title content columns
         CreateColumn()
           .Title(() => <>{translate("priceLists.store.code")}</>)
           .Key(nameof(storeMappingContents[0].storeCode)) //Key
@@ -93,7 +136,7 @@ export function usePriceListStoreMappingsTable(
           .AddChild(
             CreateColumn()
               .Title(
-                renderStringFilter(
+                RenderStringFilter(
                   priceListStoreMappingsFilter["storeCode"]["contain"],
                   handleChangeFilter(
                     "storeCode",
@@ -104,15 +147,25 @@ export function usePriceListStoreMappingsTable(
                 ),
               )
               .DataIndex(nameof(storeMappingContents[0].storeCode)), // dataIndex for render storeType value
-          ),
+          ), // storeCode column
         CreateColumn()
           .Title(() => <>{translate("priceLists.store.name")}</>)
           .Key(nameof(storeMappingContents[0].storeName)) //Key
           .DataIndex(nameof(storeMappingContents[0].storeName))
+          .Sorter(true) // if setSorter === true ...
+          .SortOrder(
+            getAntOrderType<
+              PriceListStoreMappings,
+              PriceListStoreMappingsFilter
+            >(
+              priceListStoreMappingsFilter,
+              nameof(storeMappingContents[0].storeName),
+            ),
+          ) // ... so, you need to have setSortOder
           .AddChild(
             CreateColumn()
               .Title(
-                renderStringFilter(
+                RenderStringFilter(
                   priceListStoreMappingsFilter["storeName"]["contain"],
                   handleChangeFilter(
                     "storeName",
@@ -123,10 +176,10 @@ export function usePriceListStoreMappingsTable(
                 ),
               )
               .DataIndex(nameof(storeMappingContents[0].storeName)), // dataIndex for render storeType value
-          ),
+          ), // storeName column
         CreateColumn()
           .Title(() => <>{translate("priceLists.store.storeType")}</>)
-          .Key(nameof(storeMappingContents[0].storeType)) //Key
+          .Key(nameof(storeMappingContents[0].storeTypeName)) //Key
           .DataIndex(nameof(storeMappingContents[0].storeTypeName))
           .Sorter(true) // if setSorter === true ...
           .SortOrder(
@@ -141,7 +194,7 @@ export function usePriceListStoreMappingsTable(
           .AddChild(
             CreateColumn()
               .Title(
-                renderIdFilter(
+                RenderIdFilter(
                   priceListStoreMappingsFilter["storeTypeId"]["equal"],
                   handleChangeFilter("storeTypeId", "equal" as any, IdFilter),
                   StoreTypeFilter,
@@ -150,26 +203,52 @@ export function usePriceListStoreMappingsTable(
               )
               .Key(nameof(storeMappingContents[0].storeType)) //Key
               .DataIndex(nameof(storeMappingContents[0].storeType)), // dataIndex for render storeType value
-          ),
+          ), // storeType column
+        CreateColumn()
+          .Title(() => <>{translate("general.actions.index")}</>)
+          .AddChild(
+            CreateColumn()
+              .Key("actions") // key
+              .Width(120)
+              .DataIndex(nameof(storeMappingContents[0].key))
+              .Render(
+                RenderActionColumn(
+                  CreateTableAction()
+                    .Title(translate("general.delete.content"))
+                    .Icon("tio-delete_outlined text-danger")
+                    .HasConfirm(true), // create delete content action
+                ),
+              ), // render
+          ), // actions column
       ),
     [
       priceListStoreMappingsFilter,
       storeMappingContents,
-      renderStringFilter,
+      RenderStringFilter,
+      RenderIdFilter,
       handleChangeFilter,
       translate,
-      renderIdFilter,
+      RenderActionColumn,
     ],
-  );
+  ); // content table columns
 
   return {
-    loadPriceListStoreMappingsList: loadList,
-    setLoadPriceListStoreMappingsList: setLoadList,
-    handleSearchPriceListStoreMappings: handleSearch,
-    handleUpdateNewPriceListStoreMappingsFilter: handleUpdateNewFilter,
-    handleResetPriceListStoreMappingsFilter: handleResetFilter,
     priceListStoreMappingsFilter,
-    dispatchPriceListStoreMappingsFilter,
+    priceListStoreMappingsList: list,
+    loadPriceListStoreMappingsList: loadingList,
+    priceListStoreMappingsTotal: total,
+    handleAddPriceListStoreMappings: handleAddContent,
+    handlePriceListStoreMappingsTableChange: handleTableChange,
+    handlePriceListStoreMappingsPagination: handlePagination,
+    priceListStoreMappingsRowSelection: rowSelection,
+    canBulkDeletePriceListStoreMappings: canBulkDelete,
+    handleResetPriceListStoreMappingsFilter: handleResetFilter,
+    handleLocalBulkDeletePriceListStoreMappings: handleLocalBulkDelete,
+    priceListStoreMappingsRef: ref,
+    handleClickPriceListStoreMappings: handleClick,
+    handleImportPriceListStoreMappings: handleImportContentList,
+    handleExportPriceListStoreMappings: handleContentExport,
+    handleExportTemplatePriceListStoreMappings: handleContentExportTemplate,
     storeMappingContents,
     setStoreMappingContents,
     priceListStoreMappingsContentColumns,
@@ -183,10 +262,10 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
   >(advanceFilterReducer, new StoreFilter()); // filter factory
 
   const {
-    renderStringFilter,
+    RenderStringFilter,
     // renderIdFilter,
     // renderDateFilter,
-  } = advanceFilterFactory;
+  } = componentFactoryService;
 
   const {
     loadList,
@@ -209,13 +288,13 @@ export function usePriceListStoreMappingsModal(source: PriceListStoreMappings) {
 
   const storeModalFilters = React.useMemo(
     () => [
-      renderStringFilter(
+      RenderStringFilter(
         storeFilter["code"]["contain"],
         handleChangeFilter("code", "contain" as any, StringFilter),
         translate("priceList.filter.name"),
       ),
     ],
-    [handleChangeFilter, renderStringFilter, storeFilter, translate],
+    [handleChangeFilter, RenderStringFilter, storeFilter, translate],
   );
 
   const storeColumns = React.useMemo(
