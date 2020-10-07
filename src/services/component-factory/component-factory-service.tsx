@@ -1,5 +1,5 @@
 import React from "react";
-import { ModelFilter } from "@react3l/react3l/core";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Observable } from "rxjs";
 import { Moment } from "moment";
 import AdvanceStringFilter from "components/Utility/AdvanceFilter/AdvanceStringFilter/AdvanceStringFilter";
@@ -9,9 +9,11 @@ import AdvanceDateFilter from "components/Utility/AdvanceFilter/AdvanceDateFilte
 import AdvanceNumberRangeFilter from "components/Utility/AdvanceFilter/AdvanceNumberRangeFilter/AdvanceNumberRangeFilter";
 import AdvanceNumberFilter from "components/Utility/AdvanceFilter/AdvanceNumberFilter/AdvanceNumberFilter";
 import { translate } from "@react3l/react3l/helpers";
+import { Tooltip } from "antd";
+import { Popconfirm } from "antd";
 
-export const advanceFilterFactory = {
-  renderStringFilter(
+export class ComponentFactoryService {
+  RenderStringFilter(
     value: string,
     onChange: (t: string) => void,
     placeholder: string,
@@ -25,9 +27,9 @@ export const advanceFilterFactory = {
         title={title}
       />
     );
-  },
+  }
 
-  renderIdFilter<TFilter extends ModelFilter>(
+  RenderIdFilter<TFilter extends ModelFilter>(
     value: string | number,
     onChange: (t: number) => void,
     classFilter: new () => TFilter,
@@ -45,9 +47,9 @@ export const advanceFilterFactory = {
         getList={getList}
       />
     );
-  },
+  }
 
-  renderDateFilter(
+  RenderDateFilter(
     value: Moment | [Moment, Moment],
     onChange: (value: Moment | [Moment, Moment], dateString?: string) => void,
     type: "single" | "range",
@@ -68,9 +70,9 @@ export const advanceFilterFactory = {
         />
       );
     };
-  },
+  }
 
-  renderNumberFilter(
+  RenderNumberFilter(
     value: number | [number, number],
     placeholder: string | [string, string],
     onChange: (t: number | [number, number]) => void,
@@ -101,5 +103,48 @@ export const advanceFilterFactory = {
         decimalDigit={decimalDigit}
       />
     );
-  },
-};
+  }
+
+  RenderAction = (columnAction: any) => {
+    const { title, action, item, icon, hasConfirm } = columnAction;
+    if (hasConfirm) {
+      return (
+        <Popconfirm
+          placement='left'
+          title={title}
+          onConfirm={() => action(item)}
+          okText={translate("general.actions.delete")}
+          cancelText={translate("general.actions.cancel")}
+        >
+          <Tooltip title={title}>
+            <button className='btn border-less gradient-btn-icon'>
+              <i className={icon} />
+            </button>
+          </Tooltip>
+        </Popconfirm>
+      );
+    }
+    return (
+      <Tooltip title={title}>
+        <button className='btn border-less gradient-btn-icon'>
+          <i className={icon} />
+        </button>
+      </Tooltip>
+    );
+  };
+
+  RenderActionColumn = <T extends Model>(...columnActions: any[]) => {
+    return (...params: [string | number, T, number]) => (
+      <div className='d-flex justify-content-center button-action-table'>
+        {columnActions?.length > 0 &&
+          columnActions.map((actionItem, index) => (
+            <React.Fragment key={index}>
+              {this.RenderAction({ ...actionItem, item: params[1] })}
+            </React.Fragment>
+          ))}
+      </div>
+    );
+  };
+}
+
+export const componentFactoryService = new ComponentFactoryService();

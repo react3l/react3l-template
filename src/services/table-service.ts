@@ -173,10 +173,11 @@ export class TableService {
     rowSelection: TableRowSelection<T>;
     canBulkDelete: boolean;
   } {
-    const selectedRowKeys: KeyType[] = useMemo(
-      () => selectedList.map((t: T) => (t.id ? t.id : t.key)),
-      [selectedList],
-    ); // selectedRowKeys accept both string and number for local and server table
+    const selectedRowKeys: KeyType[] = useMemo(() => {
+      return selectedList.length > 0
+        ? selectedList.map((t: T) => (t.id ? t.id : t.key))
+        : [];
+    }, [selectedList]); // selectedRowKeys accept both string and number for local and server table
 
     const canBulkDelete = useMemo(() => selectedRowKeys.length > 0, [
       selectedRowKeys.length,

@@ -173,6 +173,54 @@ export default function PriceListStoreMappingTable(props: ContentTableProps) {
       {
         title: () => (
           <>
+            <div>{translate("priceLists.store.name")}</div>
+          </>
+        ),
+        key: nameof(content[0].storeName), // must be the same with getAntOrderType param[1]
+        dataIndex: nameof(content[0].storeName),
+        sorter: true,
+        sortOrder: getAntOrderType<
+          PriceListStoreMappings,
+          PriceListStoreMappingsFilter
+        >(filter, nameof(content[0].storeName)), // and the same here
+        children: [
+          {
+            title: () => (
+              <>
+                <AdvanceStringFilter
+                  value={filter["storeName"]["contain"]}
+                  onBlur={handleChangeFilter(
+                    nameof(content[0].storeName),
+                    "contain" as any,
+                    StringFilter,
+                  )}
+                  placeHolder={translate("priceList.filter.name")} // -> tat ca
+                />
+              </>
+            ),
+            key: "code",
+            dataIndex: nameof(content[0].storeName),
+            ellipsis: true,
+            render(storeName: string, record: PriceListStoreMappings) {
+              return (
+                <InputText
+                  isMaterial={true}
+                  value={storeName}
+                  placeHolder={translate("priceList.placeholder.storeName")}
+                  className={"tio-account_square_outlined"}
+                  onBlur={handleChangeContentField(
+                    record.key,
+                    nameof(content[0].storeName),
+                  )}
+                />
+              );
+            },
+          },
+        ],
+      },
+      {
+        title: () => (
+          <>
             <div>{translate("priceLists.store.storeType")}</div>
           </>
         ),

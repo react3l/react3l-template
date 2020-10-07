@@ -8,7 +8,7 @@ import InputText from "components/Utility/Input/InputText/InputText";
 import Select from "components/Utility/Select/Select";
 import TreeSelect from "components/Utility/TreeSelect/TreeSelect";
 import { OrganizationFilter } from "models/OrganizationFilter";
-import { PriceList, PriceListStoreMappings } from "models/PriceList";
+import { PriceList } from "models/PriceList";
 import { SalesOrderTypeFilter } from "models/PriceList/SalesOrderTypeFilter";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -21,7 +21,6 @@ import {
   usePriceListStoreMappingsModal,
   usePriceListStoreMappingsTable,
 } from "./PriceListStoreMappings/PriceListStoreMappingsHook"; // hook for content table, content modal and mapper
-
 /* end import bundle for one pair of content table and content modal */
 
 const { TabPane } = Tabs;
@@ -44,13 +43,23 @@ function PriceListDetailView() {
 
   const {
     priceListStoreMappingsFilter,
-    loadPriceListStoreMappingsList,
-    setLoadPriceListStoreMappingsList,
-    handleSearchPriceListStoreMappings,
-    handleUpdateNewPriceListStoreMappingsFilter,
     storeMappingContents,
     setStoreMappingContents,
     priceListStoreMappingsContentColumns,
+    priceListStoreMappingsList,
+    loadPriceListStoreMappingsList,
+    priceListStoreMappingsTotal,
+    handleAddPriceListStoreMappings,
+    handlePriceListStoreMappingsTableChange,
+    handlePriceListStoreMappingsPagination,
+    priceListStoreMappingsRowSelection,
+    canBulkDeletePriceListStoreMappings,
+    handleLocalBulkDeletePriceListStoreMappings,
+    priceListStoreMappingsRef,
+    handleClickPriceListStoreMappings,
+    handleImportPriceListStoreMappings,
+    handleExportPriceListStoreMappings,
+    handleExportTemplatePriceListStoreMappings,
   } = usePriceListStoreMappingsTable(model, handleUpdateNewModel); // hook for priceListStoreMappings table
 
   const {
@@ -228,21 +237,30 @@ function PriceListDetailView() {
                   <Row>
                     <ContentTable
                       model={model} // input for import, export
-                      contentMapper={storeContentMapper} // from here, input for all business in localTable ...
-                      content={storeMappingContents}
-                      setContent={setStoreMappingContents}
-                      contentClass={PriceListStoreMappings}
                       filter={priceListStoreMappingsFilter}
-                      onUpdateNewFilter={
-                        handleUpdateNewPriceListStoreMappingsFilter
+                      list={priceListStoreMappingsList}
+                      loadingList={loadPriceListStoreMappingsList}
+                      total={priceListStoreMappingsTotal}
+                      handleTableChange={
+                        handlePriceListStoreMappingsTableChange
                       }
-                      onSearch={handleSearchPriceListStoreMappings}
-                      loadList={loadPriceListStoreMappingsList}
-                      setLoadList={setLoadPriceListStoreMappingsList}
+                      rowSelection={priceListStoreMappingsRowSelection}
+                      handleLocalBulkDelete={
+                        handleLocalBulkDeletePriceListStoreMappings
+                      }
+                      canBulkDelete={canBulkDeletePriceListStoreMappings}
+                      handleExportContent={handleExportPriceListStoreMappings}
+                      handleExportTemplateContent={
+                        handleExportTemplatePriceListStoreMappings
+                      }
+                      handlePagination={handlePriceListStoreMappingsPagination}
+                      handleAddContent={handleAddPriceListStoreMappings}
+                      ref={priceListStoreMappingsRef}
+                      handleClick={handleClickPriceListStoreMappings}
+                      handleImportContentList={
+                        handleImportPriceListStoreMappings
+                      }
                       columns={priceListStoreMappingsContentColumns}
-                      mapperField={nameof(
-                        model.priceListStoreMappings[0].store,
-                      )} // ... to here, input for all business in localTable
                       onOpenModal={handleOpenStoreModal} // handleOpen below modal component
                     />
                     <ContentModal
