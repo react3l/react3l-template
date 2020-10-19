@@ -19,7 +19,7 @@ const App = React.lazy(async () => {
   await translationService.initTranslation();
   await translationService.changeLanguage(nameof(vi), vi);
 
-  return import("views/App/App");
+  return import("App/App");
 });
 
 ReactDOM.render(

@@ -1,17 +1,22 @@
-import Layout from 'antd/lib/layout';
-import Menu from 'antd/lib/menu';
-import classNames from 'classnames';
-import { menu } from 'config/menu';
-import React, { useCallback, useState, useEffect, Dispatch, useContext } from 'react';
-import { useLocation } from 'react-router';
-import { RouteConfig } from 'react-router-config';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
-import { AppStoreContext } from 'views/AppContext';
-import { AppState, AppAction, AppActionEnum } from 'views/AppStore';
-import './AppAside.scss';
-import AsideMenu from './AsideMenu/AsideMenu';
-
+import Layout from "antd/lib/layout";
+import Menu from "antd/lib/menu";
+import classNames from "classnames";
+import { menu } from "config/menu";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  Dispatch,
+  useContext,
+} from "react";
+import { useLocation } from "react-router";
+import { RouteConfig } from "react-router-config";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { AppStoreContext } from "App/AppContext";
+import { AppState, AppAction, AppActionEnum } from "App/AppStore";
+import "./AppAside.scss";
+import AsideMenu from "./AsideMenu/AsideMenu";
 
 const { Sider } = Layout;
 
@@ -46,40 +51,44 @@ function AppAside(props: IDefaultSidebarProps) {
     [setOpenKeys],
   );
 
-  const handleSelect = useCallback(({ selectedKeys }) => {
-    setSelectedKeys([...selectedKeys]);
-  }, [setSelectedKeys]);
-
+  const handleSelect = useCallback(
+    ({ selectedKeys }) => {
+      setSelectedKeys([...selectedKeys]);
+    },
+    [setSelectedKeys],
+  );
 
   return (
     <>
-      <div className={classNames('aside__header', className)}>
-        <div className="aside__navbar-brand d-flex justify-content-between">
-          <div className="d-flex">
-            <div className="app-aside__logo">
-              <img src="/assets/img/logo.png" alt="" width="38" />
+      <div className={classNames("aside__header", className)}>
+        <div className='aside__navbar-brand d-flex justify-content-between'>
+          <div className='d-flex'>
+            <div className='app-aside__logo'>
+              <img src='/assets/img/logo.png' alt='' width='38' />
             </div>
-            <div className="aside__name ml-3">ePayment</div>
+            <div className='aside__name ml-3'>ePayment</div>
           </div>
           <div className='aside__toggle' onClick={handleToggleMenu}>
             <i className='tio-menu_hamburger' />
           </div>
         </div>
       </div>
-      <div className="aside__content">
+      <div className='aside__content'>
         <Sider
           collapsible={false}
-          className={classNames('pb-4', className)}
-          style={style}>
+          className={classNames("pb-4", className)}
+          style={style}
+        >
           <Menu
-            mode="inline"
-            className="aside__default-sidebar"
+            mode='inline'
+            className='aside__default-sidebar'
             inlineIndent={0}
             selectedKeys={selectedKeys}
             openKeys={openKeys}
             onOpenChange={handleChange}
             onSelect={handleSelect}
-            theme="light">
+            theme='light'
+          >
             {routes.length > 0 &&
               routes.map((route: RouteConfig) => (
                 <AsideMenu
@@ -98,11 +107,11 @@ function AppAside(props: IDefaultSidebarProps) {
 /* pathName param from url */
 function getOpenKeys(items: RouteConfig[], pathName) {
   const selectedKeys = [];
-  items.forEach(item => {
+  items.forEach((item) => {
     const paths = item.path
       .toString()
       .trim()
-      .split('/');
+      .split("/");
     const modulePath = buildPath(paths);
     if (
       item.path === pathName ||
@@ -121,15 +130,15 @@ function getOpenKeys(items: RouteConfig[], pathName) {
 
 /* convert pathName which retrieved from url to master url of its module, to activating menu master item */
 function convertPathName(pathName: string) {
-  pathName = buildPath(pathName.trim().split('/'));
+  pathName = buildPath(pathName.trim().split("/"));
   if (pathName.includes(`detail`)) {
-    const tmp = pathName.split('detail');
-    const path = tmp[0] + 'master';
+    const tmp = pathName.split("detail");
+    const path = tmp[0] + "master";
     return path;
   }
   if (pathName.includes(`preview`)) {
-    const tmp = pathName.split('preview');
-    const path = tmp[0] + 'master';
+    const tmp = pathName.split("preview");
+    const path = tmp[0] + "master";
     return path;
   }
   return pathName;
@@ -137,16 +146,15 @@ function convertPathName(pathName: string) {
 
 /* builPath from item path, contain maximum 4 element. Eg: /dms/product-category/product/product-master */
 function buildPath(paths: string[]) {
-  let result = '';
+  let result = "";
   if (paths.length < 5) {
     for (let i = 1; i < paths.length; i++) {
-      result = result + '/' + paths[i];
+      result = result + "/" + paths[i];
     }
     return result;
   }
   return `${paths[0]}/${paths[1]}/${paths[2]}/${paths[3]}/${paths[4]}`;
 }
-
 
 AppAside.defaultProps = {
   routes: menu,

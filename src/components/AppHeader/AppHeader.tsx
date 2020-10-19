@@ -1,8 +1,8 @@
 import React, { Dispatch, RefObject, useContext } from "react";
 import Avatar, { ConfigProvider } from "react-avatar";
 import { commonWebService } from "services/common-web-service";
-import { AppStoreContext } from "views/AppContext";
-import { AppAction, AppActionEnum, AppState } from "views/AppStore";
+import { AppStoreContext } from "App/AppContext";
+import { AppAction, AppActionEnum, AppState } from "App/AppStore";
 import "./AppHeader.scss";
 function AppHeader() {
   const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
@@ -66,29 +66,29 @@ function AppHeader() {
       <header className='app-header d-flex justify-content-between'>
         <div className='d-flex ml-3'>
           <button
-                style={{ position: "relative" }}
-                className='btn btn-sm component__btn-primary mr-3'
-                onClick={handleToggleOverLay}
-                ref={buttonRef}
-              >
-                <i className='tio-add d-flex justify-content-center' />
-                {state.displayOverlay && (
-                  <div className=' header__list'>
-                    {menus &&
-                      menus.length > 0 &&
-                      menus.map((menu, index) => (
-                        <div
-                          className='header__menu d-flex align-items-center'
-                          key={index}
-                        >
-                          <div className='header__menu-icon'>
-                            <i className={menu?.icon} />
-                          </div>
-                          <div className='header__menu-title'>{menu?.title}</div>
-                        </div>
-                      ))}
-                  </div>
-                )}
+            style={{ position: "relative" }}
+            className='btn btn-sm component__btn-primary mr-3'
+            onClick={handleToggleOverLay}
+            ref={buttonRef}
+          >
+            <i className='tio-add d-flex justify-content-center' />
+            {state.displayOverlay && (
+              <div className=' header__list'>
+                {menus &&
+                  menus.length > 0 &&
+                  menus.map((menu, index) => (
+                    <div
+                      className='header__menu d-flex align-items-center'
+                      key={index}
+                    >
+                      <div className='header__menu-icon'>
+                        <i className={menu?.icon} />
+                      </div>
+                      <div className='header__menu-title'>{menu?.title}</div>
+                    </div>
+                  ))}
+              </div>
+            )}
           </button>
         </div>
         <div className='float-right '>
