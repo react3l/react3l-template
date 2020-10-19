@@ -1,12 +1,12 @@
 import React from "react";
 import "./Tree.scss";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { TreeNode } from "models/TreeNode";
 import { Tree as TreeAntd } from "antd";
 import { TreeProps as AntdTreeProps, EventDataNode } from "antd/lib/tree";
 import { Observable, ErrorObserver } from "rxjs";
 import { commonService } from "@react3l/react3l/services/common-service";
 import { commonWebService } from "services/common-web-service";
+import { TreeNode } from "./TreeNode";
 
 function SwitcherIcon() {
   return (

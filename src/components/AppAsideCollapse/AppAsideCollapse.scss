@@ -10,6 +10,11 @@
       background: white;
       padding-left: 23px;
       padding-top: 21px;
+      .app-aside__logo {
+        img:hover {
+          cursor: pointer;
+        }
+      }
     }
   }
   .aside-collapse__menu {

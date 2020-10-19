@@ -53,6 +53,7 @@ export class ComponentFactoryService {
     value: Moment | [Moment, Moment],
     onChange: (value: Moment | [Moment, Moment], dateString?: string) => void,
     type: "single" | "range",
+    placeholder?: string,
   ) {
     return () => {
       if (type === "range") {
@@ -67,6 +68,7 @@ export class ComponentFactoryService {
         <AdvanceDateFilter
           onChange={onChange as (value: Moment) => void}
           value={value as Moment}
+          placeholder={placeholder as string}
         />
       );
     };

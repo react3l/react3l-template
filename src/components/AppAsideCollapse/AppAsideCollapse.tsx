@@ -1,10 +1,12 @@
-import React from "react";
+import React, { Dispatch, useContext } from "react";
 import { RouteComponentProps, useLocation, withRouter } from "react-router";
 import { RouteConfig } from "react-router-config";
 import { menu } from "config/menu";
 import './AppAsideCollapse.scss';
 import classNames from 'classnames';
 import { NavLink } from "react-router-dom";
+import { AppStoreContext } from "views/AppContext";
+import { AppState, AppAction, AppActionEnum } from "views/AppStore";
 
 
 interface ISidebarProps extends RouteComponentProps {
@@ -16,6 +18,12 @@ function AppAsideCollapse(props: ISidebarProps) {
   const { routes, className } = props;
   const { pathname } = useLocation();
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
+  const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
+    AppStoreContext,
+  );
+  const handleToggleMenu = React.useCallback(() => {
+    dispatch({ type: AppActionEnum.SET_MENU, toggleMenu: !state.toggleMenu });
+  }, [dispatch, state]);
 
   React.useEffect(() => {
     setSelectedKeys([convertPathName(pathname)]);
@@ -26,7 +34,7 @@ function AppAsideCollapse(props: ISidebarProps) {
     <div className="aside-collapse">
       <div className={classNames('aside__header pb-4', className)}>
         <div className="aside__navbar-brand d-flex">
-          <div className="app-aside__logo">
+          <div className="app-aside__logo" onClick={handleToggleMenu}>
             <img src="/assets/img/logo.png" alt="" width="38" />
           </div>
         </div>

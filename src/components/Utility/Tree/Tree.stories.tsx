@@ -4,7 +4,7 @@ import nameof from "ts-nameof.macro";
 import Tree from "./Tree";
 import { Observable } from "rxjs";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { TreeNode } from "models/TreeNode";
+import { TreeNode } from "./TreeNode";
 
 const demoObservable = new Observable<Model[]>((observer) => {
   setTimeout(() => {

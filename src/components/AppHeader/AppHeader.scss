@@ -11,11 +11,6 @@
   z-index: 2;
   .app-header__toggle {
     cursor: pointer;
-    i {
-      @include gradient-text();
-    }
-    font-size: 20px;
-    margin: 13px 20px 20px 20px;
   }
   .btn {
     height: 32px !important;
@@ -61,7 +56,7 @@
   height: 434px;
   z-index: 2000;
   top: 35px;
-  right: 0px;
+  left: 0px;
 
   .header__menu {
     margin: 19px 26px 35px;

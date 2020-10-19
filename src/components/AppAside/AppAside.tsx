@@ -2,11 +2,13 @@ import Layout from 'antd/lib/layout';
 import Menu from 'antd/lib/menu';
 import classNames from 'classnames';
 import { menu } from 'config/menu';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, Dispatch, useContext } from 'react';
 import { useLocation } from 'react-router';
 import { RouteConfig } from 'react-router-config';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { AppStoreContext } from 'views/AppContext';
+import { AppState, AppAction, AppActionEnum } from 'views/AppStore';
 import './AppAside.scss';
 import AsideMenu from './AsideMenu/AsideMenu';
 
@@ -24,6 +26,12 @@ function AppAside(props: IDefaultSidebarProps) {
   const { pathname } = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
+  const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
+    AppStoreContext,
+  );
+  const handleToggleMenu = React.useCallback(() => {
+    dispatch({ type: AppActionEnum.SET_MENU, toggleMenu: !state.toggleMenu });
+  }, [dispatch, state]);
 
   useEffect(() => {
     const keys = getOpenKeys(routes, pathname);
@@ -46,11 +54,16 @@ function AppAside(props: IDefaultSidebarProps) {
   return (
     <>
       <div className={classNames('aside__header', className)}>
-        <div className="aside__navbar-brand d-flex">
-          <div className="app-aside__logo">
-            <img src="/assets/img/logo.png" alt="" width="38" />
+        <div className="aside__navbar-brand d-flex justify-content-between">
+          <div className="d-flex">
+            <div className="app-aside__logo">
+              <img src="/assets/img/logo.png" alt="" width="38" />
+            </div>
+            <div className="aside__name ml-3">ePayment</div>
           </div>
-          <div className="aside__name ml-3">ePayment</div>
+          <div className='aside__toggle' onClick={handleToggleMenu}>
+            <i className='tio-menu_hamburger' />
+          </div>
         </div>
       </div>
       <div className="aside__content">

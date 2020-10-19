@@ -1,7 +1,5 @@
 import { commonService } from "@react3l/react3l/services";
 import { AxiosError } from "axios";
-import { PRICE_LIST_ROUTE_PREFIX } from "config/route-consts";
-import Model from "core/models/Model";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Observable } from "rxjs";
@@ -10,6 +8,7 @@ import { formService } from "services/form-service";
 import { routerService } from "services/route-service";
 import { v4 as uuidv4 } from "uuid";
 import appMessageService from "services/app-message-service";
+import { Model } from "@react3l/react3l/core/model";
 
 export class DetailService {
   /**
@@ -62,12 +61,13 @@ export class DetailService {
     ModelClass: new () => T,
     getDetail: (id: number) => Observable<T>,
     saveModel: (t: T) => Observable<T>,
+    routePrefix: string
   ) {
     // get id from url
     const { id } = useParams();
     // navigating master when update or create successfully
     const [, , , handleGoBase] = routerService.useMasterNavigation(
-      PRICE_LIST_ROUTE_PREFIX, // master route
+      routePrefix, // master route
     );
     // message service
     const {

@@ -7,14 +7,20 @@ $red: red;
     height: 68px;
     width: auto;
     background: white;
-    padding-left: 23px;
-    padding-top: 21px;
+    padding: 20px;
     .aside__name {
       @include gradient-text();
       font-weight: 600;
       font-size: 22px;
       line-height: 27px;
     }
+  }
+  .aside__toggle {
+    cursor: pointer;
+    i {
+      @include gradient-text();
+    }
+    font-size: 20px;
   }
 }
 .aside__content {

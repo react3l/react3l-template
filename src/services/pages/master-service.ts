@@ -1,5 +1,4 @@
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { PRICE_LIST_DETAIL_ROUTE_PREFIX } from "config/route-consts";
 import { useCallback, useRef, useState } from "react";
 import { Observable } from "rxjs";
 import { advanceFilterService } from "services/advance-filter-service";
@@ -9,6 +8,8 @@ import tableService from "services/table-service";
 import { importExportDataService } from "services/import-export-data-service";
 import { finalize } from "rxjs/operators";
 import React from "react";
+
+type KeyType = string | number;
 
 export class MasterService {
   /**
@@ -58,6 +59,7 @@ export class MasterService {
 
   useMaster<T extends Model, TFilter extends ModelFilter>(
     modelFilterClass: new () => TFilter,
+    routePrefix: string,
     getList: (filter: TFilter) => Observable<T[]>,
     getTotal: (filter: TFilter) => Observable<number>,
     deleteItem?: (t: T) => Observable<T>,
@@ -67,7 +69,7 @@ export class MasterService {
   ) {
     //   service to navigating create or detail
     const [handleGoCreate, handleGoDetail] = routerService.useMasterNavigation(
-      PRICE_LIST_DETAIL_ROUTE_PREFIX, // should replace to pricelist detail route base on rbac
+      routePrefix, // should replace to pricelist detail route base on rbac
     );
     // toggle search state
     const [toggle, setToggle] = useState<boolean>(false);

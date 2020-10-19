@@ -1,9 +1,9 @@
 import { RefObject } from "react";
 import React from "react";
 import { Model } from "@react3l/react3l/core";
-import { TreeNode } from "models/TreeNode";
 import { Moment } from "moment";
 import moment from "moment";
+import { TreeNode } from "components/Utility/Tree/TreeNode";
 
 export const commonWebService = {
   useClickOutside(ref: RefObject<any>, callback: () => void) {

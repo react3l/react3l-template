@@ -1,4 +1,3 @@
-import { User } from "models/User";
 import vi from "i18n/vi.json";
 import nameof from "ts-nameof.macro";
 
@@ -16,7 +15,7 @@ export interface GlobalState {
   /**
    * Current user profile
    */
-  user?: User;
+  user?: any;
   /**
    * Display quick menu
    */

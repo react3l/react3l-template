@@ -524,7 +524,6 @@ export class TableService {
     source: T[],
     setSource: (source: T[]) => void,
     contentMapper: (model: T | T2) => T,
-    mapperField: string,
     ContentClass: new () => T,
   ) {
     const [{ mappingList }, dispatch] = useReducer<
@@ -540,10 +539,6 @@ export class TableService {
       setLoadList,
     ); // list service
 
-    const selectedList = useMemo(
-      () => (source.length > 0 ? source.map(mappingToMapper(mapperField)) : []),
-      [mapperField, source],
-    ); // calculate selectedList from updated source
     const setMappingList = useCallback((mappingList: T[]) => {
       dispatch({
         type: ContentTableActionEnum.SET_LIST_SELECTION,
@@ -640,7 +635,6 @@ export class TableService {
       rowSelection,
       canBulkDelete,
       selectedContent: mappingList,
-      selectedList,
       resetTableFilter, // reset filter and trigger search
       handleLocalDelete, // single delete
       handleLocalBulkDelete, // bulk delete

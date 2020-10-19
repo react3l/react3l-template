@@ -26,10 +26,6 @@ function AppHeader() {
     });
   }, [dispatch, state]);
 
-  const handleToggleMenu = React.useCallback(() => {
-    dispatch({ type: AppActionEnum.SET_MENU, toggleMenu: !state.toggleMenu });
-  }, [dispatch, state]);
-
   commonWebService.useClickOutside(buttonRef, handleClickOutSide);
 
   const menus = [
@@ -68,36 +64,35 @@ function AppHeader() {
   return (
     <div>
       <header className='app-header d-flex justify-content-between'>
-        <div className='app-header__toggle' onClick={handleToggleMenu}>
-          <i className='tio-menu_hamburger' />
+        <div className='d-flex ml-3'>
+          <button
+                style={{ position: "relative" }}
+                className='btn btn-sm component__btn-primary mr-3'
+                onClick={handleToggleOverLay}
+                ref={buttonRef}
+              >
+                <i className='tio-add d-flex justify-content-center' />
+                {state.displayOverlay && (
+                  <div className=' header__list'>
+                    {menus &&
+                      menus.length > 0 &&
+                      menus.map((menu, index) => (
+                        <div
+                          className='header__menu d-flex align-items-center'
+                          key={index}
+                        >
+                          <div className='header__menu-icon'>
+                            <i className={menu?.icon} />
+                          </div>
+                          <div className='header__menu-title'>{menu?.title}</div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+          </button>
         </div>
         <div className='float-right '>
           <div className='d-flex align-items-center'>
-            <button
-              style={{ position: "relative" }}
-              className='btn btn-sm component__btn-primary mr-3'
-              onClick={handleToggleOverLay}
-              ref={buttonRef}
-            >
-              <i className='tio-add d-flex justify-content-center' />
-              {state.displayOverlay && (
-                <div className=' header__list'>
-                  {menus &&
-                    menus.length > 0 &&
-                    menus.map((menu, index) => (
-                      <div
-                        className='header__menu d-flex align-items-center'
-                        key={index}
-                      >
-                        <div className='header__menu-icon'>
-                          <i className={menu?.icon} />
-                        </div>
-                        <div className='header__menu-title'>{menu?.title}</div>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </button>
             <div className='app-header__language mt-3'>Tiếng Việt</div>
             <div className='app-header__notifications mt-3'>
               <i className='tio-notifications_outlined' />

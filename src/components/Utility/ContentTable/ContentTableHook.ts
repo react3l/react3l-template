@@ -17,7 +17,6 @@ export function useContentTable<
   handleSearch: () => void,
   loadList: boolean,
   setLoadList: Dispatch<SetStateAction<boolean>>,
-  mapperField: string,
 ) {
   const {
     list,
@@ -30,7 +29,6 @@ export function useContentTable<
     pagination,
     handleLocalDelete,
     handleLocalBulkDelete,
-    selectedList,
     handleChangeOneCell, // update single row by field and keys
     handleChangeOneRow, // update single row
     handleAddContent, // add single
@@ -43,7 +41,6 @@ export function useContentTable<
     content,
     setContent,
     contentMapper,
-    mapperField,
     contentClass,
   ); // table service
 
@@ -74,7 +71,6 @@ export function useContentTable<
     pagination, // calculted for ant table pagination, for calculating table index
     handleLocalDelete, // delete local content in table
     handleLocalBulkDelete, // bulk delete local ..., based on rowSelection
-    selectedList, // calculated mapperList from content
     ref, // import input ref
     handleClick, // clear value of ref
     handleImportContentList, // handleChange import file
