@@ -5,8 +5,8 @@ import { RefObject } from "react";
 import { AxiosError, AxiosResponse } from "axios";
 import { Observable } from "rxjs";
 import { saveAs } from "file-saver";
-import { AppAction, AppActionEnum } from "App/AppStore";
-import { AppMessageContext, AppDispatchContext } from "App/AppContext";
+import { AppAction, AppActionEnum, AppState } from "App/AppStore";
+import { AppMessageContext, AppStoreContext } from "App/AppContext";
 import { AppMessageService } from "services/app-message-service";
 export const importExportDataService = {
   /**
@@ -17,8 +17,11 @@ export const importExportDataService = {
    * @return:
    *
    * */
+
   useImport<T extends Model>(onImportSuccess?: (list?: T[]) => void) {
-    const dispatch = useContext<Dispatch<AppAction>>(AppDispatchContext); // use dispatch AppContext
+    const [, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
+      AppStoreContext,
+    );
     const [subscription] = commonService.useSubscription(); // subscription avoid leak memory
     const messageContext = useContext<AppMessageService>(AppMessageContext); // message context for side effect
     const ref: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null); // ref object to clear value of input after import

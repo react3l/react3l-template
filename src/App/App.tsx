@@ -11,11 +11,7 @@ import React, { useMemo } from "react";
 import { Animated } from "react-animated-css";
 import { Switch, withRouter } from "react-router";
 import { renderRoutes } from "react-router-config";
-import {
-  AppDispatchContext,
-  AppMessageContext,
-  AppStoreContext,
-} from "App/AppContext";
+import { AppMessageContext, AppStoreContext } from "App/AppContext";
 import useApp from "App/AppHook";
 import "./App.scss";
 
@@ -125,12 +121,10 @@ function App() {
     <>
       <ErrorBoundary>
         <AppMessageContext.Provider value={appMessageService}>
-          <AppDispatchContext.Provider value={dispatch}>
-            <AppStoreContext.Provider value={[state, dispatch]}>
-              {renderLayout}
-              {renderErrorModal}
-            </AppStoreContext.Provider>
-          </AppDispatchContext.Provider>
+          <AppStoreContext.Provider value={[state, dispatch]}>
+            {renderLayout}
+            {renderErrorModal}
+          </AppStoreContext.Provider>
         </AppMessageContext.Provider>
       </ErrorBoundary>
     </>
