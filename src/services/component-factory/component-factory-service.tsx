@@ -36,7 +36,7 @@ export class ComponentFactoryService {
     getList: (filter: any) => Observable<any>,
     placeholder?: string,
   ) {
-    return () => (
+    return (
       <AdvanceIdFilter
         value={+value}
         onChange={onChange}
@@ -55,23 +55,21 @@ export class ComponentFactoryService {
     type: "single" | "range",
     placeholder?: string,
   ) {
-    return () => {
-      if (type === "range") {
-        return (
-          <AdvanceDateRangeFilter
-            onChange={onChange as (value: [Moment, Moment]) => void}
-            value={value as [Moment, Moment]}
-          />
-        );
-      }
+    if (type === "range") {
       return (
-        <AdvanceDateFilter
-          onChange={onChange as (value: Moment) => void}
-          value={value as Moment}
-          placeholder={placeholder as string}
+        <AdvanceDateRangeFilter
+          onChange={onChange as (value: [Moment, Moment]) => void}
+          value={value as [Moment, Moment]}
         />
       );
-    };
+    }
+    return (
+      <AdvanceDateFilter
+        onChange={onChange as (value: Moment) => void}
+        value={value as Moment}
+        placeholder={placeholder as string}
+      />
+    );
   }
 
   RenderNumberFilter(
