@@ -504,6 +504,7 @@ export class TableService {
       handlePagination,
       rowSelection,
       selectedList,
+      setSelectedList,
     };
   }
 
@@ -651,7 +652,7 @@ export class TableService {
    * @return: { visible, loadControl, handleEndControl, handleOpenModal, handleCloseModal }
    *
    * */
-  useContenModal(handleSearch?: () => void) {
+  useContenModal(handleSource?: () => void) {
     const [{ visible, loadControl }, dispatch] = useReducer<
       Reducer<ModalState, ModalAction>
     >(modalTableReducer, {
@@ -669,10 +670,10 @@ export class TableService {
 
     const handleSaveModal = useCallback(() => {
       dispatch({ type: ModalActionEnum.CLOSE_MODAL });
-      if (typeof handleSearch === "function") {
-        handleSearch(); // trigger reload list
+      if (typeof handleSource === "function") {
+        handleSource(); // trigger reload list
       }
-    }, [handleSearch]);
+    }, [handleSource]);
 
     const handleEndControl = useCallback(() => {
       dispatch({ type: ModalActionEnum.END_LOAD_CONTROL });

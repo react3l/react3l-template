@@ -38,6 +38,7 @@ export function useContentModal<
     handleTableChange,
     rowSelection,
     selectedList: mapperList,
+    setSelectedList: setMapperList,
   } = tableService.useModalTable<TMapper, TFilter>(
     filter,
     handleUpdateNewFilter,
@@ -51,6 +52,7 @@ export function useContentModal<
 
   const handleCloseModal = useCallback(() => {
     handleResetFilter(); // resetFilter to default
+    setMapperList([...content.map((item) => item[mapperField])]); // reset mapperList by content
     if (typeof onClose === "function") {
       return onClose();
     }
