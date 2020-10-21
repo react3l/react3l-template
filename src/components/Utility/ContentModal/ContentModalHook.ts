@@ -56,7 +56,7 @@ export function useContentModal<
     if (typeof onClose === "function") {
       return onClose();
     }
-  }, [handleResetFilter, onClose]); // handleCloseModal
+  }, [handleResetFilter, onClose, content, mapperField, setMapperList]); // handleCloseModal
 
   const handleSaveModal = useCallback(
     (list: TMapper[]) => {
