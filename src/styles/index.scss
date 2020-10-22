@@ -47,8 +47,6 @@ body {
     @include input-icon;
   }
 
-
-
   .component__title {
     @include input-title;
   }
@@ -155,8 +153,9 @@ body {
     height: 38px;
     border-radius: 7px;
     border: none;
-    
-    i, span {
+
+    i,
+    span {
       @include gradient-text();
     }
     i {
@@ -169,7 +168,8 @@ body {
     &.component__btn-toggle-active {
       @include background-color();
       border: none;
-      i, span {
+      i,
+      span {
         @include white-text();
       }
     }
@@ -177,11 +177,11 @@ body {
     &:hover {
       @include background-color();
       border: none;
-      i, span {
+      i,
+      span {
         @include white-text();
       }
     }
-
   }
 
   .component__btn-outline-primary {
@@ -485,5 +485,17 @@ body {
   .ant-layout-sider {
     max-width: 225px !important;
     min-width: 225px !important;
+  }
+}
+
+@media screen and (min-width: 1367px) {
+  .page__master-table {
+    max-width: 1600px;
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .page__master-table {
+    max-width: 1100px;
   }
 }
