@@ -2,12 +2,11 @@ import React, { Dispatch, useContext } from "react";
 import { RouteComponentProps, useLocation, withRouter } from "react-router";
 import { RouteConfig } from "react-router-config";
 import { menu } from "config/menu";
-import './AppAsideCollapse.scss';
-import classNames from 'classnames';
+import "./AppAsideCollapse.scss";
+import classNames from "classnames";
 import { NavLink } from "react-router-dom";
-import { AppStoreContext } from "views/AppContext";
-import { AppState, AppAction, AppActionEnum } from "views/AppStore";
-
+import { AppStoreContext } from "App/AppContext";
+import { AppState, AppAction, AppActionEnum } from "App/AppStore";
 
 interface ISidebarProps extends RouteComponentProps {
   style?: any;
@@ -29,48 +28,61 @@ function AppAsideCollapse(props: ISidebarProps) {
     setSelectedKeys([convertPathName(pathname)]);
   }, [pathname, routes]);
 
-
   return (
-    <div className="aside-collapse">
-      <div className={classNames('aside__header pb-4', className)}>
-        <div className="aside__navbar-brand d-flex">
-          <div className="app-aside__logo" onClick={handleToggleMenu}>
-            <img src="/assets/img/logo.png" alt="" width="38" />
+    <div className='aside-collapse'>
+      <div className={classNames("aside__header pb-4", className)}>
+        <div className='aside__navbar-brand d-flex'>
+          <div className='app-aside__logo' onClick={handleToggleMenu}>
+            <img src='/assets/img/logo.png' alt='' width='38' />
           </div>
         </div>
       </div>
-      <section className="aside-collapse__menu">
-        {
-          routes && routes?.length > 0 && routes.map((route: RouteConfig, index: number) => {
+      <section className='aside-collapse__menu'>
+        {routes &&
+          routes?.length > 0 &&
+          routes.map((route: RouteConfig, index: number) => {
             const active = activeLink(selectedKeys, route?.path);
             return (
               <div key={index}>
-                {
-                  (route.notTitle === false || !route.notTitle) && (
-                    <div className="dropdown dropright" >
-                      <li className={classNames('aside-collapse__icon', (active ? 'aside-collapse__icon-active' : ''))}>
-                        <NavLink to={`${route?.path}`} activeClassName="aside-collapse__icon-active">
-                          <i className={route.icon} />
-                        </NavLink>
-                      </li>
-                      <ul className="aside-collapse__child">
-                        {
-                          route?.children && route?.children?.length > 0 && route?.children.map((child: RouteConfig, indexChild: number) => (
-                            <li className="aside-collapse__child-item" key={indexChild}>
-                              <NavLink to={`${child?.path}`} activeClassName="aside-collapse__icon-active">
+                {(route.notTitle === false || !route.notTitle) && (
+                  <div className='dropdown dropright'>
+                    <li
+                      className={classNames(
+                        "aside-collapse__icon",
+                        active ? "aside-collapse__icon-active" : "",
+                      )}
+                    >
+                      <NavLink
+                        to={`${route?.path}`}
+                        activeClassName='aside-collapse__icon-active'
+                      >
+                        <i className={route.icon} />
+                      </NavLink>
+                    </li>
+                    <ul className='aside-collapse__child'>
+                      {route?.children &&
+                        route?.children?.length > 0 &&
+                        route?.children.map(
+                          (child: RouteConfig, indexChild: number) => (
+                            <li
+                              className='aside-collapse__child-item'
+                              key={indexChild}
+                            >
+                              <NavLink
+                                to={`${child?.path}`}
+                                activeClassName='aside-collapse__icon-active'
+                              >
                                 {child?.name}
                               </NavLink>
                             </li>
-                          ))
-                        }
-                      </ul>
-                    </div>
-                  )
-                }
+                          ),
+                        )}
+                    </ul>
+                  </div>
+                )}
               </div>
             );
-          })
-        }
+          })}
       </section>
     </div>
   );
@@ -82,8 +94,6 @@ function activeLink(selectedKeys, path) {
   }
   return false;
 }
-
-
 
 /* pathName param from url */
 // function getOpenKeys(items: RouteConfig[], pathName) {
@@ -111,29 +121,27 @@ function activeLink(selectedKeys, path) {
 
 /* convert pathName which retrieved from url to master url of its module, to activating menu master item */
 function convertPathName(pathName: string) {
-  pathName = buildPath(pathName.trim().split('/'));
+  pathName = buildPath(pathName.trim().split("/"));
   if (pathName.match(/(-?detail)$/)) {
-    return pathName.replace('detail', 'master');
+    return pathName.replace("detail", "master");
   }
   if (pathName.match(/(-?preview)$/)) {
-    return pathName.replace('preview', 'master');
+    return pathName.replace("preview", "master");
   }
   return pathName;
 }
 
 /* builPath from item path, contain maximum 4 element. Eg: /dms/product-category/product/product-master */
 function buildPath(paths: string[]) {
-  let result = '';
+  let result = "";
   if (paths.length < 5) {
     for (let i = 1; i < paths.length; i++) {
-      result = result + '/' + paths[i];
+      result = result + "/" + paths[i];
     }
     return result;
   }
   return `${paths[0]}/${paths[1]}/${paths[2]}/${paths[3]}/${paths[4]}`;
 }
-
-
 
 AppAsideCollapse.defaultProps = {
   routes: menu,

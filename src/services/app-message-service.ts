@@ -1,6 +1,6 @@
 import notification from "antd/lib/notification";
 import { useTranslation } from "react-i18next";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 notification.config({
   placement: "bottomRight",
@@ -8,12 +8,20 @@ notification.config({
 
 export enum messageType {
   SUCCESS,
+  WARNING,
   ERROR,
+}
+
+export interface IMessage {
+  title: string;
+  description: string;
+  type: messageType;
 }
 
 export class AppMessageService {
   success$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false); // success subject for app message
   error$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false); // error subject for app message
+  message$: Subject<IMessage>; // message subject for app message
   _success: () => Observable<boolean> = () =>
     this.success$ as Observable<boolean>; // expose get success$ Observable
   _error: () => Observable<boolean> = () => this.error$ as Observable<boolean>; // expose get error$ as Observable
@@ -24,16 +32,29 @@ export class AppMessageService {
     this.error$.next(true);
   };
 
+  setMessage: (message: IMessage) => void = (message: IMessage) => {
+    this.message$.next(message);
+  };
+
   messageFactory(messType: messageType, message: string, description?: string) {
-    messType === messageType.SUCCESS
-      ? notification.success({
-          message,
-          description,
-        })
-      : notification.error({
-          message,
-          description,
-        });
+    if (messType === messageType.SUCCESS) {
+      return notification.success({
+        message,
+        description,
+      });
+    }
+    if (messType === messageType.WARNING) {
+      return notification.warn({
+        message,
+        description,
+      });
+    }
+    if (messType === messageType.ERROR) {
+      return notification.error({
+        message,
+        description,
+      });
+    }
   } // factory a snack from  messType, message as title and descripton as body
 
   handleNotify(messType: messageType, message: string, description?: string) {

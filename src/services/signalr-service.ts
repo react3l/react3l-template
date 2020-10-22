@@ -3,7 +3,8 @@ import {
   LogLevel,
   HubConnection,
 } from "@microsoft/signalr";
-import { API_SIGNALR_ROUTE } from "config/api-consts";
+
+export const API_SIGNALR_ROUTE: string = "/rpc/utils/signalr";
 
 export class SignalRService {
   private rConnection: HubConnection;

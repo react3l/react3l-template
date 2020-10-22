@@ -1,7 +1,6 @@
-import React from "reactn";
+import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import { GlobalState, initialGlobalState } from "config/global-state";
 import { translationService } from "@react3l/react3l/services";
 import * as serviceWorker from "service-worker";
 import nameof from "ts-nameof.macro";
@@ -14,12 +13,10 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const App = React.lazy(async () => {
-  await React.setGlobal<GlobalState>(initialGlobalState);
-
   await translationService.initTranslation();
   await translationService.changeLanguage(nameof(vi), vi);
 
-  return import("views/App/App");
+  return import("App/App");
 });
 
 ReactDOM.render(

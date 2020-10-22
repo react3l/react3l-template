@@ -25,3 +25,10 @@ yarn-error.log*
 
 .idea/
 .vscode/
+
+#config, models, repos and views as we copy its from codeGen
+/src/config/*
+/src/models/*
+/src/repositories/*
+/src/views/*
+
