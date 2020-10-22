@@ -7,6 +7,7 @@ import appMessageService, { messageType } from "services/app-message-service";
 import authenticationService from "services/authentication-service";
 import { AppUser } from "models/AppUser";
 import { LOGIN_ROUTE } from "config/route-consts";
+import * as Cookie from "js-cookie";
 
 export default function useApp() {
   const { pathname } = useLocation();
@@ -43,11 +44,17 @@ export default function useApp() {
     displayOverlay,
   } = state;
 
+  const currentPath = `${LOGIN_ROUTE}?redirect=${window.location.pathname}`;
+
+  if (!Cookie.get("Token")) {
+    window.location.href = currentPath;
+  }
+
   useEffect(() => {
     subscription.add(
       authenticationService.checkAuth().subscribe((user: AppUser) => {
         if (user) return dispatch({ type: AppActionEnum.LOG_IN, user }); // if checkAuth success set login
-        window.location.href = `${LOGIN_ROUTE}?redirect=${window.location.pathname}`; // if checkAuth fail, return login page
+        window.location.href = currentPath; // if checkAuth fail, return login page
       }),
     );
   }, [subscription]); // subscibe checkAuth
