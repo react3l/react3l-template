@@ -25,6 +25,7 @@ export function formatTime(
   time: Moment,
   timeFormat: string = STANDARD_TIME_FORMAT,
 ) {
+  if (!time) return null;
   if (typeof time === "object" && "format" in time) {
     return time.format(timeFormat);
   }
@@ -35,6 +36,7 @@ export function formatDateTime(
   time: Moment,
   dateTimeFormat: string = STANDARD_DATE_TIME_FORMAT_VIEW,
 ) {
+  if (!time) return null;
   if (typeof time === "object" && "format" in time) {
     return time.format(dateTimeFormat);
   }
