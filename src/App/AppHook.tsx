@@ -43,12 +43,20 @@ export default function useApp() {
     const successSubscription: Subscription = appMessageService
       ._success()
       .subscribe(
-        appMessageService.handleNotify(messageType.SUCCESS, "thanh cong"),
+        appMessageService.handleNotify({
+          type: messageType.SUCCESS,
+          title: "thanh cong",
+        }),
       ); // subscribe success
 
     const errorSubscription: Subscription = appMessageService
       ._error()
-      .subscribe(appMessageService.handleNotify(messageType.ERROR, "that bai")); // subscribe error
+      .subscribe(
+        appMessageService.handleNotify({
+          type: messageType.ERROR,
+          title: "that bai",
+        }),
+      ); // subscribe error
 
     subscription.add(successSubscription);
     subscription.add(errorSubscription);
