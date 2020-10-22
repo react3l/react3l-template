@@ -81,9 +81,49 @@ export class AppMessageService {
       });
     }; // updateSuccess method
 
+    const notifyBadRequest = (description?: string) => {
+      return notification.error({
+        message: translate("general.badRequest"),
+        description,
+      });
+    }; // notifyBadRequest method (400)
+
+    const notifyUnAuthorize = (description?: string) => {
+      return notification.error({
+        message: translate("general.unAuthorize"),
+        description,
+      });
+    }; // notifyUnAuthorize method (401)
+
+    const notifyServerError = (description?: string) => {
+      return notification.error({
+        message: translate("general.serverError"),
+        description,
+      });
+    }; // notifyServerError method (502, 500)
+
+    const notifyBEError = (description?: string) => {
+      return notification.error({
+        message: translate("general.beError"),
+        description,
+      });
+    }; // notifyBEError method (420)
+
+    const notifyIdleError = (description?: string) => {
+      return notification.error({
+        message: translate("general.idleError"),
+        description,
+      });
+    }; // notifyIdleError method (504)
+
     return {
       notifyUpdateItemSuccess,
       notifyUpdateItemError,
+      notifyBadRequest,
+      notifyUnAuthorize,
+      notifyServerError,
+      notifyBEError,
+      notifyIdleError,
     };
   }
 }

@@ -1,9 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
 // import { GlobalState } from 'core/config';
-// import * as Cookie from 'js-cookie';
+import * as Cookie from "js-cookie";
+import { LOGIN_ROUTE } from "config/route-consts";
 // import { AppUser } from 'models/AppUser';
 // import { setGlobal } from 'reactn';
-// import {LOGIN_ROUTE} from 'config/route-consts';
 class AuthenticationService {
   protected http: AxiosInstance;
 
@@ -22,13 +22,13 @@ class AuthenticationService {
   //     .then((response: AxiosResponse<AppUser>) => response.data);
   // }
 
-  // public async logout() {
-  //   Cookie.remove('Token');
-  //   await setGlobal<GlobalState>({
-  //     user: null,
-  //   });
-  //   window.location.href = LOGIN_ROUTE;
-  // }
+  public async logout() {
+    Cookie.remove("Token");
+    // await setGlobal<GlobalState>({
+    //   user: null,
+    // });
+    window.location.href = LOGIN_ROUTE;
+  }
 }
 
 const createHttpService = () => {
