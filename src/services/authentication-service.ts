@@ -1,40 +1,32 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
-// import { GlobalState } from 'core/config';
-import * as Cookie from "js-cookie";
+import { Repository } from "@react3l/react3l/core";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { LOGIN_ROUTE } from "config/route-consts";
-// import { AppUser } from 'models/AppUser';
-// import { setGlobal } from 'reactn';
-class AuthenticationService {
-  protected http: AxiosInstance;
+import * as Cookie from "js-cookie";
+import { AppUser } from "models/AppUser";
+import { map } from "rxjs/operators";
 
+class AuthenticationService extends Repository {
   constructor() {
-    this.http = createHttpService();
+    super(httpConfig);
   }
 
-  // public checkAuth() {
-  //   return this.http
-  //     .post('rpc/portal/profile/get')
-  //     .then((response: AxiosResponse<AppUser>) => response.data);
-  // }
-  // public login(appUser: AppUser) {
-  //   return this.http
-  //     .post('rpc/portal/account/login', appUser)
-  //     .then((response: AxiosResponse<AppUser>) => response.data);
-  // }
+  public checkAuth() {
+    return this.httpObservable
+      .post("rpc/portal/profile/get")
+      .pipe(map((response: AxiosResponse<AppUser>) => response.data));
+  }
+
+  public login(appUser: AppUser) {
+    return this.httpObservable
+      .post("rpc/portal/account/login", appUser)
+      .pipe(map((response: AxiosResponse<AppUser>) => response.data));
+  }
 
   public async logout() {
     Cookie.remove("Token");
-    // await setGlobal<GlobalState>({
-    //   user: null,
-    // });
     window.location.href = LOGIN_ROUTE;
   }
 }
-
-const createHttpService = () => {
-  const instance: AxiosInstance = axios.create(httpConfig);
-  return instance;
-};
 
 const httpConfig: AxiosRequestConfig = {
   baseURL: window.location.origin,

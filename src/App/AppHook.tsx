@@ -22,6 +22,7 @@ export default function useApp() {
       toggleMenu: false,
       displayFooter: false,
       displayOverlay: false,
+      user: undefined,
     },
   );
 
