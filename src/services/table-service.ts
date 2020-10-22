@@ -390,7 +390,7 @@ export class TableService {
           },
         });
       },
-      [onServerDelete, selectedRowKeys],
+      [onServerDelete],
     );
 
     // add confirmation
