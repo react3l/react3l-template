@@ -50,7 +50,7 @@ export default function useApp() {
         window.location.href = `${LOGIN_ROUTE}?redirect=${window.location.pathname}`; // if checkAuth fail, return login page
       }),
     );
-  }, []); // subscibe checkAuth
+  }, [subscription]); // subscibe checkAuth
 
   useEffect(() => {
     const successSubscription: Subscription = appMessageService
