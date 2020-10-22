@@ -4,6 +4,9 @@ import { useLocation } from "react-router";
 import { Subscription } from "rxjs";
 import { AppAction, AppActionEnum, appReducer, AppState } from "./AppStore";
 import appMessageService, { messageType } from "services/app-message-service";
+import authenticationService from "services/authentication-service";
+import { AppUser } from "models/AppUser";
+import { LOGIN_ROUTE } from "config/route-consts";
 
 export default function useApp() {
   const { pathname } = useLocation();
@@ -23,6 +26,7 @@ export default function useApp() {
       displayFooter: false,
       displayOverlay: false,
       user: undefined,
+      isCheckingAuth: true, // default checkAuth
     },
   );
 
@@ -39,7 +43,15 @@ export default function useApp() {
     displayOverlay,
   } = state;
 
-  // subcribe appMessageService
+  useEffect(() => {
+    subscription.add(
+      authenticationService.checkAuth().subscribe((user: AppUser) => {
+        if (user) return dispatch({ type: AppActionEnum.LOG_IN, user }); // if checkAuth success set login
+        window.location.href = `${LOGIN_ROUTE}?redirect=${window.location.pathname}`; // if checkAuth fail, return login page
+      }),
+    );
+  }, []); // subscibe checkAuth
+
   useEffect(() => {
     const successSubscription: Subscription = appMessageService
       ._success()
@@ -61,9 +73,8 @@ export default function useApp() {
 
     subscription.add(successSubscription);
     subscription.add(errorSubscription);
-  }, [subscription]);
+  }, [subscription]); // subcribe appMessageService
 
-  // update display footer
   useEffect(() => {
     if (pathname.includes("detail")) {
       dispatch({ type: AppActionEnum.SET_FOOTER, displayFooter: true });
@@ -71,20 +82,18 @@ export default function useApp() {
     if (pathname.includes("master")) {
       dispatch({ type: AppActionEnum.SET_FOOTER, displayFooter: false });
     }
-  }, [pathname]);
+  }, [pathname]); // update display footer
 
-  // handle turn off overlay
   const handleToggleOverlay = useCallback(() => {
     dispatch({
       type: AppActionEnum.SET_OVERLAY,
       displayOverlay: !displayOverlay,
     });
-  }, [displayOverlay]);
+  }, [displayOverlay]); // handle turn off overlay
 
-  // handle close error modal
   const handleCloseErrorModal = useCallback(() => {
     dispatch({ type: AppActionEnum.CLOSE_ERROR_MODAL });
-  }, []);
+  }, []); // handle close error modal
 
   return {
     isLoggedIn,

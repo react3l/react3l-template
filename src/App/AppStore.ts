@@ -17,6 +17,7 @@ export interface AppState {
   displayFooter?: boolean;
   displayOverlay?: boolean;
   user?: AppUser;
+  isCheckingAuth?: boolean;
 }
 
 export interface AppAction {
@@ -33,6 +34,7 @@ export interface AppAction {
   displayFooter?: boolean;
   displayOverlay?: boolean;
   user?: AppUser;
+  isCheckingAuth?: boolean;
 }
 
 export enum AppActionEnum {
@@ -97,6 +99,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         isLoggedIn: true,
+        isCheckingAuth: false,
         user: action.user,
       };
     }
