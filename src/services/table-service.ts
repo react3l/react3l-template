@@ -351,7 +351,7 @@ export class TableService {
       list,
       total,
       loadingList,
-      handleDelete: handleServerDelete,
+      handleDelete: onServerDelete,
       handleBulkDelete: onServerBulkDelete,
     } = listService.useList(
       filter,
@@ -378,6 +378,20 @@ export class TableService {
     const { handleTableChange, handlePagination } = this.useTableChange<
       TFilter
     >(filter, setFilter, handleSearch);
+
+    const handleServerDelete = useCallback(
+      (item: T) => {
+        Modal.confirm({
+          title: "ban co chac muon xoa thao tac",
+          content: "thao tac khong the khoi phuc",
+          okType: "danger",
+          onOk() {
+            onServerDelete(item);
+          },
+        });
+      },
+      [onServerDelete, selectedRowKeys],
+    );
 
     // add confirmation
     const handleServerBulkDelete = useCallback(() => {
