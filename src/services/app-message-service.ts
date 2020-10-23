@@ -13,9 +13,9 @@ export enum messageType {
 }
 
 export interface IMessage {
-  title: string;
-  description: string;
-  type: messageType;
+  title?: string;
+  description?: string;
+  type?: messageType;
 }
 
 export class AppMessageService {
@@ -36,37 +36,37 @@ export class AppMessageService {
     this.message$.next(message);
   };
 
-  messageFactory(messType: messageType, message: string, description?: string) {
-    if (messType === messageType.SUCCESS) {
+  messageFactory(content: IMessage) {
+    const { type, description, title } = content;
+    if (type === messageType.SUCCESS) {
       return notification.success({
-        message,
+        message: title,
         description,
       });
     }
-    if (messType === messageType.WARNING) {
+    if (type === messageType.WARNING) {
       return notification.warn({
-        message,
+        message: title,
         description,
       });
     }
-    if (messType === messageType.ERROR) {
+    if (type === messageType.ERROR) {
       return notification.error({
-        message,
+        message: title,
         description,
       });
     }
   } // factory a snack from  messType, message as title and descripton as body
 
-  handleNotify(messType: messageType, message: string, description?: string) {
+  handleNotify(message: IMessage) {
     return (value: boolean) => {
       if (value) {
-        this.messageFactory(messType, message, description);
+        this.messageFactory(message);
       }
     };
   } // handle any Success message
   useCRUDMessage() {
     const [translate] = useTranslation();
-
     const notifyUpdateItemSuccess = (description?: string) => {
       return notification.success({
         message: translate("general.update.success"),
@@ -81,9 +81,49 @@ export class AppMessageService {
       });
     }; // updateSuccess method
 
+    const notifyBadRequest = (description?: string) => {
+      return notification.error({
+        message: translate("general.badRequest"),
+        description,
+      });
+    }; // notifyBadRequest method (400)
+
+    const notifyUnAuthorize = (description?: string) => {
+      return notification.error({
+        message: translate("general.unAuthorize"),
+        description,
+      });
+    }; // notifyUnAuthorize method (401)
+
+    const notifyServerError = (description?: string) => {
+      return notification.error({
+        message: translate("general.serverError"),
+        description,
+      });
+    }; // notifyServerError method (502, 500)
+
+    const notifyBEError = (description?: string) => {
+      return notification.error({
+        message: translate("general.beError"),
+        description,
+      });
+    }; // notifyBEError method (420)
+
+    const notifyIdleError = (description?: string) => {
+      return notification.error({
+        message: translate("general.idleError"),
+        description,
+      });
+    }; // notifyIdleError method (504)
+
     return {
       notifyUpdateItemSuccess,
       notifyUpdateItemError,
+      notifyBadRequest,
+      notifyUnAuthorize,
+      notifyServerError,
+      notifyBEError,
+      notifyIdleError,
     };
   }
 }

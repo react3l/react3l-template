@@ -61,7 +61,7 @@ export class DetailService {
     ModelClass: new () => T,
     getDetail: (id: number) => Observable<T>,
     saveModel: (t: T) => Observable<T>,
-    routePrefix: string
+    routePrefix: string,
   ) {
     // get id from url
     const { id } = useParams();

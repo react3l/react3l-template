@@ -1,3 +1,5 @@
+import { AppUser } from "models/AppUser";
+
 /**
  *
  * Contain AppState and reducer
@@ -14,6 +16,8 @@ export interface AppState {
   toggleMenu?: boolean;
   displayFooter?: boolean;
   displayOverlay?: boolean;
+  user?: AppUser;
+  isCheckingAuth?: boolean;
 }
 
 export interface AppAction {
@@ -29,6 +33,8 @@ export interface AppAction {
   toggleMenu?: boolean;
   displayFooter?: boolean;
   displayOverlay?: boolean;
+  user?: AppUser;
+  isCheckingAuth?: boolean;
 }
 
 export enum AppActionEnum {
@@ -40,6 +46,8 @@ export enum AppActionEnum {
   SET_OVERLAY,
   CLOSE_ERROR_MODAL,
   SET_MENU,
+  LOG_IN,
+  LOG_OUT,
 }
 
 export function appReducer(state: AppState, action: AppAction): AppState {
@@ -85,6 +93,21 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         isErrorModalVisible: false,
+      };
+    }
+    case AppActionEnum.LOG_IN: {
+      return {
+        ...state,
+        isLoggedIn: true,
+        isCheckingAuth: false,
+        user: action.user,
+      };
+    }
+    case AppActionEnum.LOG_OUT: {
+      return {
+        ...state,
+        isLoggedIn: false,
+        user: undefined,
       };
     }
   }

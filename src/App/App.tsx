@@ -1,4 +1,5 @@
-import { Card, Row } from "antd";
+import { Card, Row, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import ErrorBoundary from "antd/lib/alert/ErrorBoundary";
 import Modal from "antd/lib/modal/Modal";
 import classNames from "classnames";
@@ -14,6 +15,9 @@ import { renderRoutes } from "react-router-config";
 import { AppMessageContext, AppStoreContext } from "App/AppContext";
 import useApp from "App/AppHook";
 import "./App.scss";
+import { translate } from "@react3l/react3l/helpers";
+
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function App() {
   const {
@@ -119,14 +123,23 @@ function App() {
 
   return (
     <>
-      <ErrorBoundary>
-        <AppMessageContext.Provider value={appMessageService}>
-          <AppStoreContext.Provider value={[state, dispatch]}>
-            {renderLayout}
-            {renderErrorModal}
-          </AppStoreContext.Provider>
-        </AppMessageContext.Provider>
-      </ErrorBoundary>
+      {state.isCheckingAuth ? (
+        <div id='app'>
+          <Spin
+            indicator={antIcon}
+            tip={translate("pages.checking.authority")}
+          />
+        </div>
+      ) : (
+        <ErrorBoundary>
+          <AppMessageContext.Provider value={appMessageService}>
+            <AppStoreContext.Provider value={[state, dispatch]}>
+              {renderLayout}
+              {renderErrorModal}
+            </AppStoreContext.Provider>
+          </AppMessageContext.Provider>
+        </ErrorBoundary>
+      )}
     </>
   );
 }
