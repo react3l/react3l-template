@@ -6,7 +6,7 @@ import { useHistory } from "react-router";
 import nameof from "ts-nameof.macro";
 import {
   AdvanceFilterAction,
-  advanceFilterReducer,
+  advanceFilterReducer
 } from "./advance-filter-service";
 import { commonWebService } from "./common-web-service";
 
@@ -31,7 +31,7 @@ export const queryStringService = {
       const queryFilter: TFilter = qs.parse(
         history.location.search.substring(1),
       );
-
+    
       if (!commonWebService.isEmpty(queryFilter)) {
         Object.entries(queryFilter).forEach(
           ([key, value]: [keyof TFilter, any]) => {
@@ -74,7 +74,7 @@ export const queryStringService = {
         if (
           cloneModelFilter[prop] &&
           typeof cloneModelFilter[prop] === "object" &&
-          cloneModelFilter[prop].constructor === Object
+          cloneModelFilter[prop] instanceof Object
         ) {
           for (let subProp in cloneModelFilter[prop]) {
             if (moment.isMoment(cloneModelFilter[prop][subProp]))

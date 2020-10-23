@@ -486,6 +486,19 @@ body {
     max-width: 225px !important;
     min-width: 225px !important;
   }
+
+}
+
+@media screen and (min-width: 1367px) {
+  .page__master-table {
+    max-width: 1600px;
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .page__master-table {
+    max-width: 1100px;
+  }
 }
 
 @media screen and (min-width: 1367px) {

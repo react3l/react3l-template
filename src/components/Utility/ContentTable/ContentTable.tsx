@@ -1,10 +1,10 @@
-import React from "react";
 import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Table, Tooltip } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import { AxiosResponse } from "axios";
 import Pagination from "components/Utility/Pagination/Pagination";
 import { TableColumn } from "core/models/TableColumn";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Observable } from "rxjs";
 import nameof from "ts-nameof.macro";
@@ -136,16 +136,17 @@ export const ContentTable = React.forwardRef(
                   )}
                   <Tooltip title={translate("Xóa tất cả")} key='bulkDelete'>
                     <button
-                      className='btn component__btn-delete'
+                      className='btn component__btn-delete border-less grow-animate-2'
                       onClick={handleLocalBulkDelete} // local bulk Delete onChange
                       disabled={!canBulkDelete} // disabled when selectedList length === 0
+                      style={ {border: "none" , backgroundColor: "unset" } }
                     >
                       <i className='tio-delete' />
                     </button>
                   </Tooltip>
                   <Tooltip title={translate("Nhập excel")} key='importExcel'>
                     <label
-                      className='btn gradient-btn-icon mb-0'
+                      className='btn gradient-btn-icon mb-0 grow-animate-2'
                       htmlFor='master-import-store'
                     >
                       <i className='tio-file_add_outlined ' />
@@ -153,7 +154,7 @@ export const ContentTable = React.forwardRef(
                   </Tooltip>
                   <Tooltip title={translate("Xuất excel")} key='exportExcel'>
                     <button
-                      className='btn gradient-btn-icon'
+                      className='btn gradient-btn-icon grow-animate-2'
                       onClick={handleExportContent(model, onExportContent)}
                     >
                       <i className='tio-file_outlined' />
@@ -164,7 +165,7 @@ export const ContentTable = React.forwardRef(
                     key='downLoadTemplate'
                   >
                     <button
-                      className='btn gradient-btn-icon'
+                      className='btn gradient-btn-icon grow-animate-2'
                       onClick={handleExportTemplateContent(
                         model,
                         onExportContentTemp,
