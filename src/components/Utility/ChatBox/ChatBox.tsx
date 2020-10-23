@@ -317,6 +317,10 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
         }
     }, [attachFile, subscription, setEndContentEditable]);
 
+    const shortcutName = React.useCallback((name: string) => {
+        return name.toUpperCase().substring(0, 1);
+    }, []);
+
     React.useEffect(() => {
         const subcription = getListMessages();
         return () => {
@@ -363,13 +367,16 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                                 onMouseLeave={handleMouseLeave}
                                 className={classNames('chat-box__content d-flex mb-4 p-2', (currentItem.isOwner ? 'reverse-row' : 'justify-content-start'))}>
                                 <div className="img-cont-msg">
-                                    <img src={currentItem.creator?.avatar} className="rounded-circle user_img_msg" alt='IMG' />
+                                    { currentItem.creator.avatar ? 
+                                        <img src={currentItem.creator?.avatar} className="rounded-circle user_img_msg" alt='IMG' /> :
+                                        <div className="rounded-circle user_div">{shortcutName(currentItem.creator.displayName)}</div>
+                                    }
                                 </div>
                                 <div className={classNames('msg-container', (currentItem.isOwner ? 'msg-container--owner' : 'msg-container--not-owner'))}>
                                     <div dangerouslySetInnerHTML={{ __html: currentItem.content }}/>
                                     <span className="msg-time">{currentItem.createdAt.format('ll')}</span>
                                 </div>
-                                <div className="msg-icon">
+                                {!currentItem.isOwner && <div className="msg-icon">
                                     {currentItem.isPopup ? 
                                         <div className="confirm-box">
                                             <span className="confirm-box__delete-button" onClick={handleOk(currentItem)}>Xóa</span>
@@ -377,7 +384,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                                         </div> :
                                         <i className="error-text tio-remove_from_trash" onClick={popupConfirm(currentItem)}></i>
                                     }
-                                </div>
+                                </div>}
                             </div>;
                         })
                     }

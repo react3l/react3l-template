@@ -34,6 +34,14 @@ body {
     height: 100%;
   }
 
+  #app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .img-loading {
     max-height: 50px;
     max-width: 50px;

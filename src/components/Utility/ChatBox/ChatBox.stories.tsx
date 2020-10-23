@@ -1,10 +1,10 @@
-import React from "react";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 import { storiesOf } from "@storybook/react";
+import moment from "moment";
+import React from "react";
+import { Observable, of } from "rxjs";
 import nameof from "ts-nameof.macro";
 import ChatBox from "./ChatBox";
-import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Observable, of } from "rxjs";
-import moment from "moment";
 import { FileModel, Message } from "./ChatBox.model";
 
 const listMessageDemo = [
@@ -144,7 +144,7 @@ function Default() {
                 id: 10, 
                 userName: 'Le Duc Thang',
                 displayName: 'thangld19', 
-                avatar: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
+                avatar: '',
                 }}/>
     </div>;
 };

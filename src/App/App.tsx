@@ -1,7 +1,9 @@
-import { Card, Row, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { Card, Row, Spin } from "antd";
 import ErrorBoundary from "antd/lib/alert/ErrorBoundary";
 import Modal from "antd/lib/modal/Modal";
+import { AppMessageContext, AppStoreContext } from "App/AppContext";
+import useApp from "App/AppHook";
 import classNames from "classnames";
 import AppAside from "components/AppAside/AppAside";
 import AppAsideCollapse from "components/AppAsideCollapse/AppAsideCollapse";
@@ -10,12 +12,10 @@ import { menu } from "config/menu";
 import { routes } from "config/routes";
 import React, { useMemo } from "react";
 import { Animated } from "react-animated-css";
+import { useTranslation } from "react-i18next";
 import { Switch, withRouter } from "react-router";
 import { renderRoutes } from "react-router-config";
-import { AppMessageContext, AppStoreContext } from "App/AppContext";
-import useApp from "App/AppHook";
 import "./App.scss";
-import { translate } from "@react3l/react3l/helpers";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -30,6 +30,8 @@ function App() {
     appMessageService, // service instance
     state,
   } = useApp();
+
+  const [translate] = useTranslation();
 
   const renderLayout = useMemo(
     () => (

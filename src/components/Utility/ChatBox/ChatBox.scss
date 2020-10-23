@@ -65,16 +65,24 @@
                     border-radius: 50%!important;
                 }
                 .user_img_msg {
-                    height: 40px;
-                    width: 40px;
+                    height: 35px;
+                    width: 35px;
                     border: 1.5px solid #f5f6fa;
+                }
+                .user_div {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 35px;
+                    width: 35px;
+                    color: #ffffff;
+                    @include background-color;
                 }
             }
     
             .msg-container {
                 margin-top: auto;
                 margin-bottom: auto;
-                margin-left: 10px;
                 border-radius: 7px 7px 7px 0px;
                 padding: 10px;
                 position: relative;
@@ -82,6 +90,7 @@
     
                 &.msg-container--owner {
                     @include background-color;
+                    margin-right: 10px;
                     color: #ffffff;
                     a {
                         text-decoration: underline;
@@ -91,6 +100,7 @@
                 &.msg-container--not-owner {
                     background-color: #F6F6F6;
                     color: #1C1D21;
+                    margin-left: 10px;
                     a {
                         text-decoration: underline;
                         color: #096dd9;
