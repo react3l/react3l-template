@@ -1,6 +1,6 @@
-import { translate } from "@react3l/react3l/helpers/i18n";
 import AntModal, { ModalProps as AntModalProps } from "antd/lib/modal";
 import React, { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import "./Modal.scss";
 
 export interface ModalProps extends AntModalProps {
@@ -8,17 +8,14 @@ export interface ModalProps extends AntModalProps {
 
   handleSave?: () => void;
 
-  children: ReactNode;
+  children?: ReactNode;
 
   visibleFooter?: boolean;
 }
 
 function Modal(props: ModalProps) {
-  const {
-    handleCancel,
-    handleSave,
-    visibleFooter,
-  } = props;
+  const [translate] = useTranslation();
+  const { handleCancel, handleSave, visibleFooter } = props;
 
   const renderModalFooter = React.useMemo(
     () => (
@@ -40,21 +37,23 @@ function Modal(props: ModalProps) {
       </div>
     ),
     [handleSave, handleCancel],
-  ); 
+  );
 
-  return <>
-    <AntModal {...props}
+  return (
+    <>
+      <AntModal
+        {...props}
         style={{ top: 20 }}
         closable={false}
         destroyOnClose={true}
         wrapClassName={"modal__container"}
         footer={visibleFooter ? renderModalFooter : null}
-        onCancel={handleCancel}>
-        <div className='modal_content'>
-          {props.children}
-        </div>
-    </AntModal>
-  </>;
+        onCancel={handleCancel}
+      >
+        <div className='modal_content'>{props.children}</div>
+      </AntModal>
+    </>
+  );
 }
 
 Modal.propsDefalt = {

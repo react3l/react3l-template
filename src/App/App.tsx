@@ -20,6 +20,7 @@ import "./App.scss";
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function App() {
+  const [translate] = useTranslation();
   const {
     errorMessage,
     isErrorModalVisible,
@@ -30,8 +31,6 @@ function App() {
     appMessageService, // service instance
     state,
   } = useApp();
-
-  const [translate] = useTranslation();
 
   const renderLayout = useMemo(
     () => (

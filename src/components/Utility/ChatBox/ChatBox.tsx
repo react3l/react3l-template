@@ -374,7 +374,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                                 </div>
                                 <div className={classNames('msg-container', (currentItem.isOwner ? 'msg-container--owner' : 'msg-container--not-owner'))}>
                                     <div dangerouslySetInnerHTML={{ __html: currentItem.content }}/>
-                                    <span className="msg-time">{currentItem.createdAt.format('ll')}</span>
+                                    <span className="msg-time">{currentItem.createdAt?.format('ll')}</span>
                                 </div>
                                 {!currentItem.isOwner && <div className="msg-icon">
                                     {currentItem.isPopup ? 
