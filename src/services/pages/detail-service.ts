@@ -145,6 +145,104 @@ export class DetailService {
       dispatch,
     };
   }
+
+  /**
+   *
+   * open detailModal from clicking edit in master
+   * @param: ModelClass: new () => T,
+   * @param: getDetail: (id: number) => Observable<T>,
+   * @param: saveModel: (t: T) => Observable<T>,
+   * @return: {  }
+   *
+   * */
+  useDetailModal<T extends Model>(
+    ModelClass: new () => T,
+    getDetail: (id: number) => Observable<T>,
+    saveModel: (t: T) => Observable<T>,
+    handleSeach?: () => void, //trigger updateList
+  ) {
+    // message service
+    const {
+      notifyUpdateItemSuccess,
+      notifyUpdateItemError,
+    } = appMessageService.useCRUDMessage();
+
+    const [subscription] = commonService.useSubscription();
+
+    const [isOpenDetailModal, setIsOpenDetailModal] = useState<boolean>(false);
+    const [loadingModel, setLoadingModel] = useState<boolean>(false);
+
+    const [
+      model,
+      handleChangeSimpleField,
+      handleChangeObjectField,
+      handleUpdateNewModel, // alternate for setModel
+      handleChangeTreeObjectField,
+      dispatch,
+    ] = formService.useDetailForm<T>(ModelClass, undefined, getDetail); // id is undefined as we not archive id from url
+
+    const handleOpenDetailModal = useCallback(
+      (id: number) => {
+        setLoadingModel(true);
+        subscription.add(
+          getDetail(id)
+            .pipe(finalize(() => setLoadingModel(false)))
+            .subscribe((item: T) => {
+              handleUpdateNewModel(item);
+              setIsOpenDetailModal(true);
+            }),
+        );
+      },
+      [getDetail, handleUpdateNewModel, subscription],
+    ); // handleOpen detailModal from list
+
+    const handleSaveModel = useCallback(() => {
+      setLoadingModel(true);
+      subscription.add(
+        saveModel(model)
+          .pipe(finalize(() => setLoadingModel(false)))
+          .subscribe(
+            (item: T) => {
+              handleUpdateNewModel(item); // setModel
+              setIsOpenDetailModal(false); // close Modal
+              if (typeof handleSeach === "function") handleSeach(); // updateList if necessary
+              notifyUpdateItemSuccess(); // global message service go here
+            },
+            (error: AxiosError<T>) => {
+              if (error.response && error.response.status === 400)
+                handleUpdateNewModel(error.response?.data);
+              notifyUpdateItemError(); // global message service go here
+            },
+          ),
+      );
+    }, [
+      saveModel,
+      subscription,
+      handleSeach,
+      notifyUpdateItemError,
+      notifyUpdateItemSuccess,
+      handleUpdateNewModel,
+      model,
+    ]);
+
+    const handleCloseDetailModal = useCallback(() => {
+      setIsOpenDetailModal(false);
+      if (typeof handleSeach === "function") handleSeach(); // updateList if necessary
+    }, [handleSeach]);
+
+    return {
+      model,
+      isOpenDetailModal,
+      loadingModel,
+      handleOpenDetailModal,
+      handleSaveModel,
+      handleChangeSimpleField,
+      handleChangeObjectField,
+      handleChangeTreeObjectField,
+      handleCloseDetailModal,
+      dispatch,
+    };
+  }
 }
 
 const detailService = new DetailService();

@@ -15,11 +15,12 @@ import { renderRoutes } from "react-router-config";
 import { AppMessageContext, AppStoreContext } from "App/AppContext";
 import useApp from "App/AppHook";
 import "./App.scss";
-import { translate } from "@react3l/react3l/helpers";
+import { useTranslation } from "react-i18next";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function App() {
+  const [translate] = useTranslation();
   const {
     errorMessage,
     isErrorModalVisible,
