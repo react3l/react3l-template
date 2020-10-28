@@ -1,13 +1,13 @@
 import { commonService } from "@react3l/react3l/services";
+import { LOGIN_ROUTE } from "config/route-consts";
+import * as Cookie from "js-cookie";
+import { AppUser } from "models/AppUser";
 import { Reducer, useCallback, useEffect, useReducer } from "react";
 import { useLocation } from "react-router";
 import { Subscription } from "rxjs";
-import { AppAction, AppActionEnum, appReducer, AppState } from "./AppStore";
 import appMessageService, { messageType } from "services/app-message-service";
 import authenticationService from "services/authentication-service";
-import { AppUser } from "models/AppUser";
-import { LOGIN_ROUTE } from "config/route-consts";
-import * as Cookie from "js-cookie";
+import { AppAction, AppActionEnum, appReducer, AppState } from "./AppStore";
 
 export default function useApp() {
   const { pathname } = useLocation();
@@ -47,14 +47,14 @@ export default function useApp() {
   const currentPath = `${LOGIN_ROUTE}?redirect=${window.location.pathname}`;
 
   if (!Cookie.get("Token")) {
-    window.location.href = currentPath;
+    //window.location.href = currentPath;
   }
 
   useEffect(() => {
     subscription.add(
       authenticationService.checkAuth().subscribe((user: AppUser) => {
         if (user) return dispatch({ type: AppActionEnum.LOG_IN, user }); // if checkAuth success set login
-        window.location.href = currentPath; // if checkAuth fail, return login page
+        //window.location.href = currentPath; // if checkAuth fail, return login page
       }),
     );
   }, [currentPath, subscription]); // subscibe checkAuth

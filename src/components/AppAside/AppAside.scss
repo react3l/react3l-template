@@ -27,6 +27,11 @@ $red: red;
   flex-grow: 1;
   overflow-y: auto;
   .aside__default-sidebar {
+    // .ant-menu-submenu-open {
+    //   ul {
+    //     min-height: 200px !important;
+    //   }
+    // }
     .ant-menu-item {
       a {
         display: flex;

@@ -97,7 +97,6 @@ export const ContentTable = React.forwardRef(
       <>
         <Table
           tableLayout='fixed'
-          bordered={true}
           rowKey={nameof(list[0].key)}
           columns={columns}
           pagination={false}

@@ -1,14 +1,14 @@
+import { Model } from "@react3l/react3l/core/model";
 import { commonService } from "@react3l/react3l/services";
 import { AxiosError } from "axios";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
+import appMessageService from "services/app-message-service";
 import { formService } from "services/form-service";
 import { routerService } from "services/route-service";
 import { v4 as uuidv4 } from "uuid";
-import appMessageService from "services/app-message-service";
-import { Model } from "@react3l/react3l/core/model";
 
 export class DetailService {
   /**
@@ -184,12 +184,12 @@ export class DetailService {
     const handleOpenDetailModal = useCallback(
       (id: number) => {
         setLoadingModel(true);
+        setIsOpenDetailModal(true);
         subscription.add(
           getDetail(id)
             .pipe(finalize(() => setLoadingModel(false)))
             .subscribe((item: T) => {
               handleUpdateNewModel(item);
-              setIsOpenDetailModal(true);
             }),
         );
       },
@@ -227,8 +227,10 @@ export class DetailService {
 
     const handleCloseDetailModal = useCallback(() => {
       setIsOpenDetailModal(false);
+      if(model.id) handleUpdateNewModel({...model});
+        else handleUpdateNewModel({...new ModelClass()});
       if (typeof handleSeach === "function") handleSeach(); // updateList if necessary
-    }, [handleSeach]);
+    }, [handleSeach, ModelClass, handleUpdateNewModel, model]);
 
     return {
       model,

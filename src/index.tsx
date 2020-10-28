@@ -1,12 +1,12 @@
+import { translationService } from "@react3l/react3l/services";
+import vi from "i18n/vi.json";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import { translationService } from "@react3l/react3l/services";
-import * as serviceWorker from "service-worker";
-import nameof from "ts-nameof.macro";
 import addReactNDevTools from "reactn-devtools";
-import vi from "i18n/vi.json";
+import * as serviceWorker from "service-worker";
 import "styles";
+import nameof from "ts-nameof.macro";
 
 if (process.env.NODE_ENV === "development") {
   addReactNDevTools();

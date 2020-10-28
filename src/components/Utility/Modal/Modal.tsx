@@ -36,7 +36,7 @@ function Modal(props: ModalProps) {
         </button>
       </div>
     ),
-    [handleSave, handleCancel],
+    [handleSave, handleCancel, translate],
   );
 
   return (
@@ -44,7 +44,6 @@ function Modal(props: ModalProps) {
       <AntModal
         {...props}
         style={{ top: 20 }}
-        closable={false}
         destroyOnClose={true}
         wrapClassName={"modal__container"}
         footer={visibleFooter ? renderModalFooter : null}
@@ -56,8 +55,9 @@ function Modal(props: ModalProps) {
   );
 }
 
-Modal.propsDefalt = {
+Modal.defaultProps = {
   visibleFooter: true,
+  closable: false,
 };
 
 export default Modal;

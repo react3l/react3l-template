@@ -7,7 +7,7 @@
     }
     
     .ant-modal-body {
-        padding: 10px 0 0 0 !important;
+        padding: 0px !important;
     }
 
     .modal_content {
@@ -29,9 +29,10 @@
         .preview__containter {
             display: flex;
             margin-top: 15px;
+            padding-top: 10px;
 
             .preview__left-side {
-                width: 65%;
+                width: 75%;
                 height: auto;
                 display: flex;
                 flex-direction: column;
@@ -108,7 +109,7 @@
             }
 
             .preview__right-side {
-                width: 35%;
+                width: 25%;
                 height: auto;
             }
         }

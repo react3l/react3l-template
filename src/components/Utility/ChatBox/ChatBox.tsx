@@ -3,10 +3,11 @@ import { commonService } from '@react3l/react3l/services/common-service';
 import { Dropdown } from 'antd';
 import Menu from 'antd/lib/menu';
 import classNames from 'classnames';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import React, { RefObject } from 'react';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ErrorObserver, forkJoin, Observable } from 'rxjs';
+import Modal from '../Modal/Modal';
 import { Creator, FileModel, Message } from './ChatBox.model';
 import './ChatBox.scss';
 import ContentEditable from './ContentEditable/ContentEditable';
@@ -49,6 +50,17 @@ const loading = (
         <img src="/assets/svg/spinner.svg"  alt='Loading...'/>
     </div>
 );
+
+function formatDateTime(
+    time: Moment,
+    dateTimeFormat: string = 'DD-MM-YYYY HH:mm:ss',
+  ) {
+    if (!time) return null;
+    if (typeof time === "object" && "format" in time) {
+      return time.format(dateTimeFormat);
+    }
+    return moment(time).format(dateTimeFormat);
+}
 
 function initFilter (initialValue: any) {
     const {
@@ -132,9 +144,33 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
 
     const [subscription] = commonService.useSubscription();
 
+    const [isPreview, setIsPreview] = React.useState<boolean>(false);
+
+    const [imageSrc, setImageSrc] = React.useState<string>();
+
     const inputRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>();
 
     const contentEditableRef: React.LegacyRef<HTMLDivElement> = React.useRef<HTMLDivElement>();
+
+    const handleClosePreview = React.useCallback(() => {
+        setIsPreview(false);
+    }, []);
+
+    const handleOpenPreview = React.useCallback((event: any) => {
+        const imgSrc = event.target.currentSrc;
+        setImageSrc(imgSrc);
+        setIsPreview(true);
+    }, []);
+
+    const bindEventClick = React.useCallback(() => {
+        const imageElements = document.getElementsByName("previewImage");
+        const nodes = Array.prototype.slice.call(imageElements,0); 
+        if (nodes) {
+            [...nodes].forEach((current: Node) => {
+                current.addEventListener('click', handleOpenPreview);
+            });
+        }
+    }, [handleOpenPreview]);
 
     const handleMouseLeave = React.useCallback(() => {
         if (list && list.length > 0) {
@@ -186,13 +222,16 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                                     data: listMessage.reverse(),
                                 });
                             }
+                            setTimeout(() => {
+                                bindEventClick();
+                            }, 200);
                             setCountMessage(total);
                         }
                     },
                 );
         }
         return;
-    }, [filterOwner, getMessages, countMessages, filter]);
+    }, [filterOwner, getMessages, countMessages, bindEventClick, filter]);
 
     const handleMenuClick = React.useCallback((e: any) => {
         const sortType = sortList.filter((current) => current.type === e.key)[0];
@@ -219,10 +258,13 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                     message: res,
                 });
                 contentEditableRef.current.innerHTML = '';
+                setTimeout(() => {
+                    bindEventClick();
+                }, 200);
             },
             (err: ErrorObserver<Error>) => {},
         );
-    }, [userInfo, discussionId, postMessage]);
+    }, [userInfo, discussionId, postMessage, bindEventClick]);
 
     const popupConfirm = React.useCallback(
         (message: Message) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -301,7 +343,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                         var hrefItem;
                         const fileType = fileValue.type.split('/')[0];
                         if (fileType === "image") {
-                            hrefItem = `<image src="${res.path}" alt="IMG">`;
+                            hrefItem = `<image src="${res.path}" alt="IMG" name="previewImage">`;
                         } else {
                             hrefItem = `<a href="${res.path}" target="_blank">${res.name}</a>`;
                         }
@@ -336,71 +378,82 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
       </Menu>;
     }, [handleMenuClick, sortType]);
 
-    return <div className="chat-box__container">
-        <div className="chat-box__header">
-            <div className="chat-box__title">
-                <span>{'Bình luận'}</span>
+    return <>
+        <div className="chat-box__container">
+            <div className="chat-box__header">
+                <div className="chat-box__title">
+                    <span>{'Bình luận'}</span>
+                </div>
+                <div className="chat-box__sort">
+                    <span>SORT:</span>
+                    <Dropdown overlay={menuSort} 
+                        trigger={['click']}>
+                        <div className="sort__options">
+                            <span className="sort__page">{sortType?.title.toUpperCase()}</span>
+                            <i className="sort__icon tio-chevron_down"></i>
+                        </div>
+                    </Dropdown>
+                </div>
             </div>
-            <div className="chat-box__sort">
-                <span>SORT:</span>
-                <Dropdown overlay={menuSort} 
-                    trigger={['click']}>
-                    <div className="sort__options">
-                        <span className="sort__page">{sortType?.title.toUpperCase()}</span>
-                        <i className="sort__icon tio-chevron_down"></i>
-                    </div>
-                </Dropdown>
+            <div className="chat-box__body" id="scrollableDiv">
+                <InfiniteScroll
+                    dataLength={list.length}
+                    next={handleInfiniteLoad}
+                    style={{ display: 'flex', flexDirection: 'column-reverse'}}
+                    inverse={true}
+                    hasMore={hasMore}
+                    loader={loading}
+                    scrollableTarget="scrollableDiv">
+                        {
+                            list.map((currentItem, index) => {
+                                return <div key={index}
+                                    onMouseLeave={handleMouseLeave}
+                                    className={classNames('chat-box__content d-flex mb-4 p-2', (currentItem.isOwner ? 'reverse-row' : 'justify-content-start'))}>
+                                    <div className="img-cont-msg">
+                                        { currentItem.creator.avatar ? 
+                                            <img src={currentItem.creator?.avatar} className="rounded-circle user_img_msg" alt='IMG' /> :
+                                            <div className="rounded-circle user_div">{shortcutName(currentItem.creator.displayName)}</div>
+                                        }
+                                    </div>
+                                    <div className={classNames('msg-container', (currentItem.isOwner ? 'msg-container--owner' : 'msg-container--not-owner'))}>
+                                        <div dangerouslySetInnerHTML={{ __html: currentItem.content }}/>
+                                        <span className="msg-time">{formatDateTime(currentItem.createdAt)}</span>
+                                    </div>
+                                    {!currentItem.isOwner && <div className="msg-icon">
+                                        {currentItem.isPopup ? 
+                                            <div className="confirm-box">
+                                                <span className="confirm-box__delete-button" onClick={handleOk(currentItem)}>Xóa</span>
+                                                <span className="confirm-box__cancel-button" onClick={handleCancel(currentItem)}>Hủy</span>
+                                            </div> :
+                                            <i className="error-text tio-remove_from_trash" onClick={popupConfirm(currentItem)}></i>
+                                        }
+                                    </div>}
+                                </div>;
+                            })
+                        }
+                </InfiniteScroll>
+            </div>
+            <div className="chat-box__footer">
+                <ContentEditable ref={contentEditableRef} 
+                    suggestList={suggestList}
+                    sendValue={handleSend}/>
+                <div className="chat-box__action">
+                    <input type="file" ref={inputRef} style={{display: 'none'}} onChange={(e) => handleAttachFile(e.target.files)}/>
+                    <i className="tio-attachment_diagonal" onClick={() => {inputRef.current.click();}}></i>
+                    <button className="btn btn-sm component__btn-primary" onClick={handleSend}>Send</button>
+                </div>
             </div>
         </div>
-        <div className="chat-box__body" id="scrollableDiv">
-            <InfiniteScroll
-                dataLength={list.length}
-                next={handleInfiniteLoad}
-                style={{ display: 'flex', flexDirection: 'column-reverse'}}
-                inverse={true}
-                hasMore={hasMore}
-                loader={loading}
-                scrollableTarget="scrollableDiv">
-                    {
-                        list.map((currentItem, index) => {
-                            return <div key={index}
-                                onMouseLeave={handleMouseLeave}
-                                className={classNames('chat-box__content d-flex mb-4 p-2', (currentItem.isOwner ? 'reverse-row' : 'justify-content-start'))}>
-                                <div className="img-cont-msg">
-                                    { currentItem.creator.avatar ? 
-                                        <img src={currentItem.creator?.avatar} className="rounded-circle user_img_msg" alt='IMG' /> :
-                                        <div className="rounded-circle user_div">{shortcutName(currentItem.creator.displayName)}</div>
-                                    }
-                                </div>
-                                <div className={classNames('msg-container', (currentItem.isOwner ? 'msg-container--owner' : 'msg-container--not-owner'))}>
-                                    <div dangerouslySetInnerHTML={{ __html: currentItem.content }}/>
-                                    <span className="msg-time">{currentItem.createdAt?.format('ll')}</span>
-                                </div>
-                                {!currentItem.isOwner && <div className="msg-icon">
-                                    {currentItem.isPopup ? 
-                                        <div className="confirm-box">
-                                            <span className="confirm-box__delete-button" onClick={handleOk(currentItem)}>Xóa</span>
-                                            <span className="confirm-box__cancel-button" onClick={handleCancel(currentItem)}>Hủy</span>
-                                        </div> :
-                                        <i className="error-text tio-remove_from_trash" onClick={popupConfirm(currentItem)}></i>
-                                    }
-                                </div>}
-                            </div>;
-                        })
-                    }
-            </InfiniteScroll>
-        </div>
-        <div className="chat-box__footer">
-            <ContentEditable ref={contentEditableRef} 
-                suggestList={suggestList}
-                sendValue={handleSend}/>
-            <div className="chat-box__action">
-                <input type="file" ref={inputRef} style={{display: 'none'}} onChange={(e) => handleAttachFile(e.target.files)}/>
-                <i className="tio-attachment_diagonal" onClick={() => {inputRef.current.click();}}></i>
-                <button className="btn btn-sm component__btn-primary" onClick={handleSend}>Send</button>
-            </div>
-        </div>
-    </div>;
+        <Modal visible={isPreview}
+            width={800}
+            visibleFooter={false}
+            closable={true}
+            handleCancel={handleClosePreview}>
+                <div className="preview-image__container">
+                    <img alt='img' src={imageSrc}></img>
+                </div>
+        </Modal>
+    </>;
 }
 
 export default ChatBox;
