@@ -36,3 +36,16 @@
       transform: scale(1.2);
     }
 }
+
+//slideup and slidedown animate
+.fadein, .fadeout {
+    max-height: 0;
+    overflow-y: hidden;
+    -moz-transition: max-height 0.4s ease-in-out;
+    -o-transition: max-height 0.4s ease-in-out;
+    -webkit-transition: max-height 0.4s ease-in-out;
+    transition: max-height 0.4s ease-in-out;
+}
+.fadein {
+    max-height: 500px;
+}
