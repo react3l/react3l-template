@@ -4,12 +4,12 @@ import { Model, ModelFilter } from "@react3l/react3l/core";
 import { debounce } from "@react3l/react3l/helpers";
 import { commonService } from "@react3l/react3l/services/common-service";
 import classNames from "classnames";
+import React, { RefObject } from "react";
 import { ErrorObserver, Observable } from "rxjs";
 import { commonWebService } from "services/common-web-service";
 import nameof from "ts-nameof.macro";
 import InputSelect from "../Input/InputSelect/InputSelect";
 import "./Select.scss";
-import React, { RefObject } from "react";
 
 export interface SelectProps<
   T extends Model,
@@ -28,6 +28,8 @@ export interface SelectProps<
   disabled?: boolean;
 
   isMaterial?: boolean;
+
+  isEnumerable?: boolean;
 
   getList?: (TModelFilter?: TModelFilter) => Observable<T[]>;
 
@@ -51,6 +53,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
     placeHolder,
     disabled,
     isMaterial,
+    isEnumerable,
     getList,
     onChange,
     render,
@@ -94,9 +97,15 @@ function Select(props: SelectProps<Model, ModelFilter>) {
   const handleToggle = React.useCallback(
     async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       setExpand(true);
-      await handleLoadList();
+      if (isEnumerable) {
+        if(list.length === 0) {
+          await handleLoadList();
+        }
+      } else {
+        await handleLoadList();
+      }
     },
-    [handleLoadList],
+    [handleLoadList, isEnumerable, list],
   );
 
   const handleCloseSelect = React.useCallback(() => {
@@ -116,7 +125,9 @@ function Select(props: SelectProps<Model, ModelFilter>) {
       const cloneModelFilter = modelFilter
         ? { ...modelFilter }
         : new ClassFilter();
-      cloneModelFilter[searchProperty][searchType] = searchTerm;
+      if (!isEnumerable) {
+        cloneModelFilter[searchProperty][searchType] = searchTerm;
+      }
       setLoading(true);
       subscription.add(getList);
       getList(cloneModelFilter).subscribe(
@@ -196,6 +207,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
 Select.defaultProps = {
   searchProperty: nameof(Model.prototype.name),
   searchType: nameof(StringFilter.prototype.startWith),
+  isEnumerable: false,
   render: defaultRenderObject,
   isMaterial: false,
   disabled: false,

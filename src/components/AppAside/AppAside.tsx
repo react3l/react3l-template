@@ -1,16 +1,8 @@
 import Layout from "antd/lib/layout";
 import Menu from "antd/lib/menu";
-import { AppStoreContext } from "App/AppContext";
-import { AppAction, AppActionEnum, AppState } from "App/AppStore";
 import classNames from "classnames";
 import { menu } from "config/menu";
-import React, {
-  Dispatch, useCallback,
-
-
-
-  useContext, useEffect, useState
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { RouteConfig } from "react-router-config";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -31,12 +23,11 @@ function AppAside(props: IDefaultSidebarProps) {
   const { pathname } = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
-  const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
-    AppStoreContext,
-  );
-  const handleToggleMenu = React.useCallback(() => {
-    dispatch({ type: AppActionEnum.SET_MENU, toggleMenu: !state.toggleMenu });
-  }, [dispatch, state]);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  
+  const handleCollapse = useCallback(() => {
+    setCollapsed(!collapsed);
+  }, [collapsed]);
 
   useEffect(() => {
     const keys = getOpenKeys(routes, pathname);
@@ -60,31 +51,41 @@ function AppAside(props: IDefaultSidebarProps) {
 
   return (
     <>
-      <div className={classNames("aside__header", className)}>
-        <div className='aside__navbar-brand d-flex justify-content-between'>
-          <div className='d-flex'>
-            <div className='app-aside__logo'>
-              <img src='/assets/img/logo.png' alt='' width='38' />
-            </div>
-            <div className='aside__name ml-3'>ePayment</div>
-          </div>
-          <div className='aside__toggle' onClick={handleToggleMenu}>
-            <i className='tio-menu_hamburger' />
-          </div>
-        </div>
-      </div>
-      <div className='aside__content'>
         <Sider
-          collapsible={false}
-          className={classNames("pb-4", className)}
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          breakpoint="lg"
+          theme="light"
+          onBreakpoint={broken => {
+            if(broken) {
+              setCollapsed(true);
+            } else {
+              setCollapsed(false);
+            }
+          }}
+          width={250}
+          collapsedWidth={65}
+          className={classNames("app-aside__container", className)}
           style={style}
         >
+          <div className="app-aside__header d-flex justify-content-between">
+            <div className='d-flex'>
+              <div className='app-aside__logo'>
+                <img src='/assets/img/logo.png' alt='IMG' onClick={() => collapsed ? handleCollapse() : null }/>
+              </div>
+              <div className='app-aside__name ml-3'>ePayment</div>
+            </div>
+            <div className='app-aside__toggle' onClick={handleCollapse}>
+              <i className='tio-menu_hamburger' />
+            </div>
+          </div>
           <Menu
             mode='inline'
             className='aside__default-sidebar'
             inlineIndent={0}
             selectedKeys={selectedKeys}
-            openKeys={openKeys}
+            openKeys={!collapsed ? openKeys : []}
             onOpenChange={handleChange}
             onSelect={handleSelect}
             theme='light'
@@ -99,7 +100,6 @@ function AppAside(props: IDefaultSidebarProps) {
               ))}
           </Menu>
         </Sider>
-      </div>
     </>
   );
 }
@@ -136,6 +136,7 @@ function convertPathName(pathName: string) {
     const path = tmp[0] + "master";
     return path;
   }
+  
   if (pathName.includes(`preview`)) {
     const tmp = pathName.split("preview");
     const path = tmp[0] + "master";

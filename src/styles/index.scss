@@ -85,6 +85,10 @@ body {
     @include gradient-text();
   }
 
+  .icon-fontsize {
+    font-size: 20px;
+  }
+
   .component__text-area {
     width: 100%;
     height: 40px;

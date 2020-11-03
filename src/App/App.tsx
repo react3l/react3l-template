@@ -6,12 +6,10 @@ import { AppMessageContext, AppStoreContext } from "App/AppContext";
 import useApp from "App/AppHook";
 import classNames from "classnames";
 import AppAside from "components/AppAside/AppAside";
-import AppAsideCollapse from "components/AppAsideCollapse/AppAsideCollapse";
 import AppHeader from "components/AppHeader/AppHeader";
 import { menu } from "config/menu";
 import { routes } from "config/routes";
 import React, { useMemo } from "react";
-import { Animated } from "react-animated-css";
 import { useTranslation } from "react-i18next";
 import { Switch, withRouter } from "react-router";
 import { renderRoutes } from "react-router-config";
@@ -24,7 +22,6 @@ function App() {
   const {
     errorMessage,
     isErrorModalVisible,
-    toggleMenu,
     displayOverlay,
     handleCloseErrorModal,
     dispatch, // app dispatch
@@ -35,31 +32,9 @@ function App() {
   const renderLayout = useMemo(
     () => (
       <div className='app d-flex'>
-        {!toggleMenu ? (
-          <Animated
-            animationIn='slideInLeft'
-            animationOut='slideOutLeft'
-            animationInDuration={800}
-            animationOutDuration={400}
-            isVisible={!toggleMenu as boolean}
-          >
-            <div className='left-side column'>
-              <AppAside routes={menu} />
-            </div>
-          </Animated>
-        ) : (
-          <Animated
-            animationIn='slideInLeft'
-            animationOut='slideOutLeft'
-            animationInDuration={800}
-            animationOutDuration={400}
-            isVisible={toggleMenu as boolean}
-          >
-            <div className='left-side column'>
-              <AppAsideCollapse routes={menu} />
-            </div>
-          </Animated>
-        )}
+        <div className='left-side column'>
+          <AppAside routes={menu} />
+        </div>
         <div className='right-side column'>
           <div
             className={classNames("header-wrapper", {
@@ -79,7 +54,7 @@ function App() {
         </div>
       </div>
     ),
-    [displayOverlay, toggleMenu],
+    [displayOverlay],
   );
 
   const modalFooter = useMemo(
