@@ -1,7 +1,7 @@
-import React, { RefObject } from "react";
-import "./InputText.scss";
 import { Model } from "@react3l/react3l/core/model";
 import classNames from "classnames";
+import React, { RefObject } from "react";
+import "./InputText.scss";
 
 interface InputText<T extends Model> {
   value?: string;
@@ -56,7 +56,7 @@ function InputText(props: InputText<Model>) {
 
   const handleKeyPress = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.keyCode === 13) {
+      if (event.key === "Enter") {
         if (typeof onEnter === "function") {
           onEnter(event.currentTarget.value);
         }

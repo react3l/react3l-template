@@ -79,10 +79,18 @@
         }
       }
 
-      &.ant-menu-open:not(.ant-menu-submenu-selected) {
-        &:hover {
+      &.ant-menu-submenu-open:not(.ant-menu-submenu-selected) {
+        background-color: #FAFAFC;
+        border-radius: 0px 0px 7px 7px;
+
+        .ant-menu-submenu-title {
           background: linear-gradient(224.53deg, #C3BEEE 0%, #AAA4F0 50%);
           border-radius: 7px;
+          color: #ffffff;
+        }
+
+        ul {
+          background-color: #FAFAFC;
         }
       }
 
@@ -124,7 +132,9 @@
   .ant-menu-vertical-right .ant-menu-submenu-title, 
   .ant-menu-vertical .ant-menu-item, 
   .ant-menu-vertical .ant-menu-submenu-title {
-    padding: 10px !important;
+    padding-left: 10px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
   }
 
   .ant-menu-inline > .ant-menu-item, 

@@ -27,10 +27,10 @@ function AsideMenu(props: IDefaultSidebarProps) {
             <SubMenu
               key={props.item.key ? props.item.key : uuidv4()}
               title={
-                <div>
+                <>
                   {props.item.icon && <i className={classNames("icon-fontsize", props.item.icon)} />}
                   <span className="ml-2">{translate(props.item.name)}</span>
-                </div>
+                </>
               }
               {...rest}>
                 {props.item.children.map((subItem: RouteConfig) => (
@@ -39,14 +39,14 @@ function AsideMenu(props: IDefaultSidebarProps) {
                     <SubMenu
                       key={subItem.key ? subItem.key : uuidv4()}
                       title={
-                        <div>
+                        <>
                           {subItem.children && subItem.children.length > 0 && (
                             <>
                               {subItem.icon && <i className={classNames("icon-fontsize", subItem.icon)} />}
                               <span className="ml-2">{translate(subItem.name)}</span>
                             </>
                           )}
-                        </div>
+                        </>
                       }
                       {...rest}>
                         {subItem.children.map((currentItem: RouteConfig) => (

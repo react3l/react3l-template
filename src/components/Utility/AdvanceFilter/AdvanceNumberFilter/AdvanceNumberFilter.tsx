@@ -1,7 +1,7 @@
-import React, { RefObject } from "react";
-import "./AdvanceNumberFilter.scss";
 import { Model } from "@react3l/react3l/core";
 import classNames from "classnames";
+import React, { RefObject } from "react";
+import "./AdvanceNumberFilter.scss";
 
 export const DECIMAL: string = "DECIMAL";
 export const LONG: string = "LONG";
@@ -20,6 +20,7 @@ export interface AdvanceNumberFilterProps<T extends Model> {
   className?: string;
   onChange?: (T: number) => void;
   onBlur?: (T: number) => void;
+  onEnter?: (T: number) => void;
 }
 
 function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
@@ -34,6 +35,7 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
     disabled,
     onChange,
     onBlur,
+    onEnter,
   } = props;
 
   const [internalValue, setInternalValue] = React.useState<string>("");
@@ -162,25 +164,34 @@ function AdvanceNumberFilter(props: AdvanceNumberFilterProps<Model>) {
   const handleClearInput = React.useCallback(
     (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       setInternalValue("");
+      inputRef.current.focus();
       if (typeof onChange === "function") {
         onChange(null);
+        return;
       }
-      inputRef.current.focus();
+      if (typeof onBlur === "function") {
+        onBlur(null);
+        return;
+      }
+      if(typeof onEnter === "function") {
+        onEnter(null);
+        return;
+      }
     },
-    [onChange],
+    [onChange, onEnter, onBlur],
   );
 
   const handleKeyPress = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (
-        event.keyCode === 13 &&
+        event.key === "Enter" &&
         event.currentTarget.value &&
-        typeof onChange === "function"
+        typeof onEnter === "function"
       ) {
-        onChange(parseNumber(event.currentTarget.value)[0]);
+        onEnter(parseNumber(event.currentTarget.value)[0]);
       }
     },
-    [onChange, parseNumber],
+    [onEnter, parseNumber],
   );
 
   const handleBlur = React.useCallback(

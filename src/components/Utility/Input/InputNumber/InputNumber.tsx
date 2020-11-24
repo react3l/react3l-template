@@ -1,7 +1,7 @@
-import React, { RefObject } from "react";
-import "./InputNumber.scss";
 import { Model } from "@react3l/react3l/core";
 import classNames from "classnames";
+import React, { RefObject } from "react";
+import "./InputNumber.scss";
 
 export const DECIMAL: string = "DECIMAL";
 export const LONG: string = "LONG";
@@ -181,7 +181,7 @@ function InputNumber(props: InputNumberProps<Model>) {
 
   const handleKeyPress = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.keyCode === 13) {
+      if (event.key === "Enter") {
         if (typeof onEnter === "function") {
           onEnter(parseNumber(event.currentTarget.value)[0]);
         }

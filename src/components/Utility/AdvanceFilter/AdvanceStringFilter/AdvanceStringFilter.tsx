@@ -1,7 +1,7 @@
-import React, { RefObject } from "react";
-import "./AdvanceStringFilter.scss";
 import { Model } from "@react3l/react3l/core/model";
 import classNames from "classnames";
+import React, { RefObject } from "react";
+import "./AdvanceStringFilter.scss";
 
 interface AdvanceStringFilter<T extends Model> {
   value?: string;
@@ -12,10 +12,11 @@ interface AdvanceStringFilter<T extends Model> {
   className?: string;
   onChange?: (T: string) => void;
   onBlur?: (T: string) => void;
+  onEnter?: (T: string) => void;
 }
 
 function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
-  const { value, title, disabled, placeHolder, onChange, onBlur } = props;
+  const { value, title, disabled, placeHolder, onChange, onBlur, onEnter } = props;
 
   const [internalValue, setInternalValue] = React.useState<string>("");
 
@@ -36,25 +37,34 @@ function AdvanceStringFilter(props: AdvanceStringFilter<Model>) {
   const handleClearInput = React.useCallback(
     (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       setInternalValue("");
+      inputRef.current.focus();
       if (typeof onBlur === "function") {
         onBlur(null);
+        return;
       }
-      inputRef.current.focus();
+      if (typeof onEnter === "function") {
+        onEnter(null);
+        return;
+      }
+      if (typeof onChange === "function") {
+        onChange(null);
+        return;
+      }
     },
-    [onBlur],
+    [onBlur, onEnter, onChange],
   );
 
   const handleKeyPress = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (
-        event.keyCode === 13 &&
+        event.key === 'Enter' &&
         // event.currentTarget.value &&
-        typeof onBlur === "function"
+        typeof onEnter === "function"
       ) {
-        onBlur(event.currentTarget.value);
+        onEnter(event.currentTarget.value);
       }
     },
-    [onBlur],
+    [onEnter],
   );
 
   const handleBlur = React.useCallback(

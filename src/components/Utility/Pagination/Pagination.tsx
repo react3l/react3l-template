@@ -1,7 +1,7 @@
+import { Dropdown, Menu, Pagination as AntdPagination } from 'antd';
+import { PaginationProps as AntdPaginationProps } from 'antd/lib/pagination/Pagination';
 import React from 'react';
 import './Pagination.scss';
-import { Pagination as AntdPagination, Dropdown, Menu } from 'antd';
-import { PaginationProps as AntdPaginationProps } from 'antd/lib/pagination/Pagination';
 
 function PreviousIcon() {
   return <div className="pagination__previous-icon">
@@ -38,9 +38,9 @@ function Pagination(props: PaginationProps & AntdPaginationProps) {
 
   const handleMenuClick = React.useCallback((event: any) => {
     const takeValue = Number(event.key);
-    const skipValue = (currentPage - 1) * takeValue;
+    const skipValue = 0;
     onChange(skipValue, takeValue);
-  }, [onChange, currentPage]);
+  }, [onChange]);
 
   const handleChange = React.useCallback((page: number, pageSize: number) => {
     const take = pageSize;

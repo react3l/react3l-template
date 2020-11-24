@@ -1,28 +1,32 @@
-import _ from "lodash";
-import { Moment } from "moment";
-import {
-  Reducer,
-  useCallback,
-  useEffect,
-  useReducer,
-  Dispatch,
-  useMemo,
-  SetStateAction,
-} from "react";
 import {
   DateFilter,
   GuidFilter,
   IdFilter,
   NumberFilter,
-  StringFilter,
+  StringFilter
 } from "@react3l/advanced-filters";
-import { ModelFilter, Model } from "@react3l/react3l/core";
-import { forkJoin, Observable, of } from "rxjs";
-import { finalize, map, tap, take } from "rxjs/operators";
-import nameof from "ts-nameof.macro";
+import { DEFAULT_TAKE } from "@react3l/react3l/config";
+import { Model, ModelFilter } from "@react3l/react3l/core";
 // import subcriptionCancellation from "./SubscriptionService";
 import { commonService } from "@react3l/react3l/services/common-service";
-import { DEFAULT_TAKE } from "@react3l/react3l/config";
+import _ from "lodash";
+import { Moment } from "moment";
+import {
+  Dispatch, Reducer,
+
+
+
+
+
+  SetStateAction, useCallback,
+  useEffect,
+
+
+  useMemo, useReducer
+} from "react";
+import { forkJoin, Observable, of } from "rxjs";
+import { finalize, map, tap } from "rxjs/operators";
+import nameof from "ts-nameof.macro";
 
 type KeyType = string | number;
 
@@ -183,12 +187,13 @@ class ListService {
     const { handleFetchInit, handleFetchEnd } = this.useFetchEffect(dispatch);
 
     const handleLoadList = useCallback(() => {
+      handleFetchInit();
       subscription.add(
         forkJoin([getList(filter), getTotal(filter)])
           .pipe(
-            tap(handleFetchInit),
-            // takeUntil(isCancelled),
-            take(1),
+            //tap(handleFetchInit),
+            //takeUntil(isCancelled),
+            //take(1),
             finalize(handleFetchEnd),
           )
           .subscribe((results: [T[], number]) => {
@@ -348,10 +353,11 @@ class ListService {
 
     useEffect(() => {
       if (loadList && source?.length > 0) {
+        handleFetchInit();
         subscription.add(
           of(source)
             .pipe(
-              tap(handleFetchInit),
+              //tap(handleFetchInit),
               map(doFilter), // sort and filtering data
               finalize(handleFetchEnd),
             )
