@@ -361,9 +361,7 @@ body {
         font-size: 18px;
       }
     }
-    .page__master-table {
-      padding-bottom: 40px;
-      
+    .page__master-table {      
       .ant-card {
         height: 100%;
       }
@@ -535,6 +533,7 @@ body {
     background-color: $error-color !important;
   }
 }
+
 
 /* (1920x1080) Full HD Display */
 @media  screen and (max-width: 1920px) {

@@ -52,11 +52,12 @@
     flex-grow: 1;
     padding: 20px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     overflow-y: auto;
 
     .app-content {
       width: 100%;
+      margin-bottom: 75px;
     }
   }
 

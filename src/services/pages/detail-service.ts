@@ -142,6 +142,7 @@ export class DetailService {
       handleUpdateNewModel,
       handleChangeTreeObjectField,
       loading,
+      handleGoBase,
       handleSave,
       dispatch,
     };

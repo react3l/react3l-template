@@ -1,12 +1,11 @@
-import { SetStateAction, useCallback } from "react";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Dispatch } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
+import { Observable } from "rxjs";
 import tableService, {
   filterContentInList,
   filterContentNotInList,
-  getIdsFromContent,
+  getIdsFromContent
 } from "services/table-service";
-import { Observable } from "rxjs";
 
 export function useContentModal<
   TContent extends Model,
@@ -52,7 +51,9 @@ export function useContentModal<
 
   const handleCloseModal = useCallback(() => {
     handleResetFilter(); // resetFilter to default
-    setMapperList([...content.map((item) => item[mapperField])]); // reset mapperList by content
+    if (content && mapperField) {
+      setMapperList([...content.map((item) => item[mapperField])]); // reset mapperList by content
+    }
     if (typeof onClose === "function") {
       return onClose();
     }
