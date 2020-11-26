@@ -1,8 +1,9 @@
 import Layout from "antd/lib/layout";
 import Menu from "antd/lib/menu";
+import { AppAction, AppActionEnum, AppState, AppStoreContext } from "App";
 import classNames from "classnames";
 import { menu } from "config/menu";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Dispatch, useCallback, useContext, useState } from "react";
 import { useLocation } from "react-router";
 import { RouteConfig } from "react-router-config";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -21,33 +22,24 @@ interface IDefaultSidebarProps extends RouteComponentProps {
 function AppAside(props: IDefaultSidebarProps) {
   const { style, routes, className } = props;
   const { pathname } = useLocation();
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
+  const testOpenKeys = React.useMemo(() => {
+    return  getOpenKeys(routes, pathname);
+  }, [routes, pathname]);
+  const testSelectedKeys = React.useMemo(() => {
+    return [convertPathName(pathname)];
+  }, [pathname]);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
+    AppStoreContext,
+  );
   
   const handleCollapse = useCallback(() => {
     setCollapsed(!collapsed);
-  }, [collapsed]);
-
-  useEffect(() => {
-    const keys = getOpenKeys(routes, pathname);
-    setOpenKeys(keys);
-    setSelectedKeys([convertPathName(pathname)]);
-  }, [pathname, routes]);
-
-  const handleChange = useCallback(
-    (keys: string[]) => {
-      setOpenKeys([...keys]);
-    },
-    [setOpenKeys],
-  );
-
-  const handleSelect = useCallback(
-    ({ selectedKeys }) => {
-      setSelectedKeys([...selectedKeys]);
-    },
-    [setSelectedKeys],
-  );
+    dispatch({
+      type: AppActionEnum.EXTEND_PAGE,
+      extendPageMaster: !state.extendPageMaster,
+    });
+  }, [collapsed, state, dispatch]);
 
   return (
     <>
@@ -84,10 +76,8 @@ function AppAside(props: IDefaultSidebarProps) {
             mode='inline'
             className='aside__default-sidebar'
             inlineIndent={0}
-            selectedKeys={selectedKeys}
-            openKeys={!collapsed ? openKeys : []}
-            onOpenChange={handleChange}
-            onSelect={handleSelect}
+            defaultSelectedKeys={testSelectedKeys}
+            defaultOpenKeys={testOpenKeys}
             theme='light'
           >
             {routes.length > 0 &&

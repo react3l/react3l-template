@@ -26,6 +26,7 @@ export default function useApp() {
       toggleMenu: false,
       displayFooter: false,
       displayOverlay: false,
+      extendPageMaster: false,
       user: undefined,
       isCheckingAuth: true, // default checkAuth
     },
@@ -97,6 +98,7 @@ export default function useApp() {
       displayOverlay: !displayOverlay,
     });
   }, [displayOverlay]); // handle turn off overlay
+  
 
   const handleCloseErrorModal = useCallback(() => {
     dispatch({ type: AppActionEnum.CLOSE_ERROR_MODAL });

@@ -183,17 +183,21 @@ export class DetailService {
 
     const handleOpenDetailModal = useCallback(
       (id: number) => {
-        setLoadingModel(true);
         setIsOpenDetailModal(true);
-        subscription.add(
-          getDetail(id)
-            .pipe(finalize(() => setLoadingModel(false)))
-            .subscribe((item: T) => {
-              handleUpdateNewModel(item);
-            }),
-        );
+        setLoadingModel(true);
+        if (id) {
+          subscription.add(
+            getDetail(id)
+              .pipe(finalize(() => setLoadingModel(false)))
+              .subscribe((item: T) => {
+                handleUpdateNewModel(item);
+              }),
+          );
+        } else {
+          handleUpdateNewModel(new ModelClass());
+        }
       },
-      [getDetail, handleUpdateNewModel, subscription],
+      [getDetail, handleUpdateNewModel, subscription, ModelClass],
     ); // handleOpen detailModal from list
 
     const handleSaveModel = useCallback(() => {

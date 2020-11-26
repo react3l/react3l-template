@@ -1,11 +1,12 @@
-import React from "react";
-import "./Tree.scss";
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import { Tree as TreeAntd } from "antd";
-import { TreeProps as AntdTreeProps, EventDataNode } from "antd/lib/tree";
-import { Observable, ErrorObserver } from "rxjs";
 import { commonService } from "@react3l/react3l/services/common-service";
+import { Tree as TreeAntd } from "antd";
+import { EventDataNode, TreeProps as AntdTreeProps } from "antd/lib/tree";
+import { ASSETS_SVG } from "config/consts";
+import React from "react";
+import { ErrorObserver, Observable } from "rxjs";
 import { commonWebService } from "services/common-web-service";
+import "./Tree.scss";
 import { TreeNode } from "./TreeNode";
 
 function SwitcherIcon() {
@@ -167,7 +168,7 @@ function Tree(props: TreeProps<Model, ModelFilter> & AntdTreeProps) {
       <div className='tree-container'>
         {loading ? (
           <div className='tree__loading'>
-            <img className='img-loading' src='/assets/svg/spinner.svg' alt='' />
+            <img className='img-loading' src={ASSETS_SVG + '/spinner.svg'} alt='' />
           </div>
         ) : (
           <>

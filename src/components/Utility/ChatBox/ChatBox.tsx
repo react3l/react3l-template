@@ -3,6 +3,7 @@ import { commonService } from '@react3l/react3l/services/common-service';
 import { Dropdown } from 'antd';
 import Menu from 'antd/lib/menu';
 import classNames from 'classnames';
+import { ASSETS_SVG } from 'config/consts';
 import moment, { Moment } from 'moment';
 import React, { RefObject } from 'react';
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -47,7 +48,7 @@ const sortList = [
 
 const loading = (
     <div className='chat-box__loading'>
-        <img src="/assets/svg/spinner.svg"  alt='Loading...'/>
+        <img src={ASSETS_SVG + '/spinner.svg'}  alt='Loading...'/>
     </div>
 );
 
@@ -188,19 +189,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
             else return;
         }
     }, [list]);
-
-    const filterOwner = React.useCallback((listMessage: Message[]) => {
-        return listMessage.map((currentItem) => {
-            if (currentItem.creator.id === userInfo.id) {
-                currentItem.isOwner = true;
-            } else {
-                currentItem.isOwner = false;
-            }
-
-            return currentItem;
-        });
-    }, [userInfo]);
-
+    
     const getListMessages = React.useCallback(() => {
         if (getMessages && countMessages) {
             return forkJoin([
@@ -210,16 +199,15 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                 .subscribe(
                     ([list, total]: [Message[], number]) => {
                         if (list && total) {
-                            const listMessage = filterOwner(list);
                             if(filter.skip > 0) {
                                 dispatchList({
                                     action: 'CONCAT',
-                                    data: listMessage.reverse(),
+                                    data: list.reverse(),
                                 });
                             } else {
                                 dispatchList({
                                     action: 'UPDATE',
-                                    data: listMessage.reverse(),
+                                    data: list.reverse(),
                                 });
                             }
                             setTimeout(() => {
@@ -231,7 +219,7 @@ function ChatBox (props: ChatBoxProps<ModelFilter>) {
                 );
         }
         return;
-    }, [filterOwner, getMessages, countMessages, bindEventClick, filter]);
+    }, [getMessages, countMessages, bindEventClick, filter]);
 
     const handleMenuClick = React.useCallback((e: any) => {
         const sortType = sortList.filter((current) => current.type === e.key)[0];

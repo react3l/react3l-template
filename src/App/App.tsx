@@ -37,13 +37,11 @@ function App() {
         </div>
         <div className='right-side column'>
           <div
-            className={classNames("header-wrapper", {
-              "header-wrapper__block": displayOverlay,
-            })}
+            className={classNames("header-wrapper")}
           >
             <AppHeader />
           </div>
-          <main className='body'>
+          <main className={classNames('body', {'body--extended': state.extendPageMaster})}>
             <Switch>{renderRoutes(routes)}</Switch>
           </main>
           <div
@@ -54,7 +52,7 @@ function App() {
         </div>
       </div>
     ),
-    [displayOverlay],
+    [displayOverlay, state],
   );
 
   const modalFooter = useMemo(
@@ -99,7 +97,7 @@ function App() {
 
   return (
     <>
-      {state.isCheckingAuth ? (
+      {false ? (
         <div id='app'>
           <Spin
             indicator={antIcon}

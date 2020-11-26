@@ -87,6 +87,9 @@
           background: linear-gradient(224.53deg, #C3BEEE 0%, #AAA4F0 50%);
           border-radius: 7px;
           color: #ffffff;
+          .ant-menu-submenu-arrow:before, .ant-menu-submenu-arrow:after {
+            background-image: linear-gradient(16deg, #fff, #fff);
+          }
         }
 
         ul {
@@ -94,14 +97,13 @@
         }
       }
 
-      &:not(.ant-menu-submenu-selected):hover {
+      &:not(.ant-menu-submenu-selected):not(.ant-menu-submenu-open):hover {
         background: linear-gradient(224.53deg, #C3BEEE 0%, #AAA4F0 50%);
         border-radius: 7px;
         ul {
           background-color: #FAFAFC;
         }
       }
-
 
     }
   }

@@ -1,14 +1,12 @@
-import React, { Reducer } from "react";
-import InputText from "./InputText";
-import Radio, { RadioChangeEvent } from "antd/lib/radio";
-import {
-  advanceFilterService,
-  advanceFilterReducer,
-  AdvanceFilterAction,
-} from "services/advance-filter-service";
-import { ModelFilter } from "@react3l/react3l/core";
 import { StringFilter } from "@react3l/advanced-filters/StringFilter";
+import { ModelFilter } from "@react3l/react3l/core";
+import Radio, { RadioChangeEvent } from "antd/lib/radio";
 import FormItem, { ValidateStatus } from "components/Utility/FormItem/FormItem";
+import React, { Reducer } from "react";
+import {
+  AdvanceFilterAction, advanceFilterReducer, advanceFilterService
+} from "services/advance-filter-service";
+import InputText from "./InputText";
 
 export class DemoFilter extends ModelFilter {
   name: StringFilter = new StringFilter();
@@ -31,6 +29,12 @@ export function InputTextStories() {
     "startWith",
   );
 
+  const [inputValue, setInputVal] = React.useState();
+
+  const handleChange = React.useCallback((value) => {
+    setInputVal(value);
+  }, []);
+
   const handleChangeStyle = React.useCallback((event: RadioChangeEvent) => {
     setIsMaterial(event.target.value);
     if (event.target.value) {
@@ -44,8 +48,8 @@ export function InputTextStories() {
     <div style={{ width: "250px", margin: "10px", backgroundColor: "#F2F2F2" }}>
       <InputText
         isMaterial={isMaterial}
-        value={value}
-        onChange={setValue}
+        value={inputValue}
+        onChange={handleChange}
         placeHolder={"Enter text..."}
         className={iconName}
       />

@@ -16,6 +16,7 @@ export interface AppState {
   toggleMenu?: boolean;
   displayFooter?: boolean;
   displayOverlay?: boolean;
+  extendPageMaster?: boolean;
   user?: AppUser;
   isCheckingAuth?: boolean;
 }
@@ -35,6 +36,7 @@ export interface AppAction {
   displayOverlay?: boolean;
   user?: AppUser;
   isCheckingAuth?: boolean;
+  extendPageMaster?: boolean;
 }
 
 export enum AppActionEnum {
@@ -48,6 +50,7 @@ export enum AppActionEnum {
   SET_MENU,
   LOG_IN,
   LOG_OUT,
+  EXTEND_PAGE
 }
 
 export function appReducer(state: AppState, action: AppAction): AppState {
@@ -108,6 +111,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         isLoggedIn: false,
         user: undefined,
+      };
+    }
+    case AppActionEnum.EXTEND_PAGE: {
+      return {
+        ...state,
+        extendPageMaster: action.extendPageMaster,
       };
     }
   }
