@@ -3,7 +3,7 @@ import {
   GuidFilter,
   IdFilter,
   NumberFilter,
-  StringFilter
+  StringFilter,
 } from "@react3l/advanced-filters";
 import { DEFAULT_TAKE } from "@react3l/react3l/config";
 import { Model, ModelFilter } from "@react3l/react3l/core";
@@ -12,17 +12,13 @@ import { commonService } from "@react3l/react3l/services/common-service";
 import _ from "lodash";
 import { Moment } from "moment";
 import {
-  Dispatch, Reducer,
-
-
-
-
-
-  SetStateAction, useCallback,
+  Dispatch,
+  Reducer,
+  SetStateAction,
+  useCallback,
   useEffect,
-
-
-  useMemo, useReducer
+  useMemo,
+  useReducer,
 } from "react";
 import { forkJoin, Observable, of } from "rxjs";
 import { finalize, map, tap } from "rxjs/operators";
@@ -352,7 +348,7 @@ class ListService {
     );
 
     useEffect(() => {
-      if (loadList && source?.length > 0) {
+      if (loadList && source) {
         handleFetchInit();
         subscription.add(
           of(source)
@@ -366,7 +362,7 @@ class ListService {
                 type: SET_LIST,
                 payload: {
                   list: results,
-                  total: source?.length ? source?.length : 0,
+                  total: source?.length,
                 },
               });
             }),

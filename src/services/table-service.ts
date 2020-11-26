@@ -477,7 +477,7 @@ export class TableService {
 
     // update mapperList when source changed
     useEffect(() => {
-      if (mapperList?.length > 0) {
+      if (mapperList) {
         setMapperList(mapperList);
       }
     }, [mapperList, setMapperList]);
@@ -549,7 +549,9 @@ export class TableService {
 
     const { list, total, loadingList } = listService.useLocalList(
       filter,
-      typeof contentMapper === "function" ? source.map(contentMapper) : source,
+      typeof contentMapper === "function" && source?.length > 0
+        ? source.map(contentMapper)
+        : source,
       loadList,
       setLoadList,
     ); // list service

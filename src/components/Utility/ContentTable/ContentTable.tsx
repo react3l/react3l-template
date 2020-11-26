@@ -138,7 +138,7 @@ export const ContentTable = React.forwardRef(
                       className='btn component__btn-delete border-less grow-animate-2'
                       onClick={handleLocalBulkDelete} // local bulk Delete onChange
                       disabled={!canBulkDelete} // disabled when selectedList length === 0
-                      style={ {border: "none" , backgroundColor: "unset" } }
+                      style={{ border: "none", backgroundColor: "unset" }}
                     >
                       <i className='tio-delete' />
                     </button>

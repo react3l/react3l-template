@@ -27,6 +27,8 @@ export class DetailService {
   ) {
     const content: TContent[] = useMemo(() => {
       if (model) {
+        if (typeof model[contentField] === "undefined") return null;
+        if (model[contentField]?.length === 0) return [];
         if (model[contentField]?.length > 0) {
           return model[contentField].map((item) => {
             if (typeof item.key !== "undefined") {
@@ -36,7 +38,6 @@ export class DetailService {
           });
         }
       }
-      return [];
     }, [contentField, model]);
 
     const setContent = useCallback(
@@ -231,8 +232,8 @@ export class DetailService {
 
     const handleCloseDetailModal = useCallback(() => {
       setIsOpenDetailModal(false);
-      if(model.id) handleUpdateNewModel({...model});
-        else handleUpdateNewModel({...new ModelClass()});
+      if (model.id) handleUpdateNewModel({ ...model });
+      else handleUpdateNewModel({ ...new ModelClass() });
       if (typeof handleSeach === "function") handleSeach(); // updateList if necessary
     }, [handleSeach, ModelClass, handleUpdateNewModel, model]);
 

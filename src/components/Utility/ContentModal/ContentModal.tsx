@@ -67,6 +67,7 @@ export default function ContentModal<
     rowSelection,
     handleCloseModal,
     handleSaveModal,
+    mapperList,
   } = useContentModal(
     content,
     setContent,
@@ -102,7 +103,7 @@ export default function ContentModal<
       <div className='d-flex justify-content-end'>
         <button
           className='btn btn-sm component__btn-primary mr-2'
-          onClick={handleSaveModal(list)}
+          onClick={handleSaveModal(mapperList)}
         >
           <span>
             <i className='tio-save' /> {translate("general.actions.save")}
@@ -116,7 +117,7 @@ export default function ContentModal<
         </button>
       </div>
     ),
-    [handleCloseModal, handleSaveModal, list],
+    [handleCloseModal, handleSaveModal, mapperList],
   ); // need to migrate to component factory service
 
   const renderModalFilters = useMemo(() => {
