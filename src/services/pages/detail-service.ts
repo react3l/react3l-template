@@ -186,8 +186,8 @@ export class DetailService {
     const handleOpenDetailModal = useCallback(
       (id: number) => {
         setIsOpenDetailModal(true);
-        setLoadingModel(true);
         if (id) {
+          setLoadingModel(true);
           subscription.add(
             getDetail(id)
               .pipe(finalize(() => setLoadingModel(false)))

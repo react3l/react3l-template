@@ -16,8 +16,9 @@
   }
 
   .right-side {
-    flex-grow: 1;
+    flex: 1 1 auto;
     position: relative;
+    width: 80%;
   }
 
   .header__overlay {

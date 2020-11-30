@@ -1,8 +1,8 @@
+import { AppStoreContext } from "App/AppContext";
+import { AppAction, AppActionEnum, AppState } from "App/AppStore";
 import React, { Dispatch, RefObject, useContext } from "react";
 import Avatar, { ConfigProvider } from "react-avatar";
 import { commonWebService } from "services/common-web-service";
-import { AppStoreContext } from "App/AppContext";
-import { AppAction, AppActionEnum, AppState } from "App/AppStore";
 import "./AppHeader.scss";
 function AppHeader() {
   const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
@@ -102,7 +102,6 @@ function AppHeader() {
               <div className='app-header__username'>Administrator</div>
             </div>
             <div className='app-header__avatar mt-3 ml-3 mr-3'>
-              {/* <img className="mr-1 app-header__avatar-img" src="public/assets/img/avatar.jpg" alt="" /> */}
               <ConfigProvider colors={["red", "green", "blue"]}>
                 <Avatar
                   maxInitials={1}

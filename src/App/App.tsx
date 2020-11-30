@@ -41,7 +41,7 @@ function App() {
           >
             <AppHeader />
           </div>
-          <main className={classNames('body', {'body--extended': state.extendPageMaster})}>
+          <main className={classNames('body')}>
             <Switch>{renderRoutes(routes)}</Switch>
           </main>
           <div
@@ -52,7 +52,7 @@ function App() {
         </div>
       </div>
     ),
-    [displayOverlay, state],
+    [displayOverlay],
   );
 
   const modalFooter = useMemo(

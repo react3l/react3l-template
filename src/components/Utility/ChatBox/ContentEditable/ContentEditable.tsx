@@ -1,6 +1,7 @@
 import { StringFilter } from '@react3l/advanced-filters';
 import { ModelFilter } from '@react3l/react3l/core';
 import { Model } from '@react3l/react3l/core/model';
+import { ASSETS_IMAGE } from 'config/consts';
 import React, { forwardRef, MutableRefObject } from 'react';
 import { Observable } from 'rxjs';
 import './ContentEditable.scss';
@@ -178,7 +179,7 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps<ModelFil
                             return <li key={index} className="list-group-item" onClick={selectUser(currentUser)}>{currentUser?.displayName}</li>;
                         })}
                     </ul> :
-                    <img className="img-emty" src="/assets/img/no-data.png"  alt=''/>
+                    <img className="img-emty" src={ASSETS_IMAGE + '/no-data.png'}  alt=''/>
                 }
             </div>
             }

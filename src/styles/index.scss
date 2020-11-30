@@ -537,39 +537,15 @@ body {
 
 /* (1920x1080) Full HD Display */
 @media  screen and (max-width: 1920px) {
-  .page__master-table {
-    max-width: 1625px;
-  }
 
-  .body--extended {
-    .page__master-table {
-      max-width: 1810px;
-    }
-  }
 }
 
 /* (1600x900) HD+ Display */
 @media  screen and (max-width: 1600px) {
-  .page__master-table {
-    max-width: 1315px;
-  }
 
-  .body--extended {
-    .page__master-table {
-      max-width: 1810px;
-    }
-  }
 }
 
 /* (1366x768) HD+ Display */
 @media screen and (max-width: 1366px) {
-  .page__master-table {
-    max-width: 1100px;
-  }
 
-  .body--extended {
-    .page__master-table {
-      max-width: 1260px;
-    }
-  }
 }

@@ -4,7 +4,7 @@ import { Model, ModelFilter } from "@react3l/react3l/core";
 import { debounce } from "@react3l/react3l/helpers";
 import { commonService } from "@react3l/react3l/services/common-service";
 import classNames from "classnames";
-import { ASSETS_SVG } from "config/consts";
+import { ASSETS_IMAGE, ASSETS_SVG } from "config/consts";
 import React, { RefObject } from "react";
 import { ErrorObserver, Observable } from "rxjs";
 import { commonWebService } from "services/common-web-service";
@@ -184,7 +184,7 @@ function Select(props: SelectProps<Model, ModelFilter>) {
                 ) : (
                   <img
                     className='img-emty'
-                    src='/assets/img/no-data.png'
+                    src={ASSETS_IMAGE + '/no-data.png'}
                     alt=''
                   />
                 )}

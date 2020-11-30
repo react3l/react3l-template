@@ -1,9 +1,9 @@
 import Layout from "antd/lib/layout";
 import Menu from "antd/lib/menu";
-import { AppAction, AppActionEnum, AppState, AppStoreContext } from "App";
 import classNames from "classnames";
+import { ASSETS_IMAGE } from "config/consts";
 import { menu } from "config/menu";
-import React, { Dispatch, useCallback, useContext, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useLocation } from "react-router";
 import { RouteConfig } from "react-router-config";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -29,17 +29,10 @@ function AppAside(props: IDefaultSidebarProps) {
     return [convertPathName(pathname)];
   }, [pathname]);
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [state, dispatch] = useContext<[AppState, Dispatch<AppAction>]>(
-    AppStoreContext,
-  );
   
   const handleCollapse = useCallback(() => {
     setCollapsed(!collapsed);
-    dispatch({
-      type: AppActionEnum.EXTEND_PAGE,
-      extendPageMaster: !state.extendPageMaster,
-    });
-  }, [collapsed, state, dispatch]);
+  }, [collapsed]);
 
   return (
     <>
@@ -64,7 +57,7 @@ function AppAside(props: IDefaultSidebarProps) {
           <div className="app-aside__header d-flex justify-content-between">
             <div className='d-flex'>
               <div className='app-aside__logo'>
-                <img src='/assets/img/logo.png' alt='IMG' onClick={() => collapsed ? handleCollapse() : null }/>
+                <img src={ASSETS_IMAGE + '/logo.png'} alt='IMG' onClick={() => collapsed ? handleCollapse() : null }/>
               </div>
               <div className='app-aside__name ml-3'>ePayment</div>
             </div>
