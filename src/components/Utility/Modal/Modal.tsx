@@ -6,7 +6,7 @@ import "./Modal.scss";
 export interface ModalProps extends AntModalProps {
   handleCancel?: () => void;
 
-  handleSave?: () => void;
+  handleSave?: (value?: any) => void;
 
   children?: ReactNode;
 

@@ -1,6 +1,6 @@
-import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
 import { TableColumn } from "core/models/TableColumn";
+import React from "react";
 
 export interface ColumnData {
   title?: string;
@@ -17,19 +17,22 @@ export interface ColumnData {
 
 export const tableColumnFactory = {
   renderSimpleValue(value: string | number | object): JSX.Element {
-    if (typeof value === "string") {
-      return <div className='text-left'>{value}</div>;
-    }
-    if (typeof value === "number") {
-      return <div className='text-right'>{value}</div>;
-    }
-    if (typeof value === "object") {
-      if (value.hasOwnProperty("name")) {
-        return <div className='text-left'>{value["name"]}</div>;
+    if (value) {
+      if (typeof value === "string") {
+        return <div className='text-left'>{value}</div>;
       }
-      return <div className='text-left'>{value["displayName"]}</div>;
+      if (typeof value === "number") {
+        return <div className='text-right'>{value}</div>;
+      }
+      if (typeof value === "object") {
+        if (value.hasOwnProperty("name")) {
+          return <div className='text-left'>{value["name"]}</div>;
+        }
+        return <div className='text-left'>{value["displayName"]}</div>;
+      }
+    } else {
+      return null;
     }
-    return <>value</>;
   },
 
   renderColumn(columnData: ColumnData): TableColumn {

@@ -1,0 +1,56 @@
+@import "../../../../../../styles/mixins";
+.cropped-modal__container {
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    
+    .cropped-modal__content {
+        display: flex;
+        width: 60%;
+        flex-direction: column;
+
+        .cropped-modal__upper {
+            display: flex;
+            flex-direction: row;
+            
+            .cropped-modal__image {
+                display: block;
+                width: 300px;
+            }
+            .cropped-modal__action {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                margin-left: 20px;
+            }
+        }
+
+        .cropped-modal__list {
+            display: flex;
+            height: 100%;
+            overflow-x: auto;
+            min-width: 300px;
+
+            .cropped-modal__image {
+                border-radius: 8px;
+                width: 150px;
+                height: 150px;
+                img {
+                    cursor: pointer;
+                    width: inherit;
+                    height: 100%;
+                }
+            }
+
+            .cropped-modal__image:not(:first-child) {
+                margin-left: 20px;
+            }
+        }
+    }
+
+    .cropped-modal_result {
+        display: block;
+        min-width: 300px;
+        margin-left: 20px;
+    }
+}
