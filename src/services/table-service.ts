@@ -1,3 +1,4 @@
+import React from "react";
 import { DEFAULT_TAKE } from "@react3l/react3l/config";
 import { Model, ModelFilter } from "@react3l/react3l/core";
 import { Modal } from "antd";
@@ -175,7 +176,7 @@ export class TableService {
   } {
     const selectedRowKeys: KeyType[] = useMemo(() => {
       return selectedList.length > 0
-        ? selectedList.map((t: T) => (t.id ? t.id : t.key))
+        ? selectedList.map((t: T) => (t?.id ? t?.id : t?.key))
         : [];
     }, [selectedList]); // selectedRowKeys accept both string and number for local and server table
 
@@ -186,6 +187,7 @@ export class TableService {
     return {
       rowSelection: useMemo(
         () => ({
+          preserveSelectedRowKeys: true,
           onSelect: (record: T, selected: boolean) => {
             if (selected) {
               selectedList.push(record);
@@ -199,29 +201,25 @@ export class TableService {
             }
           }, // single selection
           onChange: (...[selectedRowKeys, selectedRows]) => {
-            // if list empty, add all selectedRows to list
             if (selectedList?.length === 0) {
               setSelectedList([...selectedRows]);
               return;
-            }
-            // create mapper from filter
-            const mapper: Record<any, number> = {};
-            selectedRowKeys.forEach((key: string | number, index: number) => {
-              mapper[key] = index;
+            } // if list empty, add all selectedRows to list
+            const mapper: Record<any, number> = {}; // create mapper from filter
+            selectedRowKeys.forEach((key: string | number) => {
+              mapper[key] = 0;
             });
-            // filter List which contained in mapper
-            const mergeList = [...selectedList, ...selectedRows]; // merge old list with new selectedRows
-            const filterList = mergeList
-              .filter(
-                (item, index) =>
-                  mergeList
-                    .map((i) => (i.id ? i.id : i.key))
-                    .indexOf(item.id ? item.id : item.key) === index,
-              ) // remove duplicates item
-              .filter((item) => {
-                const key = typeof item.id !== "undefined" ? item.id : item.key;
-                return mapper.hasOwnProperty(key);
-              }); // filter item which its key contained in selectedRowKeys
+            const mergeList = [...selectedList, ...selectedRows].filter(
+              (item) => typeof item !== "undefined",
+            ); // merge old list with new selectedRows
+            const filterList = [];
+            mergeList.forEach((item) => {
+              const itemId = typeof item?.id !== undefined ? item.id : item.key;
+              if (mapper.hasOwnProperty(itemId) && mapper[itemId] === 0) {
+                filterList.push(item);
+                mapper[itemId] = mapper[itemId] + 1;
+              }
+            }); // filter item which its key contained in selectedRowKeys
             setSelectedList([...filterList]);
           }, // multi selection
           getCheckboxProps: () => ({
@@ -262,6 +260,7 @@ export class TableService {
       [filter.skip, filter.take, total],
     );
   }
+
   /**
    *
    * return handleTableChange
@@ -616,10 +615,11 @@ export class TableService {
     }, [mappingList, resetTableFilter, setSource, source]); //  handle bulk delete by keys
 
     const handleChangeOneCell = useCallback(
-      (key: string, field: keyof T) => (value: T[keyof T]) => {
+      (key: string, field: keyof T) => (value: T[keyof T], object) => {
         const index = source.findIndex((item) => item.key === key);
-        if (index > 0) {
-          source[index][field] = value;
+        if (index !== -1) {
+          source[index][`${field}Id` as keyof T] = value;
+          if (typeof object === "object") source[index][field] = object;
         }
         setSource(source);
         resetTableFilter();
@@ -638,8 +638,11 @@ export class TableService {
     );
 
     const handleAddContent = useCallback(() => {
-      setSource([...source, new ContentClass()]);
-    }, [ContentClass, setSource, source]); // add Content
+      source?.length > 0
+        ? setSource([...source, new ContentClass()])
+        : setSource([new ContentClass()]);
+      setLoadList(true);
+    }, [ContentClass, setLoadList, setSource, source]); // add Content
 
     return {
       list,
