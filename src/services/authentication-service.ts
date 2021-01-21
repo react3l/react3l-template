@@ -1,5 +1,5 @@
 import { Repository } from "@react3l/react3l/core";
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { LOGIN_ROUTE } from "config/route-consts";
 import * as Cookie from "js-cookie";
 import { AppUser } from "models/AppUser";
