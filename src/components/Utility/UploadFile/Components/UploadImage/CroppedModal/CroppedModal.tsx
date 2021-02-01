@@ -3,6 +3,7 @@ import Modal, { ModalProps } from 'components/Utility/Modal/Modal';
 import React, { Reducer } from 'react';
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+import { commonWebService } from 'services/common-web-service';
 import { ImageFile } from '../UploadImage';
 import "./CroppedModal.scss";
 
@@ -56,7 +57,7 @@ export default function CroppedModal (props: CroppedModalProps) {
 
     const imgRef = React.useRef(null);
 
-    const [crop, setCrop] = React.useState<any>(defaultCrop);
+    const [crop, setCrop] = commonWebService.useStateCallback(defaultCrop);
 
     const [imageResults, dispatch] = React.useReducer<Reducer<ImageResult[], ImageAction>>(imageReducer, []);
     
@@ -99,11 +100,12 @@ export default function CroppedModal (props: CroppedModalProps) {
         });
     }, []);
 
-    const makeCropImage = React.useCallback(async () => {
+    const makeCropImage = React.useCallback(async (_, cropParam?: any) => {
         if (imgRef && crop.width && crop.height) {
+            const cropValue = cropParam ? cropParam : crop;
             const croppedImage = await getCroppedImg(
                 imgRef.current,
-                crop,
+                cropValue,
                 selectedImage.file.name
             );
 
@@ -143,11 +145,14 @@ export default function CroppedModal (props: CroppedModalProps) {
                 height: newImage.height,
                 x: 0,
                 y: 0
+            }, function(state){
+                if(state) {
+                    makeCropImage(null, state);
+                }
             });
-            makeCropImage();
         };
         newImage.src = selectedImage.fileUrl as string;
-    }, [selectedImage, makeCropImage]);
+    }, [selectedImage, setCrop, makeCropImage]);
 
     const handleSelect = React.useCallback((itemKey: string | number) => {
         setSelectedImage(listImage[itemKey]); 
@@ -166,13 +171,14 @@ export default function CroppedModal (props: CroppedModalProps) {
                 width: 30
             });
         }
-    }, []);
+    }, [setCrop]);
 
     const handleSaveModal = React.useCallback(() => {
         handleSave(imageResults);
     }, [handleSave, imageResults]);
 
     const handleCancelModal = React.useCallback(() => {
+        setSelectedImage(null);
         handleCancel();
     }, [handleCancel]);
 
@@ -217,16 +223,16 @@ export default function CroppedModal (props: CroppedModalProps) {
                                 </Select>
                             </div>
                         </div>
-                            <div className="cropped-modal__list">
-                                {   listImage.map((currentImage, index) => {
-                                        return <div className="cropped-modal__image" 
-                                                    key={index} 
-                                                    onClick={() => {handleSelect(index);}}>
-                                            <img src={currentImage.fileUrl as string} alt="IMG"></img>
-                                        </div>;
-                                    })
-                                }
-                            </div>
+                        <div className="cropped-modal__list">
+                            {   listImage.map((currentImage, index) => {
+                                    return <div className="cropped-modal__image" 
+                                                key={index} 
+                                                onClick={() => {handleSelect(index);}}>
+                                        <img src={currentImage.fileUrl as string} alt="IMG"></img>
+                                    </div>;
+                                })
+                            }
+                        </div>
                     </div>
                     <div className="cropped-modal_result">
                         {imageResults.map((currentImage, index) => {

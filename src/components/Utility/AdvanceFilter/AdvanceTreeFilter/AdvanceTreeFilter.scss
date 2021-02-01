@@ -1,0 +1,17 @@
+/* Style for TreeSelect.tsx */
+.advance-tree-filter__container {
+    width: 100%;
+  
+    position: relative;
+  
+    .advance-tree-filter__input {
+      width: 100%;
+    }
+  
+    .advance-tree-filter__list {
+      width: 100%;
+      margin-top: 5px;
+      position: absolute;
+      z-index: 999;
+    }
+}

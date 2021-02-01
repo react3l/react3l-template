@@ -102,6 +102,7 @@
     "react-animated-css": "^1.2.1",
     "react-avatar": "^3.9.7",
     "react-dom": "^16.13.1",
+    "react-dropzone": "^11.2.4",
     "react-horizontal-scrolling-menu": "^0.7.8",
     "react-i18next": "^11.7.2",
     "react-image-crop": "^8.6.6",

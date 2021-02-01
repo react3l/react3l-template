@@ -1,79 +1,53 @@
-import {
-    UploadyContext,
-    useBatchAddListener,
-    useBatchCancelledListener,
-    useBatchFinishListener,
-    useBatchProgressListener,
-    useBatchStartListener,
-    useItemAbortListener,
-    useItemErrorListener,
-    useItemFinalizeListener,
-    useItemStartListener
-} from '@rpldy/uploady';
-import React from 'react';
+import { Model, ModelFilter } from '@react3l/react3l/core';
+import React, { RefObject } from 'react';
+import { UploadFileProps } from '../../UploadFile';
 import "./UploadButton.scss";
 
-export interface UploadButtonButtonProps {
+export interface UploadButtonButtonProps extends UploadFileProps <Model, ModelFilter> {
     isMultiple: boolean;
+    uploadContent: string;
 };
 
 export function UploadButton(props: UploadButtonButtonProps) {
     const {
-        isMultiple
+        isMultiple,
+        uploadContent,
+        files,
+        updateList
     } = props;
-    const uploady = React.useContext(UploadyContext);
-    const [fileInfo, setFileInfo] = React.useState(null);
 
-    useBatchAddListener ((batch) => {
-        if (batch) {
-            if (isMultiple) {
-                batch.items.forEach((currentBatch, index) => {
+    const fileRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>();
 
-                });
-            } else {
-                setFileInfo(batch.items[0].file);
-            }
+    const handleClickButton = React.useCallback(() => {
+        fileRef.current.click();
+    }, []);
+
+    const handleChangeFile = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            updateList(files);
         }
-        setFileInfo(batch.items[0].file);
-    });
-
-    useBatchStartListener((batch) => {
-        if (batch) {
-            
-        }
-    });
-
-    useBatchProgressListener((batch) => {
-    });
-
-    useBatchFinishListener((batch) => {
-    });
-
-    useBatchCancelledListener((batch) => {
-    });
-
-    useItemStartListener((item) => {
-    });
-
-    useItemErrorListener((item) => {  
-    });
-
-    useItemAbortListener((item) => {  
-    });
-
-    useItemFinalizeListener((item) => {  
-    });
-
-    const onClick = React.useCallback( () => {
-            uploady.showFileUpload();
-    }, [uploady]);
+    }, [updateList]);
 
     return <div className="upload-button__container">
-            <button onClick={onClick}>Custom Upload Button</button>
-            <div>{fileInfo?.name}</div>
+            <button onClick={handleClickButton} className="upload-button__button">{uploadContent}</button>
+            <input type="file" style={{display: 'none'}} multiple={isMultiple} ref={fileRef} onChange={handleChangeFile}/>
+            <div className="upload-button__list-file">
+                {
+                    files && files.length > 0 &&
+                    files.map((file) => <>
+                        <div className="file-container">
+                            {file.name}
+                            <i className="file-container__icon tio-clear"></i>
+                        </div>
+                    </>)
+                }
+            </div>
     </div>;
 };
 
 UploadButton.defaultProps = {
     isMultiple: true,
+    uploadContent: 'Upload',
+    files: []
 };

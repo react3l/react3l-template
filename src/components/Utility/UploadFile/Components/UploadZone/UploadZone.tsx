@@ -1,11 +1,3 @@
-import {
-    UploadyContext,
-    useBatchAddListener,
-    useBatchCancelledListener,
-    useBatchFinishListener,
-    useBatchProgressListener,
-    useBatchStartListener
-} from '@rpldy/uploady';
 import React from 'react';
 import "./UploadZone.scss";
 
@@ -15,34 +7,15 @@ export interface UploadZoneProps {
 
 export function UploadZone(props: UploadZoneProps) {
     
-    const uploady = React.useContext(UploadyContext);
-
-    useBatchAddListener ((batch) => {
-        
-    });
-
-    useBatchStartListener((batch) => {
-          
-    });
-
-    useBatchProgressListener((batch) => {
-          
-    });
-
-    useBatchFinishListener((batch) => {
-          
-    });
-
-    useBatchCancelledListener((batch) => {
-          
-    });
-
-    useBatchStartListener((batch) => {
-
-    });
-    
     return <div className="upload-zone__container">
-        
+        <div className="upload-zone__wrapper">
+            <div className="upload-zone__drag">
+                    
+            </div>
+            <div className="upload-zone__list">
+
+            </div>
+        </div>
     </div>;
 };
 

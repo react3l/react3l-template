@@ -1,9 +1,7 @@
-import { RefObject } from "react";
-import React from "react";
 import { Model } from "@react3l/react3l/core";
-import { Moment } from "moment";
-import moment from "moment";
 import { TreeNode } from "components/Utility/Tree/TreeNode";
+import moment, { Moment } from "moment";
+import React, { RefObject } from "react";
 
 export const commonWebService = {
   useClickOutside(ref: RefObject<any>, callback: () => void) {
@@ -76,4 +74,24 @@ export const commonWebService = {
     }
     return input;
   },
+
+  useStateCallback(initialState: any) {
+    const [state, setState] = React.useState(initialState);
+    const cbRef = React.useRef(null);
+  
+    const setStateCallback = React.useCallback((state, cb) => {
+      cbRef.current = cb;
+      setState(state);
+    }, []);
+  
+    React.useEffect(() => {
+      if (cbRef.current) {
+        cbRef.current(state);
+        cbRef.current = null; 
+      }
+    }, [state]);
+  
+    return [state, setStateCallback];
+  }
+
 };

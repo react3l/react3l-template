@@ -1,35 +1,14 @@
 import { Model, ModelFilter } from "@react3l/react3l/core";
-import {
-    Batch,
-    BatchItem
-} from "@rpldy/shared/types";
-import UploadDropZone from "@rpldy/upload-drop-zone";
-import {
-    UploadyContext,
-    useBatchAddListener,
-    useBatchCancelledListener,
-    useBatchFinishListener,
-    useBatchProgressListener,
-    useBatchStartListener,
-    useItemAbortListener,
-    useItemErrorListener,
-    useItemFinalizeListener,
-    useItemFinishListener,
-    useItemStartListener
-} from "@rpldy/uploady";
 import { ASSETS_SVG } from "config/consts";
-import React, { Reducer } from 'react';
+import React, { Reducer, RefObject } from 'react';
+import { useDropzone } from "react-dropzone";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import { UploadFileProps } from "../../UploadFile";
 import CroppedModal from "./CroppedModal/CroppedModal";
 import './UploadImage.scss';
 import { ArrowLeft, ArrowRight, Menu } from "./UploadImageComponents";
 
-const menu = Menu([
-    {imageUrl: "/assets/img/demoImage1.png", isDelete: true},
-    {imageUrl: "/assets/img/demoImage2.png", isDelete: true},
-    {imageUrl: "/assets/img/demoImage1.png", isDelete: true},
-]);
+
 
 export interface ImageFile {
     fileId: string | number;
@@ -39,13 +18,31 @@ export interface ImageFile {
 
 interface ImageAction {
     type: string;
-    data: ImageFile;
+    data?: ImageFile;
 }
 
 const imageReducer = (state: ImageFile[], action: ImageAction): ImageFile[] => {
     switch(action.type) {
         case 'UPDATE':
             return [...state, action.data];
+        case 'RESET':
+            return [];
+        default:
+            return [...state];
+    }
+};
+interface FileAction {
+    type: string;
+    data?: JSX.Element;
+    datas?: JSX.Element[];
+}
+
+const fileReducer = (state: JSX.Element[], action: FileAction): JSX.Element[] => {
+    switch(action.type) {
+        case 'UPDATE':
+            return [...state, action.data];
+        case 'BULK_UPDATE':
+            return [...action.datas];
         default:
             return [...state];
     }
@@ -57,21 +54,23 @@ export interface UploadImageProps extends UploadFileProps<Model, ModelFilter> {
 
 export function UploadImage(props: UploadImageProps) {
     const {
-        isMultiple,
-        getListFile
+        files,
+        getListFile,
     } = props;
-    const uploady = React.useContext(UploadyContext);
+
+    const fileRef: RefObject<HTMLInputElement> = React.useRef<HTMLInputElement>();
+
+    const [menuFile, dispatchMenuFile] = React.useReducer<Reducer<JSX.Element[], FileAction>>(fileReducer, []);
 
     const [listImage, dispatch] = React.useReducer<Reducer<ImageFile[], ImageAction>>(imageReducer, []);
 
     const [isPreview, setIsPreview] = React.useState<boolean>();
 
-    const removeImage = React.useCallback((file) => {
-
-    }, []);
-
     const handleClosePreview = React.useCallback(() => {
         setIsPreview(false);
+        dispatch({
+            type: 'RESET'
+        });
     }, []);
 
     const handleSaveCropped = React.useCallback((imageCroppedList: any[]) => {
@@ -82,80 +81,61 @@ export function UploadImage(props: UploadImageProps) {
         }
     }, []);
 
+    const onDrop = React.useCallback(acceptedFiles => {
+        const listFiles = acceptedFiles as File[];
+        listFiles.forEach(file => {
+            const fileReader = new FileReader();
+            fileReader.onloadend = () => {
+                dispatch({
+                    type: 'UPDATE',
+                    data: {
+                        fileId: file.name,
+                        file: file,
+                        fileUrl: fileReader.result
+                    }
+                });
+            };
+            if (file) {
+                fileReader.readAsDataURL(file);
+            }
+        });
+        setIsPreview(true);
+    }, []);
+
+    const {getRootProps, getInputProps} = useDropzone({onDrop});
+
     React.useEffect(() => {
         if(typeof getListFile === 'function') {
             getListFile().subscribe((res) => {
             }, (err) => {
             });
-        }
-    }, []);
-
-    useBatchAddListener ((batch: Batch) => {
-        if (batch && batch.items) {
-            batch.items.forEach((currentItem) => {
-                const fileReader = new FileReader();
-                fileReader.onloadend = () => {
-                    dispatch({
-                        type: 'UPDATE',
-                        data: {
-                            fileId: currentItem.id,
-                            file: currentItem.file as File,
-                            fileUrl: fileReader.result
-                        }
-                    });
+        } else {
+            files.forEach((file) => {
+                file.clearAction = function() {
+                    
                 };
-                const file = currentItem.file as File;
-                if (file) {
-                    fileReader.readAsDataURL(file);
-                }
             });
-            setIsPreview(true);
+            const menus = Menu(files);
+            dispatchMenuFile({
+                type: 'BULK_UPDATE',
+                datas: menus
+            });
         }
-    });
-
-    useBatchStartListener((batch: Batch) => {
-    });
-
-    useBatchProgressListener((batch: Batch) => {
-    });
-
-    useBatchFinishListener((batch: Batch) => {
-    });
-
-    useBatchCancelledListener((batch: Batch) => {
-    });
-
-    useItemStartListener((item: BatchItem) => {
-    });
-
-    useItemFinishListener((item: BatchItem) => {
-    });
-
-    useItemErrorListener((item: BatchItem) => {  
-    });
-
-    useItemAbortListener((item: BatchItem) => {  
-    });
-
-    useItemFinalizeListener((item: BatchItem) => {  
-    });
-
-    const onClick = React.useCallback( () => {
-        uploady.showFileUpload();
-    }, [uploady]);
+    }, [getListFile, files]);
 
     return <>
         <div className="upload-image__container">
-            <UploadDropZone onDragOverClassName="drag-over">
-                <div className="upload-image__drop-zone" onClick={onClick}>
+            <div className="upload-image__drop-zone">
+                <div className="upload-image__drop-zone-inside" {...getRootProps()}>
                     <img src={ASSETS_SVG + '/upload.svg'} alt="icon"></img>
                     <p>Drag&Drop File(s) Here</p>
-                </div>           
-            </UploadDropZone>
+                    <input type="file" ref={fileRef} style={{display: 'none'}} {...getInputProps()}/>
+                </div>
+            </div>
             <div className="upload-image__list">
                 <ScrollMenu
                     alignCenter={false}
-                    data={menu}
+                    data={menuFile}
                     arrowLeft={ArrowLeft}
                     arrowRight={ArrowRight}
                     />
