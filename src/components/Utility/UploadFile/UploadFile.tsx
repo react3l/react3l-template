@@ -20,9 +20,9 @@ export interface FileModel {
 }
 
 export enum UPLOADTYPE {
-    BUTTON,
-    ZONE,
-    IMAGE
+  BUTTON,
+  ZONE,
+  IMAGE,
 }
 
 export interface UploadFileProps <T extends Model, TModelFilter extends ModelFilter> {
@@ -60,10 +60,9 @@ function UploadFile (props: UploadFileProps<Model, ModelFilter>) {
 }
 
 UploadFile.defaultProps = {
-    type: UPLOADTYPE.IMAGE,
-    isMultiple: true,
-    autoUpload: false
+  type: UPLOADTYPE.IMAGE,
+  isMultiple: true,
+  autoUpload: false,
 };
-
 
 export default UploadFile;
