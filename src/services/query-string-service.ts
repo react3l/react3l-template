@@ -20,7 +20,7 @@ function isStringNumber(stringValue: string) {
 export const queryStringService = {
   useQueryString<TFilter extends ModelFilter>(
     ClassFilter: new () => TFilter,
-  ): [TFilter, (action: AdvanceFilterAction<TFilter, Filter>) => void] {
+  ): [TFilter, React.Dispatch<AdvanceFilterAction<TFilter, Filter>>] {
     const history = useHistory();
 
     const firstUpdate = useRef(true);

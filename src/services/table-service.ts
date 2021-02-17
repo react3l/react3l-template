@@ -325,53 +325,12 @@ export class TableService {
    * */
   useTable<T extends Model, TFilter extends ModelFilter>(
     filter: TFilter,
-    setFilter: (filter: TFilter) => void, // from TFilter to TFilter
-    loadList, // control external loadList
-    setLoadList, // setControl ...
-    handleSearch, // trigger search
-    getList: (filter: TFilter) => Observable<T[]>,
-    getTotal: (filter: TFilter) => Observable<number>,
-    deleteItem?: (t: T) => Observable<T>,
-    bulkDeleteItems?: (t: KeyType[]) => Observable<void>,
-    onUpdateListSuccess?: (item?: T) => void,
-    checkBoxType?: RowSelectionType,
-    derivedRowKeys?: KeyType[],
+    setFilter: (filter: TFilter) => void,
+    handleSearch,
+    selectedRowKeys,
+    onServerDelete,
+    onServerBulkDelete
   ) {
-    // selectedRowKeys
-    const {
-      rowSelection,
-      selectedRowKeys,
-      setSelectedRowKeys,
-      canBulkDelete,
-    } = this.useRowSelection(checkBoxType, derivedRowKeys);
-
-    // from filter and source we calculate dataSource, total and loadingList
-    const {
-      list,
-      total,
-      loadingList,
-      handleDelete: onServerDelete,
-      handleBulkDelete: onServerBulkDelete,
-    } = listService.useList(
-      filter,
-      setFilter,
-      loadList,
-      setLoadList,
-      handleSearch,
-      getList,
-      getTotal,
-      deleteItem,
-      bulkDeleteItems,
-      selectedRowKeys as number[],
-      setSelectedRowKeys,
-      onUpdateListSuccess,
-    );
-
-    // calculate pagination
-    const pagination: PaginationProps = this.usePagination<TFilter>(
-      filter,
-      total,
-    );
 
     // handleChange page or sorter
     const { handleTableChange, handlePagination } = this.useTableChange<
@@ -405,17 +364,10 @@ export class TableService {
     }, [onServerBulkDelete, selectedRowKeys]);
 
     return {
-      list,
-      total,
-      loadingList,
-      pagination,
       handleTableChange,
       handlePagination,
       handleServerDelete,
-      handleServerBulkDelete,
-      rowSelection,
-      handleSearch,
-      canBulkDelete,
+      handleServerBulkDelete
     };
   }
 

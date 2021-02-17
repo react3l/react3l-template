@@ -1,14 +1,47 @@
+import { Filter } from "@react3l/advanced-filters/Filter";
 import { Model, ModelFilter } from "@react3l/react3l/core";
+import { PaginationProps } from "antd/lib/pagination";
+import { RowSelectionType } from "antd/lib/table/interface";
+import { AxiosResponse } from "axios";
 import React, { useCallback, useRef, useState } from "react";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
-import { advanceFilterService } from "services/advance-filter-service";
+import { AdvanceFilterAction, advanceFilterService } from "services/advance-filter-service";
 import { importExportDataService } from "services/import-export-data-service";
+import listService from "services/list-service";
 import { queryStringService } from "services/query-string-service";
 import { routerService } from "services/route-service";
 import tableService from "services/table-service";
 
 type KeyType = string | number;
+
+export interface UseMaster {
+  list?: Model[]
+  total?: number,
+  loadingList?: boolean,
+  filter?: ModelFilter,
+  toggle?: boolean,
+  handleChangeFilter?: (...pram: any) => (value: any) => void,
+  handleResetFilter?: () => void,
+  handleGoCreate?: () => void,
+  handleGoDetail?: (id: any) => () => void,
+  handleToggleSearch?: () => void,
+  handleTableChange?: (param: any) => void,
+  handlePagination?: (skip: number, take: number) => void,
+  handleServerDelete?: (param: Model) => void,
+  handleServerBulkDelete?: () => void,
+  handleSearch?: () => void,
+  handleImportList?: (onImport: (file: File) => Observable<void>) => (event: React.ChangeEvent<HTMLInputElement>) => void,
+  handleListExport?: (filter: ModelFilter, onExport: (filter: ModelFilter<any>) => Observable<AxiosResponse<any>>) => () => void,
+  handleExportTemplateList?: (onExport: () => Observable<AxiosResponse<any>>) => () => void,
+  importButtonRef?: React.RefObject<HTMLInputElement>,
+  rowSelection?: {
+    onChange(selectedRowKeys: KeyType[]): void;
+    type: RowSelectionType;
+  },
+  canBulkDelete?: boolean,
+  pagination?: PaginationProps
+}
 
 export class MasterService {
   /**
@@ -65,7 +98,7 @@ export class MasterService {
     bulkDeleteItems?: (t: KeyType[]) => Observable<void>,
     onUpdateListSuccess?: (item?: T) => void,
     onImportSuccess?: (list: T[]) => void,
-  ) {
+  ): UseMaster {
     //   service to navigating create or detail
     const [handleGoCreate, handleGoDetail] = routerService.useMasterNavigation(
       routePrefix, // should replace to pricelist detail route base on rbac
@@ -97,17 +130,19 @@ export class MasterService {
     );
 
     const {
+      rowSelection,
+      selectedRowKeys,
+      setSelectedRowKeys,
+      canBulkDelete,
+    } = tableService.useRowSelection();
+    
+    const {
       list,
       total,
       loadingList,
-      pagination, // actually need if we use ant table default pagination
-      handleTableChange, // expose table sorter
-      handlePagination, // expose table pagination
-      handleServerDelete,
-      handleServerBulkDelete,
-      rowSelection,
-      canBulkDelete,
-    } = tableService.useTable<T, TFilter>(
+      handleDelete: onServerDelete,
+      handleBulkDelete: onServerBulkDelete,
+    } = listService.useList(
       filter,
       handleUpdateNewFilter,
       loadList,
@@ -117,7 +152,28 @@ export class MasterService {
       getTotal,
       deleteItem,
       bulkDeleteItems,
+      selectedRowKeys as number[],
+      setSelectedRowKeys,
       onUpdateListSuccess,
+    );
+
+    const pagination: PaginationProps = tableService.usePagination<TFilter>(
+      filter,
+      total,
+    );
+
+    const {
+      handleTableChange,
+      handlePagination,
+      handleServerDelete,
+      handleServerBulkDelete
+    } = tableService.useTable<T, TFilter>(
+      filter,
+      handleUpdateNewFilter,
+      handleSearch,
+      selectedRowKeys,
+      onServerDelete,
+      onServerBulkDelete
     );
 
     const {
@@ -136,7 +192,6 @@ export class MasterService {
       loadingList,
       filter,
       toggle,
-      dispatch,
       handleChangeFilter,
       handleResetFilter,
       handleGoCreate,
