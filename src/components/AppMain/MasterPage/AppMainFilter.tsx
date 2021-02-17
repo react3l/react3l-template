@@ -4,6 +4,7 @@ import { TFunction } from 'i18next';
 import { Animate } from "react-show";
 import React, { ReactNode } from 'react';
 import { UseMaster } from 'services/pages/master-service';
+import classNames from 'classnames';
 
 export interface AppMainFilterProps extends UseMaster {
     translate: TFunction,

@@ -1,4 +1,5 @@
 import { Model, Repository } from '@react3l/react3l/core';
+import nameof from "ts-nameof.macro";
 import { Card, Table, Tooltip } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import Pagination from 'components/Utility/Pagination/Pagination';
