@@ -7,13 +7,13 @@ import { TFunction } from 'i18next';
 import React from 'react';
 import { UseMaster } from 'services/pages/master-service';
 
-export interface AppMainTableProps extends UseMaster {
+export interface AppMainMasterTableProps extends UseMaster {
     columns?: ColumnProps<Model>[],
     translate?: TFunction,
     repository?: any 
 };
 
-export function AppMainTable (props: AppMainTableProps) {
+export function AppMainMasterTable (props: AppMainMasterTableProps) {
     const {
         list,
         columns,

@@ -22,10 +22,10 @@ interface IDefaultSidebarProps extends RouteComponentProps {
 function AppAside(props: IDefaultSidebarProps) {
   const { style, routes, className } = props;
   const { pathname } = useLocation();
-  const testOpenKeys = React.useMemo(() => {
+  const openKeys = React.useMemo(() => {
     return  getOpenKeys(routes, pathname);
   }, [routes, pathname]);
-  const testSelectedKeys = React.useMemo(() => {
+  const selectedKeys = React.useMemo(() => {
     return [convertPathName(pathname)];
   }, [pathname]);
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -69,8 +69,8 @@ function AppAside(props: IDefaultSidebarProps) {
             mode='inline'
             className='aside__default-sidebar'
             inlineIndent={0}
-            defaultSelectedKeys={testSelectedKeys}
-            defaultOpenKeys={testOpenKeys}
+            defaultSelectedKeys={selectedKeys}
+            defaultOpenKeys={openKeys}
             theme='light'
           >
             {routes.length > 0 &&

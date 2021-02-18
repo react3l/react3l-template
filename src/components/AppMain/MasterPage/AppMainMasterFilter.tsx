@@ -6,12 +6,12 @@ import React, { ReactNode } from 'react';
 import { UseMaster } from 'services/pages/master-service';
 import classNames from 'classnames';
 
-export interface AppMainFilterProps extends UseMaster {
+export interface AppMainMasterFilterProps extends UseMaster {
     translate: TFunction,
     children: ReactNode
 };
 
-export function AppMainFilter (props: AppMainFilterProps) {
+export function AppMainMasterFilter (props: AppMainMasterFilterProps) {
     const {
         toggle,
         translate,

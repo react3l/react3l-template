@@ -19,21 +19,21 @@ function AsideMenu(props: IDefaultSidebarProps) {
   return (
     <>
       {
-        props.item.notTitle ?
-        <div className="menu-title">{translate(props.item.name)}</div> :
+        item.notTitle ?
+        <div className="menu-title">{translate(item.name)}</div> :
         <>
           {
-            props.item.children ?
+            item.children ?
             <SubMenu
-              key={props.item.key ? props.item.key : uuidv4()}
+              key={item.key ? item.key : uuidv4()}
               title={
                 <>
-                  {props.item.icon && <i className={classNames("icon-fontsize", props.item.icon)} />}
-                  <span className="ml-2">{translate(props.item.name)}</span>
+                  {item.icon && <i className={classNames("icon-fontsize", item.icon)} />}
+                  <span className="ml-2">{translate(item.name)}</span>
                 </>
               }
               {...rest}>
-                {props.item.children.map((subItem: RouteConfig) => (
+                {item.children.map((subItem: RouteConfig) => (
                   subItem.children ? 
                   <>
                     <SubMenu
@@ -67,10 +67,10 @@ function AsideMenu(props: IDefaultSidebarProps) {
                   </Menu.Item>
                 ))}
             </SubMenu> :
-            <Menu.Item key={props.item.path + ''} {...rest}>
-              <Link to={props.item.path as string}>
-                {props.item.icon && <i className={classNames("icon-fontsize", props.item.icon)} />}
-                <span className="ml-2">{translate(props.item.name)}</span>
+            <Menu.Item key={item.path + ''} {...rest}>
+              <Link to={item.path as string}>
+                {item.icon && <i className={classNames("icon-fontsize", item.icon)} />}
+                <span className="ml-2">{translate(item.name)}</span>
               </Link>
             </Menu.Item>
           }

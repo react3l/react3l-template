@@ -96,7 +96,6 @@ export const ContentTable = React.forwardRef(
     return (
       <>
         <Table
-          tableLayout='fixed'
           rowKey={nameof(list[0].key)}
           columns={columns}
           pagination={false}
@@ -104,6 +103,7 @@ export const ContentTable = React.forwardRef(
           loading={loadingList}
           onChange={handleTableChange}
           rowSelection={rowSelection}
+          scroll={ { x: 'max-content' } }
           title={() => (
             <>
               <div className='d-flex justify-content-between'>

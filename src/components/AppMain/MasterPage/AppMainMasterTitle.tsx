@@ -2,11 +2,11 @@ import { TFunction } from 'i18next';
 import React from 'react';
 import { UseMaster } from 'services/pages/master-service';
 
-export interface AppMainTitle extends UseMaster {
+export interface AppMainMasterTitle extends UseMaster {
     translate?: TFunction
 }
 
-export function AppMainTitle(props: AppMainTitle) {
+export function AppMainMasterTitle(props: AppMainMasterTitle) {
 
     const {
         translate,
