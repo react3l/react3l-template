@@ -14,40 +14,14 @@ export function useContentModal<
 >(
   content: TContent[],
   setContent: (content: TContent[]) => void,
-  loadList: boolean,
-  setLoadList: Dispatch<SetStateAction<boolean>>,
-  filter: TFilter,
-  handleUpdateNewFilter: (filter: TFilter) => void,
   handleResetFilter: () => void,
-  handleSearch: () => void,
-  getList: (filter: TFilter) => Observable<TMapper[]>,
-  getTotal: (filter: TFilter) => Observable<number>,
-  selectedList: TMapper[],
+  setMapperList: (list: TMapper[]) => void,
+  mapperList: TMapper[],
   mapper: (model: TContent | TMapper) => TContent, // mapping method from content to content or mapper to content
   mapperField: string,
   onClose?: () => void,
   onSave?: (mapperList: TMapper[]) => void,
 ) {
-  const {
-    list,
-    total,
-    loadingList,
-    pagination,
-    handlePagination,
-    handleTableChange,
-    rowSelection,
-    selectedList: mapperList,
-    setSelectedList: setMapperList,
-  } = tableService.useModalTable<TMapper, TFilter>(
-    filter,
-    handleUpdateNewFilter,
-    loadList,
-    setLoadList,
-    handleSearch,
-    getList,
-    getTotal,
-    selectedList,
-  );
 
   const handleCloseModal = useCallback(() => {
     handleResetFilter(); // resetFilter to default
@@ -98,14 +72,6 @@ export function useContentModal<
   ); // handleSave modal
 
   return {
-    list,
-    total,
-    loadingList,
-    pagination,
-    handlePagination,
-    handleTableChange,
-    rowSelection,
-    mapperList,
     handleCloseModal,
     handleSaveModal,
   };

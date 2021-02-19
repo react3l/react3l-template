@@ -9,6 +9,7 @@ import { Observable } from "rxjs";
 import { translate } from "@react3l/react3l/helpers/i18n";
 import { TableColumn } from "core/models/TableColumn";
 import Pagination from "components/Utility/Pagination/Pagination";
+import tableService from "services/table-service";
 
 export interface ContentModalProp<
   TContent extends Model, // Eg: priceListStoreMappings[]
@@ -65,26 +66,34 @@ export default function ContentModal<
     handlePagination,
     handleTableChange,
     rowSelection,
-    handleCloseModal,
-    handleSaveModal,
-    mapperList,
-  } = useContentModal(
-    content,
-    setContent,
-    loadList,
-    setLoadList,
+    selectedList: mapperList,
+    setSelectedList: setMapperList,
+  } = tableService.useModalTable<TMapper, TFilter>(
     filter,
     onUpdateNewFilter,
-    onResetFilter,
+    loadList,
+    setLoadList,
     onSearch,
     getList,
     getTotal,
     selectedList,
+  );
+
+  const {
+    handleCloseModal,
+    handleSaveModal,
+  } = useContentModal(
+    content,
+    setContent,
+    onResetFilter,
+    setMapperList,
+    mapperList,
     mapper,
     mapperField,
     onClose,
     onSave,
   );
+
   const renderTableTitle = useCallback(() => {
     return (
       <div className='d-flex justify-content-end'>

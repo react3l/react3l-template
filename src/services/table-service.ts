@@ -484,12 +484,11 @@ export class TableService {
   useLocalTable<T extends Model, T2 extends Model, TFilter extends ModelFilter>(
     filter: TFilter,
     setFilter: (filter: TFilter) => void,
-    loadList: boolean,
     setLoadList: Dispatch<SetStateAction<boolean>>,
     handleSearch: () => void,
+    total: number,
     source: T[],
     setSource: (source: T[]) => void,
-    contentMapper: (model: T | T2) => T,
     ContentClass: new () => T,
   ) {
     const [{ mappingList }, dispatch] = useReducer<
@@ -497,15 +496,6 @@ export class TableService {
     >(contentTableReducer, {
       mappingList: [], // selectedContent
     }); // mappingList, mapperList reducer
-
-    const { list, total, loadingList } = listService.useLocalList(
-      filter,
-      typeof contentMapper === "function" && source?.length > 0
-        ? source.map(contentMapper)
-        : source,
-      loadList,
-      setLoadList,
-    ); // list service
 
     const setMappingList = useCallback((mappingList: T[]) => {
       dispatch({
@@ -597,9 +587,6 @@ export class TableService {
     }, [ContentClass, setLoadList, setSource, source]); // add Content
 
     return {
-      list,
-      total,
-      loadingList,
       handleSearch,
       pagination,
       handleTableChange,
