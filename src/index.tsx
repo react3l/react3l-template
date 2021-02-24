@@ -20,11 +20,13 @@ const App = React.lazy(async () => {
 });
 
 ReactDOM.render(
-  <BrowserRouter>
+  <React.StrictMode>
+      <BrowserRouter>
     <React.Suspense fallback={null}>
       <App />
     </React.Suspense>
-  </BrowserRouter>,
+  </BrowserRouter>
+  </React.StrictMode>,
   document.getElementById("root"),
 );
 

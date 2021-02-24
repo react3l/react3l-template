@@ -6,14 +6,13 @@ import { menu } from "config/menu";
 import React, { useCallback, useState } from "react";
 import { useLocation } from "react-router";
 import { RouteConfig } from "react-router-config";
-import { RouteComponentProps, withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import "./AppAside.scss";
 import AsideMenu from "./AsideMenu/AsideMenu";
 
 const { Sider } = Layout;
 
-interface IDefaultSidebarProps extends RouteComponentProps {
+interface IDefaultSidebarProps {
   style?: any;
   routes?: RouteConfig[];
   className?: string;
@@ -74,10 +73,10 @@ function AppAside(props: IDefaultSidebarProps) {
             theme='light'
           >
             {routes.length > 0 &&
-              routes.map((route: RouteConfig) => (
+              routes.map((route: RouteConfig, index) => (
                 <AsideMenu
                   {...props}
-                  key={route.key ? route.key : uuidv4()}
+                  key={index}
                   item={route}
                 />
               ))}
@@ -144,4 +143,4 @@ AppAside.defaultProps = {
   routes: menu,
 };
 
-export default withRouter(AppAside);
+export default AppAside;

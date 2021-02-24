@@ -13,17 +13,17 @@ export function AppMainDetailTitle(props: AppMainDetailTitle) {
     const {
         translate,
         isDetail,
-        model
+        model,
+        children
     } = props;
 
     return <>
         <div className='page__header d-flex align-items-center'>
-            <div className='page__title mr-1'>
-                {translate("expenses.detail.title")}
-            </div>
             {   isDetail ? 
                 (
-                    <div className='page__id'>{`- # ${model.id}`}</div>
+                    <div className='page__title mr-1'>
+                        {children}
+                    </div>
                 ) : 
                 (
                     translate("general.actions.create")

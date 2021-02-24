@@ -42,6 +42,7 @@ export function advanceFilterReducer<T1 extends ModelFilter>(
     case ActionFilterEnum.ChangeOneField:
       return {
         ...state,
+        skip: 0,
         [action.fieldName]: new action.classFilter({
           [action.fieldType]: action.fieldValue,
         }),
@@ -215,6 +216,7 @@ export const advanceFilterService = {
             type: ActionFilterEnum.ChangeAllField,
             data: {
               ...modelFilter,
+              skip: 0,
               [fieldName]: new ClassSubFilter({
                 [nameof("greater")]: value[0],
                 [nameof("less")]: value[1],

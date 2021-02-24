@@ -4,13 +4,14 @@ import { Card, Table, Tooltip } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import Pagination from 'components/Utility/Pagination/Pagination';
 import { TFunction } from 'i18next';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { UseMaster } from 'services/pages/master-service';
 
 export interface AppMainMasterTableProps extends UseMaster {
     columns?: ColumnProps<Model>[],
     translate?: TFunction,
-    repository?: any 
+    repository?: any ,
+    children?: ReactNode
 };
 
 export function AppMainMasterTable (props: AppMainMasterTableProps) {
@@ -30,7 +31,8 @@ export function AppMainMasterTable (props: AppMainMasterTableProps) {
         handleImportList,
         handleListExport,
         handleExportTemplateList,
-        handlePagination
+        handlePagination,
+        children
     } = props;
     
     return <>
@@ -49,8 +51,8 @@ export function AppMainMasterTable (props: AppMainMasterTableProps) {
                     <>
                         <div className='d-flex justify-content-between'>
                             <div className='flex-shrink-1 d-flex align-items-center'>
-                                <div className='table-title ml-2'>
-                                    {translate('appUsers.table.title')}
+                                <div className='table-title ml-2'> 
+                                    {children}
                                 </div>
                             </div>
 

@@ -8,12 +8,12 @@ import { v4 as uuidv4 } from 'uuid';
 import './AsideMenu.scss';
 const { SubMenu } = Menu;
 
-export interface IDefaultSidebarProps extends RouteComponentProps {
+export interface IDefaultSidebarProps {
   item: RouteConfig;
 }
 
 function AsideMenu(props: IDefaultSidebarProps) {
-  const { staticContext, item, ...rest } = props;
+  const { item, ...rest } = props;
   const [translate] = useTranslation();
 
   return (

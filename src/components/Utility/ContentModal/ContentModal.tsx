@@ -162,7 +162,7 @@ export default function ContentModal<
           <Card>
             <Table
               rowKey={nameof(list[0].id)}
-              tableLayout='fixed'
+              scroll={ { x: 'max-content' } }
               columns={columns}
               dataSource={list}
               loading={loadingList}

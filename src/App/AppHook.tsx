@@ -3,14 +3,12 @@ import { LOGIN_ROUTE } from "config/route-consts";
 import * as Cookie from "js-cookie";
 import { AppUser } from "models/AppUser";
 import { Reducer, useCallback, useEffect, useReducer } from "react";
-import { useLocation } from "react-router";
 import { Subscription } from "rxjs";
 import appMessageService, { messageType } from "services/app-message-service";
 import authenticationService from "services/authentication-service";
 import { AppAction, AppActionEnum, appReducer, AppState } from "./AppStore";
 
 export default function useApp() {
-  const { pathname } = useLocation();
   const [subscription] = commonService.useSubscription();
   // reducer
   const [state, dispatch] = useReducer<Reducer<AppState, AppAction>>(
@@ -28,7 +26,7 @@ export default function useApp() {
       displayOverlay: false,
       extendPageMaster: false,
       user: undefined,
-      isCheckingAuth: true, // default checkAuth
+      isCheckingAuth: true,
     },
   );
 
@@ -55,7 +53,7 @@ export default function useApp() {
     subscription.add(
       authenticationService.checkAuth().subscribe((user: AppUser) => {
         if (user) return dispatch({ type: AppActionEnum.LOG_IN, user }); // if checkAuth success set login
-        //window.location.href = currentPath; // if checkAuth fail, return login page
+        window.location.href = currentPath; // if checkAuth fail, return login page
       }),
     );
   }, [currentPath, subscription]); // subscibe checkAuth
@@ -82,15 +80,6 @@ export default function useApp() {
     subscription.add(successSubscription);
     subscription.add(errorSubscription);
   }, [subscription]); // subcribe appMessageService
-
-  useEffect(() => {
-    if (pathname.includes("detail")) {
-      dispatch({ type: AppActionEnum.SET_FOOTER, displayFooter: true });
-    }
-    if (pathname.includes("master")) {
-      dispatch({ type: AppActionEnum.SET_FOOTER, displayFooter: false });
-    }
-  }, [pathname]); // update display footer
 
   const handleToggleOverlay = useCallback(() => {
     dispatch({
