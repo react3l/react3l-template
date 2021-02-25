@@ -31,11 +31,11 @@ export class DetailService {
         if (typeof model[contentField] === "undefined") return null;
         if (model[contentField]?.length === 0) return [];
         if (model[contentField]?.length > 0) {
-          return model[contentField].map((item) => {
+          return model[contentField].map((item, index) => {
             if (typeof item.key !== "undefined") {
               return { ...item };
             }
-            return { ...item, key: uuidv4() }; // assign key for each content item
+            return { ...item, key: index }; // assign key for each content item
           });
         }
       }

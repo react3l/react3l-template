@@ -557,11 +557,14 @@ export class TableService {
     }, [mappingList, resetTableFilter, setSource, source]); //  handle bulk delete by keys
 
     const handleChangeOneCell = useCallback(
-      (key: string, field: keyof T) => (value: T[keyof T], object) => {
-        const index = source.findIndex((item) => item.key === key);
+      (index: number, field: keyof T) => (value: T[keyof T], object?: any) => {
         if (index !== -1) {
-          source[index][`${field}Id` as keyof T] = value;
-          if (typeof object === "object") source[index][field] = object;
+          if (typeof object === "object") {
+            source[index][field] = object;
+            source[index][`${field}Id` as keyof T] = value;
+          } else {
+            source[index][field] = value;
+          }
         }
         setSource(source);
         resetTableFilter();
