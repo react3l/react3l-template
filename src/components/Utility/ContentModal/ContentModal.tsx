@@ -7,9 +7,9 @@ import "./ContentModal.scss";
 import { useContentModal } from "./ContentModalHook";
 import { Observable } from "rxjs";
 import { translate } from "@react3l/react3l/helpers/i18n";
-import { TableColumn } from "core/models/TableColumn";
 import Pagination from "components/Utility/Pagination/Pagination";
 import tableService from "services/table-service";
+import { TableColumn } from "services/component-factory/table-column-service";
 
 export interface ContentModalProp<
   TContent extends Model, // Eg: priceListStoreMappings[]

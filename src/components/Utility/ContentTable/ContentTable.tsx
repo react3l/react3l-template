@@ -3,11 +3,12 @@ import { Table, Tooltip } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import { AxiosResponse } from "axios";
 import Pagination from "components/Utility/Pagination/Pagination";
-import { TableColumn } from "core/models/TableColumn";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Observable } from "rxjs";
+import { TableColumn } from "services/component-factory/table-column-service";
 import nameof from "ts-nameof.macro";
+
 export interface ContentTableProps<
   T extends Model, // Eg: PriceList
   TContent extends Model, // Eg: PriceListStoreMappings
