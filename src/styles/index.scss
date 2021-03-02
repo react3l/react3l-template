@@ -53,10 +53,10 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 2;
     cursor: pointer;
-    
+
     img {
       background-color: transparent;
       height: 150px;
@@ -361,7 +361,7 @@ body {
         font-size: 18px;
       }
     }
-    .page__master-table {      
+    .page__master-table {
       .ant-card {
         height: 100%;
       }
@@ -534,18 +534,49 @@ body {
   }
 }
 
+/* custom app main master title */
 
+.table__action {
+  margin-left: 10px;
+}
+
+.ant-btn {
+  height: 40px;
+  border-radius: 7px;
+  color: #013ffb;
+  font-weight: bold;
+}
+
+.ant-btn:focus {
+  color: #013ffb;
+}
+
+.action__dots {
+  color: #013ffb;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ant-dropdown-menu-item {
+  text-align: center;
+}
+
+.ant-dropdown {
+  height: 100px !important;
+  overflow-y: scroll !important;
+}
+
+.w70 {
+  width: 70%;
+}
 /* (1920x1080) Full HD Display */
-@media  screen and (max-width: 1920px) {
-
+@media screen and (max-width: 1920px) {
 }
 
 /* (1600x900) HD+ Display */
-@media  screen and (max-width: 1600px) {
-
+@media screen and (max-width: 1600px) {
 }
 
 /* (1366x768) HD+ Display */
 @media screen and (max-width: 1366px) {
-
 }
