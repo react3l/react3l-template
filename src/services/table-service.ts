@@ -214,7 +214,7 @@ export class TableService {
             ); // merge old list with new selectedRows
             const filterList = [];
             mergeList.forEach((item) => {
-              const itemId = typeof item?.id !== "undefined" ? item.id : item.key
+              const itemId = typeof item?.id !== "undefined" ? item.id : item.key;
               if (mapper.hasOwnProperty(itemId) && mapper[itemId] === 0) {
                 filterList.push(item);
                 mapper[itemId] = mapper[itemId] + 1;
